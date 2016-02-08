@@ -1,0 +1,36 @@
+{
+  "name": "webbox",
+  "version": "0.0.1",
+  "description": "Webbased editor powered by sourcebox",
+  "main": "webbox.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/waywaaard/webbox.git"
+  },
+  "keywords": [
+    "webbox",
+    "sourcebox"
+  ],
+  "author": "Michael Ebert",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/waywaaard/webbox/issues"
+  },
+  "homepage": "https://github.com/waywaaard/webbox#readme",
+  "dependencies": {
+    "bcrypt": "^0.8.5",
+    "bluebird": "^3.2.2",
+    "boom": "^3.1.2",
+    "good": "^6.5.0",
+    "good-console": "^5.3.1",
+    "good-file": "^5.1.2",
+    "hapi": "^13.0.0",
+    "joi": "^7.2.3",
+    "rethinkdb": "^2.2.1",
+    "socket.io": "^1.4.5",
+    "thinky": "^2.2.4"
+  }
+}
