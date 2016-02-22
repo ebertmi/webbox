@@ -11,7 +11,7 @@
         "compileOptions": {
             "isCached": false,
             "pretty": true,
-            "debug": true
+            "debug": false
         }
     },
     "auth": {

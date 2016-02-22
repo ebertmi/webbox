@@ -47,11 +47,12 @@ function addUser (username, email, password) {
     })
     .then((hash) => {
         console.info('Trying to save encrypted password:', username, hash);
-        // create a new user
+        // create a new user with default role
         var newUser = new User({
             username: username,
             email: email,
-            password: hash
+            password: hash,
+            roles: ['user']
         });
         return newUser.save();
     })

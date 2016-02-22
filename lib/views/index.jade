@@ -9,7 +9,8 @@ html(lang="de")
         p= message
         p blablablabalssdfsdfssssdf
         include:marked mdtest.md
-        p Benutzer:
-        p= users
         Jade Template könntens mittels jstransformers relative gut andere Arten von Dokumenten zur Compile-Zeit einbinden. Ein Beispiel dafür ist
         Markdown. Aber auch inline-code Elementes.
+        p
+            | Angemeldet:
+            = username

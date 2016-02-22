@@ -5,6 +5,9 @@ html(lang="de")
         link(rel="stylesheet", href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/monokai-sublime.min.css")
         title=title
     body
+        p 
+            | Angemeldet als:
+            = ' ' + username 
         h1 Login
         form(action="/login", method="POST")
             input(type="hidden", name="crumb", value=crumb)
