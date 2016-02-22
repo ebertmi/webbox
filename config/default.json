@@ -5,5 +5,42 @@
         "url": {
             "protocol": "http"
         }
+    },
+    "views": {
+        "jade": { },
+        "compileOptions": {
+            "isCached": false,
+            "pretty": true,
+            "debug": true
+        }
+    },
+    "auth": {
+        "options": {
+            "password": "secret_cookie_for_webbox_that_must_be_atleast_32_chars_long!", // use something more secure in production
+            "redirectTo": "/login", // If there is no session, redirect here
+            "isSecure": false
+        }
+    },
+    "database": {
+        "host": "localhost",
+        "port": "28015",
+        "db": "webbox",
+        "authKey": "webbox_db_token"
+    },
+    "ratelimit": {
+        "redis": {
+            "host": "localhost",
+            "port": 6379
+        },
+        "namespace": "rate_",
+        "global": {
+            "limit": 200,
+            "duration": 60
+        }
+    },
+    "cache": {
+        "name": "redisCache",
+        "host": "localhost",
+        "partition": "cache"
     }
 }

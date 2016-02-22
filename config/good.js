@@ -3,10 +3,10 @@ var goodFile = require('good-file');
 
 var reporters = [{
     reporter: goodConsole,
-    events: {log: '*', response: '*'}
+    events: {log: '*', response: '*', error: '*', request: 'error'}
 }, {
     reporter: goodFile,
-    events: {ops: '*'},
+    events: {log: '*', error: '*', ops: 'error'},
     config: './logs/good.log'
 }];
 

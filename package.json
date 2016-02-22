@@ -23,17 +23,30 @@
   "homepage": "https://github.com/waywaaard/webbox#readme",
   "dependencies": {
     "bcrypt": "^0.8.5",
-    "bluebird": "^3.2.2",
+    "bluebird": "^3.3.1",
     "boom": "^3.1.2",
+    "config": "^1.19.0",
     "crumb": "^6.0.0",
     "good": "^6.5.0",
     "good-console": "^5.3.1",
     "good-file": "^5.1.2",
     "hapi": "^13.0.0",
+    "hapi-auth-cookie": "^6.0.0",
+    "hapi-ratelimit": "waywaaard/hapi-ratelimit",
     "inert": "^3.2.0",
+    "jade": "^1.11.0",
     "joi": "^7.2.3",
+    "jstransformer-marked": "waywaaard/jstransformer-marked",
+    "ldapjs": "^1.0.0",
     "rethinkdb": "^2.2.1",
+    "slug": "^0.9.1",
     "socket.io": "^1.4.5",
-    "thinky": "^2.2.4"
+    "thinky": "^2.2.4",
+    "uuid": "^2.0.1",
+    "vision": "^4.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^2.1.0",
+    "yargs": "^4.1.0"
   }
 }

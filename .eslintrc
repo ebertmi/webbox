@@ -1,0 +1,17 @@
+{
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": false
+        }
+    },
+    "rules": {
+        "semi": 2,
+        "space-before-function-paren": 2
+    },
+    "env": {
+        "browser": true,
+        "node": true
+    }
+}
