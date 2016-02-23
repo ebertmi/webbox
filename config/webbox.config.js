@@ -1,3 +1,4 @@
+/* global process */
 /**
  * The webbox.config allows us to add and load other configuration options to the default or production ones.
  */

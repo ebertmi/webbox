@@ -40,3 +40,6 @@ logs
 
 # media files should be ignored
 media
+
+# ignore bundled files
+public/js/*.bundle.js

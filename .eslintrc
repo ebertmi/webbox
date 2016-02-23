@@ -3,12 +3,14 @@
         "ecmaVersion": 6,
         "sourceType": "module",
         "ecmaFeatures": {
-            "jsx": false
+            "jsx": false,
+            "forOf": true
         }
     },
     "rules": {
         "semi": 2,
-        "space-before-function-paren": 2
+        "space-before-function-paren": 2,
+        "indent": [2, 2]
     },
     "env": {
         "browser": true,
