@@ -1,13 +1,32 @@
+/* global __dirname */
+
 'use strict';
 
+var webpack = require('webpack');
+
+var commonsPlugin = new webpack.optimize.CommonsChunkPlugin('common.js');
+
 module.exports = {
-  entry: './client/js/index.js',
+  context: __dirname + '/client',
+  entry: {
+    index: './js/index',
+    embed: './js/embed'
+  },
   output: {
-    path: 'public/js/',
-    filename: 'bundle.js'
+    filename: '[name].bundle.js',
+    chunkFilename: '[id].bundle.js',
+    path: __dirname + '/public/js'
   },
   module: {
     loaders: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        query: {
+          presets: ['es2015']
+        }
+      },
       {
         test: /\.sass$/,
         loaders: ['style', 'css', 'sass']
@@ -21,6 +40,7 @@ module.exports = {
   sassLoader: {
     indentedSyntax: true
   },
+  plugins: [commonsPlugin],
   node: {
     fs: 'empty' // needed for term.js
   }
