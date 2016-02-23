@@ -25,6 +25,7 @@
     "bcrypt": "^0.8.5",
     "bluebird": "^3.3.1",
     "boom": "^3.1.2",
+    "bootstrap": "^4.0.0-alpha.2",
     "config": "^1.19.0",
     "crumb": "^6.0.0",
     "datefmt": "^0.4.1",
