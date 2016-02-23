@@ -44,12 +44,18 @@
     "rethinkdb": "^2.2.1",
     "slug": "^0.9.1",
     "socket.io": "^1.4.5",
+    "term.js": "0.0.7",
     "thinky": "^2.2.4",
     "uuid": "^2.0.1",
     "vision": "^4.0.1"
   },
   "devDependencies": {
+    "css-loader": "^0.23.1",
     "eslint": "^2.1.0",
+    "node-sass": "^3.4.2",
+    "sass-loader": "^3.1.2",
+    "style-loader": "^0.13.0",
+    "webpack": "^1.12.14",
     "yargs": "^4.1.0"
   }
 }
