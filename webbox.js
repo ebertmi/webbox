@@ -109,6 +109,22 @@ if (config.isDev || config.isTest) {
             auth: false
         }
     });
+    
+    // init media files
+    server.route({
+        method: 'GET',
+        path: '/media/{param*}',
+        handler: {
+            directory: {
+                path: './media',
+                redirectToSlash: true,
+                index: false
+            }
+        },
+        config: {
+            auth: false
+        }
+    });
 }
 
 // register routes

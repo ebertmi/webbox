@@ -14,3 +14,17 @@ html(lang="de")
         p
             | Angemeldet:
             = username
+
+        h2 Login
+        form(action="/login", method="POST")
+            input(type="hidden", name="crumb", value=crumb)
+            input(type="text", id="login_username", name="username")
+            input(type="password", id="login_password", name="password")
+            button(type="submit") Anmelden
+
+        h2 Image-Upload
+        form(action="/mediaupload", method="POST", enctype="multipart/form-data")
+            input(type="hidden", name="crumb", value=crumb)
+            input(type="file", name="imageFile", accept="image")
+            input(type="text", name="course")
+            button(type="submit") Hochladen

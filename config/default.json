@@ -42,5 +42,9 @@
         "name": "redisCache",
         "host": "localhost",
         "partition": "cache"
+    },
+    "media": {
+        "path": "./media",
+        "maxBytes":  1048576
     }
 }
