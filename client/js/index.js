@@ -1,4 +1,4 @@
-require('../sass/index.scss');
+require('sass/index');
 
 var Terminal = require('term.js');
 var anchors = require('exports?anchors!anchor-js/anchor');
