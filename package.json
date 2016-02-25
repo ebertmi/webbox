@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/waywaaard/webbox#readme",
   "dependencies": {
+    "Stickyfill": "github:wilddeer/stickyfill",
     "anchor-js": "^3.1.0",
     "bcrypt": "^0.8.5",
     "blipp": "^2.3.0",
@@ -51,7 +52,6 @@
     "markdown-it": "^6.0.0",
     "markdown-it-anchor": "^2.4.0",
     "markdown-it-attrs": "^0.1.8",
-    "markdown-it-checkbox": "^1.1.0",
     "markdown-it-decorate": "^1.2.1",
     "markdown-it-hashtag": "^0.4.0",
     "markdown-it-header-sections": "^0.2.2",

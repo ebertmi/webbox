@@ -11,7 +11,8 @@ module.exports = {
   context:  path.resolve(__dirname, 'client'),
   entry: {
     index: './js/index',
-    embed: './js/embed'
+    embed: './js/embed',
+    course: './js/course'
   },
   output: {
     filename: '[name].bundle.js',
