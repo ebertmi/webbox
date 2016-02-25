@@ -29,13 +29,10 @@ module.exports = {
         }
       },
       {
-        test: /\.sass$/,
+        test: /\.scss$/,
         loaders: ['style', 'css', 'sass']
       }
     ]
-  },
-  sassLoader: {
-    indentedSyntax: true
   },
   plugins: [commonsPlugin],
   node: {
