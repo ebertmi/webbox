@@ -43,3 +43,4 @@ media
 
 # ignore bundled files
 public/js/*.bundle.js
+public/js/*.bundle.js.map

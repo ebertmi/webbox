@@ -6,6 +6,7 @@ var Good = require('good');
 var Vision = require('vision');
 var Jade = require('jade');
 var Crumb = require('crumb');
+var Blipp = require('blipp');
 var hratelimit = require('hapi-ratelimit');
 
 var config = require('./config/webbox.config');
@@ -94,7 +95,7 @@ server.register(Vision, (err) => {
 
 // serve static files, maybe only on dev
 if (config.isDev || config.isTest) {
-  console.log('attach public and media dirs');
+  console.log('Attaching /public and /media routes.');
   server.register(Inert, (err) => {
     if (err) {
       console.log('inert', err);
@@ -135,3 +136,17 @@ if (config.isDev || config.isTest) {
 
 // register routes
 server.route(require('./config/routes'));
+
+// blibb for server routes -> only for dev
+if (config.isDev) {
+  server.register({
+    register: Blipp, options: {
+      showStart: config.blibb.showStart,
+      showAuth: config.blibb.showAuth
+    }
+  }, function (err) {
+    if (err) {
+      console.log(err);
+    }
+  });
+}

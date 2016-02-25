@@ -46,5 +46,9 @@
     "media": {
         "path": "./media",
         "maxBytes":  1048576
+    },
+    "blibb": {
+      "showStart": true,
+      "showAuth": true
     }
 }

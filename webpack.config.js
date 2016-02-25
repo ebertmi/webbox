@@ -44,5 +44,6 @@ module.exports = {
   plugins: [commonsPlugin],
   node: {
     fs: 'empty' // needed for term.js
-  }
+  },
+  devtool: 'source-map'
 };

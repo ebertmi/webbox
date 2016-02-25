@@ -3,8 +3,12 @@ html(lang="de")
     head
         meta(http-equiv="Content-Type" content="text/html;charset=utf-8")
         link(rel="stylesheet", href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/monokai-sublime.min.css")
+        link(rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css")
         title=title
     body
-        h1= title
-        #content!= content
-            
+        div(class="container")
+          h1= title
+          #content!= content
+          p= message
+    script(src="/public/js/common.bundle.js", defer="true")
+    script(src="/public/js/index.bundle.js", defer="true")

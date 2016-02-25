@@ -8,7 +8,6 @@ html(lang="de")
         h1= title
         p= message
         p blablablabalssdfsdfssssdf
-        include:marked mdtest.md
         Jade Template könntens mittels jstransformers relative gut andere Arten von Dokumenten zur Compile-Zeit einbinden. Ein Beispiel dafür ist
         Markdown. Aber auch inline-code Elementes.
         p
@@ -28,5 +27,6 @@ html(lang="de")
             input(type="file", name="imageFile", accept="image")
             input(type="text", name="course")
             button(type="submit") Hochladen
-            
+        
+        script(src="/public/js/common.bundle.js", defer="true")
         script(src="/public/js/index.bundle.js", defer="true")
