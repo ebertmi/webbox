@@ -2,3 +2,29 @@
 @import "~bootstrap/scss/bootstrap-flex.scss";
 @import "_clipboard.scss";
 @import "_snippets.scss";
+
+body {
+  font-family: Merriweather, Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 30px;
+  color: #444444;
+}
+
+h1 {
+  font-size: 2.61111em;
+  line-height: 1.26383em;
+  text-align: center;
+  font-weight: 300;
+  margin-bottom: 30px;
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+#content {
+  section {
+    margin-top: 40px;
+  }
+}
