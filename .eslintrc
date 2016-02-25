@@ -1,19 +1,18 @@
 {
-    "parserOptions": {
-        "ecmaVersion": 6,
-        "sourceType": "module",
-        "ecmaFeatures": {
-            "jsx": false,
-            "forOf": true
-        }
-    },
-    "rules": {
-        "semi": 2,
-        "space-before-function-paren": 2,
-        "indent": [2, 2]
-    },
-    "env": {
-        "browser": true,
-        "node": true
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true,
+      "forOf": true
     }
+  },
+  "rules": {
+    "semi": 2,
+    "indent": [2, 2]
+  },
+  "env": {
+    "browser": true,
+    "node": true
+  }
 }
