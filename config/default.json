@@ -18,7 +18,8 @@
         "options": {
             "password": "secret_cookie_for_webbox_that_must_be_atleast_32_chars_long!", // use something more secure in production
             "redirectTo": "/login", // If there is no session, redirect here
-            "isSecure": false
+            "isSecure": false,
+            "appendNext": true
         }
     },
     "database": {

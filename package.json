@@ -41,6 +41,7 @@
     "good-file": "^5.1.2",
     "hapi": "^13.0.0",
     "hapi-auth-cookie": "^6.0.0",
+    "hapi-named-routes": "^0.3.0",
     "hapi-ratelimit": "waywaaard/hapi-ratelimit",
     "highlight.js": "^9.2.0",
     "hoek": "^3.0.4",

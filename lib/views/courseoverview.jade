@@ -8,4 +8,6 @@ html(lang="de")
         h1 Kurse
         ul
             each val in courses
-                li= val
+                li
+                  a(href=path.course + val.name) #{val.title}
+

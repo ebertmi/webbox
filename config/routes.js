@@ -16,6 +16,7 @@ module.exports = [
     path: '/',
     handler: pages.index,
     config: {
+      id: 'root',
       auth: {
         mode: 'try',
         strategy: 'session'
@@ -29,7 +30,7 @@ module.exports = [
   }, {
     method: 'GET',
     path: '/course',
-    handler: pages.course, 
+    handler: pages.course,
     config: {
       auth: false
     }
@@ -38,6 +39,7 @@ module.exports = [
     path: '/course/{course}',
     handler: course.view,
     config: {
+      id: 'course',
       pre: [{
         method: PreHelpers.getCourse,
         assign: 'course'
@@ -78,6 +80,7 @@ module.exports = [
     path: '/login',
     handler: auth.loginview,
     config: {
+      id: 'login',
       auth: {
         mode: 'try',
         strategy: 'session'
@@ -93,8 +96,15 @@ module.exports = [
     path: '/courseoverview',
     handler: course.overview,
     config: {
+      id: 'courseoverview',
       auth: {
-        scope: 'user'
+        mode: 'try',
+        strategy: 'session'
+      },
+      plugins: {
+        'hapi-auth-cookie': {
+          redirectTo: false
+        }
       }
     }
   }, {
@@ -102,6 +112,7 @@ module.exports = [
     path: '/mediaupload',
     handler: media.imageupload,
     config: {
+      id: 'mediaupload',
       auth: {
         scope: 'user'
       },

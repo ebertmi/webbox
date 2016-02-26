@@ -13,7 +13,7 @@ var config = require('./config/webbox.config');
 
 var server = new Hapi.Server();
 server.connection({
-  host: config.app.hostname, 
+  host: config.app.hostname,
   port: config.app.port,
   routes: {
     files: {
@@ -35,7 +35,7 @@ server.connection({
 // add the good process monitor/logging plugin
 server.register({
   register: Good,
-  options: config.good 
+  options: config.good
 }, function (err) {
   if (err) {
     console.error(err);
@@ -116,7 +116,7 @@ if (config.isDev || config.isTest) {
       auth: false
     }
   });
-  
+
   // init media files
   server.route({
     method: 'GET',
@@ -150,3 +150,15 @@ if (config.isDev) {
     }
   });
 }
+
+/**
+ *  register named-routes-plugin
+ *
+ * This allows use to use "path.routename" in views as
+ * all named views are passed in the context.
+ */
+server.register(require('hapi-named-routes'), (err) => {
+  if (err) {
+    console.log('inert', err);
+  }
+});
