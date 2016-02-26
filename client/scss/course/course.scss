@@ -1,7 +1,9 @@
-
+$fa-font-path: "//netdna.bootstrapcdn.com/font-awesome/4.5.0/fonts";
 @import "~bootstrap/scss/bootstrap-flex.scss";
 @import "_clipboard.scss";
 @import "_snippets.scss";
+@import "_notices.scss";
+@import "_anchor.scss";
 
 body {
   font-family: Merriweather, Georgia, "Times New Roman", serif;
@@ -27,4 +29,15 @@ h2 {
   section {
     margin-top: 40px;
   }
+}
+
+.nav-secondary {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+}
+.nav-secondary:before,
+.nav-secondary:after {
+    content: '';
+    display: table;
 }

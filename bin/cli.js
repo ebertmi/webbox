@@ -14,6 +14,12 @@ require('yargs').usage('webboxcli <cmd> [args]')
   .command('removeUser <id>', 'removes the user with <id>', {}, function (argv) {
     removeUser(argv.id);
   })
+  .command('addCourse', 'adds dummy course', {}, function (argv) {
+    addCourse();
+  })
+  .command('removeCourse <id>', 'removes the course with <id>', {}, function (argv) {
+    removeCourse(argv.id);
+  })
   .help('help')
   .argv;
 
@@ -21,10 +27,19 @@ require('yargs').usage('webboxcli <cmd> [args]')
 function list (model) {
   if (model === "User") {
     var User = require('../lib/models/user');
-    
+
     User.orderBy({index: 'username'}).run().then(function (users) {
       for (var u of users) {
         console.log(u.username, u.email, u.roles, u.id, u.password);
+      }
+      process.exit();
+    });
+  } else if (model === "Course") {
+    var Course = require('../lib/models/course');
+
+    Course.orderBy({index: 'name'}).run().then(function (courses) {
+      for (var c of courses) {
+        console.log(c.name, c.title, c.id);
       }
       process.exit();
     });
@@ -70,7 +85,7 @@ function addUser (username, email, password) {
 
 function removeUser (id) {
   var User = require('../lib/models/user');
-  
+
   User.get(id).run()
   .then((user) => {
     return user.delete();
@@ -79,10 +94,58 @@ function removeUser (id) {
     console.log('Removed user with id: ', id);
   })
   .error((err) => {
-    console.log(err); 
+    console.log(err);
   })
   .finally(() => {
     process.exit();
   });;
 }
 
+function addCourse (id) {
+  const DUMMY_DOCUMENT = `# Markdown - eine einfache Sprache
+
+hier noch etwas Text.
+`;
+  var Course = require('../lib/models/course');
+
+  var c = Course({
+    title: 'Einführung in Markdown',
+    name: 'markdown-2016',
+    chapters: [{
+      document: DUMMY_DOCUMENT,
+      title: 'Einstieg',
+      isIndex: true,
+      titleSlug: 'einstieg',
+      history: []
+    }]
+  });
+
+  c.save()
+  .then(() => {
+    console.log('Created dummy course');
+  })
+  .error((err) => {
+    console.log(err);
+  })
+  .finally(() => {
+    process.exit();
+  });
+}
+
+function removeCourse (id) {
+  var Course = require('../lib/models/course');
+
+  Course.get(id).run()
+  .then((course) => {
+    return course.delete();
+  })
+  .then(() => {
+    console.log('Removed course with id: ', id);
+  })
+  .error((err) => {
+    console.log(err);
+  })
+  .finally(() => {
+    process.exit();
+  });;
+}
