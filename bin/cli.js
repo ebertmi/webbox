@@ -14,8 +14,8 @@ require('yargs').usage('webboxcli <cmd> [args]')
   .command('removeUser <id>', 'removes the user with <id>', {}, function (argv) {
     removeUser(argv.id);
   })
-  .command('addCourse', 'adds dummy course', {}, function (argv) {
-    addCourse();
+  .command('addCourse <slug> <userid>', 'adds dummy course', {}, function (argv) {
+    addCourse(argv.slug, argv.userid);
   })
   .command('removeCourse <id>', 'removes the course with <id>', {}, function (argv) {
     removeCourse(argv.id);
@@ -101,16 +101,22 @@ function removeUser (id) {
   });;
 }
 
-function addCourse (id) {
+function addCourse (slug, userid) {
   const DUMMY_DOCUMENT = `# Markdown - eine einfache Sprache
 
-hier noch etwas Text.
+hier noch etwas Text. Und anschließend einen Beispielcode
+\`\`\`python
+print('All your base are belong to us!')
+\`\`\`
 `;
   var Course = require('../lib/models/course');
 
+  // ToDo: check if there is an existing course with this id
+
   var c = Course({
-    title: 'Einführung in Markdown',
-    name: 'markdown-2016',
+    title: 'Einführung in ' + slug,
+    slug: slug,
+    _creator: userid,
     chapters: [{
       document: DUMMY_DOCUMENT,
       title: 'Einstieg',

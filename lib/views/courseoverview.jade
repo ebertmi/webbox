@@ -1,13 +1,13 @@
-doctype html
-html(lang="de")
-    head
-        meta(http-equiv="Content-Type" content="text/html;charset=utf-8")
-        link(rel="stylesheet", href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/monokai-sublime.min.css")
-        title Kursübersicht
-    body
-        h1 Kurse
-        ul
-            each val in courses
-                li
-                  a(href=path.course + val.name) #{val.title}
+extends ./layout.jade
+
+block title
+  title Kursübersicht
+
+block content
+  .container
+      h1 Kurse
+      ul
+        each val in courses
+          li
+            a(href=path.course + val.slug) #{val.title}
 

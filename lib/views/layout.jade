@@ -1,0 +1,45 @@
+doctype html
+html(lang="de")
+    head
+        meta(http-equiv="Content-Type" content="text/html;charset=utf-8")
+        link(rel="stylesheet", href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/monokai-sublime.min.css")
+        block title
+          title WebBox - Hochschule Coburg
+
+    body.site
+        a(id="skippy", class="sr-only sr-only-focusable" href="#content")
+          .container
+            span.skiplink-text
+              Skip to main Content
+
+        block navigation
+          header
+            nav.navbar.navbar-light.bg-faded
+              .nav.navbar-nav
+                a(class="nav-item nav-link", href="/") Startseite
+                a(class="nav-item nav-link", href="/courseoverview") Kurse
+
+        block banner
+          .wb-pageheader.hidden-print
+            .container
+              h1
+
+        main.site-content#content
+          block content
+
+        footer(role="contentinfo", class="wb-footer text-muted")
+          .container
+            ul.wb-footer-links
+              li
+                a(href="/impressum") Impressum
+              li
+                a(href="/datenschutz") Datenschutz
+
+            p
+              Erstellt von ... im Rahmen des Projektes Evelin
+            p
+              a(href="//hs-coburg.de", target="_blank") Hochschule Coburg
+
+        block scripts
+          script(src="/public/js/common.bundle.js", defer="true")
+          script(src="/public/js/index.bundle.js", defer="true")

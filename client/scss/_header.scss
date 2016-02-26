@@ -1,0 +1,74 @@
+
+.wb-pageheader .container {
+    position: relative
+}
+
+.wb-navbar {
+    font-size: 87.5%
+}
+.wb-navbar .navbar-nav .nav-link {
+    color: #8e869d;
+    border-bottom: 2px solid transparent;
+}
+.wb-navbar .navbar-nav .nav-link.active,
+.wb-navbar .navbar-nav .nav-link:focus,
+.wb-navbar .navbar-nav .nav-link:hover {
+    color: #373a3c;
+    border-bottom: 2px solid #0275d8;
+    background-color: transparent;
+}
+.wb-navbar .navbar-nav .nav-link.active {
+    font-weight: 500
+}
+.wb-navbar .dropdown-menu {
+    font-size: inherit
+}
+@media (max-width: 47.9em) {
+    .wb-navbar .nav-link {
+        float: none;
+    }
+
+    .wb-navbar .navbar-nav .nav-link:hover {
+        border-bottom: 0px solid transparent;
+        border-left: 2px solid #0275d8;
+    }
+
+    .wb-navbar .navbar-nav .nav-link {
+        border-bottom: 0px solid transparent;
+        border-left: 2px solid transparent;
+        padding-left: 2px;
+    }
+
+    .wb-navbar .nav-link+.nav-link {
+        margin-left: 0;
+    }
+}
+
+.wb-pageheader > .container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  & h1 {
+    max-width: 50%;
+  }
+}
+
+
+
+.wb-pageheader {
+    padding-bottom: 6rem;
+    padding-top: 4rem;
+    color: #cdbfe3;
+    background-image: url("/../../public/img/wb_header_small.jpg");
+    background-size: cover;
+    background-position-x: 0px;
+    background-color: #000;
+}
+
+.wb-pageheader h1 {
+    font-size: 3rem;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 1px 1px 3px #000;
+}

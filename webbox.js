@@ -94,48 +94,14 @@ server.register(Vision, (err) => {
 });
 
 // serve static files, maybe only on dev
-if (config.isDev || config.isTest) {
-  console.log('Attaching /public and /media routes.');
-  server.register(Inert, (err) => {
-    if (err) {
-      console.log('inert', err);
-    }
-  });
-
-  server.route({
-    method: 'GET',
-    path: '/public/{param*}',
-    handler: {
-      directory: {
-        path: './public/',
-        redirectToSlash: true,
-        index: false,
-      }
-    },
-    config: {
-      auth: false
-    }
-  });
-
-  // init media files
-  server.route({
-    method: 'GET',
-    path: '/media/{param*}',
-    handler: {
-      directory: {
-        path: './media/',
-        redirectToSlash: true,
-        index: false
-      }
-    },
-    config: {
-      auth: false
-    }
-  });
-}
+server.register(Inert, (err) => {
+  if (err) {
+    console.log('inert', err);
+  }
+});
 
 // register routes
-server.route(require('./config/routes'));
+server.route(require('./lib/routes'));
 
 // blibb for server routes -> only for dev
 if (config.isDev) {

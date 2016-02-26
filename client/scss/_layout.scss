@@ -1,0 +1,17 @@
+@import "_header.scss";
+@import "_footer.scss";
+
+.site {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.site-content {
+  flex: 1;
+  margin-top: 1rem
+}
+
+h1 > img {
+  margin-left: 1rem;
+}

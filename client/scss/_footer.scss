@@ -1,0 +1,43 @@
+
+.wb-footer {
+    padding: 4rem 0;
+    margin-top: 4rem;
+    font-size: 85%;
+    background-color: #f7f7f7;
+    text-align: center;
+}
+
+.wb-footer a {
+    font-weight: 500;
+    color: #55595c;
+}
+
+.wb-footer a:hover {
+    color: #0275d8;
+}
+
+.wb-footer p {
+    margin-bottom: 0;
+}
+
+.wb-footer-links {
+    margin-bottom: 1rem;
+}
+
+@media (min-width: 34em) {
+    .wb-footer {
+        text-align: left;
+    }
+}
+
+.wb-footer-links {
+    padding-left: 0;
+}
+
+.wb-footer-links li {
+    display: inline-block;
+}
+
+.wb-footer-links li+li {
+    margin-left: 1rem;
+}
