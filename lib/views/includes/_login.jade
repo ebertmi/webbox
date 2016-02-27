@@ -1,0 +1,14 @@
+form(action="/login", method="POST")
+  input(type="hidden", name="crumb", value=crumb)
+  div.form-group.row
+    label.col-sm-2.form-control-label(for="login_username_input") Benutzername
+    div.col-sm-6.col-xs-12
+      input.form-control(type="text", id="login_username_input", name="username", placeholder="z.B. ikas14@stud.hs-coburg.de")
+
+  div.form-group.row
+    label.col-sm-2.form-control-label(for="login_password_input") Passwort
+    div.col-sm-6.col-xs-12
+      input.form-control(type="password", id="login_password_input", name="password", placeholder="Passwort")
+  div.form-group.row
+    div.col-sm-offset-2.col-sm-6
+      button.btn.btn-primary(type="submit") Anmelden

@@ -4,7 +4,10 @@
 }
 
 .wb-navbar {
-    font-size: 87.5%
+    font-size: 87.5%;
+    background-color: white;
+    border-bottom: solid 1px rgba(0, 0, 0, 0.2);
+    border-radius: 0rem;
 }
 .wb-navbar .navbar-nav .nav-link {
     color: #8e869d;

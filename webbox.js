@@ -88,7 +88,12 @@ server.register(Vision, (err) => {
         jade: Jade,
       },
       path: __dirname + '/lib/views',
-      compileOptions: config.views.compileOptions
+      compileOptions: {
+        cache: true,
+        pretty: false,
+        debug: true,
+        compileDebug: true
+      }
     });
   }
 });

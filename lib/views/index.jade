@@ -6,10 +6,12 @@ block title
 block content
   .container
     section
-      h1 Programmieren mit
-        img(src="/public/img/sourcebox.png", width="100", alt=" SourceBox")
-      p= message
-      p
+      h1 Programmieren mit WebBox
+      p.
+        WebBox ermöglicht das Programmieren im Browser für jede Programmiersprache. Zusätzlich
+        können ganze Manuskripte direkt im Browser gepflegt und aktualisiert werden. Alle Beispiele
+        und Übungen können direkt im Browser ausprobiert und verändert werden.
+      p.
         Jade Template könntens mittels jstransformers relative gut andere Arten von Dokumenten zur Compile-Zeit einbinden. Ein Beispiel dafür ist
         Markdown. Aber auch inline-code Elementes.
       p
@@ -19,22 +21,21 @@ block content
 
     section
       h2 Login
-      form(action="/login", method="POST")
-        input(type="hidden", name="crumb", value=crumb)
-        input(type="text", id="login_username", name="username")
-        input(type="password", id="login_password", name="password")
-        button(type="submit") Anmelden
-
+      include ./includes/_login.jade
 
     section
       h2 Image-Upload
-      form(class="form-inline" action="/mediaupload", method="POST", enctype="multipart/form-data")
+      form(action="/mediaupload", method="POST", enctype="multipart/form-data")
         input(type="hidden", name="crumb", value=crumb)
-        fieldset.form-group
-          label(for="imageFile") Bilderupload
-          input(class="form-control-file", id="imageFile", type="file", name="imageFile", accept="image")
-          small.text-muted Zulässige Formate: .png, .jpeg
-        fieldset.form-group
-          label(for="courseInput") Kursname
-          input(placeholder="z.B. python-2016" class="form-control", id="courseInput", type="text", name="course")
-        button(class="btn btn-primary", type="submit") Hochladen
+        div.form-group.row
+          label.col-sm-2.form-control-label(for="imageFile") Bilderupload
+          div.col-sm-6.col-xs-12
+            input.form-control-file(id="imageFile", type="file", name="imageFile", accept="image")
+            small.text-muted Zulässige Formate: .png, .jpeg
+        div.form-group.row
+          label.col-sm-2.form-control-label(for="courseInput") Kursname
+          div.col-sm-6.col-xs-12
+            input.form-control(placeholder="z.B. python-2016", id="courseInput", type="text", name="course")
+        div.form-group.row
+          div.col-sm-offset-2.col-sm-6
+            button.btn.btn-primary(type="submit") Hochladen
