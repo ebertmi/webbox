@@ -1,9 +1,19 @@
 $fa-font-path: "//netdna.bootstrapcdn.com/font-awesome/4.5.0/fonts";
 @import "~font-awesome/scss/font-awesome.scss";
-@import "_bootstrap.custom.scss";
+@import "includes/_bootstrap.custom.scss";
 @import "~bootstrap/scss/bootstrap-flex.scss";
-@import "_layout.scss";
+@import "includes/_layout.scss";
+@import "includes/_mediaupload.scss";
+
+@import "includes/_divider.scss";
 
 section {
   margin-bottom: 1.5rem;
+}
+
+// add some vertical margin when signin and signup are stacked
+media-breakpoint-down(xs) {
+  .auth .col-xs.12 {
+    margin-bottom: 1.5rem;
+  }
 }

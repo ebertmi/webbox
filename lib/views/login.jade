@@ -1,16 +1,11 @@
-doctype html
-html(lang="de")
-    head
-        meta(http-equiv="Content-Type" content="text/html;charset=utf-8")
-        link(rel="stylesheet", href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/monokai-sublime.min.css")
-        title=title
-    body
-        p 
-            | Angemeldet als:
-            = ' ' + username 
-        h1 Login
-        form(action="/login", method="POST")
-            input(type="hidden", name="crumb", value=crumb)
-            input(type="text", id="login_username", name="username")
-            input(type="password", id="login_password", name="password")
-            button(type="submit") Anmelden
+extends ./layout.jade
+block content
+  .container
+    .row
+      section.col-sm-12
+        if user.isAnonymous
+          h1 Anmeldung
+          include ./includes/_login.jade
+        else
+          p.
+            Sie sind bereits angemeldet.

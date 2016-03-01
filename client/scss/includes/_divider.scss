@@ -1,0 +1,42 @@
+.divider {
+    margin: 1rem 0;
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: rgba(0,0,0,.85);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    font-size: 1rem;
+
+  &.vertical {
+    display: flex;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    -webkit-box-align: center;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &:before {
+    top: 0;
+    bottom: 60%;
+  }
+
+  &:after {
+    top: 55%;
+    bottom: 0;
+  }
+
+  &:before, &:after {
+    position: absolute;
+    left: 50%;
+    content: '';
+    z-index: 3;
+    border-left: 1px solid rgba(34,36,38,.15);
+    border-right: 1px solid rgba(255,255,255,.1);
+  }
+}

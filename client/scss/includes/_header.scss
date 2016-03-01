@@ -1,0 +1,29 @@
+.wb-pageheader .container {
+    position: relative
+}
+
+.wb-pageheader > .container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  & h1 {
+    max-width: 50%;
+  }
+}
+
+.wb-pageheader {
+    min-height: 15rem;
+    color: #cdbfe3;
+    background-image: url("/../../public/img/wb_header_small.jpg");
+    background-size: cover;
+    background-position-x: 0px;
+    background-color: #000;
+}
+
+.wb-pageheader h1 {
+    font-size: 3rem;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 1px 1px 3px #000;
+}
