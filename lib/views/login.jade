@@ -5,6 +5,9 @@ block content
       section.col-sm-12
         if user.isAnonymous
           h1 Anmeldung
+          if errorMessage
+            div.alert.alert-danger
+              p= errorMessage
           include ./includes/_login.jade
         else
           p.

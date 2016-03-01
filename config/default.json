@@ -20,7 +20,8 @@
             "redirectTo": "/login", // If there is no session, redirect here
             "isSecure": false,
             "appendNext": true
-        }
+        },
+        "authAttempts": 7
     },
     "database": {
         "host": "localhost",
