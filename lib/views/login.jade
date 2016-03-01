@@ -10,5 +10,7 @@ block content
               p= errorMessage
           include ./includes/_login.jade
         else
-          p.
-            Sie sind bereits angemeldet.
+          div.alert.alert-info
+            p Sie sind bereits angemeldet.
+
+          a.btn.btn-secondary(href=path.index) Zurück zur Hauptseite

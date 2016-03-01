@@ -89,10 +89,10 @@ server.register(Vision, (err) => {
       },
       path: __dirname + '/lib/views',
       compileOptions: {
-        cache: true,
+        cache: false,
         pretty: false,
-        debug: true,
-        compileDebug: true
+        debug: false,
+        compileDebug: false
       }
     });
   }

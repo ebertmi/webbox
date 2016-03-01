@@ -21,7 +21,8 @@
             "isSecure": false,
             "appendNext": true
         },
-        "authAttempts": 7
+        "authAttempts": 7,
+        "validSignupEmailHosts": ["hs-coburg.de", "stud.hs-coburg.de"]
     },
     "database": {
         "host": "localhost",

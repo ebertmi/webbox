@@ -25,6 +25,7 @@
   "dependencies": {
     "Stickyfill": "github:wilddeer/stickyfill",
     "anchor-js": "^3.1.0",
+    "async": "^1.5.2",
     "babel-loader": "^6.2.4",
     "bcrypt": "^0.8.5",
     "blipp": "^2.3.0",

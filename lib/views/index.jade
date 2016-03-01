@@ -13,6 +13,9 @@ block content
           können ganze Manuskripte direkt im Browser gepflegt und aktualisiert werden. Alle Beispiele
           und Übungen können direkt im Browser ausprobiert und verändert werden.
 
+    if infoMessage
+      div.alert.alert-info
+        p= infoMessage
 
     if user.isAnonymous
       .row.auth
@@ -29,11 +32,11 @@ block content
         .col-sm-2.hidden-sm-down.divider.vertical
           p Oder
         .col-sm-5.col-xs-12
-          h2 Registierung
+          h2 Registrierung
           include ./includes/_signup.jade
     else
       p
-        | Angemeldet als #{user.name}
+        | Angemeldet als #{user.username}
 
     section
       h2 Image-Upload
