@@ -2,14 +2,14 @@ form(action="/signup", method="POST")
   input(type="hidden", name="crumb", value=crumb)
   fieldset.form-group
     label(for="su_email") Email-Adresse
-    input.form-control(type="email", id="su_email", placeholder="...@stud.hs-coburg.de")
+    input.form-control(type="email", name="email", id="su_email", placeholder="...@stud.hs-coburg.de")
     small.text-muted Bitte verwenden Sie zur Registrierung ihre Email-Adresse der Hochschule
   fieldset.form-group
     label(for="su_password") Passwort
-    input.form-control(placeholder="Passwort", type="password", id="su_password")
+    input.form-control(placeholder="Passwort", name="password", type="password", id="su_password")
   fieldset.form-group
     label(for="su_semester") Semester
-    select.form-control(id="su_semester", required)
+    select.form-control(id="su_semester", name="semester" ,required)
       option SS16
       option WS16
       option SS17

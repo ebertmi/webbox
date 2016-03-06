@@ -1,0 +1,18 @@
+{
+  "verbose": true,
+  "restartable": "rs",
+  "ignore": [
+    ".git",
+    "node_modules/**/node_modules",
+    ".vscode",
+    "bin",
+    "client"
+  ],
+  "ext": "js jade json",
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "execMap": {
+    "js": "node --harmony --harmony_destructuring"
+  }
+}

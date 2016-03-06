@@ -23,7 +23,12 @@
         },
         "authAttempts": 7,
         "validSignupEmailHosts": ["hs-coburg.de", "stud.hs-coburg.de"],
-        "verificationSecret": ""
+        "verificationSecret": "secret_verification_secret_for_webbox_email_signup_also_pretty_long!!"
+    },
+    "mail": {
+      "service": "SendGrid",
+      "user": "default",
+      "key": "default"
     },
     "database": {
         "host": "localhost",

@@ -7,15 +7,17 @@ block content
   .container
     .row
       section.col-sm-12
+        if infoMessage
+          div.alert.alert-info
+            p= infoMessage
+        if errorMessage
+          div.alert.alert-danger
+            p= errorMessage
         h1 Kurse zum Programmieren der Hochschule Coburg
         p.
           WebBox ermöglicht das Programmieren im Browser für jede Programmiersprache. Zusätzlich
           können ganze Manuskripte direkt im Browser gepflegt und aktualisiert werden. Alle Beispiele
           und Übungen können direkt im Browser ausprobiert und verändert werden.
-
-    if infoMessage
-      div.alert.alert-info
-        p= infoMessage
 
     if user.isAnonymous
       .row.auth
