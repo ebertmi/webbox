@@ -2,7 +2,7 @@
 Webbased editor powered by sourcebox
 
 ## Start server
-You can start a local dev server with: `$ NODE_ENV=development node webbox.js` or on windows with: 
+You can start a local dev server with: `$ NODE_ENV=development node webbox.js` or on windows with:
 ```cmd
 set NODE_ENV=development
 node webbox.js

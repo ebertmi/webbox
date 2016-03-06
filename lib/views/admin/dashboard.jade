@@ -1,0 +1,23 @@
+extends ../layout.jade
+
+block content
+  .container-fluid
+    .row
+      .col-md-2
+        ul.nav.nav-pills.nav-stacked
+          li.nav-item
+            a.nav-link(href="/dashboard") Übersicht
+          each model in models
+            li.nav-item
+              a.nav-link(href='/dashboard' + model.path) #{model.displayName}
+      .col-md-8
+        if errorMessage
+          .alert.alert-danger
+            p= errorMessage
+        if infoMessage
+          .alert.alert-info
+            p= infoMessage
+        if successMessage
+          .alert.alert-success
+            p= successMessage
+        block modelcontent

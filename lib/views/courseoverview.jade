@@ -5,9 +5,19 @@ block title
 
 block content
   .container
-      h1 Kurse
-      ul
-        each val in courses
-          li
-            a(href=path.course + val.slug) #{val.title}
+    .row
+      .col-md-12
+        h1 Kurse
+        div.card-deck-wrapper
+          div.card-deck
+            each val in courses
+              div.card.text-xs-center
+                div.card-header
+                  p Kurs
+                div.card-block
+                  h4.card-title #{val.title}
+                  p.card-text #{val.description}
+                  a.btn.btn-primary(href=path.course + val.slug) Anschauen
+                  p.card-text
+                    small.text-muted erstellt am #{val.createdAt}
 

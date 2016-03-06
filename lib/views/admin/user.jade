@@ -1,0 +1,16 @@
+extends ./dashboard.jade
+
+block modelcontent
+  - var userId = id || ''
+  h2
+    | Benutzer
+    small
+       &nbsp;
+      span.label.label-info  #{username}
+  form(action="/dashboard/user/" + userId, method="POST")
+    input(type="hidden", name="crumb", value=crumb)
+    fieldset.form-group
+      label(for="modelData") Benutzerdaten (JSON)
+      textarea.form-control(name="modelData", id="modelData", rows="15") #{user}
+    if userId != ''
+      button.btn.btn-success(type="submit") Speichern

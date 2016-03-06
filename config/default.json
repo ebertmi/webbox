@@ -11,7 +11,7 @@
         "compileOptions": {
             "isCached": false,
             "pretty": true,
-            "debug": false
+            "debug": true
         }
     },
     "auth": {
@@ -22,7 +22,8 @@
             "appendNext": true
         },
         "authAttempts": 7,
-        "validSignupEmailHosts": ["hs-coburg.de", "stud.hs-coburg.de"]
+        "validSignupEmailHosts": ["hs-coburg.de", "stud.hs-coburg.de"],
+        "verificationSecret": ""
     },
     "database": {
         "host": "localhost",

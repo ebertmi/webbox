@@ -90,7 +90,7 @@ server.register(Vision, (err) => {
       path: __dirname + '/lib/views',
       compileOptions: {
         cache: false,
-        pretty: false,
+        pretty: true,
         debug: false,
         compileDebug: false
       }
@@ -104,6 +104,25 @@ server.register(Inert, (err) => {
     console.log('inert', err);
   }
 });
+
+// register better error pages
+server.ext('onPreResponse', function (request, reply) {
+  if (request.response.isBoom) {
+    const err = request.response;
+    const errName = err.output.payload.error;
+    const statusCode = err.output.payload.statusCode;
+
+    return reply.view('errors/default', {
+      statusCode: statusCode,
+      errName: errName,
+      errorMessage: err
+    })
+    .code(statusCode);
+  }
+
+  reply.continue();
+});
+
 
 // register routes
 server.route(require('./lib/routes'));

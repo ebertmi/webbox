@@ -1,0 +1,16 @@
+extends ./dashboard.jade
+
+block modelcontent
+  - var embedId = id || ''
+  h2
+    | Kurs
+    small
+      &nbsp;
+      span.label.label-info  #{title}
+  form(action="/dashboard/embed/" + embedId, method="POST")
+    input(type="hidden", name="crumb", value=crumb)
+    fieldset.form-group
+      label(for="modelData") Kursdaten (JSON)
+      textarea.form-control(id="modelData", rows="15") #{embed}
+    if courseId != ''
+      button.btn.btn-success(type="submit") Speichern

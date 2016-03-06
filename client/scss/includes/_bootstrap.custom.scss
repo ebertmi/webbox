@@ -1,1 +1,27 @@
 $enable-rounded: false;
+
+// colors
+$brand-info: #1abc9c;
+$brand-primary: #3498db;
+$brand-success: #27ae60;
+$brand-warning: #e67e22;
+$brand-danger: #e74c3c;
+
+$gray-dark: #2c3e50;
+
+// Define colors for form feedback states and, by default, alerts.
+$state-success-text:             #ffffff !default;
+$state-success-bg:               #27ae60 !default;
+$state-success-border:           darken($state-success-bg, 5%) !default;
+
+$state-info-text:                #ffffff !default;
+$state-info-bg:                  #1abc9c !default;
+$state-info-border:              darken($state-info-bg, 7%) !default;
+
+$state-warning-text:             #ffffff !default;
+$state-warning-bg:               #e67e22 !default;
+$state-warning-border:           darken($state-warning-bg, 5%) !default;
+
+$state-danger-text:              #ffffff !default;
+$state-danger-bg:                #e74c3c !default;
+$state-danger-border:            darken($state-danger-bg, 5%) !default;

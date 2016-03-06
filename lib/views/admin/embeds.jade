@@ -1,0 +1,20 @@
+extends ./dashboard.jade
+
+block modelcontent
+  h2 Code-Beispiele
+  table.table.table-sm.table-striped
+    thead.thead-inverse
+      tr
+        th ID
+        th Titel
+        th Sprache
+        th Anschauen
+    tbody
+      each embed in embeds
+        tr
+          td
+            a(href="/dashboard/embed/" + embed.id) #{embed.id}
+          td= embed.title
+          td= embed.lang
+          td
+            a.btn.btn-info.btn-sm(href="/embed/" + embed.id, target="_blank") Anschauen
