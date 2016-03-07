@@ -8,13 +8,23 @@ block append styles
 block banner
   div
 
+block navbar-extra
+  div.nav-item.dropdown
+    a.nav-link.dropdown-toggle(data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false") Kurs #{title}
+    .dropdown-menu
+      a.dropdown-item.disabled(href="#", disabled) Kapitel
+      .dropdown-divider
+      each chapter in chapters
+        a.dropdown-item(href="#") #{chapter.title}
+
+
 block content
   .container
     .row
-      .col-md-3.col-md-push-9.nav-secondary
-        p Navigation links
+      .col-md-3.col-md-push-9
+        .wb-sidenav
+          h1 Übersicht
       .col-md-9.col-md-pull-3
-        h1= title
         .course!= content
         p= message
 

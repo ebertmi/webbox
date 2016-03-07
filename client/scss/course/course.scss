@@ -8,6 +8,7 @@ $fa-font-path: "//netdna.bootstrapcdn.com/font-awesome/4.5.0/fonts";
 @import "_notices.scss";
 @import "_anchor.scss";
 @import "_kbd.scss";
+@import "_sidebar.scss";
 
 .course {
   font-family: Merriweather, Georgia, "Times New Roman", serif;
@@ -17,16 +18,28 @@ $fa-font-path: "//netdna.bootstrapcdn.com/font-awesome/4.5.0/fonts";
   color: #444444;
 }
 
-.course h1 {
-  font-size: 2.61111em;
-  line-height: 1.26383em;
-  text-align: center;
+.course h1,
+.course h2,
+.course h3,
+.course h4,
+.course h5,
+.course h6 {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 300;
-  margin-bottom: 30px;
+  margin-bottom: 0.75em;
+
+  & > a {
+    text-decoration: none;
+    color: #444444;
+  }
+
+  & > a:hover {
+    text-decoration: none;
+  }
 }
 
 .course h2 {
-  margin-bottom: 20px;
+  margin-bottom: 0.5em;
 }
 
 .course  {
@@ -35,13 +48,15 @@ $fa-font-path: "//netdna.bootstrapcdn.com/font-awesome/4.5.0/fonts";
   }
 }
 
-.nav-secondary {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 0;
-}
-.nav-secondary:before,
-.nav-secondary:after {
-    content: '';
-    display: table;
+.dropdown-menu {
+  & .dropdown-item:hover,
+  & .dropdown-item:focus {
+    color: $state-info-bg;
+  }
+
+  & .dropdown-item.disabled:hover,
+  & .dropdown-item.disabled:focus {
+    background-color: transparent;
+    color: #444444;
+  }
 }

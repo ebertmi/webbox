@@ -22,6 +22,10 @@ html(lang="de")
                   img(src="/public/img/sourcebox.png", height="30", alt=" SourceBox")
                 a(class="nav-item nav-link", href="/") Startseite
                 a(class="nav-item nav-link", href="/courseoverview") Kurse
+                block navbar-extra
+                if !user.isAnonymous
+                  .pull-xs-right
+                    a(class="nav-item nav-link", href="/logout") Ausloggen
 
         block banner
           .wb-pageheader.hidden-print

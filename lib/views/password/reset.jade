@@ -1,0 +1,23 @@
+extends ../layout.jade
+
+block content
+  .container
+    .row
+      section.col-sm-12
+        if infoMessage
+          div.alert.alert-info
+            p= infoMessage
+        if errorMessage
+          div.alert.alert-danger
+            p= errorMessage
+
+        h1 Neues Passwort setzen
+        p.
+          Bitte geben Sie unten Ihr neues Passwort ein.
+
+        form(action="/reset", method="POST")
+          input(type="hidden", name="crumb", value=crumb)
+          input(type="hidden", name="token", value=token)
+          div.form-group
+            input.form-control(type="password", id="reset_password_input", name="password", placeholder="", required)
+          button.btn.btn-primary(type="submit") Speichern
