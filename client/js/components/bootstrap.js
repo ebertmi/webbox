@@ -58,12 +58,23 @@ export class Input extends React.Component {
       'has-error': bsStyle === 'error'
     });
 
+    let offsets;
+    if (this.grid && !this.props.label && this.props.labelClassName) {
+      offsets = this.props.labelClassName.split(' ').map(c => {
+        let match = c.match(/(col-\w{2})-(\d*)/);
+
+        if (match) {
+          return match[1] + '-offset-' + match[2];
+        }
+      });
+    }
+
     let muted = this.props.muted ? <small className="text-muted">{this.props.muted}</small> : null;
 
     return (
       <div className={classes}>
         {this.renderLabel()}
-        <div className={this.props.className}>
+        <div className={classNames(offsets, this.props.className)}>
           {this.renderInput()}
           {muted}
         </div>
@@ -80,3 +91,17 @@ Input.propTypes = {
   muted: React.PropTypes.string,
   bsStyle: React.PropTypes.oneOf(['success', 'warning', 'error'])
 };
+
+export class InputButton extends Input {
+  renderLabel() {
+
+  }
+
+  renderInput() {
+    let classes = classNames('btn', {
+      ['btn-' + this.props.bsStyle]: this.props.bsStyle
+    });
+
+    return <input {...this.props} type="button" className={classes}/>;
+  }
+}
