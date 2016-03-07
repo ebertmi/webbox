@@ -1,3 +1,8 @@
+/**
+ * Set bootstrap variables here
+ */
+
+// border
 $enable-rounded: false;
 
 // colors
@@ -25,3 +30,12 @@ $state-warning-border:           darken($state-warning-bg, 5%) !default;
 $state-danger-text:              #ffffff !default;
 $state-danger-bg:                #e74c3c !default;
 $state-danger-border:            darken($state-danger-bg, 5%) !default;
+
+@import "~bootstrap/scss/bootstrap-flex.scss";
+
+/**
+ * Start overriding bootstrap styles here
+ */
+.c-input {
+  display: inline-block;
+}
