@@ -11,6 +11,6 @@ block modelcontent
     input(type="hidden", name="crumb", value=crumb)
     fieldset.form-group
       label(for="modelData") Benutzerdaten (JSON)
-      textarea.form-control(name="modelData", id="modelData", rows="15") #{user}
+      textarea.form-control(name="modelData", id="modelData", rows="15") #{userData}
     if userId != ''
       button.btn.btn-success(type="submit") Speichern
