@@ -4,7 +4,8 @@
     "sourceType": "module",
     "ecmaFeatures": {
       "jsx": true,
-      "forOf": true
+      "forOf": true,
+      "experimentalObjectRestSpread": true
     }
   },
   "rules": {
