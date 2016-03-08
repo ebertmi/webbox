@@ -23,7 +23,14 @@
         },
         "authAttempts": 7,
         "validSignupEmailHosts": ["hs-coburg.de", "stud.hs-coburg.de"],
-        "verificationSecret": "secret_verification_secret_for_webbox_email_signup_also_pretty_long!!"
+        "verification": {
+          "secret": "secret_verification_secret_for_webbox_email_signup_also_pretty_long!!",
+          "issuer": "webbox",
+          "subject": "email-verification"
+        },
+        "resetPassword": {
+          "secret": "secret_reset_password_secret_for_webbox_forgot_password_function_for_users!!11!XD"
+        }
     },
     "mail": {
       "service": "SendGrid",
@@ -59,5 +66,35 @@
     "blibb": {
       "showStart": true,
       "showAuth": true
+    },
+    "messages": {
+      "registration": {
+        "emailAlreadyExists": "Es existiert bereits ein Benutzer mit dieser E-Mail-Adresse.",
+        "alreadyRegistered": "Sie sind bereits registriert und angemeldet!",
+        "emailNotAllowed": "E-Mail-Adresse nicht erlaubt. Bitte verwenden Sie die Adresse ihre Hochschule-Adresse.",
+        "verificationEmailSubject": "Webbox - Aktivierung Ihres Accounts.",
+        "verificationSendMessage": "Wir haben Ihnen eine E-Mail zur Verifikation zugeschickt. Sie sollten diese innerhalb der nächsten 10 Minuten erhalten. Bitte klicken Sie dort auf den Aktivierungslink, um die Registrierung abzuschließen.",
+        "verificationErrorMessage": "Es ist ein Fehler bei der Registrierung aufgetreten. Bitte versuchen Sie es erneut oder kontaktieren Sie uns.",
+        "confirmInvalidToken": "Der Aktivierungsschlüssel ist ungültig.",
+        "confirmSuccessMessage": "Aktivierung erfolgreich abgeschlossen. Sie können sich nun einloggen.",
+        "signedInErrorMessage": "Aktivierung fehlgeschlagen - Sie sind derzeit mit einem anderen Account eingeloggt. Loggen Sie sich bitte davor aus."
+      },
+      "resetPassword": {
+        "alreadySignedInMessage": "Sie sind bereits angemeldet. Wollen Sie wirklich ihr Passwort zurücksetzen?",
+        "noUserForThisEmail": "Es existiert kein Benutzer mit dieser E-Mail-Adresse.",
+        "forgotSendMessage": "Sie sollten innerhalb der nächsten 10 Minuten eine E-Mail mit weiteren Instruktionen erhalten.",
+        "forgotErrorMessage": "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
+        "forgotEmailSubject": "Webbox - Passwort zurücksetzen",
+        "invalidToken": "Der Schlüssel zum Zurücksetzen ist ungültig.",
+        "successMessage": "Das Passwort wurde zurückgesetzt. Sie können sich nun einloggen.",
+        "resetErrorMessage": "Es ist ein Fehler aufgetreten.  Bitte versuchen Sie es erneut."
+      },
+      "login": {
+        "unknownError": "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
+        "invalidCredentials": "Anmeldung fehlgeschlagen. Ungültiger Benutzername oder falsches Passwort."
+      },
+      "logout": {
+        "success": "Sie wurden abgemeldet."
+      }
     }
 }

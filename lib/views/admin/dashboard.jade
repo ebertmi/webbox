@@ -21,3 +21,23 @@ block content
           .alert.alert-success
             p= successMessage
         block modelcontent
+          h1 Letzte Vorgänge
+          table.table.table-sm.table-striped
+            thead.thead-inverse
+              tr
+                th Event
+                th Message
+                th Type
+                th Data
+                th Zeitpunkt
+                th ID
+            tbody
+              each log in logs
+                tr
+                  td= log.eventName
+                  td= log.eventMessage
+                  td
+                    span.label.label-default.label-roles #{log.eventType}
+                  td= JSON.stringify(log.eventData, null, 4)
+                  td= log.timeStamp
+                  td= log.id

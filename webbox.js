@@ -1,3 +1,4 @@
+'use strict';
 /* global __dirname */
 var Hapi = require('hapi');
 var Path = require('path');
@@ -107,6 +108,16 @@ server.register(Inert, (err) => {
 
 // register better error pages
 server.ext('onPreResponse', function (request, reply) {
+  let user;
+
+  if (request.pre.user === undefined) {
+    user = {
+      isAnonymous: true
+    };
+  } else {
+    user = request.pre.user;
+  }
+
   if (request.response.isBoom) {
     const err = request.response;
     const errName = err.output.payload.error;
@@ -115,7 +126,8 @@ server.ext('onPreResponse', function (request, reply) {
     return reply.view('errors/default', {
       statusCode: statusCode,
       errName: errName,
-      errorMessage: err
+      errorMessage: err,
+      user: user
     })
     .code(statusCode);
   }
