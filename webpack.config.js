@@ -23,6 +23,9 @@ module.exports = {
     extensions: ['', '.js', '.scss'],
     modulesDirectories: ['client', 'node_modules']
   },
+  externals: {
+    ace: true
+  },
   module: {
     loaders: [
       {
@@ -30,7 +33,8 @@ module.exports = {
         exclude: /node_modules/,
         loader: 'babel-loader',
         query: {
-          presets: ['es2015', 'react']
+          presets: ['es2015', 'react'],
+          plugins: ["transform-object-rest-spread"]
         }
       },
       {
@@ -41,6 +45,7 @@ module.exports = {
   },
   plugins: [commonsPlugin],
   node: {
+    Buffer: true,
     fs: 'empty' // needed for term.js
   },
   devtool: 'source-map'
