@@ -1,5 +1,8 @@
 require('scss/index');
 
+// polyfills
+import 'exports?fetch!whatwg-fetch/fetch';
+
 var Terminal = require('term.js');
 var Dropzone = require("dropzone");
 

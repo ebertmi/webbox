@@ -10,6 +10,7 @@ var commonsPlugin = new webpack.optimize.CommonsChunkPlugin('common.bundle.js');
 module.exports = {
   context: path.resolve(__dirname, 'client'),
   entry: {
+    dashboard: './js/dashboard.js',
     index: './js/index',
     embed: './js/embed',
     course: './js/course'

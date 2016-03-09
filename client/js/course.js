@@ -26,6 +26,3 @@ contents.eventEmitter().on('change', function (event) {
 
 // dropdown support
 import './util/dropdown.native';
-
-//let dd = new Dropdown(document.querySelectorAll('[data-toggle="dropdown"]')[0]);
-//dd.toggle();

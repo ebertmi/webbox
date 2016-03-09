@@ -37,6 +37,7 @@ logs
 
 # VS Code settings
 .vscode
+typings
 
 # media files should be ignored
 media
