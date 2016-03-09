@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/waywaaard/webbox#readme",
   "dependencies": {
+    "@sourcebox/web": "github:jhenninger/sourcebox-web",
     "Stickyfill": "github:wilddeer/stickyfill",
     "anchor-js": "^3.1.0",
     "async": "^1.5.2",

@@ -1,4 +1,5 @@
 {
+  "root": true,
   "parserOptions": {
     "ecmaVersion": 6,
     "sourceType": "module",
@@ -11,7 +12,10 @@
   "rules": {
     "semi": 2,
     "indent": [2, 2, { "SwitchCase": 1 }],
-    "no-unused-vars": 2
+    "no-unused-vars": 2,
+    "react": {
+      "prop-types": 0
+    }
   },
   "plugins": ["react"],
   "extends": ["eslint:recommended", "plugin:react/recommended"],
