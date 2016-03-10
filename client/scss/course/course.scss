@@ -38,7 +38,10 @@ $fa-font-path: "//netdna.bootstrapcdn.com/font-awesome/4.5.0/fonts";
 }
 
 .course h2 {
-  margin-bottom: 0.5em;
+  padding-bottom: .3em;
+  font-size: 1.75em;
+  line-height: 1.225;
+  border-bottom: 1px solid #eee;
 }
 
 .course  {

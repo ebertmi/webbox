@@ -42,7 +42,7 @@ class AdminApp extends Component {
         </div>
       </div>
     );
-  };
+  }
 }
 
 AdminApp.propTypes = {
@@ -50,7 +50,6 @@ AdminApp.propTypes = {
 };
 
 export default connect(state => {
-  console.log('AdminApp.connect.state', state);
   return { message: state.dashboardApp.message};
 },
 dispatch => bindActionCreators(AdminActions, dispatch))(AdminApp);

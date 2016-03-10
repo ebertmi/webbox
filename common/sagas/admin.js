@@ -1,21 +1,26 @@
-import { takeEvery, takeLatest } from 'redux-saga';
+import { takeLatest } from 'redux-saga';
 import { call, put } from 'redux-saga/effects';
-//import Api from '...';
+import * as adminTypes from '../constants/AdminActionTypes';
 
-// worker Saga : will be fired on USER_FETCH_REQUESTED actions
+import { API } from '../services';
+
+// worker Saga : will be fired on GET_USERS_REQUEST actions
 function* fetchUsers(action) {
+  console.log('adminsaga', 'fetchUsers', API);
   try {
-    const user = yield call(Api.fetchUser, action.payload.userId);
-    yield put({type: "USER_FETCH_SUCCEEDED", user: user});
+    const data = yield call(API.admin.getUsers, action.query);
+    console.log(data);
+    if (data.error) {
+      yield put({type: adminTypes.GET_USERS_FAILURE, message: data.error.message});
+    } else {
+      yield put({type: adminTypes.GET_USERS_SUCCESS, users: data.users});
+    }
   } catch (e) {
-    yield put({type: "USER_FETCH_FAILED",message: e.message});
+    yield put({type: adminTypes.GET_USERS_FAILURE, message: e.message});
   }
 }
 
-/*
-  starts fetchUser on each dispatched `USER_FETCH_REQUESTED` action
-  Allow concurrent fetches of user
-*/
 export default function* adminSaga() {
-  yield* [];
+  // avoid multiple fetching of the same data
+  yield* takeLatest(adminTypes.GET_USERS_REQUEST, fetchUsers);
 }

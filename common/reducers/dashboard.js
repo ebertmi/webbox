@@ -1,16 +1,30 @@
-import { LOAD_USERS_REQUEST } from '../constants/AdminActionTypes';
+import { GET_USERS_REQUEST, GET_USERS_SUCCESS, GET_USERS_FAILURE } from '../constants/AdminActionTypes';
 
 const initalState = {
   logs: [],
+  users: [],
   message: { },
-  isWorking: false
+  isFetching: false
 };
 
 export default function dashboard(state = initalState, action) {
   switch (action.type) {
-    case LOAD_USERS_REQUEST:
+    case GET_USERS_REQUEST:
       return Object.assign({}, state, {
-        isWorking: true,
+        isFetching: true
+      });
+    case GET_USERS_FAILURE:
+      return Object.assign({}, state, {
+        isFetching: false,
+        message: {
+          type: 'error',
+          content: action.message
+        }
+      });
+    case GET_USERS_SUCCESS:
+      return Object.assign({}, state, {
+        isFetching: false,
+        users: action.users
       });
     default:
       return state;
