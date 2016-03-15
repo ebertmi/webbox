@@ -1,10 +1,12 @@
-$fa-font-path: "//netdna.bootstrapcdn.com/font-awesome/4.5.0/fonts";
+$fa-font-path: "https://netdna.bootstrapcdn.com/font-awesome/4.5.0/fonts";
 @import "~font-awesome/scss/font-awesome.scss";
 @import "includes/_bootstrap.custom.scss";
 @import "includes/_layout.scss";
 @import "includes/_mediaupload.scss";
 
 @import "includes/_divider.scss";
+
+@import "ide/ide";
 
 section {
   margin-bottom: 1.5rem;
