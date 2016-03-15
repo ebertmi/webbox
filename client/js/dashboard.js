@@ -7,7 +7,7 @@ import { Router, browserHistory } from 'react-router';
 
 // own modules
 import configureStore from '../../common/store/configureStore';
-import adminRoutes from '../../common/route/adminRoutes';
+import adminRoutes from '../../common/route/AdminRoutes';
 
 // Styles
 import '../scss/index.scss';
