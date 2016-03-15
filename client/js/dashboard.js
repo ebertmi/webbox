@@ -1,5 +1,7 @@
 // modules
 import 'babel-polyfill';
+import 'exports?fetch!whatwg-fetch/fetch';
+
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';

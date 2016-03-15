@@ -1,4 +1,5 @@
 import React from 'react';
+import JSONTree from 'react-json-tree'
 import {Time} from '../Time';
 
 const labelClassNameMap = {
@@ -24,7 +25,7 @@ export function LogTableRow (props) {
       <td>
         <span className={labelClassName}>{props.data.eventType}</span>
       </td>
-      <td>{JSON.stringify(props.data.eventData, null, 4)}</td>
+      <td><JSONTree hideRoot={true} data={ props.data.eventData } /></td>
       <td>
         <Time value={props.data.timeStamp} locale="de" relative={true}/>
       </td>
