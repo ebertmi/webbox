@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import {LogTableRow } from '../../components/LogTableRow';
+import {LogTableRow } from '../../components/admin/LogTableRow';
 import * as AdminActions from '../../actions/AdminActions';
 
 class LogOverview extends Component {

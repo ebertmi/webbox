@@ -12,6 +12,20 @@ export function checkStatus(response) {
   }
 }
 
+// common network problem error
+const NETWORK_ERROR = new Error('Netzwerkfehler - die Anfrage konnte nicht abgeschlossen werden.');
+const AUTHORISATION_ERROR = new Error('Nicht angemeldet - Anscheinend ist ihre Session abgelaufen. Bitte laden Sie die Seite neu.');
+
+export function commonErrorHandler(err) {
+  console.log(err, '');
+  // check if we need to redirect
+  if (err.response.status === 401) {
+    throw AUTHORISATION_ERROR;
+  }
+
+  throw NETWORK_ERROR;
+}
+
 /**
  * Get the cookie for the given key
  *

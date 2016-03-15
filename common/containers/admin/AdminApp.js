@@ -5,11 +5,12 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import { Link, IndexLink  } from 'react-router';
 
+import { Alert } from '../../components/Alert';
 import * as AdminActions from '../../actions/AdminActions';
 
 class AdminApp extends Component {
   renderMessage() {
-
+    return this.props.message != null ? <Alert type={this.props.message.type} message={this.props.message.content} /> : null;
   }
 
   render () {
@@ -35,8 +36,10 @@ class AdminApp extends Component {
               </li>
             </ul>
           </div>
-          <div className="col-md-8">
-            <h1>Admin Dashboard with React</h1>
+          <div className="col-md-9">
+            { this.renderMessage() }
+            <h1>Admin Dashboard</h1>
+            <hr />
             {this.props.children}
           </div>
         </div>
@@ -44,10 +47,6 @@ class AdminApp extends Component {
     );
   }
 }
-
-AdminApp.propTypes = {
-  error: React.PropTypes.any
-};
 
 export default connect(state => {
   return { message: state.dashboardApp.message};

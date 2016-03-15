@@ -4,7 +4,12 @@ $fa-font-path: "//netdna.bootstrapcdn.com/font-awesome/4.5.0/fonts";
 @import "includes/_layout.scss";
 @import "includes/_mediaupload.scss";
 
+$primary-color: $brand-info;
+$line-height: 1.5rem;
+@import '~loaders.css/src/animations/line-scale.scss';
 @import "includes/_divider.scss";
+@import "includes/_tagged_input.scss";
+@import "includes/_animations.scss";
 
 section {
   margin-bottom: 1.5rem;
@@ -15,4 +20,45 @@ media-breakpoint-down(xs) {
   .auth .col-xs.12 {
     margin-bottom: 1.5rem;
   }
+}
+
+// form button fixes
+form .btn {
+  margin-right: 1em;
+}
+
+.form-footer {
+  padding: 1em;
+  border-top: 1px solid #e5e5e5;
+
+  & p {
+    margin-right: 1em;
+  }
+}
+
+
+.loader {
+  box-sizing: border-box;
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: 25%;
+  max-width: 25%;
+  height: 200px;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-hidden {
+  display: none;
+}
+.loader-active {
+  display: flex;
+  align-items: center;
+}
+
+.card-deck-wrapper .card {
+  max-width: 20em;
 }

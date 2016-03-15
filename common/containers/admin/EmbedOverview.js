@@ -2,34 +2,35 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import {UserTableRow} from '../../components/admin/UserTableRow';
+import {EmbedTableRow} from '../../components/admin/EmbedTableRow';
 import * as AdminActions from '../../actions/AdminActions';
 
 class UserOverview extends Component {
   componentDidMount() {
-    // fetch users from server
-    this.props.requestUsers(this.props.userOverview.usersQuery.page, this.props.userOverview.usersQuery.limit);
+    // fetch embeds from server
+    this.props.requestEmbeds(this.props.embedOverview.embedsQuery.page, this.props.embedOverview.embedsQuery.limit);
   }
+
 
   render () {
     return (
       <div>
-        <h2>Benutzer</h2>
+        <h2>Codebeispiele</h2>
         <table className="table table-sm tabl-striped">
           <thead className="thead-inverse">
             <tr>
               <th>Id</th>
-              <th>E-Mail-Adresse</th>
-              <th>Aktiviert</th>
-              <th>Semester</th>
-              <th>Letzer Login</th>
-              <th>Verifiziert</th>
-              <th>Rollen</th>
+              <th>Titel</th>
+              <th>Sprache</th>
+              <th>Autor</th>
+              <th>Erstellt am</th>
+              <th>Zuletzt verändert am</th>
+              <th>URL</th>
             </tr>
           </thead>
           <tbody>
-            {this.props.userOverview.users.map((user, index) => {
-              return <UserTableRow key={index} data={user}/>;
+            {this.props.embedOverview.embeds.map((course, index) => {
+              return <EmbedTableRow key={index} data={course}/>;
             })}
           </tbody>
         </table>
@@ -39,7 +40,7 @@ class UserOverview extends Component {
 }
 
 export default connect(state => ({
-  userOverview: state.userOverview
+  embedOverview: state.embedOverview
 }),
   dispatch => bindActionCreators(AdminActions, dispatch)
 )(UserOverview);

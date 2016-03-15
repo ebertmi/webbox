@@ -9,6 +9,7 @@ export class Time extends React.Component {
   render() {
     let value = this.props.value;
     let locale = this.props.locale;
+    let invalidDateString = this.props.invalidDateString;
     let relative = this.props.relative;
     let format = this.props.format;
     let valueFormat = this.props.valueFormat;
@@ -16,8 +17,9 @@ export class Time extends React.Component {
     let Component = this.props.Component;
     let props = this.props;
 
-    if (!value) {
-      return <span>Invalid date</span>;
+    if (!value || value === null) {
+      const invalidDateText = invalidDateString ? invalidDateString : 'Invalid Date';
+      return <span>{invalidDateText}</span>;
     }
 
     if (!moment.isMoment(value)) {
@@ -28,7 +30,7 @@ export class Time extends React.Component {
       value = value.locale(locale);
     }
 
-    let machineReadable = value.format('YYYY-MM-DDTHH:mm:ssZ');
+    let machineReadable = value.format('DD-MM-YYYYTHH:mm:ssZ');
 
     if (relative || format) {
       let humanReadable = relative ? value.fromNow() : value.format(format);
@@ -55,7 +57,7 @@ Time.propTypes = {
     PropTypes.instanceOf(Date),
     PropTypes.number,
     PropTypes.string
-  ]).isRequired,
+  ]),
 
   /**
    * If component should output the relative time difference between now and
@@ -85,12 +87,18 @@ Time.propTypes = {
   locale: PropTypes.string,
 
   /**
+   * Change the invalid date string for the set locale
+   */
+  invalidDateString: PropTypes.string,
+
+  /**
    * Component to use.
    */
   Component: PropTypes.oneOfType([PropTypes.string, PropTypes.func])
 };
 
 Time.defaultProps = {
+  value: null,
   titleFormat: 'YYYY-MM-DD HH:mm',
   Component: 'time'
 };

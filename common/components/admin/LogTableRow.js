@@ -1,5 +1,5 @@
 import React from 'react';
-import {Time} from './Time';
+import {Time} from '../Time';
 
 const labelClassNameMap = {
   error: 'label-danger',

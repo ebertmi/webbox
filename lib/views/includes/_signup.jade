@@ -6,7 +6,8 @@ form(action="/signup", method="POST")
     small.text-muted Bitte verwenden Sie zur Registrierung ihre Email-Adresse der Hochschule
   fieldset.form-group
     label(for="su_password") Passwort
-    input.form-control(placeholder="Passwort", name="password", type="password", id="su_password")
+    input.form-control(placeholder="Passwort", name="password", type="password", id="su_password", minlength=6, required)
+    p.text-muted Mindestens 6 Zeichen lang!
   fieldset.form-group
     label(for="su_semester") Semester
     select.form-control(id="su_semester", name="semester" ,required)

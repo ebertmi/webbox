@@ -1,30 +1,35 @@
-import { GET_USERS_REQUEST, GET_USERS_SUCCESS, GET_USERS_FAILURE } from '../constants/AdminActionTypes';
+import * as adminTypes from '../constants/AdminActionTypes';
 
 const initalState = {
   logs: [],
-  users: [],
-  message: { },
+  message: null,
   isFetching: false
 };
 
 export default function dashboard(state = initalState, action) {
   switch (action.type) {
-    case GET_USERS_REQUEST:
+    case adminTypes.DELETE_USER_FAILURE:
+    case adminTypes.SAVE_USER_FAILURE:
+    case adminTypes.GET_USER_FAILURE:
+    case adminTypes.GET_USERS_FAILURE:
+    case adminTypes.GET_EMBEDS_FAILURE:
+    case adminTypes.GET_COURSES_FAILURE:
       return Object.assign({}, state, {
-        isFetching: true
-      });
-    case GET_USERS_FAILURE:
-      return Object.assign({}, state, {
-        isFetching: false,
         message: {
           type: 'error',
           content: action.message
         }
       });
-    case GET_USERS_SUCCESS:
+    case adminTypes.SAVE_USER_SUCCESS:
       return Object.assign({}, state, {
-        isFetching: false,
-        users: action.users
+        message: {
+          type: 'success',
+          content: 'Gespeichert!'
+        }
+      });
+    case adminTypes.RESET_MESSAGE:
+      return Object.assign({}, state, {
+        message: null
       });
     default:
       return state;

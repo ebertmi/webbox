@@ -1,6 +1,35 @@
 /**
  * Action Types for Admin Dashboard
  */
+export const RESET_MESSAGE = 'RESET_MESSAGE';
+
+/**
+ * Admin/user action types
+ */
 export const GET_USERS_REQUEST = 'GET_USERS_REQUEST';
 export const GET_USERS_SUCCESS = 'GET_USERS_SUCCESS';
 export const GET_USERS_FAILURE = 'GET_USERS_FAILURE';
+export const GET_USER_FAILURE = 'GET_USER_FAILURE';
+export const GET_USER_SUCCESS = 'GET_USER_SUCCESS';
+export const GET_USER_REQUEST = 'GET_USER_REQUEST';
+export const CHANGE_USER_FORMDATA = 'CHANGE_USER_FORMDATA';
+export const SAVE_USER_REQUEST = 'SAVE_USER_REQUEST';
+export const SAVE_USER_SUCCESS = 'SAVE_USER_SUCCESS';
+export const SAVE_USER_FAILURE = 'SAVE_USER_FAILURE';
+export const DELETE_USER_REQUEST = 'DELETE_USER_REQUEST';
+export const DELETE_USER_SUCCESS = 'DELETE_USER_SUCCESS';
+export const DELETE_USERFAILURE = 'DELETE_USER_FAILURE';
+
+/**
+ * Admin/embed action types
+ */
+export const GET_EMBEDS_REQUEST = 'GET_EMBEDS_REQUEST';
+export const GET_EMBEDS_SUCCESS = 'GET_EMBEDS_SUCCESS';
+export const GET_EMBEDS_FAILURE = 'GET_EMBEDS_FAILURE';
+
+/**
+ * Admin/course action types
+ */
+export const GET_COURSES_REQUEST = 'GET_COURSES_REQUEST';
+export const GET_COURSES_SUCCESS = 'GET_COURSES_SUCCESS';
+export const GET_COURSES_FAILURE = 'GET_COURSES_FAILURE';

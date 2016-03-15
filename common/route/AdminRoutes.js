@@ -5,13 +5,16 @@ import AdminApp from '../containers/admin/AdminApp';
 import UserOverview from '../containers/admin/UserOverview';
 import CourseOverview from '../containers/admin/CourseOverview';
 import LogOverview from '../containers/admin/LogOverview';
+import EmbedOverview from '../containers/admin/EmbedOverview';
+import User from '../components/admin/User';
 
 export default (
   <Route path='/admin' component={AdminApp}>
-    <IndexRoute components={LogOverview} />
-    <Route path='/admin/users' components={UserOverview} />
-    <Route path='/admin/courses' components={CourseOverview} />
-    <Route path='/admin/embeds' components={CourseOverview} />
-    <Route path='/admin/authattempts' components={CourseOverview} />
+    <IndexRoute component={LogOverview} />
+    <Route path='/admin/users' component={UserOverview} />
+    <Route path='/admin/user/:id' component={User} />
+    <Route path='/admin/courses' component={CourseOverview} />
+    <Route path='/admin/embeds' component={EmbedOverview} />
+    <Route path='/admin/authattempts' component={CourseOverview} />
   </Route>
 );

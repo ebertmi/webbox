@@ -77,7 +77,8 @@
         "verificationErrorMessage": "Es ist ein Fehler bei der Registrierung aufgetreten. Bitte versuchen Sie es erneut oder kontaktieren Sie uns.",
         "confirmInvalidToken": "Der Aktivierungsschlüssel ist ungültig.",
         "confirmSuccessMessage": "Aktivierung erfolgreich abgeschlossen. Sie können sich nun einloggen.",
-        "signedInErrorMessage": "Aktivierung fehlgeschlagen - Sie sind derzeit mit einem anderen Account eingeloggt. Loggen Sie sich bitte davor aus."
+        "signedInErrorMessage": "Aktivierung fehlgeschlagen - Sie sind derzeit mit einem anderen Account eingeloggt. Loggen Sie sich bitte davor aus.",
+        "validationErrorMessage": "Bitte füllen Sie das Formular komplett aus. Das Passwort sollte mindestens 6 Zeichen lang sein."
       },
       "resetPassword": {
         "alreadySignedInMessage": "Sie sind bereits angemeldet. Wollen Sie wirklich ihr Passwort zurücksetzen?",
