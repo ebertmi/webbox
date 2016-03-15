@@ -25,4 +25,10 @@ contents.eventEmitter().on('change', function (event) {
 });
 
 // dropdown support
-import './util/dropdown.native';
+import Dropdown from '../../common/util/dropdown.native';
+// DROPDOWN DATA API
+// =================
+var Dropdowns = document.querySelectorAll('[data-toggle=dropdown]'), i = 0, ddl = Dropdowns.length;
+for (i; i < ddl; i++) {
+  new Dropdown(Dropdowns[i]);
+}

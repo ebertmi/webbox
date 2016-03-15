@@ -1,7 +1,7 @@
 import React from 'react';
 
-import Icon from './icon';
-import {Nav, NavItem, NavDropdown, DropdownItem, DropdownDivider} from './bootstrap';
+import Icon from '../icon';
+import {Nav, NavItem, NavDropdown, DropdownItem, DropdownDivider} from '../bootstrap';
 
 class Tab extends React.Component {
   render() {

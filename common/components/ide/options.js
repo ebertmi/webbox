@@ -1,7 +1,7 @@
 import React from 'react';
 import Ace from 'ace';
 
-import {Input} from './bootstrap';
+import {Input} from '../bootstrap';
 
 export default class Options extends React.Component {
   componentWillMount() {
