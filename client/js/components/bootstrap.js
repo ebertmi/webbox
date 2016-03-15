@@ -3,6 +3,75 @@
 import React from 'react';
 import classNames from 'classnames';
 
+import Dropdown from '../util/dropdown.native';
+
+// navs and menus
+
+export function Nav(props) {
+  let classes = classNames('nav', {
+    [`nav-${props.bsStyle}`]: props.bsStyle
+  }, props.className);
+
+  return (
+    <nav className={classes}>
+      {props.children}
+    </nav>
+  );
+}
+
+export function NavItem(props) {
+  let classes = classNames('nav-item nav-link', {
+    active: props.active
+  });
+
+  return (
+    <a {...props} href={props.href || '#'} className={classes}>
+      {props.children}
+    </a>
+  );
+}
+
+export function DropdownItem(props) {
+  return (
+    <a {...props} className="dropdown-item" href={props.href || '#'}>
+      {props.children}
+    </a>
+  );
+}
+
+export function DropdownDivider() {
+  return <div className="dropdown-divider"/>;
+}
+
+export class NavDropdown extends React.Component {
+  componentDidMount() {
+    new Dropdown(this.a);
+  }
+
+  render() {
+    let itemClasses = classNames('nav-item dropdown', {
+      'pull-xs-right': this.props.right
+    });
+
+    let menuClasses = classNames('dropdown-menu', {
+      'dropdown-menu-right': this.props.right
+    });
+
+    return (
+      <div href='#' className={itemClasses}>
+        <a className="nav-link" href="#" ref={a => this.a = a}>
+          {this.props.title}
+        </a>
+        <nav className={menuClasses}>
+          {this.props.children}
+        </nav>
+      </div>
+    );
+  }
+}
+
+// forms & inputs
+
 export class Input extends React.Component {
   isCheckbox() {
     return this.props.type === 'checkbox';
@@ -24,7 +93,7 @@ export class Input extends React.Component {
         return <textarea {...this.props} className="form-control" ref={input => this.input = input}/>;
       case 'select':
         return (
-          <select {...this.props} className='form-control c-select' ref={input => this.input = input}>
+          <select {...this.props} className="form-control c-select" ref={input => this.input = input}>
             {this.props.children}
           </select>
         );
