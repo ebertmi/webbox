@@ -19,7 +19,7 @@ const AUTHORISATION_ERROR = new Error('Nicht angemeldet - Anscheinend ist ihre S
 export function commonErrorHandler(err) {
   console.log(err, '');
   // check if we need to redirect
-  if (err.response.status === 401) {
+  if (err.response && err.response.status === 401) {
     throw AUTHORISATION_ERROR;
   }
 

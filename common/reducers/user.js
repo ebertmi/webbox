@@ -1,17 +1,18 @@
 import * as adminTypes from '../constants/AdminActionTypes';
 
-const initalState = {
+export const INITIAL_USER_STATE = {
   users: [],
   user: null,
-  usersQuery: {
+  pages: 1,
+  pagesQuery: {
     page: 1,
-    limit: 10
+    limit: 15
   },
   filter: null,
   isFetching: false
 };
 
-export default function dashboard(state = initalState, action) {
+export default function user(state = INITIAL_USER_STATE, action) {
   switch (action.type) {
     case adminTypes.GET_USERS_REQUEST:
       return Object.assign({}, state, {
@@ -24,7 +25,8 @@ export default function dashboard(state = initalState, action) {
     case adminTypes.GET_USERS_SUCCESS:
       return Object.assign({}, state, {
         isFetching: false,
-        users: action.users
+        users: action.users,
+        pages: action.pages || 1
       });
     case adminTypes.GET_USER_SUCCESS:
       return Object.assign({}, state, {
@@ -46,11 +48,7 @@ export default function dashboard(state = initalState, action) {
     case adminTypes.SAVE_USER_SUCCESS:
       return Object.assign({}, state, {
         isFetching: false,
-        user: action.user,
-        message: {
-          type: 'success',
-          content: 'Gespeichert!'
-        }
+        user: action.user
       });
     case adminTypes.SAVE_USER_REQUEST:
       return Object.assign({}, state, {
@@ -74,6 +72,20 @@ export default function dashboard(state = initalState, action) {
     case adminTypes.DELETE_USER_FAILURE:
       return Object.assign({}, state, {
         isFetching: false
+      });
+    case adminTypes.CHANGE_USERS_PAGE:
+      return Object.assign({}, state, {
+        pagesQuery: {
+          page: action.page,
+          limit: state.pagesQuery.limit
+        }
+      });
+    case adminTypes.CHANGE_USERS_LIMIT:
+      return Object.assign({}, state, {
+        pagesQuery: {
+          page: state.pagesQuery.page,
+          limit: action.limit
+        }
       });
     default:
       return state;

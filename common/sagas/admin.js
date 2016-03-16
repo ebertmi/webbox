@@ -1,6 +1,5 @@
 import { takeLatest } from 'redux-saga';
 import { call, put, fork } from 'redux-saga/effects';
-
 import * as adminTypes from '../constants/AdminActionTypes';
 import { API } from '../services';
 
@@ -15,7 +14,7 @@ function* fetchUsers (action) {
     if (data.error) {
       yield put({type: adminTypes.GET_USERS_FAILURE, message: data.error.message});
     } else {
-      yield put({type: adminTypes.GET_USERS_SUCCESS, users: data.users});
+      yield put({type: adminTypes.GET_USERS_SUCCESS, users: data.users, pages: data.pages});
     }
   } catch (e) {
     yield put({type: adminTypes.GET_USERS_FAILURE, message: e.message});
@@ -104,7 +103,7 @@ function* fetchCourses (action) {
     if (data.error) {
       yield put({type: adminTypes.GET_COURSES_FAILURE, message: data.error.message});
     } else {
-      yield put({type: adminTypes.GET_COURSES_SUCCESS, courses: data.courses});
+      yield put({type: adminTypes.GET_COURSES_SUCCESS, courses: data.courses, pages: data.pages});
     }
   } catch (e) {
     yield put({type: adminTypes.GET_COURSES_FAILURE, message: e.message});
@@ -128,7 +127,7 @@ function* fetchEmbeds (action) {
     if (data.error) {
       yield put({type: adminTypes.GET_EMBEDS_FAILURE, message: data.error.message});
     } else {
-      yield put({type: adminTypes.GET_EMBEDS_SUCCESS, embeds: data.embeds});
+      yield put({type: adminTypes.GET_EMBEDS_SUCCESS, embeds: data.embeds, pages: data.pages});
     }
   } catch (e) {
     yield put({type: adminTypes.GET_EMBEDS_FAILURE, message: e.message});
@@ -139,6 +138,54 @@ function* watchGetEmbeds() {
   yield* takeLatest(adminTypes.GET_EMBEDS_REQUEST, fetchEmbeds);
 }
 
+/**
+ * Log fetching...
+ */
+function* fetchLogs (action) {
+  try {
+    // reset notification message
+    yield put({ type: adminTypes.RESET_MESSAGE });
+
+    const data = yield call(API.admin.getLogs, action.query);
+
+    if (data.error) {
+      yield put({type: adminTypes.GET_LOGS_FAILURE, message: data.error.message});
+    } else {
+      yield put({type: adminTypes.GET_LOGS_SUCCESS, logs: data.logs, pages: data.pages});
+    }
+  } catch (e) {
+    yield put({type: adminTypes.GET_LOGS_FAILURE, message: e.message});
+  }
+}
+
+function* watchGetLogs() {
+  yield* takeLatest(adminTypes.GET_LOGS_REQUEST, fetchLogs);
+}
+
+/**
+ * Log fetching...
+ */
+function* fetchAuthAttempts (action) {
+  try {
+    // reset notification message
+    yield put({ type: adminTypes.RESET_MESSAGE });
+
+    const data = yield call(API.admin.getAuthAttempts, action.query);
+
+    if (data.error) {
+      yield put({type: adminTypes.GET_AUTHATTEMPTS_FAILURE, message: data.error.message});
+    } else {
+      yield put({type: adminTypes.GET_AUTHATTEMPTS_SUCCESS, attempts: data.attempts, pages: data.pages});
+    }
+  } catch (e) {
+    yield put({type: adminTypes.GET_AUTHATTEMPTS_FAILURE, message: e.message});
+  }
+}
+
+function* watchGetAuthAttempts() {
+  yield* takeLatest(adminTypes.GET_AUTHATTEMPTS_REQUEST, fetchAuthAttempts);
+}
+
 export default function* adminSaga () {
   // avoid multiple fetching of the same data
   yield [
@@ -147,6 +194,8 @@ export default function* adminSaga () {
     fork(watchGetUsers),
     fork(watchDeleteUser),
     fork(watchGetEmbeds),
-    fork(watchGetCourses)
+    fork(watchGetCourses),
+    fork(watchGetLogs),
+    fork(watchGetAuthAttempts)
   ];
 }

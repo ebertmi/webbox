@@ -4,42 +4,40 @@ import { bindActionCreators } from 'redux';
 
 import { PaginationContainer } from '../PaginationContainer';
 import { LoadingContainer } from '../LoadingContainer';
-import {LogTableRow } from '../../components/admin/LogTableRow';
+import { AuthAttemptTableRow } from '../../components/admin/AuthAttemptTableRow';
 import * as AdminActions from '../../actions/AdminActions';
 
-class LogOverview extends Component {
-  renderTable() {
+class AuthAttemptOverview extends Component {
+  renderTable () {
     return (
       <table className="table table-sm tabl-striped">
         <thead className="thead-inverse">
           <tr>
-            <th>Event</th>
-            <th>Nachricht</th>
-            <th>Typ</th>
-            <th>Zusätzliche Daten</th>
+            <th>Benutzer</th>
+            <th>IP</th>
             <th>Zeitpunkt</th>
+            <th>ID</th>
           </tr>
         </thead>
         <tbody>
-          {this.props.logOverview.logs.map((log, index) => {
-            return <LogTableRow key={index} data={log} />;
+          {this.props.authAttemptOverview.attempts.map((attempt, index) => {
+            return <AuthAttemptTableRow key={index} data={attempt}/>;
           })}
         </tbody>
-      </table>
-    );
+      </table>);
   }
 
   render () {
     const content = this.renderTable();
     return (
       <PaginationContainer
-          changePage={this.props.changeLogsPage}
-          requestPage={this.props.requestLogsPage}
-          pages={this.props.logOverview.pages}
-          pagesQuery={this.props.logOverview.pagesQuery}
+          changePage={this.props.changeAuthAttemptsPage}
+          requestPage={this.props.requestAuthAttemptsPage}
+          pages={this.props.authAttemptOverview.pages}
+          pagesQuery={this.props.authAttemptOverview.pagesQuery}
           location={this.props.location}>
-        <h2>Letzte Änderungen</h2>
-        <LoadingContainer isLoading={this.props.logOverview.isFetching}>
+        <h2>Auffällige Loginversuche</h2>
+        <LoadingContainer isLoading={this.props.authAttemptOverview.isFetching}>
           {content}
         </LoadingContainer>
       </PaginationContainer>
@@ -48,7 +46,7 @@ class LogOverview extends Component {
 }
 
 export default connect(state => ({
-  logOverview: state.logOverview
+  authAttemptOverview: state.authAttemptOverview
 }),
   dispatch => bindActionCreators(AdminActions, dispatch)
-)(LogOverview);
+)(AuthAttemptOverview);

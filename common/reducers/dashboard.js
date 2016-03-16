@@ -1,12 +1,11 @@
 import * as adminTypes from '../constants/AdminActionTypes';
 
-const initalState = {
-  logs: [],
+export const INITIAL_DASHBOARD_STATE = {
   message: null,
   isFetching: false
 };
 
-export default function dashboard(state = initalState, action) {
+export default function dashboard(state = INITIAL_DASHBOARD_STATE, action) {
   switch (action.type) {
     case adminTypes.DELETE_USER_FAILURE:
     case adminTypes.SAVE_USER_FAILURE:
@@ -14,6 +13,7 @@ export default function dashboard(state = initalState, action) {
     case adminTypes.GET_USERS_FAILURE:
     case adminTypes.GET_EMBEDS_FAILURE:
     case adminTypes.GET_COURSES_FAILURE:
+    case adminTypes.GET_AUTHATTEMPTS_FAILURE:
       return Object.assign({}, state, {
         message: {
           type: 'error',

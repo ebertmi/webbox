@@ -2,21 +2,15 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import { PaginationContainer } from '../PaginationContainer';
+import { LoadingContainer } from '../LoadingContainer';
 import {CourseTableRow} from '../../components/admin/CourseTableRow';
 import * as AdminActions from '../../actions/AdminActions';
 
 class UserOverview extends Component {
-  componentDidMount() {
-    // fetch courses from server
-    this.props.requestCourses(this.props.courseOverview.coursesQuery.page, this.props.courseOverview.coursesQuery.limit);
-  }
-
-
-  render () {
+  renderTable () {
     return (
-      <div>
-        <h2>Kursübersicht</h2>
-        <table className="table table-sm tabl-striped">
+      <table className="table table-sm tabl-striped">
           <thead className="thead-inverse">
             <tr>
               <th>Titel</th>
@@ -33,8 +27,23 @@ class UserOverview extends Component {
               return <CourseTableRow key={index} data={course}/>;
             })}
           </tbody>
-        </table>
-      </div>
+        </table>);
+  }
+
+  render () {
+    const content = this.renderTable();
+    return (
+      <PaginationContainer
+          changePage={this.props.changeCoursesPage}
+          requestPage={this.props.requestCoursesPage}
+          pages={this.props.courseOverview.pages}
+          pagesQuery={this.props.courseOverview.pagesQuery}
+          location={this.props.location}>
+        <h2>Codebeispiele</h2>
+        <LoadingContainer isLoading={this.props.courseOverview.isFetching}>
+          {content}
+        </LoadingContainer>
+      </PaginationContainer>
     );
   }
 }

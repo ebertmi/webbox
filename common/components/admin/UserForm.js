@@ -7,11 +7,11 @@ import TaggedInput from '../TaggedInput';
  * The UserForm Component displays a user and allows to edit the user data.
  */
 export class UserForm extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
   }
 
-  componentWillMount() {
+  componentWillMount () {
     this.setState(UserForm.getInitialState());
   }
 

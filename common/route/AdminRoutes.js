@@ -6,6 +6,7 @@ import UserOverview from '../containers/admin/UserOverview';
 import CourseOverview from '../containers/admin/CourseOverview';
 import LogOverview from '../containers/admin/LogOverview';
 import EmbedOverview from '../containers/admin/EmbedOverview';
+import AuthAttemptOverview from '../containers/admin/AuthAttemptOverview';
 import User from '../components/admin/User';
 
 export default (
@@ -15,6 +16,6 @@ export default (
     <Route path='/admin/user/:id' component={User} />
     <Route path='/admin/courses' component={CourseOverview} />
     <Route path='/admin/embeds' component={EmbedOverview} />
-    <Route path='/admin/authattempts' component={CourseOverview} />
+    <Route path='/admin/authattempts' component={AuthAttemptOverview} />
   </Route>
 );

@@ -36,11 +36,11 @@ class User extends Component {
       this.props.getUser(this.props.params.id);
     }
   }
-  renderUser() {
+  renderUser () {
     return <UserForm save={this.props.saveUser} delete={this.props.deleteUser} onChange={this.props.updateUserForm} user={this.props.userOverview.user} />;
   }
 
-  renderLoader() {
+  renderLoader () {
     return <Loader type="line-scale" />;
   }
 
