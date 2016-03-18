@@ -10,15 +10,11 @@ import { Pagination } from '../components/Pagination';
  * in state.
  */
 export class PaginationContainer extends Component {
-  pushPageQuery(page, limit, q='') {
+  pushPageQuery(query) {
     // add to history
     browserHistory.push({
       pathname: this.props.location.pathname,
-      query: {
-        limit,
-        page,
-        q
-      },
+      query: query,
       state: this.props.location.state
     });
   }
@@ -26,22 +22,12 @@ export class PaginationContainer extends Component {
   componentDidMount() {
     // get query params
     let { query } = this.props.location;
-    let {limit, page, q } = this.props.pagesQuery;
 
-    if (query.page) {
-      page = query.page;
-    }
+    // generic query param updating
+    query = Object.assign({}, this.props.pagesQuery, query);
 
-    if (query.limit) {
-      limit = query.limit;
-    }
-
-    if (query.q) {
-      q = query.q;
-    }
-
-    this.pushPageQuery(page, limit, q);
-    this.props.requestPage(page, limit, q);
+    this.pushPageQuery(query);
+    this.props.requestPage(query);
   }
 
   handlePageChange(event) {
@@ -55,14 +41,20 @@ export class PaginationContainer extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.pagesQuery.page === nextProps.pagesQuery.page
-        && this.props.pagesQuery.limit === nextProps.pagesQuery.limit
-        && this.props.pagesQuery.q === nextProps.pagesQuery.q) {
-      return;
+    // generic diff on plain object
+    let param;
+    let foundChange = false;
+    for (param in nextProps.pagesQuery) {
+      if (nextProps.pagesQuery[param] != this.props.pagesQuery[param]) {
+        foundChange = true;
+        break;
+      }
     }
 
-    this.pushPageQuery(nextProps.pagesQuery.page, nextProps.pagesQuery.limit, nextProps.pagesQuery.q);
-    this.props.requestPage(nextProps.pagesQuery.page, nextProps.pagesQuery.limit, nextProps.pagesQuery.q);
+    if (foundChange) {
+      this.pushPageQuery(nextProps.pagesQuery);
+      this.props.requestPage(nextProps.pagesQuery);
+    }
   }
 
   render() {

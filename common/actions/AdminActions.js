@@ -1,13 +1,10 @@
 import * as types from '../constants/AdminActionTypes';
 
-export function requestUsersPage(page = 1, limit = 15, q='') {
+export function requestUsersPage(query) {
+
   return {
     type: types.GET_USERS_REQUEST,
-    query: {
-      page,
-      limit,
-      q
-    }
+    query: query
   };
 }
 
@@ -78,13 +75,10 @@ export function resetMessage() {
 /**
  * Admin/Course
  */
-export function requestCoursesPage(page = 1, limit = 15) {
+export function requestCoursesPage(query) {
   return {
     type: types.GET_COURSES_REQUEST,
-    query: {
-      page,
-      limit
-    }
+    query: query
   };
 }
 
@@ -98,13 +92,10 @@ export function changeCoursesPage(page) {
 /**
  * Admin/Embed
  */
-export function requestEmbedsPage(page = 1, limit = 15) {
+export function requestEmbedsPage(query) {
   return {
     type: types.GET_EMBEDS_REQUEST,
-    query: {
-      page,
-      limit
-    }
+    query: query
   };
 }
 
@@ -118,13 +109,10 @@ export function changeEmbedsPage(page) {
 /**
  * Admin/Log
  */
-export function requestLogsPage(page = 1, limit = 15) {
+export function requestLogsPage(query) {
   return {
     type: types.GET_LOGS_REQUEST,
-    query: {
-      page,
-      limit
-    }
+    query: query
   };
 }
 
@@ -138,13 +126,10 @@ export function changeLogsPage(page) {
 /**
  * Admin/Logingattempt
  */
-export function requestAuthAttemptsPage(page = 1, limit = 15) {
+export function requestAuthAttemptsPage(query) {
   return {
     type: types.GET_AUTHATTEMPTS_REQUEST,
-    query: {
-      page,
-      limit
-    }
+    query: query
   };
 }
 
