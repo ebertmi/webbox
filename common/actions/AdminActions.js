@@ -1,11 +1,12 @@
 import * as types from '../constants/AdminActionTypes';
 
-export function requestUsersPage(page = 1, limit = 15) {
+export function requestUsersPage(page = 1, limit = 15, q='') {
   return {
     type: types.GET_USERS_REQUEST,
     query: {
       page,
-      limit
+      limit,
+      q
     }
   };
 }
@@ -58,6 +59,13 @@ export function changeUsersPage(page) {
   return {
     type: types.CHANGE_USERS_PAGE,
     page: page
+  };
+}
+
+export function changeUsersSearch(search) {
+  return {
+    type: types.CHANGE_USERS_SEARCH,
+    q: search
   };
 }
 

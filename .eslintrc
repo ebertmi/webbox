@@ -6,7 +6,8 @@
     "ecmaFeatures": {
       "jsx": true,
       "forOf": true,
-      "experimentalObjectRestSpread": true
+      "experimentalObjectRestSpread": true,
+      "generators": true
     }
   },
   "rules": {

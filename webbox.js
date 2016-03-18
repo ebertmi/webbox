@@ -119,6 +119,7 @@ server.ext('onPreResponse', function (request, reply) {
   }
 
   if (request.response.isBoom) {
+    console.error(request.response.stack);
     const err = request.response;
     const errName = err.output.payload.error;
     const statusCode = err.output.payload.statusCode;

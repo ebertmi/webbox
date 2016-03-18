@@ -6,7 +6,7 @@ import { commonErrorHandler, checkStatus, getDefaultHeaders, parseJSON } from '.
 
 export const AdminAPI = {
   getUsers(query) {
-    return fetch(`/api/users?page=${query.page}&limit=${query.limit}`, {
+    return fetch(`/api/users?page=${query.page}&limit=${query.limit}&q=${query.q}`, {
       credentials: 'same-origin',
       headers: getDefaultHeaders()
     })

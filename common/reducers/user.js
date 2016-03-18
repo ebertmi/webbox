@@ -6,7 +6,8 @@ export const INITIAL_USER_STATE = {
   pages: 1,
   pagesQuery: {
     page: 1,
-    limit: 15
+    limit: 15,
+    q: ''
   },
   filter: null,
   isFetching: false
@@ -77,14 +78,24 @@ export default function user(state = INITIAL_USER_STATE, action) {
       return Object.assign({}, state, {
         pagesQuery: {
           page: action.page,
-          limit: state.pagesQuery.limit
+          limit: state.pagesQuery.limit,
+          q: state.pagesQuery.q
         }
       });
     case adminTypes.CHANGE_USERS_LIMIT:
       return Object.assign({}, state, {
         pagesQuery: {
           page: state.pagesQuery.page,
-          limit: action.limit
+          limit: action.limit,
+          q: state.pagesQuery.q
+        }
+      });
+    case adminTypes.CHANGE_USERS_SEARCH:
+      return Object.assign({}, state, {
+        pagesQuery: {
+          page: state.pagesQuery.page,
+          limit: state.pagesQuery.limit,
+          q: action.q
         }
       });
     default:
