@@ -21,6 +21,9 @@ export default function course(state = INITIAL_COURSE_STATE, action) {
         pages: action.pages || 1
       });
     case adminTypes.GET_COURSES_REQUEST:
+      return Object.assign({}, state, {
+        isFetching: true
+      });
     case adminTypes.GET_COURSES_FAILURE:
       return Object.assign({}, state, {
         isFetching: false

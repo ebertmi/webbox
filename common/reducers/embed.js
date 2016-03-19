@@ -21,6 +21,9 @@ export default function embed(state = INITIAL_EMBED_STATE, action) {
         pages: action.pages || 1
       });
     case adminTypes.GET_EMBEDS_REQUEST:
+      return Object.assign({}, state, {
+        isFetching: true
+      });
     case adminTypes.GET_EMBEDS_FAILURE:
       return Object.assign({}, state, {
         isFetching: false
