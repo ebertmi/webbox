@@ -1,9 +1,16 @@
 /**
  * Checks the status and either returns or throws and error.
  * Should be used with window.fetch
+ *
+ * The API does only send a couple of error status codes. Especially,
+ * 400 is used for bad requests with a special error message from the
+ * server.
  */
 export function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
+    return response;
+  } else if (response.status === 400) {
+    // a error with a custom message
     return response;
   } else {
     var error = new Error(response.statusText);

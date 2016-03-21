@@ -56,6 +56,18 @@ export const AdminAPI = {
     })
     .catch(commonErrorHandler);
   },
+  resendConfirmationEmail(params) {
+    return fetch(`/api/user/${params.id}/resendconfirmationemail`, {
+      credentials: 'same-origin',
+      headers: getDefaultHeaders()
+    })
+    .then(checkStatus)
+    .then(parseJSON)
+    .then(data => {
+      return data;
+    })
+    .catch(commonErrorHandler);
+  },
   getCourses(query) {
     return fetch(`/api/courses?page=${query.page}&limit=${query.limit}`, {
       credentials: 'same-origin',

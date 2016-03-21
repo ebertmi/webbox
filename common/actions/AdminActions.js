@@ -52,6 +52,15 @@ export function deleteUser(user) {
   };
 }
 
+export function resendUserConfirmationEmail(user) {
+  return {
+    type: types.RESEND_USER_CONFIRMATION_EMAIL_REQUEST,
+    params: {
+      id: user.id
+    }
+  };
+}
+
 export function changeUsersPage(page) {
   return {
     type: types.CHANGE_USERS_PAGE,

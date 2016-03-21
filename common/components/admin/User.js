@@ -37,7 +37,7 @@ class User extends Component {
     }
   }
   renderUser () {
-    return <UserForm save={this.props.saveUser} delete={this.props.deleteUser} onChange={this.props.updateUserForm} user={this.props.userOverview.user} />;
+    return <UserForm resendConfirmationEmail={this.props.resendUserConfirmationEmail} save={this.props.saveUser} delete={this.props.deleteUser} onChange={this.props.updateUserForm} user={this.props.userOverview.user} />;
   }
 
   renderLoader () {

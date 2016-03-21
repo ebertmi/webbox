@@ -37,6 +37,7 @@
     "bootstrap": "^4.0.0-alpha.2",
     "classnames": "^2.2.3",
     "clipboard": "^1.5.9",
+    "co": "^4.6.0",
     "config": "^1.19.0",
     "contents": "^4.0.2",
     "crumb": "^6.0.0",

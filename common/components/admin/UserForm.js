@@ -102,6 +102,12 @@ export class UserForm extends Component {
     });
   }
 
+  handleResendConfirmationEmail (event) {
+    event.preventDefault();
+
+    this.props.resendConfirmationEmail(this.props.user);
+  }
+
   /**
    * Renders the confirm dialog when a user should be deleted
    */
@@ -127,6 +133,7 @@ export class UserForm extends Component {
       <div className="form-footer">
         <button type="submit" onClick={this.handleSave.bind(this)} disabled={!isDirty} className="btn btn-success">Speichern</button>
         <button type="submit" onClick={this.handleDelete.bind(this)} inputClassName="form-control" className="btn btn-danger">Löschen</button>
+        <button type="submit" onClick={this.handleResendConfirmationEmail.bind(this)} inputClassName="form-control" className="btn btn-warning">Aktivierungs-E-Mail erneut schicken</button>
       </div>
     );
   }

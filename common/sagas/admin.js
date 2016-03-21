@@ -50,10 +50,26 @@ function* deleteUser (action) {
       yield put({type: adminTypes.DELETE_USER_FAILURE, message: data.error.message});
     } else {
       yield put({type: adminTypes.DELETE_USER_SUCCESS});
-      //browserHistory.push('/admin/users');
     }
   } catch (e) {
     yield put({type: adminTypes.DELETE_USER_FAILURE, message: e.message});
+  }
+}
+
+function* resendConfirmationEmail (action) {
+  try {
+    // reset notification message
+    yield put({ type: adminTypes.RESET_MESSAGE });
+
+    const data = yield call(API.admin.resendConfirmationEmail, action.params);
+
+    if (data.error) {
+      yield put({type: adminTypes.RESEND_USER_CONFIRMATION_EMAIL_FAILURE, message: data.error.message});
+    } else {
+      yield put({type: adminTypes.RESEND_USER_CONFIRMATION_EMAIL_SUCCESS});
+    }
+  } catch (e) {
+    yield put({type: adminTypes.RESEND_USER_CONFIRMATION_EMAIL_FAILURE, message: e.message});
   }
 }
 
@@ -88,6 +104,10 @@ function* watchSaveUser() {
 
 function* watchDeleteUser() {
   yield* takeLatest(adminTypes.DELETE_USER_REQUEST, deleteUser);
+}
+
+function* watchResendConfirmationEmail() {
+  yield* takeLatest(adminTypes.RESEND_USER_CONFIRMATION_EMAIL_REQUEST, resendConfirmationEmail);
 }
 
 /**
@@ -193,6 +213,7 @@ export default function* adminSaga () {
     fork(watchSaveUser),
     fork(watchGetUsers),
     fork(watchDeleteUser),
+    fork(watchResendConfirmationEmail),
     fork(watchGetEmbeds),
     fork(watchGetCourses),
     fork(watchGetLogs),
