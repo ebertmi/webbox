@@ -8,7 +8,7 @@ var Vision = require('vision');
 var Jade = require('jade');
 var Crumb = require('crumb');
 var Blipp = require('blipp');
-var hratelimit = require('hapi-ratelimit');
+//var hratelimit = require('hapi-ratelimit');
 
 var config = require('./config/webbox.config');
 

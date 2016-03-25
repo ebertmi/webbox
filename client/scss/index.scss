@@ -12,6 +12,7 @@ $line-height: 1.5rem;
 @import "includes/_animations.scss";
 @import "includes/_paginate.scss";
 @import "includes/_tablesearchbar.scss";
+@import "includes/_typer.scss";
 
 @import "ide/ide";
 
@@ -66,3 +67,14 @@ form .btn {
 .card-deck-wrapper .card {
   max-width: 20em;
 }
+
+/**
+ * Centered row items using flexbox
+ */
+ .row.welcome-message {
+   margin-bottom: 2rem;
+
+   & h1 {
+     text-align: center;
+   }
+ }

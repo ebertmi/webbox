@@ -17,6 +17,12 @@ class AdminApp extends Component {
     return (
       <div className="dashboard container-fluid">
         <div className="row">
+          <div className="col-md-12">
+            <h1>Verwaltung</h1>
+            <hr />
+          </div>
+        </div>
+        <div className="row">
           <div className="col-md-2">
             <ul className="nav nav-pills nav-stacked">
               <li className="nav-item">
@@ -38,8 +44,6 @@ class AdminApp extends Component {
           </div>
           <div className="col-md-9">
             { this.renderMessage() }
-            <h1>Admin Dashboard</h1>
-            <hr />
             {this.props.children}
           </div>
         </div>

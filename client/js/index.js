@@ -1,7 +1,10 @@
 require('scss/index');
 
 // polyfills
+import 'babel-polyfill';
 import 'exports?fetch!whatwg-fetch/fetch';
+import { Typer } from './util/_typer';
+
 
 var Terminal = require('term.js');
 var Dropzone = require("dropzone");
@@ -15,3 +18,11 @@ Dropzone.options.mediaupload = {
     });
   }
 };
+
+
+
+var typerSpan = document.getElementById('welcome-msg-typer');
+var typerOtions = { erase: 90, type: 120, break: 2000 };
+var player = Typer(typerSpan, typerOtions, ['Welcome to trycoding.io!', 'Lerne Python', 'Lerne C', 'und noch einiges dazu!', 'powered by Sourcebox']);
+
+setTimeout(player.play, 2000);

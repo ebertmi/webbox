@@ -1,4 +1,3 @@
-@import "_header.scss";
 @import "_footer.scss";
 
 $enable-rounded: false;
@@ -30,6 +29,15 @@ h1 > img {
   border-bottom: solid 1px #eee;
 }
 
-.label-roles {
+.wb-navbar .navbar-nav .nav-link {
+  color: $brand-info;
+  font-weight: 500;
+
+  &:hover {
+    color: darken($brand-info, 10%);
+  }
+}
+
+.tag-roles {
   margin-right: 0.25em;
 }

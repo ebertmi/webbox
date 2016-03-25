@@ -2,28 +2,28 @@ import React from 'react';
 import JSONTree from 'react-json-tree';
 import {Time} from '../Time';
 
-const labelClassNameMap = {
-  error: 'label-danger',
-  warning: 'label-warning',
-  info: 'label-info',
-  success: 'label-success'
+const tabClassNameMap = {
+  error: 'tag-danger',
+  warning: 'tag-warning',
+  info: 'tag-info',
+  success: 'tag-success'
 };
 
-function getLabelClassForEventType (eventType) {
-  return labelClassNameMap[eventType.toLowerCase()] || 'label-default';
+function getTagClassForEventType (eventType) {
+  return tabClassNameMap[eventType.toLowerCase()] || 'tag-default';
 }
 
 /**
  * Renders a log row
  */
 export function LogTableRow (props) {
-  const labelClassName = "label " + getLabelClassForEventType(props.data.eventType);
+  const tagClassName = "tag " + getTagClassForEventType(props.data.eventType);
   return (
     <tr>
       <td>{props.data.eventName}</td>
       <td>{props.data.eventMessage}</td>
       <td>
-        <span className={labelClassName}>{props.data.eventType}</span>
+        <span className={tagClassName}>{props.data.eventType}</span>
       </td>
       <td><JSONTree hideRoot={true} data={ props.data.eventData } /></td>
       <td>

@@ -30,7 +30,7 @@ export class UserTableRow extends Component {
         <td>{this.renderIsCompleted()}</td>
         <td>
           {this.props.data.roles.map((role, index) => {
-            return <span key={index} className="label label-default label-roles">{role}</span>;
+            return <span key={index} className="tag tag-default tag-roles">{role}</span>;
           })}
         </td>
       </tr>

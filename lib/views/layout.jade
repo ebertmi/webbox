@@ -18,37 +18,36 @@ html(lang="de")
           header
             nav.navbar.navbar-light.wb-navbar
               .nav.navbar-nav
-                a.navbar-brand(href="/")
-                  img(src="/public/img/sourcebox.png", height="30", alt=" SourceBox")
+                a.navbar-brand(href="/") trycoding.io
                 a(class="nav-item nav-link", href="/") Startseite
                 a(class="nav-item nav-link", href="/courseoverview") Kurse
                 block navbar-extra
                 if !user.isAnonymous
                   .pull-xs-right
-                    a(class="nav-item nav-link", href="/logout") Ausloggen
-
-        block banner
-          .wb-pageheader.hidden-print
-            .container
-              h1
+                    a(class="nav-item btn btn-warning", href="/logout") Ausloggen
 
         main.site-content#content
           block content
 
         footer(role="contentinfo", class="wb-footer text-muted")
           .container
-            ul.wb-footer-links
-              li
-                a(href="/impressum") Impressum
-              li
-                a(href="/datenschutz") Datenschutz
-              li
-                a(href="/admin") Verwaltung
+            .row
+              .col-md-6.col-xs-12
+                ul.wb-footer-links
+                  li
+                    a(href="/impressum") Impressum
+                  li
+                    a(href="/datenschutz") Datenschutz
+                  li
+                    a(href="/admin") Verwaltung
 
-            p
-              Erstellt von ... im Rahmen des Projektes Evelin
-            p
-              a(href="//hs-coburg.de", target="_blank") Hochschule Coburg
+                p
+                  Erstellt von Michael Ebert im Rahmen des Projektes Evelin
+                p
+                  a(href="//hs-coburg.de", target="_blank") Hochschule Coburg
+              .col-md-6.col-xs-12
+                p Powered by
+                  img.m-l-1(src="/public/img/sourcebox.svg", height="30", alt="Sourcebox Logo")
 
         block scripts
           script(src="/public/js/common.bundle.js", defer="true")
