@@ -49,3 +49,20 @@ $state-danger-border:            darken($state-danger-bg, 5%) !default;
     font-weight: 500;
   }
 }
+
+.shadow {
+  box-shadow: 0 1px 3px 0 #767677,0 1px 3px 0px #d4d4d5;
+}
+
+.btn {
+  box-shadow: 0 1px 3px 0 #767677,0 1px 3px 0px #d4d4d5;
+}
+
+.alert {
+  box-shadow: 0 2px 3px 0 #585858,0 0px 1px 0px #C7C7C7;
+  border: none;
+}
+
+.form-footer button {
+  margin-top: 0.5rem;
+}

@@ -42,7 +42,7 @@ class AdminApp extends Component {
               </li>
             </ul>
           </div>
-          <div className="col-md-9">
+          <div className="col-md-9 card p-t-1">
             { this.renderMessage() }
             {this.props.children}
           </div>

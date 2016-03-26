@@ -39,7 +39,7 @@ export class SearchBar extends Component {
             <form className="form-inline">
               <div className="form-group">
                 <div className="input-group">
-                  <input style={{width: "auto"}} defaultValue={this.props.searchQuery} onChange={this.handleSearchQuery.bind(this)} type="text" className="form-control" placeholder={this.props.placeholderText} />
+                  <input style={{width: "auto"}} defaultValue={this.props.searchQuery} onChange={this.handleSearchQuery.bind(this)} type="text" className="form-control shadow" placeholder={this.props.placeholderText} />
                   <span className="input-group-btn">
                     <button onClick={this.handleSearchClick.bind(this)} className="btn btn-info" type="button">Suchen</button>
                   </span>
