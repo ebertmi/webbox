@@ -1,16 +1,17 @@
 extends ./layout.jade
 block content
-  .container
-    .row
-      section.col-sm-12
-        if user.isAnonymous
-          h1 Anmeldung
-          if errorMessage
-            div.alert.alert-danger
-              p= errorMessage
-          include ./includes/_login.jade
-        else
-          div.alert.alert-info
-            p Sie sind bereits angemeldet.
+  main.site-content#content
+    .container
+      .row
+        section.col-sm-12
+          if user.isAnonymous
+            h1 Anmeldung
+            if errorMessage
+              div.alert.alert-danger
+                p= errorMessage
+            include ./includes/_login.jade
+          else
+            div.alert.alert-info
+              p Sie sind bereits angemeldet.
 
-          a.btn.btn-secondary(href=path.index) Zurück zur Hauptseite
+            a.btn.btn-secondary(href=path.index) Zurück zur Hauptseite

@@ -86,12 +86,21 @@ form .btn {
    }
  }
 
- .site-content {
-   & .entry p,
-   & .entry .text-muted,
-   & .entry h2,
-   & .entry label {
+.index-content,
+.admin-content {
+  background-color: #D6D6D6;
+  background: linear-gradient(to bottom left, rgba(216, 207, 229, 0) 0%, rgb(216, 207, 229) 100%), linear-gradient(to top left, rgba(38, 47, 63, 0) 0%, rgb(38, 47, 63) 100%), linear-gradient(to bottom right, rgba(179, 182, 208, 0) 0%, rgb(179, 182, 208) 100%), linear-gradient(to top right, rgba(166, 159, 124, 0) 0%, rgb(166, 159, 124) 100%);
+  background-image: url('/public/img/laptop.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding-bottom: 4rem;
+  padding-top: 3rem;
+
+  & .entry p,
+  & .entry .text-muted,
+  & .entry h2,
+  & .entry label {
     color: #FFF !important;
     text-shadow: 1px 1px 2px #828282;
-   }
- }
+  }
+}

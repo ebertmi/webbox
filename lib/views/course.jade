@@ -19,14 +19,15 @@ block navbar-extra
 
 
 block content
-  .container
-    .row
-      .col-md-3.col-md-push-9
-        .wb-sidenav
-          h1 Übersicht
-      .col-md-9.col-md-pull-3
-        .course!= content
-        p= message
+  main.site-content.course-content#content
+    .container
+      .row
+        .col-md-3.col-md-push-9
+          .wb-sidenav
+            h1 Übersicht
+        .col-md-9.col-md-pull-3
+          .course!= content
+          p= message
 
 block scripts
   script(src="/public/js/common.bundle.js", defer="true")

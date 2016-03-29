@@ -1,24 +1,25 @@
 extends ../layout.jade
 
 block content
-  .container
-    .row
-      section.col-sm-12
-        if infoMessage
-          div.alert.alert-info
-            p= infoMessage
-        if errorMessage
-          div.alert.alert-danger
-            p= errorMessage
+  main.site-content#content
+    .container
+      .row
+        section.col-sm-12
+          if infoMessage
+            div.alert.alert-info
+              p= infoMessage
+          if errorMessage
+            div.alert.alert-danger
+              p= errorMessage
 
-        h1 Passwort zurücksetzen
-        p.
-          Bitte geben Sie unten ihre E-Mail-Adresse ein und Sie erhalten in Kürze
-          eine E-Mail mit weiteren Schritt zum zurücksetzen Ihres Passworts.
+          h1 Passwort zurücksetzen
+          p.
+            Bitte geben Sie unten ihre E-Mail-Adresse ein und Sie erhalten in Kürze
+            eine E-Mail mit weiteren Schritt zum zurücksetzen Ihres Passworts.
 
-        form(action="/forgot", method="POST")
-          input(type="hidden", name="crumb", value=crumb)
-          div.form-group
-            input.form-control(type="text", id="forgot_email_input", name="email", placeholder="z.B. ikas14@stud.hs-coburg.de", required)
-            small.text-muted Bitte geben Sie hier die E-Mail-Adresse, welche Sie zur Anmeldung verwendet haben.
-          button.btn.btn-primary(type="submit") Abschicken
+          form(action="/forgot", method="POST")
+            input(type="hidden", name="crumb", value=crumb)
+            div.form-group
+              input.form-control(type="text", id="forgot_email_input", name="email", placeholder="z.B. ikas14@stud.hs-coburg.de", required)
+              small.text-muted Bitte geben Sie hier die E-Mail-Adresse, welche Sie zur Anmeldung verwendet haben.
+            button.btn.btn-primary(type="submit") Abschicken

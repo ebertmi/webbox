@@ -24,7 +24,7 @@ class AdminApp extends Component {
         </div>
         <div className="row">
           <div className="col-md-2">
-            <ul className="nav nav-pills nav-stacked">
+            <ul className="nav nav-pills nav-stacked card">
               <li className="nav-item">
                 <IndexLink  to="/admin" className="nav-link" activeClassName="active">Übersicht</IndexLink >
               </li>
