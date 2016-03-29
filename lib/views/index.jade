@@ -4,11 +4,11 @@ block title
   title WebBox - Hochschule Coburch
 
 block content
-  .container
+  .container.entry
     .row.flex-items-md-center.welcome-message
-      .col-md-12
-        h1 Lerne zu Programmieren
-      .col-md-8
+      .col-xs-12
+        h1 trycoding.io - Lerne zu Programmieren
+      .col-md-8.col-xs-12
         .typer-code.lines
           .line-group
             .gutter-wrapper
@@ -50,7 +50,7 @@ block content
                 span.typer_paren )
 
     .row
-      section.col-sm-12
+      section.col-xs-12
         if infoMessage
           div.alert.alert-info
             p= infoMessage
@@ -65,7 +65,7 @@ block content
 
     if user.isAnonymous
       .row.auth
-        .col-sm-12
+        .col-xs-12
           p.
             Zum Ausführen der Code-Beispiele und zum Bearbeiten der Übungen sowie für den Zugang einzelner Kurse
             müssen Sie angemeldet sein.

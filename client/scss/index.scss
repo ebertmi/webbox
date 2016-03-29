@@ -75,6 +75,23 @@ form .btn {
    margin-bottom: 2rem;
 
    & h1 {
-     text-align: center;
+    text-align: center;
+    color: #FFF !important;
+    text-shadow: 1px 1px 2px #828282;
+    padding-bottom: 1rem;
+   }
+
+   & .typer-code {
+     background-color: #ffffff;
+   }
+ }
+
+ .site-content {
+   & .entry p,
+   & .entry .text-muted,
+   & .entry h2,
+   & .entry label {
+    color: #FFF !important;
+    text-shadow: 1px 1px 2px #828282;
    }
  }
