@@ -61,6 +61,7 @@ $state-danger-border:            darken($state-danger-bg, 5%) !default;
 .alert {
   box-shadow: 0 2px 3px 0 #585858,0 0px 1px 0px #C7C7C7;
   border: none;
+  padding-left: 1rem;
 }
 
 .form-footer button {

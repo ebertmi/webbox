@@ -6,7 +6,10 @@
     "node_modules/**/node_modules",
     ".vscode",
     "bin",
-    "client"
+    "client",
+    "logs",
+    "media",
+    "public"
   ],
   "ext": "js jade json",
   "env": {
