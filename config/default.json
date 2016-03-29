@@ -95,7 +95,8 @@
         "invalidCredentials": "Anmeldung fehlgeschlagen. Ungültiger Benutzername oder falsches Passwort."
       },
       "logout": {
-        "success": "Sie wurden abgemeldet."
+        "success": "Sie wurden abgemeldet.",
+        "alreadyLoggedOut": "Sie sind bereits abgemeldet."
       }
     }
 }
