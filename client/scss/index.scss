@@ -20,12 +20,7 @@ section {
   margin-bottom: 1.5rem;
 }
 
-// add some vertical margin when signin and signup are stacked
-media-breakpoint-down(xs) {
-  .auth .col-xs.12 {
-    margin-bottom: 1.5rem;
-  }
-}
+
 
 // form button fixes
 form .btn {
@@ -102,5 +97,31 @@ form .btn {
   & .entry label {
     color: #FFF !important;
     text-shadow: 1px 1px 2px #828282;
+  }
+}
+
+.entry {
+  padding-top: 6rem;
+  padding-bottom: 20rem;
+}
+
+.second-entry {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+@include media-breakpoint-down(xs) {
+  .entry {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .auth .col-xs-12,
+  .grid-divider .col-xs-12 {
+    margin-bottom: 1.5rem;
+  }
+
+  .welcome-message .line-number {
+    display: none
   }
 }
