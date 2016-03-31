@@ -6,7 +6,6 @@ import 'exports?fetch!whatwg-fetch/fetch';
 import { Typer } from './util/_typer';
 
 
-var Terminal = require('term.js');
 var Dropzone = require("dropzone");
 
 // Dropzone config for media upload

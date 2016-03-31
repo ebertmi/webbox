@@ -1,0 +1,31 @@
+.control-bar {
+  background-color: $card-cap-bg;
+  display: flex;
+  flex-direction: row;
+  flex: 0 0 auto;
+}
+
+.tabs {
+  flex: 1 1 0;
+}
+
+.controls .nav-item {
+  margin: 0;
+}
+
+.nav-pills .nav-item {
+  white-space: nowrap;
+}
+
+.fa-times:hover {
+  color: $brand-danger;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  margin-top: 0;
+}
+
+.label {
+  border-radius: 20rem;
+}

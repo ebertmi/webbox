@@ -1,29 +1,33 @@
+html, body, #ide-container {
+  height: 100%;
+}
+
 .ide {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+
+  .btn {
+    box-shadow: none;
+  }
+
+  .danger {
+    color: $brand-danger;
+  }
+
+  .warning {
+    color: $brand-warning;
+  }
+
+  .info {
+    color: $brand-info;
+  }
+
+  .success {
+    color: $brand-success;
+  }
+
+  @import "_tabbar";
+  @import "_panelarea";
   @import "_terminal";
-
-  margin: 20px; //temporary
-  box-shadow: none;
-
-  .card-header {
-    padding: 0;
-    border-bottom: none;
-  }
-
-  .nav-pills .nav-item {
-    margin-left: 0;
-  }
-
-  .content {
-    height: 400px;
-    background: url('img/sourcebox-bg.svg') no-repeat center/40%;
-
-    >* {
-      height: 100%;
-      width: 100%;
-    }
-  }
-
-  .options {
-    padding: 1.5rem;
-  }
 }

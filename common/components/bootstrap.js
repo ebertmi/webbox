@@ -2,8 +2,23 @@
 
 import React from 'react';
 import classNames from 'classnames';
+import uniqueId from 'lodash/uniqueId';
 
 import Dropdown from '../util/dropdown.native';
+
+export function Label(props) {
+  let style = props.bsStyle || 'default';
+
+  let classes = classNames('label', `label-${style}`, {
+    'label-pill': props.pill
+  });
+
+  return (
+    <span className={classes}>
+      {props.children}
+    </span>
+  );
+}
 
 // navs and menus
 
@@ -21,7 +36,7 @@ export function Nav(props) {
 
 export function NavItem(props) {
   let classes = classNames('nav-item nav-link', {
-    active: props.active
+    active: props.active,
   });
 
   return (
@@ -32,8 +47,12 @@ export function NavItem(props) {
 }
 
 export function DropdownItem(props) {
+  let classes = classNames('dropdown-item', {
+    disabled: props.disabled
+  });
+
   return (
-    <a {...props} className="dropdown-item" href={props.href || '#'}>
+    <a {...props} className={classes} href={props.href || '#'}>
       {props.children}
     </a>
   );
@@ -49,16 +68,12 @@ export class NavDropdown extends React.Component {
   }
 
   render() {
-    let itemClasses = classNames('nav-item dropdown', {
-      'pull-xs-right': this.props.right
-    });
-
     let menuClasses = classNames('dropdown-menu', {
       'dropdown-menu-right': this.props.right
     });
 
     return (
-      <div href='#' className={itemClasses}>
+      <div href='#' className="nav-item dropdown">
         <a className="nav-link" href="#" ref={a => this.a = a}>
           {this.props.title}
         </a>
@@ -73,84 +88,71 @@ export class NavDropdown extends React.Component {
 // forms & inputs
 
 export class Input extends React.Component {
-  isCheckbox() {
-    return this.props.type === 'checkbox';
+  componentWillMount() {
+    this.id = this.props.id || uniqueId('input-');
   }
 
-  renderLabel() {
-    if (this.props.label && (this.grid || !this.isCheckbox())) {
-      let classes = classNames(this.props.labelClassName, {
-        'form-control-label': this.grid
-      });
-
-      return <label htmlFor={this.props.id} className={classes}>{this.props.label}</label>;
-    }
-  }
-
-  renderInput() {
-    switch (this.props.type) {
-      case 'textarea':
-        return <textarea {...this.props} className="form-control" ref={input => this.input = input}/>;
-      case 'select':
-        return (
-          <select {...this.props} className="form-control c-select" ref={input => this.input = input}>
-            {this.props.children}
-          </select>
-        );
-      default: {
-        let input = <input {...this.props} className="form-control" ref={input => this.input = input}/>;
-
-        if (this.isCheckbox()) {
-          return (
-            <label className="c-input c-checkbox">
-              {input}
-              <span className="c-indicator"/>
-              {this.grid ? null : this.props.label}
-            </label>
-          );
-        } else {
-          return input;
-        }
-      }
-    }
-  }
-
-  render() {
-    this.grid = this.props.className && this.props.className.split(' ').some(c => c.startsWith('col-'));
-
+  getStyleClass() {
     let bsStyle = this.props.bsStyle;
 
-    let classes = classNames('form-group', {
-      'checkbox': this.isCheckbox() && !this.grid,
-      'row': this.grid,
+    return classNames({
       'has-success': bsStyle === 'success',
       'has-warning': bsStyle === 'warning',
       'has-error': bsStyle === 'error'
     });
+  }
 
-    let offsets;
+  renderNormalInput() {
+    let classes = classNames(this.getStyleClass(), 'form-group');
+    let element;
 
-    if (this.grid && !this.props.label && this.props.labelClassName) {
-      offsets = this.props.labelClassName.split(' ').map(c => {
-        let match = c.match(/(col-\w{2})-(\d*)/);
-
-        if (match) {
-          return match[1] + '-offset-' + match[2];
-        }
-      });
+    switch (this.props.type) {
+      case 'textarea':
+        element = <textarea {...this.props} id={this.id} className="form-control"/>;
+        break;
+      case 'select':
+        element = (
+          <select {...this.props} id={this.id} className="form-control c-select">
+            {this.props.children}
+          </select>
+        );
+        break;
+      default:
+        element = <input {...this.props} id={this.id} className="form-control"/>;
     }
 
-    let muted = this.props.muted ? <small className="text-muted">{this.props.muted}</small> : null;
+
+    return (
+      <fieldset className={classes}>
+        {this.props.label ? <label htmlFor={this.id}>{this.props.label}</label> : undefined}
+        {element}
+        {this.renderMuted()}
+      </fieldset>
+    );
+  }
+
+  renderCheckboxRadio() {
+    let classes = classNames(this.props.type, this.getStyleClass());
 
     return (
       <div className={classes}>
-        {this.renderLabel()}
-        <div className={classNames(offsets, this.props.className)}>
-          {this.renderInput()}
-          {muted}
-        </div>
+        <label>
+          <input {...this.props}/>
+          {this.props.label}
+          {this.renderMuted()}
+        </label>
       </div>
     );
+  }
+
+  renderMuted() {
+    if (this.props.muted) {
+      return <small className="text-muted">{this.props.muted}</small>;
+    }
+  }
+
+  render() {
+    return ['checkbox', 'radio'].includes(this.props.type) ? this.renderCheckboxRadio() : this.renderNormalInput();
   }
 }
 
@@ -159,21 +161,19 @@ Input.propTypes = {
   children: React.PropTypes.node,
   label: React.PropTypes.node,
   className: React.PropTypes.string,
-  labelClassName: React.PropTypes.string,
   id: React.PropTypes.string,
   muted: React.PropTypes.string,
   bsStyle: React.PropTypes.oneOf(['success', 'warning', 'error'])
 };
 
-export class InputButton extends Input {
-  renderLabel() {
-  }
+export function Button(props) {
+  let classes = classNames('btn', {
+    ['btn-' + props.bsStyle]: props.bsStyle
+  }, props.className);
 
-  renderInput() {
-    let classes = classNames('btn', {
-      ['btn-' + this.props.bsStyle]: this.props.bsStyle
-    });
-
-    return <input {...this.props} type="button" className={classes}/>;
-  }
+  return (
+    <button type="button" {...props} className={classes}>
+      {props.children}
+    </button>
+  );
 }
