@@ -17,6 +17,9 @@
     "sourcebox"
   ],
   "author": "Michael Ebert",
+  "contributors": [
+    "Johannes Henninger"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/waywaaard/webbox/issues"
@@ -71,6 +74,7 @@
     "nodemailer": "^2.3.0",
     "nodemailer-sendgrid-transport": "^0.2.0",
     "react": "^0.14.7",
+    "react-addons-create-fragment": "^0.14.8",
     "react-addons-css-transition-group": "^0.14.7",
     "react-dom": "^0.14.7",
     "react-json-tree": "^0.6.2",
@@ -79,8 +83,10 @@
     "react-router": "^2.0.1",
     "redux": "^3.3.1",
     "redux-saga": "^0.9.5",
+    "screenfull": "^3.0.0",
     "slug": "^0.9.1",
     "socket.io": "^1.4.5",
+    "split2": "^2.0.1",
     "term.js": "0.0.7",
     "thinky": "^2.2.6",
     "uuid": "^2.0.1",

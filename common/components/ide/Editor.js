@@ -1,6 +1,8 @@
 import React from 'react';
 import Ace from 'ace';
 
+// "dumb" editor component
+
 export default class Editor extends React.Component {
   componentDidMount() {
     this.editor = Ace.edit(this.container);
@@ -8,11 +10,16 @@ export default class Editor extends React.Component {
   }
 
   componentWillUnmount() {
+    this.editor.setSession();
     this.editor.destroy();
   }
 
   componentWillReceiveProps(next) {
     this.updateProps(next);
+  }
+
+  componentDidUpdate() {
+    this.editor.resize();
   }
 
   updateProps(props) {
@@ -25,8 +32,12 @@ export default class Editor extends React.Component {
     this.editor.setOptions(options);
   }
 
+  focus() {
+    this.editor.focus();
+  }
+
   render() {
-    return <div ref={div => this.container = div} hidden={this.props.hidden}/>;
+    return <div ref={div => this.container = div}/>;
   }
 
 }
