@@ -110,6 +110,11 @@ form .btn {
   padding-bottom: 3rem;
 }
 
+.intro-text {
+  font-size: 150%;
+  font-weight: 400;
+}
+
 @include media-breakpoint-down(xs) {
   .entry {
     padding-top: 1rem;
