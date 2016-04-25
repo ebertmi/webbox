@@ -4,7 +4,7 @@ import rootReducer from '../reducers';
 import adminSaga from '../sagas/admin';
 
 // create Saga Middleware for generator support
-const sagaMiddleware = createSagaMiddleware(adminSaga);
+const sagaMiddleware = createSagaMiddleware();
 
 export default function configureStore(initialState) {
   const store = createStore(
@@ -12,6 +12,8 @@ export default function configureStore(initialState) {
     initialState,
     applyMiddleware(sagaMiddleware)
   );
+
+  sagaMiddleware.run(adminSaga);
 
   return store;
 }
