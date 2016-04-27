@@ -9,11 +9,14 @@ import Tab from './tabs/Tab';
 import FileTab from './tabs/FileTab';
 import ProcessTab from './tabs/ProcessTab';
 import OptionsTab from './tabs/OptionsTab';
+import InsightsTab from './tabs/InsightsTab';
+//import TurtleTab from './tabs/TurtleTab';
 
 const TAB_TYPES = {
   file: FileTab,
   options: OptionsTab,
-  process: ProcessTab
+  process: ProcessTab,
+  insights: InsightsTab
 };
 
 export default class TabBar extends React.Component {
@@ -43,6 +46,7 @@ export default class TabBar extends React.Component {
     if (e.button === 1) {
       this.props.project.closeTab(index);
     } else if (e.ctrlKey || e.shiftKey) {
+      // toggle tab should display it on a split view
       this.props.project.toggleTab(index);
     } else {
       this.props.project.switchTab(index);

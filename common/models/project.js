@@ -1,17 +1,24 @@
 import {EventEmitter} from 'events';
 
 import File from './file';
-
-// maybe save orignal file(names), so reset works?
+import isString from 'lodash/isString';
 
 export default class Project extends EventEmitter {
-  constructor(name) {
+  constructor(data) {
     super();
 
-    this.name = name;
+    this.name = data.name;
+
+    // save original data
+    this.data = data;
 
     this.tabs = [];
     this.running = false;
+
+    // load from data
+    this.fromInitialData(this.data);
+
+    // switch tab to first one
   }
 
   // callback is called when tab is closed
@@ -77,10 +84,10 @@ export default class Project extends EventEmitter {
     }
   }
 
-  addFile(name, text, mode) {
+  addFile(name, text, mode, active=true) {
     let file = new File(name, text, mode);
 
-    this.addTab('file', { item: file });
+    this.addTab('file', { item: file, active: active});
   }
 
   getFiles() {
@@ -91,5 +98,36 @@ export default class Project extends EventEmitter {
 
   emitChange() {
     this.emit('change');
+  }
+
+  fromInitialData(data) {
+    // TODO: add some basic checks maybe
+    for (let file in data.code) {
+      let fileData = data.code[file];
+      if (isString(fileData)) {
+        this.addFile(file, fileData);
+      } else {
+        // handle complicated type
+        this.addFile(file, fileData.content);
+      }
+    }
+
+    // switch to first tab
+    if (this.tabs.length > 1) {
+      this.switchTab(0);
+    }
+  }
+
+  toCodeEmbed() {
+    // ToDo: return all files and assets as to be saved for server side representation
+    //
+  }
+
+  toCodeDocument() {
+    // ToDo: return all files (altered by an user [not owner]) to be saved
+  }
+
+  resetProject() {
+    // ToDo: resets the project to the initial state from the server
   }
 }

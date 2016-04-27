@@ -41,5 +41,16 @@ export default {
         }
       }, 3);
     }
+  },
+
+  // this allows us also to run any commands and configure matplotlib etc
+  python3: {
+    exec: ['python3', './main.py']
+  },
+
+  // this allows us also to run any commands and configure matplotlib etc
+  python2: {
+    exec: ['python', './main.py']
   }
+
 };

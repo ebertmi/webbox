@@ -10,13 +10,13 @@ const PROCESS_DEFAULTS = {
 };
 
 export default class SourceboxProject extends Project {
-  constructor(name, language, serverConfig) {
-    super(name);
+  constructor(data, serverConfig) {
+    super(data);
 
-    if (isString(language)) {
-      this.config = languages[language];
+    if (isString(data.language)) {
+      this.config = languages[data.language];
     } else {
-      this.config = language;
+      this.config = data.language;
     }
 
     let {server, ...sbConfig} = serverConfig;
@@ -45,22 +45,25 @@ export default class SourceboxProject extends Project {
       return;
     }
 
-    if (this.runner) {
-      let index = this.tabs.findIndex(tab => tab.item === this.runner);
-
-      if (!this.tabs[index].active) {
-        this.switchTab(index);
-      }
-    } else {
+    // check if there is already our terminal for running the program
+    if (!this.runner) {
       this.runner = new Runner(this);
 
       this.addTab('process', {
         item: this.runner,
+        active: false,
         callback: () => {
           this.runner.stop();
           delete this.runner;
         }
       });
+    }
+
+    let index = this.tabs.findIndex(tab => tab.item === this.runner);
+
+    // open terminal as split view
+    if (!this.tabs[index].active) {
+      this.toggleTab(index);
     }
 
     this.runner.run();

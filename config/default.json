@@ -98,5 +98,8 @@
         "success": "Sie wurden abgemeldet.",
         "alreadyLoggedOut": "Sie sind bereits abgemeldet."
       }
+    },
+    "sourcebox": {
+      "url": "http://52.58.54.59/"
     }
 }

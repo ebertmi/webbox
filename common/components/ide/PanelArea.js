@@ -3,11 +3,15 @@ import React from 'react';
 import FilePanel from './panels/FilePanel';
 import ProcessPanel from './panels/ProcessPanel';
 import OptionsPanel from './panels/OptionsPanel';
+import InsightsPanel from './panels/InsightsPanel';
+import TurtlePanel from './panels/TurtlePanel';
 
 const PANEL_TYPES = {
   file: FilePanel,
   options: OptionsPanel,
-  process: ProcessPanel
+  process: ProcessPanel,
+  insights: InsightsPanel,
+  turtle: TurtlePanel
 };
 
 export default class PanelArea extends React.Component {

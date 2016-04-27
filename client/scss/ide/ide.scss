@@ -11,6 +11,20 @@ html, body, #ide-container {
     box-shadow: none;
   }
 
+  .fontSizeMenuBtn {
+    background-color: transparent;
+    margin-right: 0;
+
+    &:hover {
+      color: $brand-info;
+    }
+
+    &:focus,
+    &:active {
+      outline: none;
+    }
+  }
+
   .danger {
     color: $brand-danger;
   }

@@ -22,6 +22,8 @@ Dropzone.options.mediaupload = {
 
 var typerSpan = document.getElementById('welcome-msg-typer');
 var typerOtions = { erase: 90, type: 120, break: 2000 };
-var player = Typer(typerSpan, typerOtions, ['Welcome to trycoding.io!', 'Lerne Python', 'Lerne C', 'und noch einiges dazu!', 'powered by Sourcebox']);
+if (typerSpan != null) {
+  var player = Typer(typerSpan, typerOtions, ['Welcome to trycoding.io!', 'Lerne Python', 'Lerne C', 'und noch einiges dazu!', 'powered by Sourcebox']);
 
-setTimeout(player.play, 2000);
+  setTimeout(player.play, 2000);
+}
