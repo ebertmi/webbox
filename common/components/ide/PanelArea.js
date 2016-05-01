@@ -5,13 +5,15 @@ import ProcessPanel from './panels/ProcessPanel';
 import OptionsPanel from './panels/OptionsPanel';
 import InsightsPanel from './panels/InsightsPanel';
 import TurtlePanel from './panels/TurtlePanel';
+import AttributesPanel from './panels/AttributesPanel';
 
 const PANEL_TYPES = {
   file: FilePanel,
   options: OptionsPanel,
   process: ProcessPanel,
   insights: InsightsPanel,
-  turtle: TurtlePanel
+  turtle: TurtlePanel,
+  attributes: AttributesPanel
 };
 
 export default class PanelArea extends React.Component {
@@ -51,9 +53,17 @@ export default class PanelArea extends React.Component {
     });
   }
 
+  renderGlobalMessageList() {
+    return (
+    <div className="global-message-list">
+    </div>
+    );
+  }
+
   render() {
     return (
       <div className="panel-area">
+        {this.renderGlobalMessageList}
         {this.renderPanels()}
       </div>
     );

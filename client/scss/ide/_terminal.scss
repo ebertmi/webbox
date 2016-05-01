@@ -1,19 +1,23 @@
 .terminal-container {
   overflow: hidden;
-  background: black;
+  background: #F9F9F9;
 }
 
 .terminal {
   //display: inline-block;
   float: left;
-  border: #000 solid 5px;
+  border: #F9F9F9 solid 5px;
+  border-left: #ddd solid 1px;
+  border-top: #ddd solid 1px;
   //font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
   //font-size: 12px;
   line-height: 1.1;
-  color: #f0f0f0;
+  color: #000 !important;
+  background: #F9F9F9 !important;
+  padding-left: 0.25em;
 }
 
 .terminal-cursor {
   color: #000;
-  background: #f0f0f0;
+  background: #777;
 }

@@ -2,7 +2,7 @@ import Sourcebox from '@sourcebox/web';
 import isString from 'lodash/isString';
 
 import Project from './project';
-import Runner from './runner';
+import Runner from './sourceboxRunner';
 import languages from './languages';
 
 const PROCESS_DEFAULTS = {
@@ -13,14 +13,16 @@ export default class SourceboxProject extends Project {
   constructor(data, serverConfig) {
     super(data);
 
-    if (isString(data.language)) {
-      this.config = languages[data.language];
+    if (isString(data.meta.language)) {
+      this.config = languages[data.meta.language];
     } else {
-      this.config = data.language;
+      this.config = data.meta.language;
     }
 
     let {server, ...sbConfig} = serverConfig;
     this.sourcebox = new Sourcebox(server, sbConfig);
+
+    this.status.setLanguageInformation(this.config.displayName);
   }
 
   exec(cmd, args=[], options=PROCESS_DEFAULTS) {

@@ -90,7 +90,7 @@ export default class Runner extends EventEmitter {
       .then(this._compile)
       .then(this._exec)
       .tap(() => {
-        this._status('AUSFÜHRUNG BEENDET');
+        this._status('Ausführung Beendet');
       })
       .catch((err) => {
         this._status(err.message);
@@ -103,7 +103,7 @@ export default class Runner extends EventEmitter {
   stop() {
     if (this.isRunning()) {
       this.promiseChain.cancel();
-      this._status('AUSFÜHRUNG ABGEBROCHEN');
+      this._status('Ausführung abgebrochen');
     }
   }
 
@@ -134,7 +134,7 @@ export default class Runner extends EventEmitter {
       return;
     }
 
-    this._status('ÜBERSETZE QUELLCODE');
+    this._status('Übersetze Quellcode');
 
     let command = this._commandArray(this.config.compile);
 
@@ -185,7 +185,7 @@ export default class Runner extends EventEmitter {
 
     return Promise.join(processPromise(compiler, true).reflect(), streamPromise(transform), compilePromise => {
       if (compilePromise.isRejected()) {
-        throw new Error('ÜBERSETZEN FEHLGESCHLAGEN');
+        throw new Error('Übersetzen fehlgeschlagen');
       }
     });
   }
@@ -195,7 +195,7 @@ export default class Runner extends EventEmitter {
       throw new Error('No exec command');
     }
 
-    this._status('FÜHRE PROGRAMM AUS');
+    this._status('Führe Programm aus');
 
     let command = this._commandArray(this.config.exec);
 
@@ -209,7 +209,7 @@ export default class Runner extends EventEmitter {
 
     return Promise.join(processPromise(this.process, false).reflect(), streamPromise(this.process.stdout), processPromise => {
       if (processPromise.isRejected()) {
-        throw new Error('AUSFÜHREN FEHLGESCHLAGEN');
+        throw new Error('Ausführen fehlgeschlagen');
       }
     }).finally(() => {
       this.stdin.unpipe(this.process.stdin);
@@ -218,7 +218,7 @@ export default class Runner extends EventEmitter {
   }
 
   _status(msg) {
-    this.stdout.write(`\x1b[31m ---- ${msg} ---- \x1b[m\r\n`);
+    this.stdout.write(`\x1b[34m ---- ${msg} ---- \x1b[m\r\n`);
   }
 
   _commandArray(command) {

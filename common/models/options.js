@@ -1,7 +1,7 @@
 // all IDEs share the same options, so this is singleton
 // options get saved in local storage
 
-import {EventEmitter} from 'events';
+import { EventEmitter } from 'events';
 import defaultsDeep from 'lodash/defaultsDeep';
 
 const LOCAL_STORAGE_KEY = 'sourcebox.options';

@@ -1,5 +1,5 @@
 .control-bar {
-  background-color: $card-cap-bg;
+  background-color: #ffffff;
   display: flex;
   flex-direction: row;
   flex: 0 0 auto;
@@ -15,6 +15,23 @@
 
 .nav-pills .nav-item {
   white-space: nowrap;
+}
+
+.nav-pills .nav-item.nav-link,
+.nav-pills .nav-link {
+  color: #333333;
+  font-weight: 300;
+  padding: 0.25em 1em;
+
+  &.active {
+    background-color: $card-cap-bg;
+    font-weight: 400;
+  }
+
+  &:hover {
+    /*font-weight: 400;*/
+    background-color: $card-cap-bg;
+  }
 }
 
 .fa-times:hover {

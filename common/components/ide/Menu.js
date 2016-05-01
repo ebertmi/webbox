@@ -42,6 +42,12 @@ export default class Menu extends React.Component {
     this.props.project.addTab('insights');
   }
 
+  onAttributes(e) {
+    e.preventDefault();
+
+    this.props.project.addTab('attributes');
+  }
+
   onNewTerminal(e) {
     e.preventDefault();
 
@@ -121,8 +127,13 @@ export default class Menu extends React.Component {
 
         <DropdownDivider/>
 
+        {/* ToDo: add here a check if the user may have access to those items */}
         <DropdownItem onClick={this.onInsights.bind(this)}>
           <Icon name="bar-chart" fixedWidth/> Statistiken
+        </DropdownItem>
+
+        <DropdownItem onClick={this.onAttributes.bind(this)}>
+          <Icon name="info" fixedWidth/> Eigenschafaten
         </DropdownItem>
 
         {/*

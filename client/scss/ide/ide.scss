@@ -25,6 +25,11 @@ html, body, #ide-container {
     }
   }
 
+  .embed-title {
+    padding: 0.25em 1em;
+    font-weight: 300;
+  }
+
   .danger {
     color: $brand-danger;
   }
@@ -39,6 +44,46 @@ html, body, #ide-container {
 
   .success {
     color: $brand-success;
+  }
+
+  /* StatusBar specific styles */
+  .status-bar {
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: row;
+    flex: 0 0 auto;
+    border-top: #ddd solid 1px;
+    font-size: 0.9em;
+
+    & .status-language-information {
+      padding: 0.25em 1em;
+      font-weight: 300;
+      border-right: #ddd solid 1px;
+    }
+
+    & .status-message {
+      padding: 0.25em 1em;
+    }
+
+    &.danger {
+      color: $state-danger-text;
+      background-color: $state-danger-bg;
+    }
+
+    &.warning {
+      color: $state-warning-text;
+      background-color: $state-warning-bg;
+    }
+
+    &.info {
+      color: $state-info-text;
+      background-color: $state-info-bg;
+    }
+
+    &.success {
+      color: $state-success-text;
+      background-color: $state-success-bg;
+    }
   }
 
   @import "_tabbar";

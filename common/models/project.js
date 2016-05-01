@@ -2,12 +2,13 @@ import {EventEmitter} from 'events';
 
 import File from './file';
 import isString from 'lodash/isString';
+import { Status } from './status';
 
 export default class Project extends EventEmitter {
   constructor(data) {
     super();
 
-    this.name = data.name;
+    this.name = data.meta.name || '';
 
     // save original data
     this.data = data;
@@ -19,6 +20,7 @@ export default class Project extends EventEmitter {
     this.fromInitialData(this.data);
 
     // switch tab to first one
+    this.status = new Status();
   }
 
   // callback is called when tab is closed
@@ -85,9 +87,17 @@ export default class Project extends EventEmitter {
   }
 
   addFile(name, text, mode, active=true) {
+    if (this.hasFile(name)) {
+      this.status.setStatusMessage('Datei bereits vorhanden. Ersetzen?', 'Achtung', 'danger');
+    }
+
     let file = new File(name, text, mode);
 
     this.addTab('file', { item: file, active: active});
+  }
+
+  hasFile(name) {
+    return this.tabs.filter(tab => tab.type === 'file').filter(tab => tab.item.getName() === name).length > 0;
   }
 
   getFiles() {

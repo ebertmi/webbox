@@ -10,13 +10,15 @@ import FileTab from './tabs/FileTab';
 import ProcessTab from './tabs/ProcessTab';
 import OptionsTab from './tabs/OptionsTab';
 import InsightsTab from './tabs/InsightsTab';
+import AttributesTab from './tabs/AttributesTab';
 //import TurtleTab from './tabs/TurtleTab';
 
 const TAB_TYPES = {
   file: FileTab,
   options: OptionsTab,
   process: ProcessTab,
-  insights: InsightsTab
+  insights: InsightsTab,
+  attributes: AttributesTab
 };
 
 export default class TabBar extends React.Component {
@@ -107,8 +109,12 @@ export default class TabBar extends React.Component {
         <Nav className="tabs" bsStyle="pills">
           {this.renderTabs()}
         </Nav>
+        <span className="embed-title">{project.name}</span>
         <Nav className="controls" bsStyle="pills">
           {startStop}
+          <NavItem >
+            <Icon name="save" />
+          </NavItem>
           <Menu project={project}/>
         </Nav>
       </div>

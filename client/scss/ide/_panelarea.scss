@@ -5,7 +5,7 @@
   display: flex;
   flex-flow: row;
   overflow: hidden;
-
+  border-top: #ddd solid 1px;
   > * {
     flex: 1 1 0;
     box-sizing: border-box;

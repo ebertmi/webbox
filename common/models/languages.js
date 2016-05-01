@@ -22,7 +22,8 @@ export default {
         regex: /^(.+):(\d+):(\d+): (?:fatal )?(error|warning|note): (.*)$/,
         labels: ['file', 'row', 'column', 'type', 'text']
       });
-    }
+    },
+    displayName: 'C (Sourcebox)'
   },
 
   java: {
@@ -40,17 +41,20 @@ export default {
           this.push(labels);
         }
       }, 3);
-    }
+    },
+    displayName: 'Java (Sourcebox)'
   },
 
   // this allows us also to run any commands and configure matplotlib etc
   python3: {
-    exec: ['python3', './main.py']
+    exec: ['python3', './main.py'],
+    displayName: 'Python 3 (Sourcebox)'
   },
 
   // this allows us also to run any commands and configure matplotlib etc
   python2: {
-    exec: ['python', './main.py']
+    exec: ['python', './main.py'],
+    displayName: 'Python 2 (Sourcebox)'
   }
 
 };
