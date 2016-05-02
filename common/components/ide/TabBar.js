@@ -81,6 +81,7 @@ export default class TabBar extends React.Component {
 
       return (
         <TabType
+          className="tab-item"
           key={index}
           active={active}
           item={item}

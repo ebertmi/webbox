@@ -22,15 +22,40 @@
   color: #333333;
   font-weight: 300;
   padding: 0.25em 1em;
+  border-top: transparent solid 2px;
 
   &.active {
+    /* Make the active tab stand out */
     background-color: $card-cap-bg;
     font-weight: 400;
+    border-top: #1abc9c solid 2px;
+    color: black;
   }
 
   &:hover {
     /*font-weight: 400;*/
     background-color: $card-cap-bg;
+    border-top: #1abc9c solid 2px;
+  }
+}
+
+.nav-pills.controls .nav-link {
+  color: #333333;
+  font-weight: 300;
+  padding: 0.25em 1em;
+  border-top: transparent solid 2px;
+
+  &.active {
+    background-color: $card-cap-bg;
+    font-weight: 400;
+    border-top: transparent solid 2px;
+    color: black;
+  }
+
+  &:hover {
+    /*font-weight: 400;*/
+    background-color: $card-cap-bg;
+    border-top: transparent solid 2px;
   }
 }
 

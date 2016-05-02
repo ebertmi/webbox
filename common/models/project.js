@@ -6,6 +6,28 @@ import { Status } from './status';
 import { Severity, MessageWithAction } from './messages';
 import { Action } from './actions';
 
+/**
+ * Projects need to support multiple modes:
+ *  - Default: allows all operations
+ *  - Readonly: allows running, etc, but no file changes
+ *  - NoSave: allows to running and file changes but not saving those
+ *  (- ViewDocument: only view a document with editing but no saving)
+ */
+export const MODES = {
+  'Default': 'Default',
+  'Readonly': 'Readonly',
+  'NoSave': 'NoSave',
+  'ViewDocument': 'ViewDocument'
+}
+
+/**
+ * User Rights limit the operations:
+ *  - Default
+ *  - Author (modify the codeEmbed directly and also the options)
+ *  - ViewDocument
+ *
+ */
+
 export default class Project extends EventEmitter {
   constructor(data) {
     super();
@@ -23,6 +45,8 @@ export default class Project extends EventEmitter {
 
     // switch tab to first one
     this.status = new Status();
+
+    this.mode = data.mode || MODES.Default;
   }
 
   setMessageList(messageList) {
