@@ -21,7 +21,7 @@
 	font-size: 12px;
 	position: absolute;
 	z-index: 2000; /* on top of the world */
-	color: #eee;
+	color: $state-info-text;
 	box-shadow: 0 2px 8px #A8A8A8;
 	background-color: #2C2C2C;
 	list-style-type: none;
@@ -84,15 +84,15 @@
   }
 
   & li.message-list-entry .message-left-side.severity.app-error {
-    background-color: #BE1100;
+    background-color: $state-danger-bg;
   }
 
   & li.message-list-entry .message-left-side.severity.app-warning {
-    background-color: #B89500;
+    background-color: $state-warning-bg;
   }
 
   & li.message-list-entry .message-left-side.severity.app-info {
-    background-color: #007ACC;
+    background-color: $state-info-bg;
   }
 
   & li.message-list-entry .message-left-side.message-overflow-ellipsis {
@@ -112,11 +112,11 @@
 }
 
 .global-message-list li.message-list-entry .actions-container .message-action {
-	background-color: #1382CE;
+	background-color: $brand-primary;
 }
 
 .global-message-list li.message-list-entry .actions-container .message-action:hover {
-	background-color: rgb(0, 107, 179);
+	background-color: darken($brand-primary, 5%);
 }
 
 .global-message-list li.message-list-entry .actions-container .message-action .action-button {

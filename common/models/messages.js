@@ -28,6 +28,9 @@ import { Action } from './actions';
 import Promise from 'bluebird';
 import isString from 'lodash/isString';
 
+/**
+ * Severity of Messages.
+ */
 export const Severity = {
   "Info": "info",
   "Warning": "warning",

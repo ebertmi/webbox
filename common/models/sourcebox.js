@@ -19,6 +19,7 @@ export default class SourceboxProject extends Project {
       this.config = data.meta.language;
     }
 
+    // ToDo: add an error handler here!
     let {server, ...sbConfig} = serverConfig;
     this.sourcebox = new Sourcebox(server, sbConfig);
 
