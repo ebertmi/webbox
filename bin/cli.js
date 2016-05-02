@@ -8,8 +8,8 @@ require('yargs').usage('webboxcli <cmd> [args]')
     list(argv.model);
   })
   .example('list User', 'list all users')
-  .command('addUser <username> <email> <password>', 'adds/updates a user to the database', {}, function (argv) {
-    addUser(argv.username, argv.email, argv.password);
+  .command('addUser <username> <email> <password> <isAdmin>', 'adds/updates a user to the database', {}, function (argv) {
+    addUser(argv.username, argv.email, argv.password, argv.isAdmin);
   })
   .command('removeUser <id>', 'removes the user with <id>', {}, function (argv) {
     removeUser(argv.id);
@@ -49,8 +49,14 @@ function list (model) {
 /**
  * Adds a new user if not already existing
  */
-function addUser (username, email, password) {
+function addUser (username, email, password, isAdmin) {
   var User = require('../lib/models/user');
+  var roles = ['user'];
+
+  if (isAdmin && isAdmin === true) {
+    roles.push('admin');
+  }
+
   User.findByEmailorUsername(username, email)
   .then((user) => {
     console.log('A user with this username/email already exists.', user.id);
@@ -68,7 +74,7 @@ function addUser (username, email, password) {
       username: username,
       email: email,
       password: hash,
-      roles: ['user']
+      roles: roles
     });
     return newUser.save();
   })
