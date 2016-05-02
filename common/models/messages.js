@@ -1,6 +1,27 @@
 /**
- * Each IDE as an status bar with messages shown at the bottom
+ * Each IDE as an status bar with messages shown at the bottom. Inspired by VS Code by ported
+ * to our internal data model and React.
  */
+
+/*---------------------------------------------------------------------------------------------
+  Copyright (c) Microsoft Corporation
+
+  All rights reserved.
+
+  MIT License
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+  files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+  modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+  is furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
+  OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *--------------------------------------------------------------------------------------------*/
 
 import { EventEmitter } from 'events';
 import { Action } from './actions';
@@ -20,6 +41,8 @@ export class MessageWithAction {
   }
 }
 
+let _internalMessageCounter = 1000;
+
 export class MessageEntry extends EventEmitter {
   constructor(data) {
     super();
@@ -30,6 +53,7 @@ export class MessageEntry extends EventEmitter {
     this.time = data.time || null;
     this.count = data.count || 1;
     this.actions = data.actions || null;
+    this.key = data.key;
   }
 
 
@@ -100,7 +124,8 @@ export class MessageList extends EventEmitter {
       text: message,
       severity: severity,
       time: new Date().getTime(),
-      actions: id.actions
+      actions: id.actions,
+      key: 'ME' + _internalMessageCounter++
     }));
 
     // trigger change
@@ -121,7 +146,7 @@ export class MessageList extends EventEmitter {
         new Action('close.message.action', 'Schließen', null, true, () => {
           this.hideMessage(message.text); // hide all messsage with same text
 
-          return Promise.return(true);
+          return Promise.resolve(true);
         })
       ];
     }
@@ -235,6 +260,10 @@ export class MessageList extends EventEmitter {
         this.prepareRenderMessages(false);
       }
     });
+  }
+
+  getMessages() {
+    return this.messages;
   }
 
   emitChange() {

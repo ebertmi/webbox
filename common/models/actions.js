@@ -27,51 +27,51 @@ export class Action extends EventEmitter {
   constructor(id, label='', cssClass='', enabled=true, actionCallback=null) {
     super();
 
-    this._id = id;
-    this._label = label;
-    this._cssClass = cssClass;
-    this._enabled = enabled;
-    this._actionCallback = actionCallback;
+    this.id = id;
+    this.label = label;
+    this.cssClass = cssClass;
+    this.enabled = enabled;
+    this.actionCallback = actionCallback;
   }
 
   setLabel(value) {
-    if (this._label !== value) {
-      this._label = value;
+    if (this.label !== value) {
+      this.label = value;
       this.emit(Action.LABEL, { source: this});
     }
   }
 
   setTooltip(value) {
-    if (this._tooltip !== value) {
-      this._tooltip = value;
+    if (this.tooltip !== value) {
+      this.tooltip = value;
       this.emit(Action.TOOLTIP, { source: this });
     }
   }
 
   setClass(value) {
-    if (this._cssClass !== value) {
-      this._cssClass = value;
+    if (this.cssClass !== value) {
+      this.cssClass = value;
       this.emit(Action.CLASS, { source: this });
     }
   }
 
   setEnabled(value) {
-    if (this._enabled !== value) {
-      this._enabled = value;
+    if (this.enabled !== value) {
+      this.enabled = value;
       this.emit(Action.ENABLED, { source: this });
     }
   }
 
   setChecked(value) {
-    if (this._checked !== value) {
-      this._checked = value;
+    if (this.checked !== value) {
+      this.checked = value;
       this.emit(Action.CHECKED, { source: this });
     }
   }
 
   run(event) {
-    if (this._actionCallback !== null) {
-      return this._actionCallback(event);
+    if (this.actionCallback !== null) {
+      return this.actionCallback(event);
     } else {
       return Promise.return(true);
     }

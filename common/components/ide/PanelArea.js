@@ -6,6 +6,7 @@ import OptionsPanel from './panels/OptionsPanel';
 import InsightsPanel from './panels/InsightsPanel';
 import TurtlePanel from './panels/TurtlePanel';
 import AttributesPanel from './panels/AttributesPanel';
+import { MessageList } from './messageList/messageList';
 
 const PANEL_TYPES = {
   file: FilePanel,
@@ -56,6 +57,7 @@ export default class PanelArea extends React.Component {
   renderGlobalMessageList() {
     return (
     <div className="global-message-list">
+      <MessageList messageList={this.props.messageList} />
     </div>
     );
   }
@@ -63,7 +65,7 @@ export default class PanelArea extends React.Component {
   render() {
     return (
       <div className="panel-area">
-        {this.renderGlobalMessageList}
+        {this.renderGlobalMessageList()}
         {this.renderPanels()}
       </div>
     );
