@@ -2,7 +2,16 @@
 Webbased editor powered by sourcebox (secure remote-code-execution with bidirectional streams)
 
 ## Table of Contents
-ToDo
+* [Quick start](#quick-start)
+* [Start server](#start-server)
+* [Config](#config)
+* [Routing](#routes)
+* [Models](#models)
+* [Logs & Monitoring](#logsmonitoring)
+* [Database](#rethinkdb)
+* [Command-Line-Interface](#cli)
+* [IDE](#ide)
+* [React](#react)
 
 ## Quick start
 Follow those steps to get webbox running on your system:
@@ -71,3 +80,13 @@ Creating a pool connected to localhost:28015
 Trying to save encrypted password: foobar $2a$10$wYd78IZGAHPliuY.sVCYF.3GgwOq/6x4YSJckB4hdRW/2pF5vaqZ2
 Saved User:  foobar 2f6e1442-359b-4242-a885-401cbbd6932e
 ```
+
+### IDE
+The IDE is a react-based UI for programming. See:
+* `client\js\embed.js`
+* `common\components\ide\`
+* `common\models\project.js` and related files
+
+
+### React
+The webbox appilcation is using a mix of server-side templating (Jade) and React for rendering the pages.
