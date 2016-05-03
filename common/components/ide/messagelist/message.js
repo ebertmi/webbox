@@ -2,7 +2,7 @@
  * https://github.com/Microsoft/vscode/tree/master/src/vs/base/browser/ui/messagelist
  */
 import React from 'react';
-import { Severity } from '../../../models/messages';
+import { toSeverityAppClass, toTextLabel } from '../../../models/severity';
 
 export class Message extends React.Component {
 
@@ -22,8 +22,8 @@ export class Message extends React.Component {
 
   renderSeverity() {
     let severity = this.props.message.severity;
-    let label = (severity === Severity.Error) ? 'Fehler' : (severity === Severity.Warning) ? 'Hinweis' : 'Info';
-    let severityClass = (severity === Severity.Error) ? 'app-error' : (severity === Severity.Warning) ? 'app-warning' : 'app-info';
+    let label = toTextLabel(severity);
+    let severityClass = toSeverityAppClass(severity);
     let classes = 'message-left-side severity ' + severityClass;
 
     return (

@@ -5,8 +5,6 @@
 var webpack = require('webpack');
 var path = require('path');
 
-var commonsPlugin = new webpack.optimize.CommonsChunkPlugin('common.bundle.js');
-
 module.exports = {
   context: path.resolve(__dirname, 'client'),
   entry: {
@@ -44,7 +42,12 @@ module.exports = {
       }
     ]
   },
-  plugins: [commonsPlugin],
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'react-commons',
+      chunks: ['dashboard', 'embed']
+    })
+  ],
   node: {
     Buffer: true,
     fs: 'empty' // needed for term.js

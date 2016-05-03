@@ -4,7 +4,7 @@
  */
 
 var config = require('config');
-var goodConfig = require('./good');
+var goodOptions = require('./good');
 
 // add the flags to the config
 config.isDev  = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
@@ -12,7 +12,7 @@ config.isProd = process.env.NODE_ENV === 'production';
 config.isTest = process.env.NODE_ENV === 'test';
 
 // add good process monitor config
-config.good = goodConfig;
+config.good = goodOptions;
 
 
 module.exports = config;

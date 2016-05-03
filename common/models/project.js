@@ -3,7 +3,8 @@ import {EventEmitter} from 'events';
 import File from './file';
 import isString from 'lodash/isString';
 import { Status } from './status';
-import { Severity, MessageWithAction } from './messages';
+import { MessageWithAction } from './messages';
+import { Severity  } from './severity';
 import { Action } from './actions';
 
 /**

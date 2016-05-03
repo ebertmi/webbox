@@ -3,6 +3,7 @@
  */
 
 import {EventEmitter} from 'events';
+import { Severity } from './severity';
 
 export class Status extends EventEmitter {
   constructor() {
@@ -16,7 +17,7 @@ export class Status extends EventEmitter {
     this.onOkay = null; // no op
     this.onCancel = null; // no op
 
-    this.level = 'default';
+    this.severity = Severity.Info;
   }
 
   setLanguageInformation(content) {
@@ -25,10 +26,10 @@ export class Status extends EventEmitter {
     this.emitChange();
   }
 
-  setStatusMessage(message, title='', level='default', timeout=false) {
+  setStatusMessage(message, title='', severity=Severity.Info, timeout=false) {
     this.statusMessage = message;
     this.statusTitle = title;
-    this.level = level;
+    this.severity = severity;
 
     this.emit('change');
 
@@ -42,7 +43,7 @@ export class Status extends EventEmitter {
   resetStatusMessage() {
     this.statusMessage = '';
     this.statusTitle = '';
-    this.level = 'default';
+    this.severity = Severity.Info;
     this.emit('change');
   }
 
@@ -58,7 +59,7 @@ export class Status extends EventEmitter {
       onOkay: this.onOkay,
       onCancel: this.onCancel,
       languageInformation: this.languageInformation,
-      level: this.level
+      severity: this.severity
     };
   }
 

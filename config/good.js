@@ -1,18 +1,21 @@
-var goodConsole = require('good-console');
-var goodFile = require('good-file');
+/**
+ * Good Monitoring/Loggin Options
+ * See https://github.com/hapijs/good for further informations about the configuration
+ */
+const goodOptions = {
+  ops: {
+    interval: 1000
+  },
+  reporters: {
+    console: [{
+      module: 'good-console',
+      args: [{log: '*', response: '*', error: '*', request: 'error'}]
+    }],
+    file: [{
+      module: 'good-file',
+      args: ['./logs/good.log', {log: '*', error: '*', ops: 'error'}]
+    }]
+  }
+};
 
-var reporters = [{
-    reporter: goodConsole,
-    events: {log: '*', response: '*', error: '*', request: 'error'}
-}, {
-    reporter: goodFile,
-    events: {log: '*', error: '*', ops: 'error'},
-    config: './logs/good.log'
-}];
-
-var goodConfig = {
-    opsInterval: 1000,
-    reporters: reporters
-}
-
-module.exports = goodConfig;
+module.exports = goodOptions;

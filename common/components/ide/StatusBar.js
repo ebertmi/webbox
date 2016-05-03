@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Icon from '../Icon';
+import { toBootstrapClass } from '../../models/severity';
 
 export default class StatusBar extends React.Component {
   constructor(props) {
@@ -25,7 +25,7 @@ export default class StatusBar extends React.Component {
   }
 
   render() {
-    const classes = "status-bar " + this.state.status.level;
+    const classes = "status-bar " + toBootstrapClass(this.state.status.severity);
     return (
       <div className={classes}>
         <span className="status-language-information">{this.state.status.languageInformation}</span>

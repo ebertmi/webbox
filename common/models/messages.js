@@ -25,17 +25,9 @@
 
 import { EventEmitter } from 'events';
 import { Action } from './actions';
+import { Severity } from './severity';
 import Promise from 'bluebird';
 import isString from 'lodash/isString';
-
-/**
- * Severity of Messages.
- */
-export const Severity = {
-  "Info": "info",
-  "Warning": "warning",
-  "Error": "danger"
-};
 
 export class MessageWithAction {
   constructor(message, actions) {
