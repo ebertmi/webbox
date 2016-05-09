@@ -51,6 +51,16 @@ class TerminalTransform extends Transform {
   }
 }
 
+class ConsoleTransform extends Transform {
+  _transform(chunk, encoding, callback) {
+    var blob = new Blob([chunk], {type: "image/png"});
+    var imgSrc = window.URL.createObjectURL(blob);
+    console.log('Received chunk');
+    //console.log(chunk.toString().replace(/\n/g, '\r\n'));
+    callback();
+  }
+}
+
 // this class pretends to be a "Process", so it can be "displayed" by
 // ProcessPanel and ProcessTab
 export default class Runner extends EventEmitter {
@@ -140,7 +150,8 @@ export default class Runner extends EventEmitter {
 
     let compiler = this.sourcebox.exec(command.shift(), command, {
       cwd: this.path,
-      term: false
+      term: false,
+      env: this.config.env
     });
 
     let transform = new TerminalTransform();
@@ -195,17 +206,36 @@ export default class Runner extends EventEmitter {
       throw new Error('No exec command');
     }
 
-    this._status('Führe Programm aus');
+    this._status(this.config.exec.join(' '), false); // output run call
 
     let command = this._commandArray(this.config.exec);
 
     this.process = this.sourcebox.exec(command.shift(), command, {
       term: true,
-      cwd: this.path
+      cwd: this.path,
+      env: this.config.env,
+      streams: this.config.streams
     });
 
     this.stdin.pipe(this.process.stdin);
     this.process.stdout.pipe(this.stdout, {end: false});
+
+    // check for matplotlib stream
+    if (this.process.stdio[3]) {
+      var mplTransform = new Transform();
+      mplTransform._transform = (chunk, encoding, callback) => {
+        var blob = new Blob([chunk], {type: "image/png"});
+        var imgSrc = window.URL.createObjectURL(blob);
+        var img = new Image();
+        img.src = imgSrc;
+        img.onload = () => {
+          this.project.addTab('matplotlib', {item: img, active: true});
+        };
+
+        callback();
+      };
+      this.process.stdio[3].pipe(mplTransform, {end: false});
+    }
 
     return Promise.join(processPromise(this.process, false).reflect(), streamPromise(this.process.stdout), processPromise => {
       if (processPromise.isRejected()) {
@@ -217,8 +247,9 @@ export default class Runner extends EventEmitter {
     });
   }
 
-  _status(msg) {
-    this.stdout.write(`\x1b[34m ---- ${msg} ---- \x1b[m\r\n`);
+  _status(msg, dashes=true) {
+    let dash = dashes ? ' ---- ' : '';
+    this.stdout.write(`\x1b[34m${dash}${msg}${dash}\x1b[m\r\n`);
   }
 
   _commandArray(command) {

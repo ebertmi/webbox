@@ -11,6 +11,7 @@ import ProcessTab from './tabs/ProcessTab';
 import OptionsTab from './tabs/OptionsTab';
 import InsightsTab from './tabs/InsightsTab';
 import AttributesTab from './tabs/AttributesTab';
+import MatplotlibTab from './tabs/MatplotlibTab';
 //import TurtleTab from './tabs/TurtleTab';
 
 const TAB_TYPES = {
@@ -18,7 +19,8 @@ const TAB_TYPES = {
   options: OptionsTab,
   process: ProcessTab,
   insights: InsightsTab,
-  attributes: AttributesTab
+  attributes: AttributesTab,
+  matplotlib: MatplotlibTab
 };
 
 export default class TabBar extends React.Component {
@@ -76,13 +78,13 @@ export default class TabBar extends React.Component {
   renderTabs() {
     let project = this.props.project;
 
-    return project.getTabs().map(({active, item, type}, index) => {
+    return project.getTabs().map(({active, item, type, uniqueId}, index) => {
       let TabType = TAB_TYPES[type] || Tab;
 
       return (
         <TabType
           className="tab-item"
-          key={index}
+          key={uniqueId}
           active={active}
           item={item}
           onClick={this.onTabClick.bind(this, index)}

@@ -2,6 +2,7 @@ import {EventEmitter} from 'events';
 
 import File from './file';
 import isString from 'lodash/isString';
+import uniqueId from 'lodash/uniqueId';
 import { Status } from './status';
 import { MessageWithAction } from './messages';
 import { Severity  } from './severity';
@@ -15,11 +16,11 @@ import { Action } from './actions';
  *  (- ViewDocument: only view a document with editing but no saving)
  */
 export const MODES = {
-  'Default': 'Default',
-  'Readonly': 'Readonly',
-  'NoSave': 'NoSave',
-  'ViewDocument': 'ViewDocument'
-}
+  'Default': 'Default', /* default mode */
+  'Readonly': 'Readonly', /* prevents editing the embed */
+  'NoSave': 'NoSave', /* disables saving for the current IDE, e. g. viewing a differen document */
+  'ViewDocument': 'ViewDocument' /* allows to view a different document for this embed */
+};
 
 /**
  * User Rights limit the operations:
@@ -32,6 +33,7 @@ export const MODES = {
 export default class Project extends EventEmitter {
   constructor(data) {
     super();
+    this.unnamedTabCounter = 0;
 
     this.name = data.meta.name || '';
 
@@ -48,6 +50,8 @@ export default class Project extends EventEmitter {
     this.status = new Status();
 
     this.mode = data.mode || MODES.Default;
+
+    this.isConsistent = true;
   }
 
   setMessageList(messageList) {
@@ -77,7 +81,8 @@ export default class Project extends EventEmitter {
         type,
         item,
         callback,
-        active: false
+        active: false,
+        uniqueId: uniqueId('tab-')
       }) - 1;
     }
 
@@ -113,6 +118,10 @@ export default class Project extends EventEmitter {
       let messageObj;
       let deleteAction = new Action('delete.message.action', 'Löschen', null, true, () => {
         this.removeTab(tab, index);
+
+        // cleanup
+        tab.item.dispose();
+
         this.hideMessage(messageObj); // hide message
       });
 
@@ -135,7 +144,7 @@ export default class Project extends EventEmitter {
    */
   removeTab(tab, index) {
     // try to remove from list
-    this.tabs.splice(index, 1)[0];
+    this.tabs.splice(index, 1);
 
     if (!tab) {
       return;
@@ -172,39 +181,45 @@ export default class Project extends EventEmitter {
     }
   }
 
-  /**
-   * Adds a new file(-tab) to the project. It checks for duplicates and asks the user what to do.
-   */
-  addFile(name, text, mode, active=true) {
-    // ToDo: check if name is valid filename or filepath
-    let file;
-    let tab;
+  setConsistency(val) {
+    this.isConsistent = val;
+    this.emitChange();
+  }
 
-    if (this.hasFile(name)) {
-      let messageObj;
+  getConsistency() {
+    return this.isConsistent;
+  }
+
+  onChangedFileName(e) {
+    let messageObj;
+    let duplicateTab;
+    let tab = this.getTabForFileOrNull(e.file);
+
+    // update the syntax highlighting for this tab
+    tab.item.autoDetectMode();
+
+    // later on we could do this on the file system maybe and just scan on dir
+    let duplicates = this.getFiles().filter(file => file.getName() === e.newName && file !== e.file);
+
+    // Currently, we do handle only one duplicate file and prevent more
+    if (duplicates.length > 0) {
+      this.setConsistency(false); // inconsisten project state
+      // get the tab
+      duplicateTab = this.getTabForFileOrNull(duplicates[0]);
+      let index = this.tabs.findIndex(tab => tab === duplicateTab);
       let replaceAction = new Action('replace.message.action', 'Ersetzen', null, true, () => {
-        // remove previous file
-        file = new File(name, text, mode);
-        tab = this.getTabForFilenameOrNull(name);
-        if (tab !== null) {
-          tab.item = file;
-          this.tabs.forEach(tab => tab.active = false); // hide all other tabs
-          tab.active = true;
-        } else {
-          this.addTab('file', { item: file, active: active});
-        }
+        // remove old file & tab
+        this.removeTab(duplicateTab, index);
 
-        this.emitChange(); // trigger rerendering
+        this.setConsistency(true);
         this.hideMessage(messageObj); // hide message
       });
 
       let renameAction = new Action('rename.message.action', 'Umbenennen', null, true, () => {
-        // ToDo: rename by triggering new add
-        let name = this.promptFileName();
-        if (name != null) {
-          this.addFile(name, '');
-        }
+        // enable renaming mode again
+        tab.item.setNameEdtiable(true);
 
+        this.setConsistency(true);
         this.hideMessage(messageObj);
       });
 
@@ -212,12 +227,26 @@ export default class Project extends EventEmitter {
         [replaceAction, renameAction]);
 
       this.showMessage(Severity.Warning, messageObj);
+    }
+  }
 
-      return;
+  /**
+   * Adds a new file(-tab) to the project. It checks for duplicates and asks the user what to do.
+   */
+  addFile(name, text, mode, active=true) {
+    let file;
+    let filename = name;
+
+    if (name == null) {
+      filename = 'Unbenannt' + this.unnamedTabCounter++ + '.txt';
+      file = new File(filename, text, mode);
+      file.setNameEdtiable(true); // enable file renaming immediatelly
+    } else {
+      file = new File(filename, text, mode);
     }
 
-    // just add the file
-    file = new File(name, text, mode);
+    // filename change handler
+    file.on('changedName', this.onChangedFileName.bind(this));
 
     this.addTab('file', { item: file, active: active});
   }
@@ -235,6 +264,20 @@ export default class Project extends EventEmitter {
       this.showMessage(Severity.Error, 'Ungültiger Pfad bzw. Dateiname!');
       return null;
     }
+  }
+
+  getTabForFileOrNull(file) {
+    let tab = null;
+    let matchingTabs = this.tabs.filter(tab => tab.type === 'file').filter(tab => tab.item === file);
+    if (matchingTabs.length === 1) {
+      // found a tab (there should be only one now)
+      tab = matchingTabs[0];
+    } else if (matchingTabs.length > 1) {
+      // inconsistent state, should throw an error
+      this.showMessage(Severity.Error, 'Inkonsistentes Projekt. Bitte Seite neu laden!');
+    }
+
+    return tab;
   }
 
   /**

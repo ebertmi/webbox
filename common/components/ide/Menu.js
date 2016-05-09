@@ -21,13 +21,15 @@ export default class Menu extends React.Component {
     e.preventDefault();
 
     // TODO use bootstrap modal
-    let filename = prompt('Dateiname?');
+    //let filename = prompt('Dateiname?');
 
     // TODO what about duplicate files?
     // maybe we should also create the files on the disk...
-    if (filename) {
-      this.props.project.addFile(filename);
-    }
+    //if (filename) {
+    //  this.props.project.addFile(filename);
+    //}
+
+    this.props.project.addFile();
   }
 
   onOptions(e) {

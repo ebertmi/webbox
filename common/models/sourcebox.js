@@ -1,5 +1,7 @@
 import Sourcebox from '@sourcebox/web';
 import isString from 'lodash/isString';
+import pathModule from 'path';
+import { Severity  } from './severity';
 
 import Project from './project';
 import Runner from './sourceboxRunner';
@@ -27,7 +29,9 @@ export default class SourceboxProject extends Project {
   }
 
   exec(cmd, args=[], options=PROCESS_DEFAULTS) {
-    let process = this.sourcebox.exec('bash', args, options);
+    let combinedOptions = Object.assign({}, {env: this.config.env}, options);
+    console.log(combinedOptions);
+    let process = this.sourcebox.exec('bash', args, combinedOptions);
 
     this.addTab('process', {
       item: process,
@@ -44,6 +48,11 @@ export default class SourceboxProject extends Project {
   }
 
   run() {
+    if (this.getConsistency() === false) {
+      this.showMessage(Severity.Error, 'Das Projekt kann derzeit nicht ausgeführt werden. Haben Sie noch weitere Meldungen offen?');
+      return;
+    }
+
     if (this.isRunning()) {
       return;
     }
@@ -76,6 +85,26 @@ export default class SourceboxProject extends Project {
     if (this.isRunning()) {
       this.runner.stop();
     }
+  }
+
+  removeTab(tab, index) {
+    super.removeTab(tab, index);
+
+    // special file tab handling
+    if (tab.type === 'file') {
+      // delete file from disk to avoid using old files
+      var filePath = tab.item.getName();
+      this.deleteFile(filePath);
+
+
+    }
+  }
+
+  deleteFile(filename) {
+    let path = this.name || '.';
+    path = pathModule.join(path, filename);
+
+    return this.sourcebox.rm([path], { term: false }); // call rm method
   }
 
   isRunning() {

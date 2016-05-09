@@ -17,7 +17,7 @@ export class Status extends EventEmitter {
     this.onOkay = null; // no op
     this.onCancel = null; // no op
 
-    this.severity = Severity.Info;
+    this.severity = Severity.Ignore; // ignore does not have any special color
   }
 
   setLanguageInformation(content) {
@@ -26,7 +26,7 @@ export class Status extends EventEmitter {
     this.emitChange();
   }
 
-  setStatusMessage(message, title='', severity=Severity.Info, timeout=false) {
+  setStatusMessage(message, title='', severity=Severity.Ignore, timeout=false) {
     this.statusMessage = message;
     this.statusTitle = title;
     this.severity = severity;
@@ -43,7 +43,7 @@ export class Status extends EventEmitter {
   resetStatusMessage() {
     this.statusMessage = '';
     this.statusTitle = '';
-    this.severity = Severity.Info;
+    this.severity = Severity.Ignore;
     this.emit('change');
   }
 

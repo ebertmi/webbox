@@ -8,8 +8,6 @@ import { Severity } from '../../models/severity';
 export default class Ide extends React.Component {
   constructor(props) {
     super(props);
-
-    this.props.messageList.showMessage(Severity.Info, "Initialized IDE");
   }
 
   onDrop(e) {

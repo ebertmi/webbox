@@ -48,7 +48,12 @@ export default {
   // this allows us also to run any commands and configure matplotlib etc
   python3: {
     exec: ['python3', './main.py'],
-    displayName: 'Python 3 (Sourcebox)'
+    displayName: 'Python 3 (Sourcebox)',
+    env: {
+      PYTHONPATH: '/home/user/PythonTest',
+      MPLBACKEND: 'module://backend_sb'
+    },
+    streams: 1
   },
 
   // this allows us also to run any commands and configure matplotlib etc

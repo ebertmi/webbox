@@ -90,4 +90,7 @@ html, body, #ide-container {
   @import "_panelarea";
   @import "_terminal";
   @import "_messagelist";
+  @import "_filename_widget";
+  @import "_inputbox";
+  @import "_filerename";
 }
