@@ -4,10 +4,10 @@ import { bindActionCreators } from 'redux';
 
 import { PaginationContainer } from '../PaginationContainer';
 import { LoadingContainer } from '../LoadingContainer';
-import {CourseTableRow} from '../../components/admin/CourseTableRow';
+import { CourseTableRow } from '../../components/admin/CourseTableRow';
 import * as AdminActions from '../../actions/AdminActions';
 
-class UserOverview extends Component {
+class CourseOverview extends Component {
   renderTable () {
     return (
       <table className="table table-sm tabl-striped">
@@ -52,4 +52,4 @@ export default connect(state => ({
   courseOverview: state.courseOverview
 }),
   dispatch => bindActionCreators(AdminActions, dispatch)
-)(UserOverview);
+)(CourseOverview);

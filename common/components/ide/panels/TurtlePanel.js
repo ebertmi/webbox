@@ -11,15 +11,18 @@ export default class TurtlePanel extends React.Component {
   componentWillUnmount() {
   }
 
-  onChangeOption() {
-    this.setState({
-      stats: {}
-    });
+  onRef(ref) {
+    if (ref) {
+      ref.appendChild(this.props.item);
+    }
   }
 
   render() {
     return (
-      <h1>Turtle-Ausgabe</h1>
+      <div>
+        <h1>Turtle-Ausgabe</h1>
+        <div ref={this.onRef.bind(this)}></div>
+      </div>
     );
   }
 }

@@ -10,6 +10,11 @@ export default class Ide extends React.Component {
     super(props);
   }
 
+  componentDidMount() {
+    // handle Ctrl+S on the whole document even when nothing is focused
+    document.addEventListener('keydown', this.onKeyDown.bind(this));
+  }
+
   onDrop(e) {
     e.preventDefault();
 
@@ -26,6 +31,20 @@ export default class Ide extends React.Component {
       };
 
       reader.readAsText(file);
+    }
+  }
+
+  /**
+   * Check for Ctrl+S and try to save the document if possible
+   */
+  onKeyDown(e) {
+    let key = e.which || e.keyCode;
+    if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 83) {
+
+      // ToDo: call here saving
+      // ToDo: debounce or throttle the calls?
+      this.props.project.showMessage(Severity.Info, 'Saving');
+      e.preventDefault();
     }
   }
 

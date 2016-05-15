@@ -30,3 +30,7 @@ After some tries the following command was working:
 ```bash
 sudo sourcebox create --distro debian --release jessie --loop 2GB /bar
 ```
+
+## Trouble Shooting
+### Installing `sandbox-web` fails or cannot run server
+Try to rerun `sudo node-gype rebuild` in the sourcebox-lxc directory (the one with the bindings.gyp)

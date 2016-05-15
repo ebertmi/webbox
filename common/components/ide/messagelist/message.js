@@ -20,14 +20,24 @@ export class Message extends React.Component {
     );
   }
 
+  renderCount() {
+    let tagClasses = 'tag tag-default';
+    if (this.props.message.count && this.props.message.count > 1) {
+      return <span className={tagClasses}>{this.props.message.count}</span>;
+    } else {
+      return null;
+    }
+  }
+
   renderSeverity() {
     let severity = this.props.message.severity;
     let label = toTextLabel(severity);
     let severityClass = toSeverityAppClass(severity);
     let classes = 'message-left-side severity ' + severityClass;
+    let messageCount = this.props.message.count && this.props.message.count > 1 ? `(${this.props.message.count})` : '';
 
     return (
-      <span className={classes}>{label}</span>
+      <span className={classes}>{label} {messageCount}</span>
     );
   }
 

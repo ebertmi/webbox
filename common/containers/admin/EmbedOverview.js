@@ -4,10 +4,10 @@ import { bindActionCreators } from 'redux';
 
 import { PaginationContainer } from '../PaginationContainer';
 import { LoadingContainer } from '../LoadingContainer';
-import {EmbedTableRow} from '../../components/admin/EmbedTableRow';
+import { EmbedTableRow } from '../../components/admin/EmbedTableRow';
 import * as AdminActions from '../../actions/AdminActions';
 
-class UserOverview extends Component {
+class EmbedOverview extends Component {
 
   renderTable() {
     return (<table className="table table-sm tabl-striped">
@@ -19,6 +19,7 @@ class UserOverview extends Component {
           <th>Autor</th>
           <th>Erstellt am</th>
           <th>Zuletzt verändert am</th>
+          <th>Typ (Umgebung)</th>
           <th>URL</th>
         </tr>
       </thead>
@@ -52,4 +53,4 @@ export default connect(state => ({
   embedOverview: state.embedOverview
 }),
   dispatch => bindActionCreators(AdminActions, dispatch)
-)(UserOverview);
+)(EmbedOverview);

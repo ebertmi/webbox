@@ -12,7 +12,7 @@ import OptionsTab from './tabs/OptionsTab';
 import InsightsTab from './tabs/InsightsTab';
 import AttributesTab from './tabs/AttributesTab';
 import MatplotlibTab from './tabs/MatplotlibTab';
-//import TurtleTab from './tabs/TurtleTab';
+import TurtleTab from './tabs/TurtleTab';
 
 const TAB_TYPES = {
   file: FileTab,
@@ -20,7 +20,8 @@ const TAB_TYPES = {
   process: ProcessTab,
   insights: InsightsTab,
   attributes: AttributesTab,
-  matplotlib: MatplotlibTab
+  matplotlib: MatplotlibTab,
+  turtle: TurtleTab
 };
 
 export default class TabBar extends React.Component {

@@ -65,6 +65,7 @@ export class MessageList extends EventEmitter {
     super();
 
     this.messages = [];
+    this._aggregatedMessages = []; // do not change this manually
     this.messageListPurger = null;
     this.usageLogger = usageLogger;
     this.options = options;
@@ -159,6 +160,9 @@ export class MessageList extends EventEmitter {
       message.actions = messageActions;
     });
 
+    // update messages after reducing and clustering
+    this._aggregatedMessages = messages;
+
     this.emitChange();
   }
 
@@ -175,7 +179,7 @@ export class MessageList extends EventEmitter {
         messages.push(message);
         handledMessages[message.text] = offset++;
       } else {
-        handledMessages[message.text].count++;
+        messages[handledMessages[message.text]].count++;
       }
     }
 
@@ -258,7 +262,7 @@ export class MessageList extends EventEmitter {
   }
 
   getMessages() {
-    return this.messages;
+    return this._aggregatedMessages;
   }
 
   emitChange() {

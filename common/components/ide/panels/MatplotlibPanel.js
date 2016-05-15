@@ -21,7 +21,6 @@ export default class MatplotlibPanel extends React.Component {
   render() {
     return (
       <div>
-        <span>Matplotlib Anzeige</span>
         <div ref={this.onRef.bind(this)}></div>
       </div>
     );

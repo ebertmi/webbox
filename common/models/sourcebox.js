@@ -21,11 +21,20 @@ export default class SourceboxProject extends Project {
       this.config = data.meta.language;
     }
 
-    // ToDo: add an error handler here!
     let {server, ...sbConfig} = serverConfig;
     this.sourcebox = new Sourcebox(server, sbConfig);
 
+    // register error handler
+    this.sourcebox.on('error', this.onError.bind(this));
+
     this.status.setLanguageInformation(this.config.displayName);
+  }
+
+  /**
+   * Shows Error Messages that come from sourcebox
+   */
+  onError(error) {
+    this.showMessage(Severity.Error, error);
   }
 
   exec(cmd, args=[], options=PROCESS_DEFAULTS) {
@@ -44,6 +53,10 @@ export default class SourceboxProject extends Project {
 
     process.on('exit', () => {
       this.closeTab(index);
+    });
+
+    process.on('error', (error) => {
+      this.showMessage(Severity.Error, error);
     });
   }
 

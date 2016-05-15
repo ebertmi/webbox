@@ -53,7 +53,8 @@ export default {
       PYTHONPATH: '/home/user/PythonTest',
       MPLBACKEND: 'module://backend_sb'
     },
-    streams: 1
+    streams: 3,
+    streamsObjectMode: [false, false, false] /* set the mode for the additional streams */
   },
 
   // this allows us also to run any commands and configure matplotlib etc
