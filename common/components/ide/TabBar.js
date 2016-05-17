@@ -76,6 +76,12 @@ export default class TabBar extends React.Component {
     }
   }
 
+  onSave(e) {
+    e.preventDefault();
+
+    this.props.project.saveEmbed();
+  }
+
   renderTabs() {
     let project = this.props.project;
 
@@ -116,7 +122,7 @@ export default class TabBar extends React.Component {
         <span className="embed-title">{project.name}</span>
         <Nav className="controls" bsStyle="pills">
           {startStop}
-          <NavItem >
+          <NavItem onClick={this.onSave.bind(this)}>
             <Icon name="save" />
           </NavItem>
           <Menu project={project}/>

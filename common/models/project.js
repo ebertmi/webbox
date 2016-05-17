@@ -3,6 +3,7 @@ import {EventEmitter} from 'events';
 import File from './file';
 import isString from 'lodash/isString';
 import uniqueId from 'lodash/uniqueId';
+import { API } from '../services';
 import { Status } from './status';
 import { MessageWithAction } from './messages';
 import { Severity  } from './severity';
@@ -298,8 +299,16 @@ export default class Project extends EventEmitter {
     return tab;
   }
 
+  getIndexForFilename(name) {
+    let index = this.tabs.findIndex(tab => {
+      return tab.type === 'file' && tab.item.getName() === name;
+    });
+
+    return index;
+  }
+
   /**
-   * Checks if there is already a file with the given name
+   * Checks if there is a file with the given name
    */
   hasFile(name) {
     return this.getFiles().filter(file => file.getName() === name).length > 0;
@@ -330,9 +339,47 @@ export default class Project extends EventEmitter {
       }
     }
 
+    let index = 0;
+    let mainFile = data.meta.mainFile || 'main.py'; // ToDo: change this
+    // switch to specified mainFile
+    if (mainFile) {
+      index = this.getIndexForFilename(mainFile);
+
+      index = index > -1 ? index : 0;
+    }
+
     // switch to first tab
     if (this.tabs.length > 1) {
-      this.switchTab(0);
+      this.switchTab(index);
+    }
+  }
+
+  /**
+   * Save file changes, but nothing more
+   */
+  saveEmbed() {
+    // 1. Check current mode
+    if (this.mode === MODES.Default) {
+      const params = {
+        id: this.data.id
+      };
+
+      const payload = {
+        data: {
+          code: this.toCodeDocument()
+        }
+      };
+
+      // trigger save
+      API.embed.saveEmbed(params, payload).then(res => {
+        this.showMessage(Severity.Info, 'Gespeichert!');
+      }).catch(err => {
+        this.showMessage(Severity.Error, 'Speichern fehlgeschlagen!');
+        console.log(err);
+      });
+    } else {
+      // ToDo: Add action to open the same embed in edit mode
+      this.showMessage(Severity.Warning, 'Sie können dieses Beispiel nicht speichern, da es in der Leseansicht geöffnet wurde.');
     }
   }
 
@@ -342,7 +389,13 @@ export default class Project extends EventEmitter {
   }
 
   toCodeDocument() {
-    // ToDo: return all files (altered by an user [not owner]) to be saved
+    // Return all files (altered by an user [not owner]) to be saved
+    let code = { };
+    this.getFiles().map((item) => {
+      code[item.getName()] = item.getValue();
+    });
+
+    return code;
   }
 
   resetProject() {

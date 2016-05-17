@@ -8,6 +8,7 @@ var Vision = require('vision');
 var Jade = require('jade');
 var Crumb = require('crumb');
 var Blipp = require('blipp');
+var HapiIO = require('hapi-io');
 //var hratelimit = require('hapi-ratelimit');
 
 var config = require('./config/webbox.config');
@@ -52,7 +53,7 @@ server.register({
   register: Crumb,
   options: {
     cookieOptions: {
-      isSecure: false
+      isSecure: false // ToDo: Change this when dealing with SSL/HTTPS
     }
   }
 }, (err) => {
@@ -118,6 +119,7 @@ server.ext('onPreResponse', function (request, reply) {
     user = request.pre.user;
   }
 
+  // ToDo: change this to hide information in production mode
   if (request.response.isBoom) {
     console.error(request.response.stack);
     const err = request.response;
@@ -136,6 +138,12 @@ server.ext('onPreResponse', function (request, reply) {
   reply.continue();
 });
 
+// add WebSocket-Plugin
+server.register({
+  register: HapiIO,
+  options: {
+  }
+});
 
 // register routes
 server.route(require('./lib/routes'));

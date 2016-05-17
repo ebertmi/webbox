@@ -41,9 +41,8 @@ export default class Ide extends React.Component {
     let key = e.which || e.keyCode;
     if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 83) {
 
-      // ToDo: call here saving
       // ToDo: debounce or throttle the calls?
-      this.props.project.showMessage(Severity.Info, 'Saving');
+      this.props.project.saveEmbed();
       e.preventDefault();
     }
   }
