@@ -10,6 +10,7 @@ export class Status extends EventEmitter {
     super();
 
     this.languageInformation = '';
+    this.username = '';
 
     this.statusMessage = '';
     this.statusTitle = '';
@@ -18,6 +19,12 @@ export class Status extends EventEmitter {
     this.onCancel = null; // no op
 
     this.severity = Severity.Ignore; // ignore does not have any special color
+  }
+
+  setUsername(name) {
+    this.username = name;
+
+    this.emitChange();
   }
 
   setLanguageInformation(content) {
@@ -59,6 +66,7 @@ export class Status extends EventEmitter {
       onOkay: this.onOkay,
       onCancel: this.onCancel,
       languageInformation: this.languageInformation,
+      username: this.username,
       severity: this.severity
     };
   }

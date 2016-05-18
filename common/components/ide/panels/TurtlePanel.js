@@ -9,10 +9,16 @@ export default class TurtlePanel extends React.Component {
   }
 
   componentWillUnmount() {
+    if (this.turtleContainer) {
+      while (this.turtleContainer.firstChild) {
+        this.turtleContainer.removeChild(this.turtleContainer.firstChild);
+      }
+    }
   }
 
   onRef(ref) {
     if (ref) {
+      this.turtleContainer = ref;
       ref.appendChild(this.props.item);
     }
   }

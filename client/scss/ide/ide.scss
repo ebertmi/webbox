@@ -61,6 +61,16 @@ html, body, #ide-container {
       border-right: #ddd solid 1px;
     }
 
+    & .status-username {
+      padding: 0.25em 1em;
+      font-weight: 400;
+      border-right: #ddd solid 1px;
+
+      & .prefix {
+        font-weight: 300;
+      }
+    }
+
     & .status-message {
       padding: 0.25em 1em;
     }

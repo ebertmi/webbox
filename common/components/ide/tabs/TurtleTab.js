@@ -20,7 +20,7 @@ export default class TurtleTab extends React.Component {
   render() {
     return (
       <Tab {...this.props} icon="turtle">
-        Turtle-Asugabe
+        Turtle-Ausgabe
       </Tab>
     );
   }

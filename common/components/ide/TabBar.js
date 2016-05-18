@@ -107,7 +107,7 @@ export default class TabBar extends React.Component {
 
     if (project.run) {
       startStop = (
-        <NavItem onClick={this.onStartStop.bind(this)}>
+        <NavItem onClick={this.onStartStop.bind(this)} useHref={false}>
           {project.isRunning() ? <Icon name="stop" className="danger"/> : <Icon name="play" className="success"/>}
         </NavItem>
       );
@@ -122,7 +122,7 @@ export default class TabBar extends React.Component {
         <span className="embed-title">{project.name}</span>
         <Nav className="controls" bsStyle="pills">
           {startStop}
-          <NavItem onClick={this.onSave.bind(this)}>
+          <NavItem onClick={this.onSave.bind(this)} useHref={false}>
             <Icon name="save" />
           </NavItem>
           <Menu project={project}/>

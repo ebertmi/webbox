@@ -3,6 +3,7 @@ import {EventEmitter} from 'events';
 import File from './file';
 import isString from 'lodash/isString';
 import uniqueId from 'lodash/uniqueId';
+import throttle from 'lodash/throttle';
 import { API } from '../services';
 import { Status } from './status';
 import { MessageWithAction } from './messages';
@@ -52,7 +53,12 @@ export default class Project extends EventEmitter {
 
     this.mode = data.mode || MODES.Default;
 
+    // Project state variables
     this.isConsistent = true;
+    this.pendingSave = false;
+
+    // handle throttling and debouncing
+    this.saveEmbed = throttle(this._saveEmbed, 800);
   }
 
   setMessageList(messageList) {
@@ -327,8 +333,17 @@ export default class Project extends EventEmitter {
     this.emit('change');
   }
 
+  /**
+   * Sets the user data associated with the trinket
+   */
+  setUserData(data) {
+    this._userData = data;
+    this.status.setUsername(data.email || data.username); // display username or email if available
+  }
+
   fromInitialData(data) {
     // TODO: add some basic checks maybe
+    // ToDo: load _document data and do not change original embed no server
     for (let file in data.code) {
       let fileData = data.code[file];
       if (isString(fileData)) {
@@ -358,8 +373,22 @@ export default class Project extends EventEmitter {
    * Save file changes, but nothing more
    */
   saveEmbed() {
+    this._saveEmbed();
+  }
+
+  /**
+   * Internal save logic
+   */
+  _saveEmbed() {
+    if (this.pendingSave) {
+      return; // pending save request
+    }
+
     // 1. Check current mode
     if (this.mode === MODES.Default) {
+      this.pendingSave = true;
+      this.status.setStatusMessage('Speichere...', '', Severity.Ignore);
+
       const params = {
         id: this.data.id
       };
@@ -370,12 +399,19 @@ export default class Project extends EventEmitter {
         }
       };
 
+
       // trigger save
       API.embed.saveEmbed(params, payload).then(res => {
-        this.showMessage(Severity.Info, 'Gespeichert!');
+        //this.showMessage(Severity.Info, 'Gespeichert!');
+        // ToDo: Maybe we should also use something similar to showMessage for the StatusBar
+        this.status.setStatusMessage('Gespeichert.', '', Severity.Info);
+
+        // ToDo: update document, if received any
       }).catch(err => {
         this.showMessage(Severity.Error, 'Speichern fehlgeschlagen!');
         console.log(err);
+      }).then(() => {
+        this.pendingSave = false;
       });
     } else {
       // ToDo: Add action to open the same embed in edit mode

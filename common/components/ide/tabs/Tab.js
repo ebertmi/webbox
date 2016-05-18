@@ -27,7 +27,7 @@ export default class Tab extends React.Component {
 
   render() {
     return (
-      <NavItem onClick={this.onClick.bind(this)} active={this.props.active}>
+      <NavItem onClick={this.onClick.bind(this)} active={this.props.active} useHref={false}>
         <Icon name={this.props.icon}/> {this.props.children} {this.renderCloseButton()}
       </NavItem>
     );

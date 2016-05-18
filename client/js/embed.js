@@ -23,6 +23,7 @@ if (window.INITIAL_DATA.meta.embedType === 'sourcebox') {
 // we maintain a IDE wide message list (notifications)
 let messageList = new MessageList(usageConsole);
 project.setMessageList(messageList); // project provides convience methods for displaying messages
+project.setUserData(window.USER_DATA);
 
 render(
   <Ide project={project} messageList={messageList}/>,

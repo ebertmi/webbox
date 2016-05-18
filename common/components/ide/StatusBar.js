@@ -2,6 +2,12 @@ import React from 'react';
 
 import { toBootstrapClass } from '../../models/severity';
 
+/**
+ * The StatusBar displays information in the bottom of the screen:
+ *  - Language and Project information
+ *  - Username
+ *  - Status messages
+ */
 export default class StatusBar extends React.Component {
   constructor(props) {
     super(props);
@@ -29,6 +35,7 @@ export default class StatusBar extends React.Component {
     return (
       <div className={classes}>
         <span className="status-language-information">{this.state.status.languageInformation}</span>
+        <span className="status-username pull-right"><span className="prefix">angemeldet als </span>{this.state.status.username}</span>
         <span className="status-message">{this.state.status.message}</span>
       </div>
     );

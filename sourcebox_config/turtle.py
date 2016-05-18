@@ -282,7 +282,7 @@ import io
 class WebCommunication:
     def __init__(self):
       self.fd_out = io.FileIO(4, 'wb')
-      self.fd_in = io.FileIO(5, 'rb')
+      self.fd_in = io.FileIO(4, 'r')
 
       self.buf = b''
       self.canvas = []
@@ -308,25 +308,22 @@ class WebCommunication:
         if self.capacity < 0:
             data = json.dumps({'cmd':'stop',
                                  'timedout':True}, 2)
-            print(data)
             self.fd_out.write(bytes(data, "utf-8"))
             raise SystemExit
-        print(data)
         self.fd_out.write(bytes(data, "utf-8"))
 
-    def debug(message):
+    def debug(self, message):
         self.sendpickle({
             'cmd': 'debug',
             'data': message,
-            'char': chr(message)
+            'char': message
         })
 
     def _readline(self):
         buffer = []
-        print('_readline')
         while True:
             char = self.fd_in.read(1)
-            print('_readline', char)
+            char = char.decode("utf-8")
             buffer.append(char)
             self.debug(char)
             if char == '\n':

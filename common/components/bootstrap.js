@@ -36,14 +36,22 @@ export function Nav(props) {
 
 export function NavItem(props) {
   let classes = classNames('nav-item nav-link', {
-    active: props.active,
+    active: props.active
   });
 
-  return (
+  if (!props.useHref) {
+    return (
+      <a {...props} className={classes}>
+        {props.children}
+      </a>
+    );
+  } else {
+    return (
     <a {...props} href={props.href || '#'} className={classes}>
       {props.children}
     </a>
   );
+  }
 }
 
 export function DropdownItem(props) {
