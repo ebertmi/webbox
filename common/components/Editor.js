@@ -23,7 +23,7 @@ export default class Editor extends React.Component {
   }
 
   updateProps(props) {
-    let {session, ...options} = props;
+    let {onBlur, minHeight, session, ...options} = props;
 
     if (session) {
       this.editor.setSession(props.session);
@@ -37,7 +37,11 @@ export default class Editor extends React.Component {
   }
 
   render() {
-    return <div ref={div => this.container = div}/>;
+    const styles = {};
+    if (this.props.minHeight) {
+      styles.minHeight = this.props.minHeight;
+    }
+    return <div onBlur={this.props.onBlur} style={styles} ref={div => this.container = div}/>;
   }
 
 }

@@ -1,13 +1,13 @@
-'use strict';
 /**
  * Markdown Rendering Base Class.
  * Allows rendering Markdown to HTML with custom extensions:
  * - Uses highlight.js for code highlighting
  */
 const md = require('markdown-it');
-const hljs = require('highlight.js');
 const katex = require('katex');
-const Promise = require('bluebird');
+/*const Promise = require('bluebird');*/
+const hljs = require('highlight.js');
+
 
 const COPY_BUTTON = `<div class="course-clipboard">
 <span class="btn-clipboard" title data-original-title="Copy to clipboard">Copy</span>

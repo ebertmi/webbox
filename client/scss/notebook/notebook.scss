@@ -1,0 +1,70 @@
+@import "_clipboard.scss";
+@import "_sourcebox.scss";
+//@import "_snippets.scss";
+@import "_notices.scss";
+@import "_anchor.scss";
+@import "_kbd.scss";
+//@import "_sidebar.scss";
+
+.icon-control {
+  padding-right: 0.5rem;
+  cursor: pointer;
+}
+
+.btn-round {
+  border-radius: 20px;
+  line-height: 1.5rem;
+}
+
+.btn-floating {
+  position: absolute;
+  z-index: 1000;
+  right: 0.25rem;
+  top: 0.25rem;
+}
+
+.markdown-cell,
+.code-cell,
+.codeembed-cell,
+.raw-cell {
+  position: relative;
+  margin-bottom: 1rem;
+
+  &.editing {
+    padding: .5em;
+    border: 1px dashed #999;
+    margin: 1em 0;
+  }
+
+  & .control-outline .form-control {
+    border: 1px dashed #999;
+  }
+}
+
+
+.top-sep {
+  border-top: 1px dashed #444;
+  margin: 1.5em 0;
+}
+
+.add-controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  opacity: 0;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+
+  transition: opacity 3s ease;
+
+  &:hover {
+    opacity: 1;
+    transition: opacity .5s ease;
+  }
+}
+
+.editor-btns {
+  float: right;
+  margin-top: -0.2rem;
+  z-index: 1000;
+}

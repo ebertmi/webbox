@@ -1,5 +1,3 @@
-'use strict';
-
 import { combineReducers } from 'redux';
 import dashboardApp from './dashboard';
 import userOverview from './user';
@@ -8,7 +6,6 @@ import courseOverview from './course';
 import logOverview from './log';
 import authAttemptOverview from './authattempt';
 
-// empty for now
 const rootReducer = combineReducers({
   dashboardApp,
   userOverview,

@@ -5,13 +5,16 @@
 var webpack = require('webpack');
 var path = require('path');
 
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+
 module.exports = {
   context: path.resolve(__dirname, 'client'),
   entry: {
     dashboard: './js/dashboard.js',
-    index: './js/index',
-    embed: './js/embed',
-    course: './js/course'
+    index: './js/index.js',
+    embed: './js/embed.js',
+    course: './js/course.js',
+    notebook: './js/notebook.js'
   },
   output: {
     filename: '[name].bundle.js',
@@ -23,7 +26,10 @@ module.exports = {
     modulesDirectories: ['client', 'node_modules']
   },
   externals: {
-    ace: true
+    ace: true,
+    'highlight.js': 'hljs',
+    'markdown-it': 'markdownit',
+    'katex': 'katex'
   },
   module: {
     loaders: [
@@ -39,13 +45,22 @@ module.exports = {
       {
         test: /\.scss$/,
         loaders: ['style', 'css?-url', 'sass']
+      },
+      {
+        test: /\.json$/,
+        loader: "json"
       }
     ]
   },
   plugins: [
     new webpack.optimize.CommonsChunkPlugin({
       name: 'react-commons',
-      chunks: ['dashboard', 'embed']
+      chunks: ['dashboard', 'embed', 'notebook']
+    }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
     })
   ],
   node: {

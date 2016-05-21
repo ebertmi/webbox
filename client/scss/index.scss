@@ -1,5 +1,6 @@
-$fa-font-path: "https://netdna.bootstrapcdn.com/font-awesome/4.5.0/fonts";
-@import "~font-awesome/scss/font-awesome.scss";
+//$fa-font-path: "https://netdna.bootstrapcdn.com/font-awesome/4.6.1/fonts";
+//$fa-font-path: "../../public/font-awesome/fonts";
+//@import "~font-awesome/scss/font-awesome.scss";
 @import "includes/_bootstrap.custom.scss";
 @import "includes/_layout.scss";
 @import "includes/_mediaupload.scss";
@@ -15,12 +16,11 @@ $line-height: 1.5rem;
 @import "includes/_typer.scss";
 
 @import "ide/ide";
+@import "notebook/notebook";
 
 section {
   margin-bottom: 1.5rem;
 }
-
-
 
 // form button fixes
 form .btn {

@@ -1,9 +1,7 @@
-'use strict';
-
 import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import { Link, IndexLink  } from 'react-router';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { Link, IndexLink } from 'react-router';
 
 import { Alert } from '../../components/Alert';
 import * as AdminActions from '../../actions/AdminActions';

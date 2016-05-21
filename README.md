@@ -12,6 +12,7 @@ Webbased editor powered by sourcebox (secure remote-code-execution with bidirect
 * [Command-Line-Interface](#cli)
 * [IDE](#ide)
 * [React](#react)
+* [Versioning](#versioning)
 
 ## Quick start
 Follow those steps to get webbox running on your system:
@@ -90,3 +91,9 @@ The IDE is a react-based UI for programming. See:
 
 ### React
 The webbox appilcation is using a mix of server-side templating (Jade) and React for rendering the pages.
+
+## Versioning
+We are using Semantic Versioning (SemVer) *MAJOR.MINOR.PATCH*:
+* *MAJOR*: Breaking changes
+* *MINOR*: New features and fixes, but works with older versions
+* *PATCH*: Fixes that are backward compatible

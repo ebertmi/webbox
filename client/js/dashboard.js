@@ -8,14 +8,14 @@ import { Provider } from 'react-redux';
 import { Router, browserHistory } from 'react-router';
 
 // own modules
-import configureStore from '../../common/store/configureStore';
+import dashboardStore from '../../common/store/dashboardStore';
 import adminRoutes from '../../common/route/AdminRoutes';
 
 // Styles
 import '../scss/index.scss';
 
 const initialState = window.__INITIAL_STATE__;
-const store = configureStore(initialState);
+const store = dashboardStore(initialState);
 const rootElement = document.getElementById('content');
 
 // render application with router and to the rootElement and
