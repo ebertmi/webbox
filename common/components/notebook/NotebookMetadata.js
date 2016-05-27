@@ -25,6 +25,16 @@ class NotebookMetadata extends React.Component {
     this.onUndo = this.onUndo.bind(this);
     this.onRedo = this.onRedo.bind(this);
     this.onSave = this.onSave.bind(this);
+    this.onUpdate = this.onUpdate.bind(this);
+  }
+
+  onUpdate(e) {
+    e.preventDefault();
+
+    let name = e.target.name;
+    let value = e.target.value;
+
+    this.props.dispatch(NotebookActions.updateNotebookMetadata( name, value));
   }
 
   toggleEditClicked(e) {
@@ -54,30 +64,31 @@ class NotebookMetadata extends React.Component {
     const title = metadata.get('title');
 
     document.title = title;
-    const editIconName = editable ? 'newspaper-o' : 'edit';
-    const editTitleText = editable ? 'Zurück' : 'Metadata bearbeiten';
+    const editIconName = editable ? '' : 'edit';
+    const editTitleText = editable ? 'Schließen' : 'Metadata bearbeiten';
 
     if (editable) {
       return (
         <div className="notebook-header">
+          <h1>{title}</h1>
           <h3>Metadaten:</h3>
           <div className="form-group row">
             <label className={"col-sm-2 form-control-label"} >Titel</label>
             <div className={"col-sm-10"}>
-              <input className={"form-control title-field"} placeholder="Titel" type="text" defaultValue={title} ref="titleField" onBlur={e => {}} title="Notebook Titel" />
+              <input className={"form-control title-field"} onChange={this.onUpdate} placeholder="Titel" type="text" defaultValue={title} name="title" ref="titleField" onBlur={e => {}} title="Notebook Titel" />
             </div>
           </div>
           <div className="metadata">
             <div className="form-group row">
               <label className={"col-sm-2 form-control-label"} ><Icon name="user" /> Autor</label>
               <div className={"col-sm-10"}>
-                <input className={"form-control"} type="text" defaultValue={author} ref="authorField" onBlur={e => {}} title="Author" />
+                <input className={"form-control"} onChange={this.onUpdate} type="text" defaultValue={author} name="author" ref="authorField" onBlur={e => {}} title="Author" />
               </div>
             </div>
             <div className="form-group row">
               <label className={"col-sm-2 form-control-label"} ><Icon name="link" /> Kurzlink</label>
               <div className={"col-sm-10"}>
-                <input className={"form-control"} type="text" defaultValue={slug} ref="slugField" onBlur={e => {}} title="Slug/Kurzlink" />
+                <input className={"form-control"} onChange={this.onUpdate} type="text" defaultValue={slug} name="slug" ref="slugField" onBlur={e => {}} title="Slug/Kurzlink" />
               </div>
             </div>
           </div>

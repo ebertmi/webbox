@@ -126,3 +126,14 @@ export function save() {
     type: Types.SAVE
   };
 }
+
+/**
+ * Update a direct key of the notebook
+ */
+export function updateNotebookMetadata(name, value) {
+  return {
+    type: Types.UPDATE_NOTEBOOK_META,
+    name: name,
+    value: value
+  };
+}

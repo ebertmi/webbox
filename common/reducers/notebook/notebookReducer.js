@@ -106,6 +106,9 @@ export default function notebook(state = initialState, action) {
     case Types.UPDATE_CELL_META:
       newState = updateCellMetadata(state, action.cellId, action.keyPath, action.value);
       return updateStateWithHistory(state, newState);
+    case Types.UPDATE_NOTEBOOK_META:
+      newState = updateNotebookMetadata(state, action.name, action.value);
+      return updateStateWithHistory(state, newState);
     default:
       return state;
   }
@@ -316,6 +319,18 @@ function toggleNotebookMetadataEditable(state) {
     return state.set('notebookMetadataEditable', false);
   } else {
     return state.set('notebookMetadataEditable', true);
+  }
+}
+
+function updateNotebookMetadata(state, name, value) {
+  switch(name) {
+    case 'slug':
+      return state.set('slug', value);
+    case 'title':
+    case 'author':
+      return state.setIn(['metadata', name], value);
+    default:
+      return state;
   }
 }
 
