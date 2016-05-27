@@ -113,13 +113,13 @@ export default class MarkdownCell extends React.Component {
   }
 
   renderViewMode() {
-    return <div ref={this.onRef} dangerouslySetInnerHTML={{__html: this.state.rendered}}/>;
+    return <div className="col-xs-12" ref={this.onRef} dangerouslySetInnerHTML={{__html: this.state.rendered}}/>;
   }
 
   render() {
     const { cell, isAuthor, editing, dispatch } = this.props;
     let content;
-    let metadata = <CellMetadata dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
+    let metadata = <CellMetadata className="col-xs-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
     let editingClass = editing ? ' editing' : '';
 
     if (!(isAuthor && editing)) {
@@ -129,7 +129,7 @@ export default class MarkdownCell extends React.Component {
     }
 
     return (
-      <div className={"markdown-cell" + editingClass}>
+      <div className={"markdown-cell row " + editingClass}>
         <EditButtonGroup editing={editing} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
         {metadata}
         {content}

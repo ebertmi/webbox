@@ -8,11 +8,13 @@ export function EditButtonGroup (props) {
   const iconBtn = props.editing ? stopEditIcon : editIcon;
 
   return (
-    <div className="editor-btns">
-      {iconBtn}
-      <Icon className="icon-control" onClick={props.onCellUp} name="arrow-circle-o-up" title="Nach oben verschieben" />
-      <Icon className="icon-control" onClick={props.onCellDown} name="arrow-circle-o-down" title="Nach unten verschieben" />
-      <Icon className="icon-control" onClick={props.onDelete} name="times-circle-o" title="Löschen" />
+    <div className="col-xs-12">
+      <div className="editor-btns">
+        {iconBtn}
+        <Icon className="icon-control" onClick={props.onCellUp} name="arrow-circle-o-up" title="Nach oben verschieben" />
+        <Icon className="icon-control" onClick={props.onCellDown} name="arrow-circle-o-down" title="Nach unten verschieben" />
+        <Icon className="icon-control" onClick={props.onDelete} name="times-circle-o" title="Löschen" />
+      </div>
     </div>
   );
 }

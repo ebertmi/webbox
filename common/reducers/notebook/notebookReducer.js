@@ -43,6 +43,15 @@ export const initialState = Immutable.Map({
       }
     },
     source: "## Hello\n\nUnd noch mehr tExt und wenn das Speichern geht, dann geht es ab!"
+  }, {
+    cell_type: 'code',
+    metadata: {
+      slideshow: {
+        slide_type: 'slide'
+      },
+      mode: 'java'
+    },
+    source: "public static void main(String args[]) {\n\tSystem.out.println(\"test\");\n}"
   }]),
   notebookMetadataEditable: false, /* toggle notebook metadata edit mode */
   slug: 'mein-erstes-webbox-notebook',
@@ -206,6 +215,9 @@ function createNewCellByType(cellType) {
   };
 
   switch (cellType) {
+    case 'code':
+      newCell.cell_type = 'code';
+      break;
     case 'markdown':
       newCell.cell_type = 'markdown';
       break;

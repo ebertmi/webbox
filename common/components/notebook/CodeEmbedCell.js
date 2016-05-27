@@ -75,7 +75,7 @@ export default class CodeEmbedCell extends React.Component {
     const width = this.props.cell.getIn(['metadata', 'width']);
     const height = this.props.cell.getIn(['metadata', 'height']);
     let content;
-    let metadata = <CellMetadata dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
+    let metadata = <CellMetadata className="col-xs-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
     let editingClass = editing ? ' editing' : '';
 
     if (!(isAuthor && editing)) {
@@ -85,11 +85,11 @@ export default class CodeEmbedCell extends React.Component {
     }
 
     return (
-      <div className={"codeembed-cell" + editingClass}>
+      <div className={"codeembed-cell row" + editingClass}>
         <EditButtonGroup editing={editing} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
         {metadata}
         {content}
-        <IFrame lazy={true} className="" width={width} height={height} src={`/embed/${this.props.cell.get('source')}`} allowFullScreen={true} frameBorder="0" />
+        <IFrame lazy={true} className="col-xs-12" width={width} height={height} src={`/embed/${this.props.cell.get('source')}`} allowFullScreen={true} frameBorder="0" />
       </div>
     );
   }

@@ -3,6 +3,7 @@ import React from 'react';
 import MarkdownCell from './MarkdownCell';
 import CodeEmbedCell from './CodeEmbedCell';
 import RawCell from './RawCell';
+import CodeCell from './CodeCell';
 import AddControls from './AddControls';
 import NotebookMetadata from './NotebookMetadata';
 
@@ -50,6 +51,9 @@ export default class Notebook extends React.Component {
       switch (cell.get('cell_type')) {
         case 'markdown':
           blocks.push(<MarkdownCell dispatch={dispatch} key={id} id={id} cell={cell} isAuthor={isAuthor} isFirst={isFirst} isLast={isLast} editing={id === activeBlock}/>);
+          break;
+        case 'code':
+          blocks.push(<CodeCell dispatch={dispatch} key={id} id={id} cell={cell} isAuthor={isAuthor} isFirst={isFirst} isLast={isLast} editing={id === activeBlock}/>);
           break;
         case 'codeembed':
           blocks.push(<CodeEmbedCell dispatch={dispatch} key={id} id={id} cell={cell} isAuthor={isAuthor} isFirst={isFirst} isLast={isLast} editing={id === activeBlock}/>);

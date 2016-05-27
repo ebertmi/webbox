@@ -133,9 +133,10 @@ export default class CellMetadata extends React.Component {
   renderEditing() {
     let slideshow = this.props.metadata.get('slideshow');
     let metadata = this.props.metadata.remove('slideshow');
+    let classes = "cell-header " + this.props.className;
 
     return (
-      <div className="cell-header">
+      <div className={classes}>
         <strong>Slideshow</strong>
         <div className="form-group row">
           <label className="col-sm-2 form-control-label">Slide-Type</label>
