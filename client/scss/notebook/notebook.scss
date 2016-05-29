@@ -13,7 +13,6 @@
 
 .btn-round {
   border-radius: 20px;
-  line-height: 1.5rem;
 }
 
 .btn-floating {
@@ -67,4 +66,19 @@
   float: right;
   margin-top: -0.2rem;
   z-index: 1000;
+}
+
+.notebook.dragging {
+  border: 5px solid dodgerblue;
+}
+
+.drag-area {
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+  background-color: black;
+  z-index:1000;
+  overflow:hidden;
 }

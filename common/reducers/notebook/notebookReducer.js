@@ -6,12 +6,14 @@ import isArray from 'lodash/isArray';
 
 export const initialState = Immutable.Map({
   metadata: Immutable.fromJS({
-    kernel_info: {
-      name: "webbox"
+    kernelspec: {
+      name: "webbox",
+      language: "python",
+      display_name: "Python 3"
     },
     language_info: {
-      name: "",
-      version: ""
+      name: "python",
+      version: "3"
     },
     title: 'Mein erstes Webbox-Notebook',
     author: 'Michael Ebert',
@@ -108,6 +110,9 @@ export default function notebook(state = initialState, action) {
       return updateStateWithHistory(state, newState);
     case Types.UPDATE_NOTEBOOK_META:
       newState = updateNotebookMetadata(state, action.name, action.value);
+      return updateStateWithHistory(state, newState);
+    case Types.ADD_CELL_FROM_JS:
+      newState = updateAddCellFromJS(state, action.cell, action.language);
       return updateStateWithHistory(state, newState);
     default:
       return state;
@@ -332,6 +337,51 @@ function updateNotebookMetadata(state, name, value) {
     default:
       return state;
   }
+}
+
+function updateAddCellFromJS(state, cells, lang) {
+  if (!cells) {
+    console.log('notebookReducer.updateAddCellFromJS called with invalid cell');
+    return;
+  }
+
+  let newState = state;
+
+  if (!Array.isArray(cells)) {
+    cells = [].push(cells);
+  }
+
+  for (let cell of cells) {
+    // Check metadata
+    if (!cell.metadata) {
+      cell.metadata = {};
+    }
+
+    if (!cell.metadata.slideshow) {
+      cell.metadata.slideshow = {
+        slide_type: 'slide'
+      };
+    }
+
+    if (cell.cell_type === 'code' && cell.metadata.mode === undefined) {
+      cell.metadata.mode = lang || 'plain';
+    }
+
+    // assign unique id
+    if (!cell.id) {
+      cell.id = UUID.v4();
+    }
+
+    // check for nbformat 3 code cell "input" property
+    if (!cell.source && cell.input) {
+      cell.source = cell.input;
+    }
+
+    let immutableCell = Immutable.fromJS(cell);
+    newState = newState.set('cells', newState.get('cells').push(immutableCell));
+  }
+
+  return newState;
 }
 
 /**

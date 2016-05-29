@@ -71,6 +71,10 @@ markdownit.use(require('markdown-it-header-sections'));
 
 // render math with katex
 markdownit.use(require('markdown-it-math'), {
+  inlineOpen: '$',
+  inlineClose: '$',
+  blockOpen: '$$',
+  blockClose: '$$',
   inlineRenderer: function (str) {
     return katex.renderToString(str, {
       displayMode: false,

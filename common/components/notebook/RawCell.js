@@ -5,6 +5,8 @@ import { EditButtonGroup } from './EditButtonGroup';
 import { editCell, deleteCell, stopEditCell, updateCell, moveCellUp, moveCellDown } from '../../actions/NotebookActions';
 import { EditSession } from 'ace';
 
+import { sourceFromCell } from '../../util/nbUtil';
+
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
  */
@@ -72,7 +74,7 @@ export default class RawCell extends React.Component {
 
   renderEditMode() {
     let minHeight = this.getWrapperHeightOrMin();
-    let source = this.props.cell.get('source');
+    let source = sourceFromCell(this.props.cell);
     this.session = new EditSession(source, 'ace/mode/markdown');
     return (
       <div>
@@ -85,16 +87,17 @@ export default class RawCell extends React.Component {
   renderViewMode() {
     // ToDo: maybe limit the size of the cell?
     let format = this.props.cell.getIn(['metadata', 'format']);
+    let source = sourceFromCell(this.props.cell);
 
     switch(format) {
       case 'text/plain':
-        return <div className="col-xs-12" ref={this.onRef}><pre>{this.props.cell.get('source')}</pre></div>;
+        return <div className="col-xs-12" ref={this.onRef}><pre>{source}</pre></div>;
       case 'text/html':
-        return <div className="col-xs-12" ref={this.onRef} dangerouslySetInnerHTML={{__html: this.props.cell.get('source')}}></div>;
+        return <div className="col-xs-12" ref={this.onRef} dangerouslySetInnerHTML={{__html: source}}></div>;
       case 'image/jpeg':
       case 'image/png':
       case 'image/gif':
-        return <div className="col-xs-12"><img ref={this.onRef} src={this.props.cell.get('source')} /></div>;
+        return <div className="col-xs-12"><img ref={this.onRef} src={source} /></div>;
       default:
         return <p>Nicht unterstütztes Format für diese Zelle (siehe Metadaten unter "format").</p>;
     }

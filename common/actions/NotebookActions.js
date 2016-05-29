@@ -77,6 +77,13 @@ export function updateCellMetadata(cellId, keyPath, value) {
   };
 }
 
+export function addCellFromJS(cell, language) {
+  return {
+    type: Types.ADD_CELL_FROM_JS,
+    cell: cell,
+    language: language
+  };
+}
 
 export function addCell(afterId, cellType) {
   // ToDo: maybe some additional checks here?

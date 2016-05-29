@@ -7,6 +7,7 @@ import { EditSession } from 'ace';
 import { editCell, deleteCell, stopEditCell, updateCell, moveCellUp, moveCellDown } from '../../actions/NotebookActions';
 import { EditButtonGroup } from './EditButtonGroup';
 
+import { sourceFromCell } from '../../util/nbUtil';
 
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
@@ -31,7 +32,7 @@ export default class CodeCell extends React.Component {
   }
 
   componentDidMount() {
-    this.renderMarkdown(this.props.cell.get('source'));
+    this.renderMarkdown(sourceFromCell(this.props.cell));
   }
 
   /**
@@ -104,7 +105,7 @@ export default class CodeCell extends React.Component {
 
   renderEditMode() {
     let minHeight = this.getWrapperHeightOrMin();
-    let source = this.props.cell.get('source');
+    let source = sourceFromCell(this.props.cell);
     let mode = this.props.cell.getIn(['metadata', 'mode']);
     this.session = new EditSession(source, 'ace/mode/' + mode);
     return (

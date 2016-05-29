@@ -7,12 +7,24 @@ import CodeCell from './CodeCell';
 import AddControls from './AddControls';
 import NotebookMetadata from './NotebookMetadata';
 
+import { loadCellsFromIPYNB } from '../../util/nbUtil';
+import { addCellFromJS } from '../../actions/NotebookActions';
+
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
  */
 export default class Notebook extends React.Component {
   constructor(props) {
     super(props);
+
+    this.onDrop = this.onDrop.bind(this);
+    this.onDragOver = this.onDragOver.bind(this);
+  }
+
+  componentWillMount() {
+    this.setState({
+      isDragging: false
+    });
   }
 
   componentDidMount() {
@@ -22,12 +34,48 @@ export default class Notebook extends React.Component {
   onDrop(e) {
     e.preventDefault();
 
-    // ToDo: add handling of uploading images :)
+    // handle uploading
+    let files = e.dataTransfer.files;
+
+    for (let i = 0; i < files.length; i++) {
+      let file = files[i];
+
+      // notebook format
+      if (file.name && file.name.endsWith('.ipynb')) {
+        let reader = new FileReader();
+
+        reader.onload = () => {
+          let {cells, language} = loadCellsFromIPYNB(reader.result);
+
+          this.props.dispatch(addCellFromJS(cells, language));
+        };
+
+        reader.readAsText(file);
+      } else {
+        // ToDo: handle images
+      }
+    }
+
+    this.setState({
+      isDragging: false
+    });
+  }
+
+  onDragEnter(e) {
+    e.preventDefault();
+    console.log('onDragEnter', e.target);
+    this.setState({
+      isDragging: true
+    });
   }
 
   onDragOver(e) {
     e.preventDefault();
+    e.dataTransfer.effectAllowed = 'copy';
     e.dataTransfer.dropEffect = 'copy';
+    this.setState({
+      isDragging: true
+    });
   }
 
   renderCells() {
@@ -77,8 +125,9 @@ export default class Notebook extends React.Component {
   render() {
     const undoStackSize = this.props.notebook.get('undoStack').size;
     const redoStackSize = this.props.notebook.get('redoStack').size;
+
     return (
-      <div className="notebook" onDragOver={this.onDragOver} onDrop={this.onDrop.bind(this) }>
+      <div data-drag={true} className="notebook" onDragOver={this.onDragOver} onDrop={this.onDrop.bind(this) }>
         <NotebookMetadata redoStackSize={redoStackSize} undoStackSize={undoStackSize} editable={this.props.notebook.get('notebookMetadataEditable')} slug={this.props.notebook.get('slug')} />
         { this.renderCells() }
       </div>

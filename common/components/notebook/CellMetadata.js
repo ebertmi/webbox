@@ -169,7 +169,7 @@ export default class CellMetadata extends React.Component {
             <small className="text-muted">{this.state.validationMessage}</small>
           </div>
           <div className="col-sm-2">
-            <button onClick={this.onAddMetadata} className="btn btn-primary btn-sm">+</button>
+            <button onClick={this.onAddMetadata} className="btn btn-info btn-sm btn-round">+</button>
           </div>
         </div>
         <hr className="top-sep" />

@@ -1,0 +1,18 @@
+.file-rename-wrapper {
+  display: inline-block;
+  background-color: transparent;
+
+  & .monaco-inputbox {
+    background-color: transparent;
+	  height: 25px;
+    border-bottom: 2px solid $brand-primary;
+  }
+
+  & .monaco-inputbox input {
+    background-color: inherit;
+  }
+
+  & .monaco-inputbox input:focus {
+    outline: none;
+  }
+}

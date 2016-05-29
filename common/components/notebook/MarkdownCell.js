@@ -7,6 +7,7 @@ import { EditSession } from 'ace';
 import { editCell, deleteCell, stopEditCell, updateCell, moveCellUp, moveCellDown } from '../../actions/NotebookActions';
 import { EditButtonGroup } from './EditButtonGroup';
 
+import { sourceFromCell } from '../../util/nbUtil';
 
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
@@ -31,7 +32,8 @@ export default class MarkdownCell extends React.Component {
   }
 
   componentDidMount() {
-    this.renderMarkdown(this.props.cell.get('source'));
+    let source = sourceFromCell(this.props.cell);
+    this.renderMarkdown(source);
   }
 
   /**
@@ -102,10 +104,11 @@ export default class MarkdownCell extends React.Component {
 
   renderEditMode() {
     let minHeight = this.getWrapperHeightOrMin();
-    let source = this.props.cell.get('source');
+    let source = sourceFromCell(this.props.cell);
+
     this.session = new EditSession(source, 'ace/mode/markdown');
     return (
-      <div>
+      <div className="col-xs-12">
         <strong>Markdown</strong>
         <Editor onBlur={this.onStopEdit} minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />
       </div>
