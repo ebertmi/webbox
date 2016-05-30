@@ -33,10 +33,10 @@ export function redo() {
 /**
  * Activates the editing mode for the cell with given index
  */
-export function editCell(id) {
+export function editCell(index) {
   return {
     type: Types.EDIT_CELL,
-    cellId: id
+    index: index
   };
 }
 
@@ -46,24 +46,24 @@ export function editCell(id) {
 export function stopEditCell() {
   return {
     type: Types.EDIT_CELL,
-    cellId: -1 /* id that does not match any cells */
+    index: -1 /* index that does not match any cells */
   };
 }
 
 /**
- * Deletes the cell with the given id
+ * Deletes the cell with the given index
  */
-export function deleteCell(id) {
+export function deleteCell(index) {
   return {
     type: Types.DELETE_CELL,
-    cellId: id
+    index: index
   };
 }
 
-export function updateCell(id, source) {
+export function updateCell(cellId, source) {
   return {
     type: Types.UPDATE_CELL,
-    cellId: id,
+    cellId: cellId,
     source: source
   };
 }
@@ -77,46 +77,47 @@ export function updateCellMetadata(cellId, keyPath, value) {
   };
 }
 
-export function addCellFromJS(cell, language) {
+export function addCellsFromJS(cells, language, withHistory) {
   return {
-    type: Types.ADD_CELL_FROM_JS,
-    cell: cell,
-    language: language
+    type: Types.ADD_CELLS_FROM_JS,
+    cells: cells,
+    language: language,
+    withHistory: withHistory
   };
 }
 
-export function addCell(afterId, cellType) {
+export function addCell(index, cellType) {
   // ToDo: maybe some additional checks here?
   return {
     type: Types.ADD_CELL,
-    afterId: afterId,
+    index: index,
     cellType: cellType
   };
 }
 
-export function addCodeEmbedCell(afterId) {
-  return addCell(afterId, 'codeembed');
+export function addCodeEmbedCell(index) {
+  return addCell(index, 'codeembed');
 }
 
-export function addMarkdownCell(afterId) {
-  return addCell(afterId, 'markdown');
+export function addMarkdownCell(index) {
+  return addCell(index, 'markdown');
 }
 
-export function addRawCell(afterId) {
-  return addCell(afterId, 'raw');
+export function addRawCell(index) {
+  return addCell(index, 'raw');
 }
 
-export function moveCellUp(cellId) {
+export function moveCellUp(index) {
   return {
     type: Types.MOVE_CELL_UP,
-    cellId: cellId
+    index: index
   };
 }
 
-export function moveCellDown(cellId) {
+export function moveCellDown(index) {
   return {
     type: Types.MOVE_CELL_DOWN,
-    cellId: cellId
+    index: index
   };
 }
 

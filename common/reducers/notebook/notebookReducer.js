@@ -19,46 +19,8 @@ export const initialState = Immutable.Map({
     author: 'Michael Ebert',
     lastUpdate: Date.now()
   }),
-  cells: Immutable.fromJS([{
-    cell_type: 'markdown',
-    metadata: {
-      slideshow: {
-        slide_type: 'slide' /* slide, fragment[, subslide], skip, notes */
-      }
-    },
-    source: "## Hello\nEtwas Text und vielleicht das ein oder andere Gedicht. Aber jetzt kommen wir zu etwas coolem: `inline-code` und\n```python\ndef fu():\n\tpass\n```",
-    id: '112213'
-  }, {
-    cell_type: 'codeembed',
-    metadata: {
-      slideshow: {
-        slide_type: 'fragment' /* slide, fragment[, subslide], skip, notes */
-      },
-      width: 900,
-      height: 400
-    },
-    source: 'db0cadd0-fe97-415b-96f6-90ecbd2d11e0',
-    id: '123123-123123-123'
-  }, {
-    cell_type: 'markdown',
-    metadata: {
-      slideshow: {
-        slide_type: 'slide'
-      }
-    },
-    source: "## Hello\n\nUnd noch mehr tExt und wenn das Speichern geht, dann geht es ab!",
-    id: '12312-123123-123'
-  }, {
-    cell_type: 'code',
-    metadata: {
-      slideshow: {
-        slide_type: 'slide'
-      },
-      mode: 'java'
-    },
-    source: "public static void main(String args[]) {\n\tSystem.out.println(\"test\");\n}",
-    id: '12555-6673-434'
-  }]),
+  cellOrder: new Immutable.List(),
+  cells: new Immutable.Map(),
   notebookMetadataEditable: false, /* toggle notebook metadata edit mode */
   slug: 'mein-erstes-webbox-notebook',
   activeBlock: -1, /* current block in editing mode */
@@ -77,66 +39,87 @@ export default function notebook(state = initialState, action) {
     case Types.TOGGLE_NOTEBOOK_META_EDIT:
       newState = updateStateWithHistory(state, toggleNotebookMetadataEditable(state));
       return newState;
+
     case Types.UNDO:
       return undo(state);
+
     case Types.REDO:
       newState = redo(state);
       return updateStateWithHistory(state, newState);
+
     case Types.EDIT_CELL:
-      return changeActiveBlock(state, action.cellId);
+      return changeActiveBlock(state, action.index);
+
     case Types.DELETE_CELL:
-      newState = deleteCellFromList(state, action.cellId);
+      newState = deleteCellWithIndex(state, action.index);
       return updateStateWithHistory(state, newState);
+
     case Types.ADD_CELL:
       newCell = createNewCellByType(action.cellType);
-      newState = addCellToList(state, action.afterId, newCell);
+      newState = addCellWithIndex(state, action.index, newCell);
       newState = updateStateWithHistory(state, newState);
 
       // after adding the cell we immediatelly make it editable
       return changeActiveBlock(newState, newCell.get('id'));
+
     case Types.UPDATE_CELL:
       newState = updateCellWithSource(state, action.cellId, action.source);
       return updateStateWithHistory(state, newState); // ToDO: broken, in MarkdownCell wrapperNode!
-    case Types.PREPARE_CELLS:
-      newState = prepareCellsWithIds(state);
-      return newState;
+
     case Types.MOVE_CELL_DOWN:
-      newState = moveCellDown(state, action.cellId);
+      newState = moveCellDownWithIndex(state, action.index);
       return updateStateWithHistory(state, newState);
+
     case Types.MOVE_CELL_UP:
-      newState = moveCellUp(state, action.cellId);
+      newState = moveCellUpWithIndex(state, action.index);
       return updateStateWithHistory(state, newState);
+
     case Types.UPDATE_CELL_SLIDETYPE:
       newState = updateCellSlidetype(state, action.cellId, action.slide_type);
       return updateStateWithHistory(state, newState);
+
     case Types.UPDATE_CELL_META:
       newState = updateCellMetadata(state, action.cellId, action.keyPath, action.value);
       return updateStateWithHistory(state, newState);
+
     case Types.UPDATE_NOTEBOOK_META:
       newState = updateNotebookMetadata(state, action.name, action.value);
       return updateStateWithHistory(state, newState);
-    case Types.ADD_CELL_FROM_JS:
-      newState = updateAddCellFromJS(state, action.cell, action.language);
-      return updateStateWithHistory(state, newState);
+
+    case Types.ADD_CELLS_FROM_JS:
+      // avoid history for initial state
+      newState = updateAddCellsFromJS(state, action.cells, action.language);
+      if (action.withHistory === true) {
+        return updateStateWithHistory(state, newState);
+      } else {
+        return newState;
+      }
+
     default:
       return state;
   }
 }
 
-/**
- * Assigns every cell a unique id if not already given
- */
-function prepareCellsWithIds(state) {
-  const cells = state.get('cells').toArray();
+function getCellFromIndex(state, index) {
+  const key = state.getIn(['cellOrder', index]);
 
-  // iterate over each cells, and update with id if there isn't any
-  for (let i = 0; i < cells.length; i++) {
-    if (!cells[i].id) {
-      cells[i] = cells[i].set('id', UUID.v4()); // create new unique id
-    }
+  if (!key) {
+    console.warn(`NotebookReducer.getCellFromIndex(): index not found (${index})`);
   }
 
-  return state.set('cells', new Immutable.List(cells));
+  // return cell
+  return state.getIn(['cells', key]);
+}
+
+/**
+ * Deletes a cell for the given index:
+ *  - Removes the cell from "cells" (Map)
+ *  - Removes the cell from "cellOrder" (List)
+ */
+function deleteCellWithIndex(state, index) {
+  const key = state.getIn(['cellOrder', index]);
+
+  return state.deleteIn(['cells', key]).deleteIn(['cellOrder', index]);
 }
 
 /**
@@ -144,26 +127,24 @@ function prepareCellsWithIds(state) {
  */
 function updateCellWithSource(state, cellId, source) {
   let cells = state.get('cells');
-  let key = findCellKey(state, cellId);
 
   // ToDo: what happens if cellId is not found?
-  if (key === undefined) {
-    console.warn('NotebookReducer.updateCellWithSource could not find cell for id ', cellId);
+  if (cellId === undefined) {
+    console.warn('NotebookReducer.updateCellWithSource could not find cell for cellId ', cellId);
     return state;
   }
-  let cell = cells.get(key); // get the cell
+  let cell = cells.get(cellId); // get the cell
 
   // now update the cell
   let newCell = cell.set('source', source);
-  let newCells = cells.set(key, newCell);
+  let newCells = cells.set(cellId, newCell);
 
   return state.set('cells', newCells);
 }
 
 function updateCellMetadata(state, cellId, keyPath, value) {
   let cells = state.get('cells');
-  let key = findCellKey(state, cellId);
-  let cell = cells.get(key); // get the cell
+  let cell = cells.get(cellId); // get the cell
   let newCell;
 
   if (!cell) {
@@ -193,13 +174,12 @@ function updateCellMetadata(state, cellId, keyPath, value) {
     newCell = cell.deleteIn(keyPath);
   }
 
-  return state.set('cells',  cells.set(key, newCell));
+  return state.set('cells',  cells.set(cellId, newCell));
 }
 
 function updateCellSlidetype(state, cellId, slideType) {
   let cells = state.get('cells');
-  let key = findCellKey(state, cellId);
-  let cell = cells.get(key); // get the cell
+  let cell = cells.get(cellId); // get the cell
 
   if (!cell) {
     console.warn('NotebookReducer.updateCellSlidetype could not find cell for id ', cellId);
@@ -209,7 +189,7 @@ function updateCellSlidetype(state, cellId, slideType) {
   // now update the cell
   let newCell = cell.setIn(['metadata', 'slideshow', 'slide_type'], slideType);
 
-  return state.set('cells',  cells.set(key, newCell));
+  return state.set('cells',  cells.set(cellId, newCell));
 }
 
 /**
@@ -245,79 +225,77 @@ function createNewCellByType(cellType) {
 }
 
 /**
- * Add a new cell after the given cellId
+ * Add a new cell at the given index:
+ *  - The cell must have an id
+ *  - The cell is added to the "cells" property
+ *  - The cell is added to "cellOrder" at the given index or added to the end of the list
  */
-function addCellToList(state, afterId, newCell) {
-  let cells = state.get('cells');
-  let key = findCellKey(state, afterId);
+function addCellWithIndex(state, index, newCell) {
+  if (!newCell) {
+    console.warn(`NotebookReducer.addCell(): Invalid argument 'newCell' (${newCell})`);
+  }
 
-  return state.set('cells', cells.insert(key, newCell));
+  let newState;
+  let cellId = newCell.get('id');
+  newState = state.set('cells', state.get('cells').set(cellId, newCell));
+
+  if (index) {
+    newState = newState.set('cellOrder', newState.get('cellOrder').insert(index, cellId));
+  } else {
+    // when not index is specified, we just push the cell to the end of the list
+    newState = newState.set('cellOrder', newState.get('cellOrder').push(cellId));
+  }
+
+  return newState;
 }
 
 /**
- * Delete the cell in the notebook at the given id.
+ * Moves the cell with the specified index down
  */
-function deleteCellFromList(state, cellId) {
-  let cells = state.get('cells');
-  let key = findCellKey(state, cellId);
-
-  return state.set('cells', cells.delete(key));
-}
-
-function moveCellDown(state, cellId) {
+function moveCellDownWithIndex(state, index) {
   let cell;
   let nextCell;
-  let cells = state.get('cells');
-  let key = findCellKey(state, cellId);
+  let newCellOrder;
+  let cellOrder = state.get('cellOrder');
 
   // cannot move lower than last
-  if (key === (cells.size - 1)) {
+  if (index === (cellOrder.size - 1)) {
     return state;
   }
 
-  cell = cells.get(key);
-  nextCell = cells.get(key + 1);
+  cell = cellOrder.get(index);
+  nextCell = cellOrder.get(index + 1);
 
-  let newCells = cells.set(key, nextCell).set(key + 1, cell);
-  return state.set('cells', newCells);
-}
-
-function moveCellUp(state, cellId) {
-  let cell;
-  let nextCell;
-  let cells = state.get('cells');
-  let key = findCellKey(state, cellId);
-
-  // cannot move higher than first position
-  if (key === 0) {
-    return state;
-  }
-
-  cell = cells.get(key);
-  nextCell = cells.get(key - 1);
-
-  let newCells = cells.set(key, nextCell).set(key - 1, cell);
-  return state.set('cells', newCells);
+  newCellOrder = cellOrder.set(index, nextCell).set(index + 1, cell);
+  return state.set('cellOrder', newCellOrder);
 }
 
 /**
- * Iterates over the cells and returns the key
- * for the given cell id or undefined.
+ * Moves the cell with the specified index up
  */
-function findCellKey(state, cellId) {
-  let cells = state.get('cells');
-  let key = cells.findKey(e => {
-    return e.get('id') === cellId;
-  });
+function moveCellUpWithIndex(state, index) {
+  let cell;
+  let nextCell;
+  let newCellOrder;
+  let cellOrder = state.get('cellOrder');
 
-  return key;
+  // cannot move higher than first position
+  if (index === 0) {
+    return state;
+  }
+
+  cell = cellOrder.get(index);
+  nextCell = cellOrder.get(index - 1);
+
+  newCellOrder = cellOrder.set(index, nextCell).set(index - 1, cell);
+  return state.set('cellOrder', newCellOrder);
 }
 
 /**
  * Changes the active block (current cell in edit mode)
  */
-function changeActiveBlock(state, cellId) {
-  return state.set('activeBlock', cellId);
+function changeActiveBlock(state, index) {
+  return state.set('activeBlock', index);
 }
 
 /**
@@ -343,7 +321,7 @@ function updateNotebookMetadata(state, name, value) {
   }
 }
 
-function updateAddCellFromJS(state, cells, lang) {
+function updateAddCellsFromJS(state, cells, lang) {
   if (!cells) {
     console.log('notebookReducer.updateAddCellFromJS called with invalid cell');
     return;
@@ -382,7 +360,8 @@ function updateAddCellFromJS(state, cells, lang) {
     }
 
     let immutableCell = Immutable.fromJS(cell);
-    newState = newState.set('cells', newState.get('cells').push(immutableCell));
+    // ToDo: Change this
+    newState = addCellWithIndex(newState, null, immutableCell); // push cell to the end of the list
   }
 
   return newState;

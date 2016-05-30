@@ -1,4 +1,5 @@
 import React from 'react';
+import Immutable from 'immutable';
 import Markdown from '../../util/markdown';
 import Editor from '../Editor';
 import CellMetadata from './CellMetadata';
@@ -37,6 +38,22 @@ export default class MarkdownCell extends React.Component {
   }
 
   /**
+   * Check if component needs update:
+   *     minHeight
+    cell
+    isAuthor
+    editing
+    cellIndex
+   */
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextState.rendered != this.state.rendered || !Immutable.is(this.props.cell, nextProps.cell) || this.props.editing !== nextProps.editing || this.props.cellIndex !== nextProps.cellIndex) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
    * Renders marks down and sets the returned markup as state when finished.
    */
   renderMarkdown(source) {
@@ -49,21 +66,21 @@ export default class MarkdownCell extends React.Component {
   }
 
   onCellUp() {
-    this.props.dispatch(moveCellUp(this.props.cell.get('id')));
+    this.props.dispatch(moveCellUp(this.props.cellIndex));
   }
 
   onCellDown() {
-    this.props.dispatch(moveCellDown(this.props.cell.get('id')));
+    this.props.dispatch(moveCellDown(this.props.cellIndex));
   }
 
   onEdit(e) {
     e.preventDefault();
-    this.props.dispatch(editCell(this.props.cell.get('id')));
+    this.props.dispatch(editCell(this.props.cellIndex));
   }
 
   onDelete(e) {
     e.preventDefault();
-    this.props.dispatch(deleteCell(this.props.cell.get('id')));
+    this.props.dispatch(deleteCell(this.props.cellIndex));
   }
 
   onStopEdit(e) {
@@ -106,11 +123,16 @@ export default class MarkdownCell extends React.Component {
     let minHeight = this.getWrapperHeightOrMin();
     let source = sourceFromCell(this.props.cell);
 
-    this.session = new EditSession(source, 'ace/mode/markdown');
+    if (this.session) {
+      this.session.setValue(source);
+    } else {
+      this.session = new EditSession(source, 'ace/mode/markdown');
+    }
+
     return (
       <div className="col-xs-12">
         <strong>Markdown</strong>
-        <Editor onBlur={this.onStopEdit} minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />
+        <Editor minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />
       </div>
     );
   }
@@ -145,7 +167,8 @@ MarkdownCell.propTypes = {
   minHeight: React.PropTypes.number,
   cell: React.PropTypes.object.isRequired,
   isAuthor: React.PropTypes.bool.isRequired,
-  editing: React.PropTypes.bool.isRequired
+  editing: React.PropTypes.bool.isRequired,
+  cellIndex: React.PropTypes.number.isRequired
 };
 
 MarkdownCell.defaultProps = {

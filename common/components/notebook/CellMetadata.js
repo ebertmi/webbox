@@ -149,15 +149,15 @@ export default class CellMetadata extends React.Component {
           </div>
         </div>
         <strong>Weitere Metadaten</strong>
-        {metadata.map((value, name) => {
+        {metadata.entrySeq().map(entry => {
           return (
-            <div className="form-group row">
-              <label className="col-sm-2 form-control-label">{name}</label>
+            <div key={entry[0]} className="form-group row">
+              <label className="col-sm-2 form-control-label">{entry[0]}</label>
               <div className="col-sm-8">
-                <input className="form-control form-control-sm" name={name} value={value} onChange={this.onMetadataChange} />
+                <input className="form-control form-control-sm" name={entry[0]} value={entry[1]} onChange={this.onMetadataChange} />
               </div>
               <div className="col-sm-2">
-                <Icon className="icon-control" onClick={this.onDelete} data-metakey={name} name="times-circle-o" title={name + " Löschen"} />
+                <Icon className="icon-control" onClick={this.onDelete} data-metakey={entry[0]} name="times-circle-o" title={entry[0] + " Löschen"} />
               </div>
             </div>
           );

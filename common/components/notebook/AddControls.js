@@ -12,15 +12,15 @@ export default class AddControls extends Component {
   }
 
   addCodeEmbedCell() {
-    this.props.dispatch(addCodeEmbedCell(this.props.id));
+    this.props.dispatch(addCodeEmbedCell(this.props.cellIndex));
   }
 
   addMarkdownCell() {
-    this.props.dispatch(addMarkdownCell(this.props.id));
+    this.props.dispatch(addMarkdownCell(this.props.cellIndex));
   }
 
   addRawCell() {
-    this.props.dispatch(addRawCell(this.props.id));
+    this.props.dispatch(addRawCell(this.props.cellIndex));
   }
 
   render() {

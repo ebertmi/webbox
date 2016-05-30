@@ -44,12 +44,10 @@ export default class Presentation extends React.Component {
     super(props);
   }
 
-  renderCell(cell) {
+  renderCell(cell, index) {
     const id = cell.get('id');
     const activeBlock = -1;
     const isAuthor = false;
-    const isFirst = false;
-    const isLast = false;
     const dispatch = this.props.dispatch;
 
     let lang;
@@ -63,9 +61,9 @@ export default class Presentation extends React.Component {
         lang = cell.getIn(['metadata', 'mode'], '');
         return <CodePane source={source} lang={lang}></CodePane>;
       case 'codeembed':
-        return <CodeEmbedCell dispatch={dispatch} key={id} id={id} cell={cell} isAuthor={isAuthor} isFirst={isFirst} isLast={isLast} editing={id === activeBlock}/>;
+        return <CodeEmbedCell dispatch={dispatch} cellIndex={index} key={id} id={id} cell={cell} isAuthor={isAuthor} editing={id === activeBlock}/>;
       case 'raw':
-        return <RawCell dispatch={dispatch} key={id} id={id} cell={cell} isAuthor={isAuthor} isFirst={isFirst} isLast={isLast} editing={id === activeBlock}/>;
+        return <RawCell dispatch={dispatch} cellIndex={index} key={id} id={id} cell={cell} isAuthor={isAuthor} editing={id === activeBlock}/>;
       default:
         return <Text>Empty</Text>;
     }
@@ -77,15 +75,17 @@ export default class Presentation extends React.Component {
     let children = [];
     let slides = [];
     const cells = this.props.notebook.get('cells');
+    const cellOrder = this.props.notebook.get('cellOrder');
     let slideType;
     let isInSlide = false;
     let slideCounter = 0;
+    // ToDo: change this
     for (i = 0; i < cells.size; i++) {
-      cell = cells.get(i); // get current cell
+      cell = cells.get(cellOrder.get(i)); // get current cell
       slideType = cell.getIn(['metadata', 'slideshow', 'slide_type'], 'slide');
       // start new slide
       if (isInSlide === false && slideType === 'slide') {
-        children.push(this.renderCell(cell)); // render current cell and add to children
+        children.push(this.renderCell(cell, i)); // render current cell and add to children
         isInSlide = true;
       } else if (isInSlide === true && slideType === 'slide') {
         // end current slide and start new one
@@ -93,11 +93,11 @@ export default class Presentation extends React.Component {
         slideCounter += 1;
         slides.push(<Slide key={`slide-${slideCounter}`} children={children}></Slide>);
         children = []; // reset children
-        children.push(this.renderCell(cell)); // add first new child
+        children.push(this.renderCell(cell, i)); // add first new child
       } else {
         // add to current slide
         if (slideType !== 'skip') {
-          children.push(this.renderCell(cell));
+          children.push(this.renderCell(cell, i));
         }
       }
     }

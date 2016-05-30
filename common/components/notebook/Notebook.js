@@ -8,7 +8,7 @@ import AddControls from './AddControls';
 import NotebookMetadata from './NotebookMetadata';
 
 import { loadCellsFromIPYNB } from '../../util/nbUtil';
-import { addCellFromJS } from '../../actions/NotebookActions';
+import { addCellsFromJS } from '../../actions/NotebookActions';
 
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
@@ -47,7 +47,7 @@ export default class Notebook extends React.Component {
         reader.onload = () => {
           let {cells, language} = loadCellsFromIPYNB(reader.result);
 
-          this.props.dispatch(addCellFromJS(cells, language));
+          this.props.dispatch(addCellsFromJS(cells, language));
         };
 
         reader.readAsText(file);
@@ -82,32 +82,33 @@ export default class Notebook extends React.Component {
     const activeBlock = this.props.notebook.get('activeBlock');
     const isAuthor = this.props.notebook.get('isAuthor');
     const cells = this.props.notebook.get('cells');
+    const cellOrder = this.props.notebook.get('cellOrder');
 
     let blocks = [];
     let dispatch = this.props.dispatch;
 
-    cells.map((cell, index) => {
+    // iterate over the list mapping of index->cellId
+    cellOrder.map((cellId, index) => {
+      let cell = cells.get(cellId);
       const id = cell.get('id');
-      const isFirst = (index === 0);
-      const isLast = (index === blocks.size - 1);
 
       blocks.push(
-        <AddControls dispatch={dispatch} key={'add' + id} id={id} isAuthor={isAuthor} />
+        <AddControls dispatch={dispatch} key={'add' + id}  cellIndex={index} id={id} isAuthor={isAuthor} />
       );
 
       // push actual cell
       switch (cell.get('cell_type')) {
         case 'markdown':
-          blocks.push(<MarkdownCell dispatch={dispatch} key={id} id={id} cell={cell} isAuthor={isAuthor} isFirst={isFirst} isLast={isLast} editing={id === activeBlock}/>);
+          blocks.push(<MarkdownCell dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor} editing={index === activeBlock}/>);
           break;
         case 'code':
-          blocks.push(<CodeCell dispatch={dispatch} key={id} id={id} cell={cell} isAuthor={isAuthor} isFirst={isFirst} isLast={isLast} editing={id === activeBlock}/>);
+          blocks.push(<CodeCell dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor} editing={index === activeBlock}/>);
           break;
         case 'codeembed':
-          blocks.push(<CodeEmbedCell dispatch={dispatch} key={id} id={id} cell={cell} isAuthor={isAuthor} isFirst={isFirst} isLast={isLast} editing={id === activeBlock}/>);
+          blocks.push(<CodeEmbedCell dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor}editing={index === activeBlock}/>);
           break;
         case 'raw':
-          blocks.push(<RawCell dispatch={dispatch} key={id} id={id} cell={cell} isAuthor={isAuthor} isFirst={isFirst} isLast={isLast} editing={id === activeBlock}/>);
+          blocks.push(<RawCell dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor} editing={index === activeBlock}/>);
           break;
         default:
         //return null;

@@ -1,4 +1,5 @@
 import React from 'react';
+import Immutable from 'immutable';
 
 import IFrame from './IFrame';
 import { EditButtonGroup } from './EditButtonGroup';
@@ -48,21 +49,21 @@ export default class CodeEmbedCell extends React.Component {
   }
 
   onCellUp() {
-    this.props.dispatch(moveCellUp(this.props.cell.get('id')));
+    this.props.dispatch(moveCellUp(this.props.cellIndex));
   }
 
   onCellDown() {
-    this.props.dispatch(moveCellDown(this.props.cell.get('id')));
+    this.props.dispatch(moveCellDown(this.props.cellIndex));
   }
 
   onEdit(e) {
     e.preventDefault();
-    this.props.dispatch(editCell(this.props.cell.get('id')));
+    this.props.dispatch(editCell(this.props.cellIndex));
   }
 
   onDelete(e) {
     e.preventDefault();
-    this.props.dispatch(deleteCell(this.props.cell.get('id')));
+    this.props.dispatch(deleteCell(this.props.cellIndex));
   }
 
   onStopEdit(e) {
@@ -76,7 +77,19 @@ export default class CodeEmbedCell extends React.Component {
     this.props.dispatch(updateCell(this.props.cell.get('id'), value));
   }
 
-  renderViewMode() {
+  /**
+   * Check if component needs update:
+    cell
+    isAuthor
+    editing
+    cellIndex
+   */
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextState.showCreateEmbed != this.state.showCreateEmbed || !Immutable.is(this.props.cell, nextProps.cell) || this.props.editing !== nextProps.editing || this.props.cellIndex !== nextProps.cellIndex) {
+      return true;
+    }
+
+    return false;
   }
 
   renderCreateEmbed() {
@@ -163,7 +176,8 @@ CodeEmbedCell.propTypes = {
   cell: React.PropTypes.object.isRequired,
   isAuthor: React.PropTypes.bool.isRequired,
   editing: React.PropTypes.bool.isRequired,
-  lazy: React.PropTypes.bool
+  lazy: React.PropTypes.bool,
+  cellIndex: React.PropTypes.number.isRequired
 };
 
 CodeEmbedCell.defaultProps = {

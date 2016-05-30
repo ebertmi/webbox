@@ -1,4 +1,6 @@
 import React from 'react';
+import Immutable from 'immutable';
+
 import CellMetadata from './CellMetadata';
 import Editor from '../Editor';
 import { EditButtonGroup } from './EditButtonGroup';
@@ -25,22 +27,37 @@ export default class RawCell extends React.Component {
   componentDidMount() {
   }
 
+  /**
+   * Check if component needs update:
+    cell
+    isAuthor
+    editing
+    cellIndex
+   */
+  shouldComponentUpdate(nextProps) {
+    if (!Immutable.is(this.props.cell, nextProps.cell) || this.props.editing !== nextProps.editing || this.props.cellIndex !== nextProps.cellIndex) {
+      return true;
+    }
+
+    return false;
+  }
+
   onCellUp() {
-    this.props.dispatch(moveCellUp(this.props.cell.get('id')));
+    this.props.dispatch(moveCellUp(this.props.cellIndex));
   }
 
   onCellDown() {
-    this.props.dispatch(moveCellDown(this.props.cell.get('id')));
+    this.props.dispatch(moveCellDown(this.props.cellIndex));
   }
 
   onEdit(e) {
     e.preventDefault();
-    this.props.dispatch(editCell(this.props.cell.get('id')));
+    this.props.dispatch(editCell(this.props.cellIndex));
   }
 
   onDelete(e) {
     e.preventDefault();
-    this.props.dispatch(deleteCell(this.props.cell.get('id')));
+    this.props.dispatch(deleteCell(this.props.cellIndex));
   }
 
   onStopEdit(e) {
@@ -75,11 +92,19 @@ export default class RawCell extends React.Component {
   renderEditMode() {
     let minHeight = this.getWrapperHeightOrMin();
     let source = sourceFromCell(this.props.cell);
-    this.session = new EditSession(source, 'ace/mode/markdown');
+    let mode = this.cell.getIn(['metadata', 'mode'], 'ace/mode/markdown');
+
+    if (this.session) {
+      this.session.setValue(source);
+      this.session.setMode(mode);
+    } else {
+      this.session = new EditSession(source, mode || 'ace/mode/markdown');
+    }
+
     return (
       <div>
         <strong>Raw</strong>
-        <Editor onBlur={this.onStopEdit} minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />
+        <Editor minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />
       </div>
     );
   }
@@ -124,3 +149,10 @@ export default class RawCell extends React.Component {
     );
   }
 }
+
+RawCell.propTypes = {
+  cell: React.PropTypes.object.isRequired,
+  isAuthor: React.PropTypes.bool.isRequired,
+  editing: React.PropTypes.bool.isRequired,
+  cellIndex: React.PropTypes.number.isRequired
+};
