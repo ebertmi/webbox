@@ -26,7 +26,8 @@ export const initialState = Immutable.Map({
         slide_type: 'slide' /* slide, fragment[, subslide], skip, notes */
       }
     },
-    source: "## Hello\nEtwas Text und vielleicht das ein oder andere Gedicht. Aber jetzt kommen wir zu etwas coolem: `inline-code` und\n```python\ndef fu():\n\tpass\n```"
+    source: "## Hello\nEtwas Text und vielleicht das ein oder andere Gedicht. Aber jetzt kommen wir zu etwas coolem: `inline-code` und\n```python\ndef fu():\n\tpass\n```",
+    id: '112213'
   }, {
     cell_type: 'codeembed',
     metadata: {
@@ -36,7 +37,8 @@ export const initialState = Immutable.Map({
       width: 900,
       height: 400
     },
-    source: 'db0cadd0-fe97-415b-96f6-90ecbd2d11e0'
+    source: 'db0cadd0-fe97-415b-96f6-90ecbd2d11e0',
+    id: '123123-123123-123'
   }, {
     cell_type: 'markdown',
     metadata: {
@@ -44,7 +46,8 @@ export const initialState = Immutable.Map({
         slide_type: 'slide'
       }
     },
-    source: "## Hello\n\nUnd noch mehr tExt und wenn das Speichern geht, dann geht es ab!"
+    source: "## Hello\n\nUnd noch mehr tExt und wenn das Speichern geht, dann geht es ab!",
+    id: '12312-123123-123'
   }, {
     cell_type: 'code',
     metadata: {
@@ -53,7 +56,8 @@ export const initialState = Immutable.Map({
       },
       mode: 'java'
     },
-    source: "public static void main(String args[]) {\n\tSystem.out.println(\"test\");\n}"
+    source: "public static void main(String args[]) {\n\tSystem.out.println(\"test\");\n}",
+    id: '12555-6673-434'
   }]),
   notebookMetadataEditable: false, /* toggle notebook metadata edit mode */
   slug: 'mein-erstes-webbox-notebook',

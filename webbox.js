@@ -12,6 +12,13 @@ var HapiIO = require('hapi-io');
 //var hratelimit = require('hapi-ratelimit');
 
 var config = require('./config/webbox.config');
+const version = require('./package.json').version;
+
+const defaultContext = {
+  webboxVersion: version,
+  isProd: config.isProd,
+  isDev: config.isDev
+};
 
 var server = new Hapi.Server();
 server.connection({
@@ -87,7 +94,7 @@ server.register(Vision, (err) => {
   } else {
     server.views({
       engines: {
-        jade: Jade,
+        jade: Jade
       },
       path: __dirname + '/lib/views',
       compileOptions: {
@@ -95,7 +102,8 @@ server.register(Vision, (err) => {
         pretty: true,
         debug: false,
         compileDebug: false
-      }
+      },
+      context: defaultContext
     });
   }
 });

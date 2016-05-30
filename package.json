@@ -5,11 +5,13 @@
   "main": "webbox.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node webbox.babel.js",
+    "start": "NODE_ENV=production node webbox.babel.js",
+    "startwin": "set NODE_ENV=production&&node webbox.babel.js",
     "dev": "nodemon webbox.babel.js",
-    "build-web": "webpack --progress -p",
+    "build-web": "webpack --config=webpack.config.production.js --progress -p",
     "watch-web": "webpack -d --watch"
   },
+  "private": true,
   "engine": ">= node 5.9.0",
   "repository": {
     "type": "git",
@@ -33,6 +35,7 @@
     "Stickyfill": "wilddeer/stickyfill",
     "anchor-js": "^3.1.1",
     "async": "^1.5.2",
+    "autoprefixer": "^6.3.6",
     "babel-core": "^6.9.0",
     "babel-loader": "^6.2.4",
     "babel-polyfill": "^6.9.0",
@@ -115,6 +118,7 @@
     "json-loader": "^0.5.4",
     "loaders.css": "^0.1.2",
     "node-sass": "^3.7.0",
+    "postcss-loader": "^0.9.1",
     "redux-devtools": "^3.3.1",
     "sass-loader": "^3.2.0",
     "style-loader": "^0.13.1",

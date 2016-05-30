@@ -1,4 +1,4 @@
-require('scss/index');
+import '../scss/index.scss';
 
 // polyfills
 import 'babel-polyfill';

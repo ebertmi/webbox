@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 // own imports
-import Notebook from '../../components/notebook/Notebook';
+import Presentation from '../../components/notebook/Presentation';
 import { prepareCells } from '../../actions/NotebookActions';
 
-class NotebookApp extends Component {
+class PresentationApp extends Component {
 
   componentWillMount() {
     // update cells with ids if not assigned
@@ -13,10 +13,10 @@ class NotebookApp extends Component {
   }
 
   render () {
-    return <Notebook notebook={this.props.notebook} dispatch={this.props.dispatch}></Notebook>;
+    return <Presentation notebook={this.props.notebook} dispatch={this.props.dispatch} ></Presentation>;
   }
 }
 
 export default connect(state => {
   return { notebook: state.notebook };
-})(NotebookApp);
+})(PresentationApp);

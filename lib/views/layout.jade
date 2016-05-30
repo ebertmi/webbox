@@ -9,6 +9,8 @@ html(lang="de")
         block styles
           script(src="https://use.fontawesome.com/3797abfac7.js")
           link(rel="stylesheet", href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/monokai-sublime.min.css")
+          if isProd
+            link(rel="stylesheet", href="/public/css/all.bundle.#{webboxVersion}.css")
 
         block title
           title trycoding.io - Hochschule Coburg

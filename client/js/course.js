@@ -1,4 +1,4 @@
-require('scss/course/course');
+import 'scss/course/course';
 
 const Stickyfill = require('exports?Stickyfill!Stickyfill/src/stickyfill');
 var anchors = require('exports?anchors!anchor-js/anchor');

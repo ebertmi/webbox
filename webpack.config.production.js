@@ -1,11 +1,19 @@
-/* global __dirname */
+/**
+ * Producation Webpack Configuration file.
+ *
+ * Some notes:
+ *  - production outputs
+ */
 
-'use strict';
+/* global __dirname */
 
 var webpack = require('webpack');
 var path = require('path');
 
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var autoprefixer = require('autoprefixer');
+
+var VERSION = require('./package.json').version;
 
 module.exports = {
   context: path.resolve(__dirname, 'client'),
@@ -15,7 +23,7 @@ module.exports = {
     embed: './js/embed.js',
     course: './js/course.js',
     notebook: './js/notebook.js',
-    presentation: './js/presentation'
+    presentation: './js/presentation.js'
   },
   output: {
     filename: '[name].bundle.js',
@@ -45,28 +53,43 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        loaders: ['style', 'css?-url', 'sass']
+        loader: ExtractTextPlugin.extract('style', 'css!postcss!sass')
       },
       {
         test: /\.json$/,
         loader: "json"
       }
+    ],
+    noParse: [
+      /acorn\/dist\/acorn\.js$/
     ]
   },
+  postcss: [ autoprefixer({ browsers: ['last 2 versions'] }) ],
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
+    }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'react-commons',
       chunks: ['dashboard', 'embed', 'notebook', 'presentation']
     }),
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('development')
-      }
+    new ExtractTextPlugin('../css/all.bundle.' + VERSION + '.css', {
+      allChunks: true,
+      disable: false
+    }),
+
+    new webpack.optimize.UglifyJsPlugin({
+      compressor: {
+        warnings: false
+      },
+      sourceMap: false,
+      mangle: true
     })
   ],
   node: {
     Buffer: true,
     fs: 'empty' // needed for term.js
-  },
-  devtool: 'source-map'
+  }
 };
