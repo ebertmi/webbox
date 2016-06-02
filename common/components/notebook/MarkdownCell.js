@@ -5,6 +5,7 @@ import { EditSession, UndoManager } from 'ace';
 import Icon from '../Icon';
 import Editor from '../Editor';
 import ImageUpload from './ImageUpload';
+import ImageGallery from './ImageGallery';
 import CellMetadata from './CellMetadata';
 import { EditButtonGroup } from './EditButtonGroup';
 
@@ -30,6 +31,7 @@ export default class MarkdownCell extends React.Component {
     this.onCellUp = this.onCellUp.bind(this);
     this.onCellDown = this.onCellDown.bind(this);
     this.toggleImageUpload= this.toggleImageUpload.bind(this);
+    this.toggleImageGallery= this.toggleImageGallery.bind(this);
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
 
     // Markdown Commands
@@ -39,7 +41,8 @@ export default class MarkdownCell extends React.Component {
   componentWillMount() {
     this.setState({
       rendered: '',
-      showImageUpload: false
+      showImageUpload: false,
+      showImageGallery: false
     });
   }
 
@@ -122,6 +125,23 @@ export default class MarkdownCell extends React.Component {
     });
   }
 
+  toggleImageGallery() {
+    let newState = this.state.showImageGallery ? false : true;
+    this.setState({
+      showImageGallery: newState
+    });
+  }
+
+  renderImageGallery() {
+    if (this.state.showImageGallery === true) {
+      return (
+        <ImageGallery onInsertImage={this.onInsertImage} course={this.props.course} />
+      );
+    }
+
+    return null;
+  }
+
   renderImageUploader() {
     if (this.state.showImageUpload === true) {
       return (
@@ -144,8 +164,9 @@ export default class MarkdownCell extends React.Component {
 
     return (
       <div className="col-xs-12">
-        <strong>Markdown</strong> <Icon className="icon-control" onClick={this.toggleImageUpload} title="Bilderupload anzeigen/schließen" name="cloud-upload"/> <Icon className="icon-control" title="Verfügbare Bilder anzeigen" name="picture-o"/>
+        <strong>Markdown</strong> <Icon className="icon-control" onClick={this.toggleImageUpload} title="Bilderupload anzeigen/schließen" name="cloud-upload"/> <Icon className="icon-control" onClick={this.toggleImageGallery} title="Verfügbare Bilder anzeigen" name="picture-o"/>
         { this.renderImageUploader() }
+        { this.renderImageGallery() }
         <Editor fontSize="16px" minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />
       </div>
     );

@@ -1,8 +1,5 @@
 import React from 'react';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
-import Immutable from 'immutable';
-
-import Dropzone from 'react-dropzone';
 
 import ImagePreview from './ImagePreview';
 import { API } from '../../services';
@@ -16,58 +13,58 @@ export default class ImageGallery extends React.Component {
   constructor(props) {
     super(props);
 
-    this.onProgress = this.onProgress.bind(this);
-    this.onDone = this.onDone.bind(this);
-    this.onError = this.onError.bind(this);
     this.onImageClick = this.onImageClick.bind(this);
   }
 
   componentWillMount() {
     this.setState({
-      isFetching: false,
-      images: []
+      isFetching: false
     });
   }
 
   componentDidMount() {
+    function getFilenameFromPath(path) {
+      let lastSlashPos = path.lastIndexOf('/');
+      lastSlashPos = lastSlashPos === -1 ? 0 : lastSlashPos; // may contain no slashes at all
+      return path.substring(lastSlashPos);
+    }
 
-  }
+    function stripLeadingSlash(path) {
+      if (path[0] === '/') {
+        return path.substring(1);
+      }
 
+      return path;
+    }
 
-  onProgress(progess) {
-    if (progess) {
-      this.setState({
-        progess: progess
+    function addLeadingSlash(path) {
+      if (path[0] !== '/') {
+        return '/' + path;
+      }
+
+      return path;
+    }
+
+    if (this.state.images == null) {
+      API.media.getImages({ course: this.props.course })
+      .then(data => {
+        let imageArray = JSON.parse(data.files);
+        let images = [];
+        imageArray.map(path => {
+          let newImage = {};
+          newImage.path = addLeadingSlash(path);
+          newImage.filename = getFilenameFromPath(path);
+          images.push(newImage);
+        });
+
+        this.setState({
+          images: images
+        });
+      })
+      .catch(err => {
+        console.log(err);
       });
     }
-  }
-
-  onDone(event, result) {
-    if (result.success === true) {
-      const newImage = {
-        path: `${result.path}`,
-        filename: result.filename,
-        originalFilename: result.originalFilename,
-        type: result.headers['content-type']
-      };
-
-      const newImages = this.state.images.slice();
-      newImages.push(newImage);
-
-      this.setState({
-        isUploading: false,
-        images: newImages
-      });
-    } else {
-      this.setState({
-        isUploading: false,
-        isError: true
-      });
-    }
-  }
-
-  onError(message) {
-    console.log(message);
   }
 
   onImageClick(src) {

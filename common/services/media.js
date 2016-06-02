@@ -8,12 +8,11 @@ const MEDIA_UPLIOD_FROMDATA_COURSE = 'course';
 const MEDIA_UPLOAD_METHOD = 'POST';
 
 export const MediaAPI = {
-  getImages(params, payload) {
-    return fetch(`/d/${params.id}`, {
-      method: 'PUT',
+  getImages(params) {
+    return fetch(`/images/${params.course}`, {
+      method: 'GET',
       credentials: 'same-origin',
       headers: getDefaultHeaders(),
-      body: JSON.stringify(payload)
     })
     .then(checkStatus)
     .then(parseJSON)
