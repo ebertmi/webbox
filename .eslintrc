@@ -4,13 +4,31 @@
     "ecmaVersion": 6,
     "sourceType": "module",
     "ecmaFeatures": {
-      "jsx": true,
-      "forOf": true,
       "experimentalObjectRestSpread": true,
-      "generators": true,
       "restParams": true,
+      "arrowFunctions": true,
+      "binaryLiterals": true,
+      "blockBindings": true,
+      "classes": true,
+      "defaultParams": true,
+      "destructuring": true,
+      "forOf": true,
+      "generators": true,
+      "modules": true,
+      "objectLiteralComputedProperties": true,
+      "objectLiteralDuplicateProperties": true,
+      "objectLiteralShorthandMethods": true,
+      "objectLiteralShorthandProperties": true,
+      "octalLiterals": true,
+      "regexUFlag": true,
+      "regexYFlag": true,
       "spread": true,
-      "templateStrings": true
+      "superInFunctions": true,
+      "templateStrings": true,
+      "unicodeCodePointEscapes": true,
+      "globalReturn": true,
+      "jsx": true,
+      "no-danger": true
     }
   },
   "rules": {
@@ -18,7 +36,10 @@
     "indent": [2, 2, { "SwitchCase": 1 }],
     "no-unused-vars": 2,
     "no-console": 0,
-    "react/prop-types": 0
+    "react/prop-types": 0,
+    "curly": 2,
+    "default-case": 2,
+    "brace-style": 1
   },
   "plugins": ["react"],
   "extends": ["eslint:recommended", "plugin:react/recommended"],

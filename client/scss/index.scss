@@ -103,7 +103,7 @@ form .btn,
 
 .entry {
   padding-top: 6rem;
-  padding-bottom: 20rem;
+  /*padding-bottom: 20rem;*/
 }
 
 .second-entry {
@@ -114,6 +114,21 @@ form .btn,
 .intro-text {
   font-size: 150%;
   font-weight: 400;
+  background-color: rgba(0, 0, 0, 0.21);
+  padding: 5px 5px 5px 5px;
+  text-align: center;
+}
+
+.image-dropzone {
+  /*height: 7rem;
+  border-width: 2px;
+  border-color: #666;
+  border-style: dashed;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;*/
 }
 
 @include media-breakpoint-down(xs) {

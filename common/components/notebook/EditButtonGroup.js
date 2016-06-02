@@ -7,6 +7,11 @@ export function EditButtonGroup (props) {
   const stopEditIcon = <Icon className="icon-control" onClick={props.onStopEdit} name="eye" title="Zur normalen Ansicht zurück" />;
   const iconBtn = props.editing ? stopEditIcon : editIcon;
 
+  if (props.isAuthor === false) {
+    return null;
+  }
+
+  // else render buttons
   return (
     <div className="col-xs-12">
       <div className="editor-btns">

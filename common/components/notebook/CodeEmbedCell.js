@@ -162,8 +162,8 @@ export default class CodeEmbedCell extends React.Component {
     }
 
     return (
-      <div className={"codeembed-cell row" + editingClass}>
-        <EditButtonGroup editing={editing} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
+      <div className={"codeembed-cell col-md-12 row" + editingClass}>
+        <EditButtonGroup isAuthor={isAuthor} editing={editing} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
         {metadata}
         {content}
         {frame}

@@ -1,21 +1,21 @@
-'use strict';
 /* global __dirname */
-var Hapi = require('hapi');
-var Path = require('path');
-var Inert = require('inert');
-var Good = require('good');
-var Vision = require('vision');
-var Jade = require('jade');
-var Crumb = require('crumb');
-var Blipp = require('blipp');
-var HapiIO = require('hapi-io');
-//var hratelimit = require('hapi-ratelimit');
+import Hapi from 'hapi';
+import Path from 'path';
+import Inert from 'inert';
+import Good from 'good';
+import Vision from 'vision';
+import Jade from 'jade';
+import Crumb from 'crumb';
+import Blipp from 'blipp';
+import HapiIO from 'hapi-io';
+//import hratelimit from 'hapi-ratelimit';
 
-var config = require('./config/webbox.config');
-const version = require('./package.json').version;
+// own imports
+import config from './config/webbox.config';
+import Package from './package.json';
 
 const defaultContext = {
-  webboxVersion: version,
+  webboxVersion: Package.version,
   isProd: config.isProd,
   isDev: config.isDev
 };
@@ -129,7 +129,13 @@ server.ext('onPreResponse', function (request, reply) {
 
   // ToDo: change this to hide information in production mode
   if (request.response.isBoom) {
-    console.error(request.response.stack);
+    if (request.response.output.statusCode >= 500) {
+      console.error(`Repsonse is Error`, request.response.stack);
+    } else {
+      console.log(`Repsonse is Error with status ${request.response.output.statusCode}`);
+    }
+
+
     const err = request.response;
     const errName = err.output.payload.error;
     const statusCode = err.output.payload.statusCode;

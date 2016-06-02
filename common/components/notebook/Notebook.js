@@ -7,8 +7,10 @@ import CodeCell from './CodeCell';
 import AddControls from './AddControls';
 import NotebookMetadata from './NotebookMetadata';
 
-import { loadCellsFromIPYNB } from '../../util/nbUtil';
+import { loadCellsFromIPYNB, stateToJS } from '../../util/nbUtil';
 import { addCellsFromJS } from '../../actions/NotebookActions';
+
+import { API } from '../../services';
 
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
@@ -19,6 +21,7 @@ export default class Notebook extends React.Component {
 
     this.onDrop = this.onDrop.bind(this);
     this.onDragOver = this.onDragOver.bind(this);
+    this.onSave = this.onSave.bind(this);
   }
 
   componentWillMount() {
@@ -29,6 +32,17 @@ export default class Notebook extends React.Component {
 
   componentDidMount() {
     // ToDo: register saving and redo shortcuts!
+  }
+
+  onSave(e) {
+    const documentObj = stateToJS(this.props.notebook);
+    // trigger save, somehow
+    API.document.save({ id: documentObj.id }, { document: documentObj }).then(res => {
+      // ToDo: done, maybe use the IDE showMessage Infrastructure
+      //console.log(res);
+    }).catch(err => {
+      console.log(err);
+    });
   }
 
   onDrop(e) {
@@ -83,6 +97,7 @@ export default class Notebook extends React.Component {
     const isAuthor = this.props.notebook.get('isAuthor');
     const cells = this.props.notebook.get('cells');
     const cellOrder = this.props.notebook.get('cellOrder');
+    const course = this.props.notebook.get('course');
 
     let blocks = [];
     let dispatch = this.props.dispatch;
@@ -92,20 +107,22 @@ export default class Notebook extends React.Component {
       let cell = cells.get(cellId);
       const id = cell.get('id');
 
-      blocks.push(
-        <AddControls dispatch={dispatch} key={'add' + id}  cellIndex={index} id={id} isAuthor={isAuthor} />
-      );
+      if (isAuthor) {
+        blocks.push(
+          <AddControls dispatch={dispatch} key={'add' + id}  cellIndex={index} id={id} isAuthor={isAuthor} />
+        );
+      }
 
       // push actual cell
       switch (cell.get('cell_type')) {
         case 'markdown':
-          blocks.push(<MarkdownCell dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor} editing={index === activeBlock}/>);
+          blocks.push(<MarkdownCell course={course} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor} editing={index === activeBlock}/>);
           break;
         case 'code':
-          blocks.push(<CodeCell dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor} editing={index === activeBlock}/>);
+          blocks.push(<CodeCell course={course} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor} editing={index === activeBlock}/>);
           break;
         case 'codeembed':
-          blocks.push(<CodeEmbedCell dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor}editing={index === activeBlock}/>);
+          blocks.push(<CodeEmbedCell course={course} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor}editing={index === activeBlock}/>);
           break;
         case 'raw':
           blocks.push(<RawCell dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor} editing={index === activeBlock}/>);
@@ -116,9 +133,11 @@ export default class Notebook extends React.Component {
 
     });
 
-    blocks.push(
-        <AddControls dispatch={dispatch} key="add-end" isAuthor={isAuthor} />
-    );
+    if (isAuthor) {
+      blocks.push(
+          <AddControls dispatch={dispatch} key="add-end" isAuthor={isAuthor} />
+      );
+    }
 
     return blocks;
   }
@@ -126,10 +145,19 @@ export default class Notebook extends React.Component {
   render() {
     const undoStackSize = this.props.notebook.get('undoStack').size;
     const redoStackSize = this.props.notebook.get('redoStack').size;
+    const course = this.props.notebook.get('course');
 
     return (
-      <div data-drag={true} className="notebook" onDragOver={this.onDragOver} onDrop={this.onDrop.bind(this) }>
-        <NotebookMetadata redoStackSize={redoStackSize} undoStackSize={undoStackSize} editable={this.props.notebook.get('notebookMetadataEditable')} slug={this.props.notebook.get('slug')} />
+      <div data-drag={true} className="notebook row" onDragOver={this.onDragOver} onDrop={this.onDrop.bind(this) }>
+        <NotebookMetadata
+        canToggleEditMode={this.props.notebook.get('canToggleEditMode')}
+        isAuthor={this.props.notebook.get('isAuthor')}
+        onSave={this.onSave}
+        redoStackSize={redoStackSize}
+        undoStackSize={undoStackSize}
+        editable={this.props.notebook.get('notebookMetadataEditable')}
+        slug={this.props.notebook.get('slug')}
+        course={course} />
         { this.renderCells() }
       </div>
     );

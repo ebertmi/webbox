@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
+
 import { addCodeEmbedCell, addMarkdownCell, addRawCell } from '../../actions/NotebookActions';
 import Icon from '../Icon';
 
@@ -9,6 +11,7 @@ export default class AddControls extends Component {
     this.addCodeEmbedCell = this.addCodeEmbedCell.bind(this);
     this.addMarkdownCell = this.addMarkdownCell.bind(this);
     this.addRawCell = this.addRawCell.bind(this);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   addCodeEmbedCell() {
@@ -29,7 +32,7 @@ export default class AddControls extends Component {
       return null;
     }
     return (
-      <div className="add-controls">
+      <div className="add-controls col-md-12">
         <Icon name="file-text-o" className="icon-control" onClick={this.addMarkdownCell} title="Neuer Textabschnitt" />
         <Icon name="file-code-o" className="icon-control" onClick={this.addCodeEmbedCell} title="Neuer Code-Block/Embed" />
         <Icon name="code" className="icon-control" onClick={this.addRawCell} title="Neuer HTML-Block" />

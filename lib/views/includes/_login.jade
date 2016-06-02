@@ -1,5 +1,5 @@
 - var nextQuery = "?next=" + (next || "");
-form(action="/login#{nextQuery}", method="POST")
+form(action!="/login" + nextQuery, method="POST")
   input(type="hidden", name="crumb", value=crumb)
   div.form-group
     label(for="login_username_input") Email-Adresse

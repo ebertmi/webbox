@@ -15,6 +15,12 @@ export function toggleNotebookMetadataEdit() {
   };
 }
 
+export function toggleViewMode() {
+  return {
+    type: Types.TOGGLE_VIEW_MODE
+  };
+}
+
 /**
  * Undo the last operation by getting the last state from the stack.
  */

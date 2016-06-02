@@ -25,7 +25,7 @@ export default class File extends EditSession {
       this._isNameEditable = val;
       this._emit('changeNameEditable');
 
-      // trigger changedName event, when name is differnt after leaving
+      // trigger changedName event, when name is different after leaving
       // name edit mode
       if (this._isNameEditable === false && this._oldName !== undefined && this._name !== this._oldName) {
         this._emit('changedName', {

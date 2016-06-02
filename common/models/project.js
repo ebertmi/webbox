@@ -9,20 +9,8 @@ import { Status } from './status';
 import { MessageWithAction } from './messages';
 import { Severity  } from './severity';
 import { Action } from './actions';
+import { MODES } from '../constants/Embed';
 
-/**
- * Projects need to support multiple modes:
- *  - Default: allows all operations
- *  - Readonly: allows running, etc, but no file changes
- *  - NoSave: allows to running and file changes but not saving those
- *  (- ViewDocument: only view a document with editing but no saving)
- */
-export const MODES = {
-  'Default': 'Default', /* default mode */
-  'Readonly': 'Readonly', /* prevents editing the embed */
-  'NoSave': 'NoSave', /* disables saving for the current IDE, e. g. viewing a differen document */
-  'ViewDocument': 'ViewDocument' /* allows to view a different document for this embed */
-};
 
 /**
  * User Rights limit the operations:
@@ -339,6 +327,25 @@ export default class Project extends EventEmitter {
   setUserData(data) {
     this._userData = data;
     this.status.setUsername(data.email || data.username); // display username or email if available
+  }
+
+  /**
+   * Return true if the current user can save the embed
+   */
+  canUserSave() {
+    if (!this._userData) {
+      return false;
+    }
+
+    switch(this._userData.mode) {
+      case MODES.RunMode:
+      case MODES.Readonly:
+      case MODES.NoSave:
+      case MODES.Unknown:
+        return false;
+      default:
+        return true;
+    }
   }
 
   fromInitialData(data) {

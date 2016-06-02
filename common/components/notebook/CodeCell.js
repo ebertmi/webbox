@@ -1,14 +1,16 @@
 import React from 'react';
-import Immutable from 'immutable';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
+import { EditSession, UndoManager } from 'ace';
 
-import Markdown from '../../util/markdown';
 import Editor from '../Editor';
+import Icon from '../Icon';
 import CellMetadata from './CellMetadata';
-import { EditSession } from 'ace';
-
-import { editCell, deleteCell, stopEditCell, updateCell, moveCellUp, moveCellDown } from '../../actions/NotebookActions';
 import { EditButtonGroup } from './EditButtonGroup';
 
+
+import { editCell, deleteCell, stopEditCell, updateCell, moveCellUp, moveCellDown } from '../../actions/NotebookActions';
+
+import Markdown from '../../util/markdown';
 import { sourceFromCell } from '../../util/nbUtil';
 
 /**
@@ -25,6 +27,8 @@ export default class CodeCell extends React.Component {
     this.onRef = this.onRef.bind(this);
     this.onCellUp = this.onCellUp.bind(this);
     this.onCellDown = this.onCellDown.bind(this);
+    this.onRun = this.onRun.bind(this);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   componentWillMount() {
@@ -44,12 +48,36 @@ export default class CodeCell extends React.Component {
     editing
     cellIndex
    */
-  shouldComponentUpdate(nextProps, nextState) {
+  /*shouldComponentUpdate(nextProps, nextState) {
     if (nextState.rendered != this.state.rendered || !Immutable.is(this.props.cell, nextProps.cell) || this.props.editing !== nextProps.editing || this.props.cellIndex !== nextProps.cellIndex) {
       return true;
     }
 
     return false;
+  }*/
+
+  /**
+   * Clicked the run button. Should we enable postMessage communication with the new window?
+   * Maybe at some point later
+   */
+  onRun() {
+    /**
+     * Running an unnamed example:
+     *  - Get the current code
+     *  - Get the set language (we need to know how to run the code)
+     *  - Either use the set id for statistics or generate a new one
+     *  - Current course/chapter (for statistics)
+     */
+    // short test
+    const code = sourceFromCell(this.props.cell);
+    const language = 'python3';
+    const embedType = this.props.cell.getIn(['metadata', 'embedType'], 'sourcebox'); // ToDo: get this from the notebook meta
+    const id = this.props.cell.getIn(['metadata', 'runid'], 'testidwhynot'); // ToDo: change default
+
+    const url = `${window.location.protocol}//${window.location.host}/run?language=${encodeURIComponent(language)}&id=${encodeURIComponent(id)}&embedType=${encodeURIComponent(embedType)}&code=${encodeURIComponent(code)}`;
+    const strWindowFeatures = "menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes";
+
+    window.open(url, "Beispiel Ausführen", strWindowFeatures);
   }
 
   /**
@@ -129,6 +157,7 @@ export default class CodeCell extends React.Component {
       this.session.setMode('ace/mode/' + mode);
     } else {
       this.session = new EditSession(source, 'ace/mode/' + mode);
+      this.session.setUndoManager(new UndoManager);
     }
 
     return (
@@ -156,9 +185,10 @@ export default class CodeCell extends React.Component {
     }
 
     return (
-      <div className={"code-cell row " + editingClass}>
-        <EditButtonGroup editing={editing} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
+      <div className={"code-cell col-md-12 row " + editingClass}>
+        <EditButtonGroup isAuthor={isAuthor} editing={editing} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
         {metadata}
+        <Icon name="play-circle-o" className="icon-control" onClick={this.onRun} title="Code Ausführen" />
         {content}
       </div>
     );

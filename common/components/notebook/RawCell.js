@@ -1,12 +1,12 @@
 import React from 'react';
-import Immutable from 'immutable';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
+import { EditSession, UndoManager } from 'ace';
 
 import CellMetadata from './CellMetadata';
 import Editor from '../Editor';
 import { EditButtonGroup } from './EditButtonGroup';
-import { editCell, deleteCell, stopEditCell, updateCell, moveCellUp, moveCellDown } from '../../actions/NotebookActions';
-import { EditSession } from 'ace';
 
+import { editCell, deleteCell, stopEditCell, updateCell, moveCellUp, moveCellDown } from '../../actions/NotebookActions';
 import { sourceFromCell } from '../../util/nbUtil';
 
 /**
@@ -22,24 +22,10 @@ export default class RawCell extends React.Component {
     this.onUpdateCell = this.onUpdateCell.bind(this);
     this.onCellUp = this.onCellUp.bind(this);
     this.onCellDown = this.onCellDown.bind(this);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   componentDidMount() {
-  }
-
-  /**
-   * Check if component needs update:
-    cell
-    isAuthor
-    editing
-    cellIndex
-   */
-  shouldComponentUpdate(nextProps) {
-    if (!Immutable.is(this.props.cell, nextProps.cell) || this.props.editing !== nextProps.editing || this.props.cellIndex !== nextProps.cellIndex) {
-      return true;
-    }
-
-    return false;
   }
 
   onCellUp() {
@@ -99,6 +85,7 @@ export default class RawCell extends React.Component {
       this.session.setMode(mode);
     } else {
       this.session = new EditSession(source, mode || 'ace/mode/markdown');
+      this.session.setUndoManager(new UndoManager);
     }
 
     return (
@@ -141,8 +128,8 @@ export default class RawCell extends React.Component {
     }
 
     return (
-      <div className={"raw-cell row " + editingClass}>
-        <EditButtonGroup editing={editing} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
+      <div className={"raw-cell col-md-12 row " + editingClass}>
+        <EditButtonGroup  isAuthor={isAuthor} editing={editing} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
         {metadata}
         {content}
       </div>

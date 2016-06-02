@@ -15,16 +15,17 @@ export const initialState = Immutable.Map({
       name: "python",
       version: "3"
     },
-    title: 'Mein erstes Webbox-Notebook',
-    author: 'Michael Ebert',
+    title: '',
+    author: '',
     lastUpdate: Date.now()
   }),
   cellOrder: new Immutable.List(),
   cells: new Immutable.Map(),
   notebookMetadataEditable: false, /* toggle notebook metadata edit mode */
-  slug: 'mein-erstes-webbox-notebook',
   activeBlock: -1, /* current block in editing mode */
-  isAuthor: true, /* should be canEdit, as only authors or admins can edit pages */
+  isAuthor: false, /* should be canEdit, as only authors or admins can edit pages */
+  canToggleEditMode: false,
+  authors: new Immutable.List(),
   nbformat: 4, /* required by nbformat */
   nbformat_minor: 0,
   undoStack: Immutable.List(),
@@ -37,7 +38,11 @@ export default function notebook(state = initialState, action) {
 
   switch (action.type) {
     case Types.TOGGLE_NOTEBOOK_META_EDIT:
-      newState = updateStateWithHistory(state, toggleNotebookMetadataEditable(state));
+      newState = toggleNotebookMetadataEditable(state);
+      return newState;
+
+    case Types.TOGGLE_VIEW_MODE:
+      newState = toggleViewMode(state);
       return newState;
 
     case Types.UNDO:
@@ -84,7 +89,8 @@ export default function notebook(state = initialState, action) {
 
     case Types.UPDATE_NOTEBOOK_META:
       newState = updateNotebookMetadata(state, action.name, action.value);
-      return updateStateWithHistory(state, newState);
+      return newState;
+      //return updateStateWithHistory(state, newState);
 
     case Types.ADD_CELLS_FROM_JS:
       // avoid history for initial state
@@ -230,7 +236,7 @@ function createNewCellByType(cellType) {
  *  - The cell is added to the "cells" property
  *  - The cell is added to "cellOrder" at the given index or added to the end of the list
  */
-function addCellWithIndex(state, index, newCell) {
+export function addCellWithIndex(state, index, newCell) {
   if (!newCell) {
     console.warn(`NotebookReducer.addCell(): Invalid argument 'newCell' (${newCell})`);
   }
@@ -309,10 +315,23 @@ function toggleNotebookMetadataEditable(state) {
   }
 }
 
+/**
+ * Toggles the edit tools and icons for authors
+ */
+function toggleViewMode(state) {
+  if (state.get('isAuthor')) {
+    return state.set('isAuthor', false);
+  } else {
+    return state.set('isAuthor', true);
+  }
+}
+
 function updateNotebookMetadata(state, name, value) {
   switch(name) {
     case 'slug':
       return state.set('slug', value);
+    case 'course':
+      return state.set('course', value);
     case 'title':
     case 'author':
       return state.setIn(['metadata', name], value);
@@ -321,7 +340,7 @@ function updateNotebookMetadata(state, name, value) {
   }
 }
 
-function updateAddCellsFromJS(state, cells, lang) {
+export function updateAddCellsFromJS(state, cells, lang) {
   if (!cells) {
     console.log('notebookReducer.updateAddCellFromJS called with invalid cell');
     return;

@@ -5,6 +5,7 @@ export const EXECUTE = 'EXECUTE';
 export const UPDATE_NOTEBOOK_META = 'UPDATE_NOTEBOOK_META';
 export const EDIT_NOTEBOOK_META = 'TOGGLE_NOTEBOOK_META';
 export const TOGGLE_NOTEBOOK_META_EDIT = 'TOGGLE_NOTEBOOK_EDIT';
+export const TOGGLE_VIEW_MODE = 'TOGGLE_VIEW_MODE';
 export const UNDO = 'UNDO';
 export const REDO = 'REDO';
 export const SAVE = 'SAVE';

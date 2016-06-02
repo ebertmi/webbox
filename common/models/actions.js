@@ -23,6 +23,9 @@ export function isAction(thing) {
   }
 }
 
+/**
+ * Represents a Action (callable function) with a label
+ */
 export class Action extends EventEmitter {
   constructor(id, label='', cssClass='', enabled=true, actionCallback=null) {
     super();

@@ -48,7 +48,7 @@ class NotebookApp extends Component {
       }
     ];
 
-    this.props.dispatch(addCellsFromJS(exampleData, 'python'));
+    //this.props.dispatch(addCellsFromJS(exampleData, 'python'));
   }
 
   render() {

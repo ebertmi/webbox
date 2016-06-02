@@ -9,11 +9,12 @@
     "client",
     "logs",
     "media",
-    "public"
+    "public",
+    "common"
   ],
   "ext": "js jade json",
   "env": {
-    "NODE_ENV": "production"
+    "NODE_ENV": "development"
   },
   "execMap": {
     "js": "node --harmony --harmony_destructuring"

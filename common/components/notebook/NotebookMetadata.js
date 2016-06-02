@@ -26,6 +26,7 @@ class NotebookMetadata extends React.Component {
     this.onRedo = this.onRedo.bind(this);
     this.onSave = this.onSave.bind(this);
     this.onUpdate = this.onUpdate.bind(this);
+    this.toggleViewMode = this.toggleViewMode.bind(this);
   }
 
   onUpdate(e) {
@@ -40,6 +41,11 @@ class NotebookMetadata extends React.Component {
   toggleEditClicked(e) {
     e.preventDefault();
     this.props.dispatch(NotebookActions.toggleNotebookMetadataEdit());
+  }
+
+  toggleViewMode(e) {
+    e.preventDefault();
+    this.props.dispatch(NotebookActions.toggleViewMode());
   }
 
   onUndo(e) {
@@ -57,8 +63,46 @@ class NotebookMetadata extends React.Component {
     this.props.dispatch(NotebookActions.save());
   }
 
+  renderViewMode() {
+    if (this.props.canToggleEditMode) {
+      const iconName = this.props.isAuthor ? 'toggle-off' : 'toggle-on';
+      const titleText = this.props.isAuthor ? 'Leseansicht' : 'Editieransicht';
+      return (
+      <span className="metadata-item">
+        <span className="metadata-sep">{'\u00a0//\u00a0'}</span>
+        <Icon className="icon-control" name={iconName} title={titleText} onClick={this.toggleViewMode} />
+      </span>
+      );
+    }
+
+    return null;
+
+  }
+
+  renderButtons() {
+    const editIconName = this.props.editable ? '' : 'edit';
+    const editTitleText = this.props.editable ? 'Schließen' : 'Metadata bearbeiten';
+    return (
+      <span>
+        <span className="metadata-sep">{'\u00a0//\u00a0'}</span>
+        <span className="metadata-item  icon-control" onClick={this.toggleEditClicked} >
+          <Icon name={editIconName} title={editTitleText} />
+        </span>
+        <span className="metadata-item icon-control" onClick={this.onUndo} >
+          <Icon name="undo" title="Rückgängig" /> <sup>{this.props.undoStackSize}</sup>
+        </span>
+        {/*<span className="metadata-item icon-control" onClick={this.onRedo} >
+          <Icon name="repeat" title="Wiederholen" /> <sup>{this.props.redoStackSize}</sup>
+        </span>*/}
+        <span className="metadata-item icon-control" onClick={this.props.onSave} >
+          <Icon name="floppy-o" title="Speichern" />
+        </span>
+      </span>
+    );
+  }
+
   render() {
-    const { editable, metadata, slug } = this.props;
+    const { isAuthor, editable, metadata, slug, course } = this.props;
     const author = metadata.get('author');
     const date = metadata.get('lastUpdate');
     const title = metadata.get('title');
@@ -69,7 +113,7 @@ class NotebookMetadata extends React.Component {
 
     if (editable) {
       return (
-        <div className="notebook-header">
+        <div className="col-md-12">
           <h1>{title}</h1>
           <h3>Metadaten:</h3>
           <div className="form-group row">
@@ -91,6 +135,13 @@ class NotebookMetadata extends React.Component {
                 <input className={"form-control"} onChange={this.onUpdate} type="text" defaultValue={slug} name="slug" ref="slugField" onBlur={e => {}} title="Slug/Kurzlink" />
               </div>
             </div>
+            <div className="form-group row">
+              <label className={"col-sm-2 form-control-label"} ><Icon name="link" /> Zugehöriger Kurs</label>
+              <div className={"col-sm-10"}>
+                <input className={"form-control"} onChange={this.onUpdate} type="text" defaultValue={course} name="course" ref="courseField" onBlur={e => {}} title="Kurs-Slug" />
+                <small>Angabe eines Kurses (Kurz-Link oder ID), um diese Document zuzuordnen. <strong>Eine Änderung am Kursnamen verschiebt keine Bilder.</strong></small>
+              </div>
+            </div>
           </div>
           <span className="metadata-item">
             <button className="btn btn-info btn-sm" onClick={this.toggleEditClicked}><Icon className={''} name={editIconName} title={editTitleText} /> {editTitleText}</button>
@@ -100,7 +151,7 @@ class NotebookMetadata extends React.Component {
       );
     }
     return (
-      <div className="notebook-header">
+      <div className="col-md-12">
         <h1>{title}</h1>
         <div className="metadata">
           <span className="metadata-item">
@@ -110,19 +161,8 @@ class NotebookMetadata extends React.Component {
           <span className="metadata-item">
             <Icon name="clock-o" />{'\u00a0 Zuletzt aktualisiert'}<Time value={date} locale="de" relative={true} />
           </span>
-          <span className="metadata-sep">{'\u00a0//\u00a0'}</span>
-          <span className="metadata-item  icon-control" onClick={this.toggleEditClicked} >
-            <Icon name={editIconName} title={editTitleText} />
-          </span>
-          <span className="metadata-item icon-control" onClick={this.onUndo} >
-            <Icon name="undo" title="Rückgängig" /> <sup>{this.props.undoStackSize}</sup>
-          </span>
-          {/*<span className="metadata-item icon-control" onClick={this.onRedo} >
-            <Icon name="repeat" title="Wiederholen" /> <sup>{this.props.redoStackSize}</sup>
-          </span>*/}
-          <span className="metadata-item icon-control" onClick={this.onSave} >
-            <Icon name="floppy-o" title="Speichern" />
-          </span>
+          { isAuthor ? this.renderButtons() : null }
+          { this.renderViewMode() }
         </div>
         <hr/>
       </div>

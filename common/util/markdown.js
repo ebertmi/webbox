@@ -10,12 +10,12 @@ const hljs = require('highlight.js');
 
 
 const COPY_BUTTON = `<div class="course-clipboard">
-<span class="btn-clipboard" title data-original-title="Copy to clipboard">Copy</span>
+<span class="btn-clipboard" data-event="code.copy" title data-original-title="Copy to clipboard">Copy</span>
 </div>`;
 
-const LAUNCH_SOURCEBOX_BUTTON = `<div class="course-sourcebox">
+const LAUNCH_SOURCEBOX_BUTTON = '';/*`<div class="course-sourcebox">
 <span class="btn-sourcebox" title data-original-title="Launch with SourceBox">SourceBox</span>
-</div>`;
+</div>`;*/
 
 var defaults = {
   html: true,

@@ -8,9 +8,15 @@ const goodOptions = {
   },
   reporters: {
     console: [{
-      module: 'good-console',
-      args: [{log: '*', response: '*', error: '*', request: 'error'}]
-    }],
+      module: 'good-squeeze',
+      name: 'Squeeze',
+      args: [{
+        log: '*',
+        response: '*'
+      }]
+    }, {
+      module: 'good-console'
+    }, 'stdout'],
     file: [{
       module: 'good-file',
       args: ['./logs/good.log', {log: '*', error: '*', ops: 'error'}]

@@ -31,7 +31,11 @@ html(lang="de")
                 block navbar-extra
                 if !user.isAnonymous
                   .pull-xs-right
-                    a(class="nav-item btn btn-warning", href="/logout") Ausloggen
+                    a(class="nav-item btn btn-warning btn-sm", href="/logout") Ausloggen
+                else
+                  .pull-xs-right
+                    - var nextQuery = "?next=" + (next || "");
+                    a(class="nav-item btn btn-success btn-sm", href!="/login" + nextQuery) Einloggen
 
       block content
         main.site-content#content

@@ -1,4 +1,5 @@
 import React from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 import Icon from '../Icon';
 import { updateCellSlideType, updateCellMetadata } from '../../actions/NotebookActions';
@@ -26,6 +27,7 @@ export default class CellMetadata extends React.Component {
     this.onAddMetadata = this.onAddMetadata.bind(this);
     this.onNewMetadataChange = this.onNewMetadataChange.bind(this);
     this.onDelete = this.onDelete.bind(this);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   componentWillMount() {

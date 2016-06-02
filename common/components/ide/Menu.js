@@ -17,6 +17,17 @@ export default class Menu extends React.Component {
     this.input = input;
   }
 
+  /**
+   * Only rerender on a new project
+   */
+  shouldComponentUpdate(nextProps) {
+    if (this.props.project != nextProps.project) {
+      return true;
+    }
+
+    return false;
+  }
+
   onNewFile(e) {
     e.preventDefault();
 
@@ -135,7 +146,7 @@ export default class Menu extends React.Component {
         </DropdownItem>
 
         <DropdownItem onClick={this.onAttributes.bind(this)}>
-          <Icon name="info" fixedWidth/> Eigenschafaten
+          <Icon name="info" fixedWidth/> Eigenschaften
         </DropdownItem>
 
         {/*
