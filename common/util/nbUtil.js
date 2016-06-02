@@ -113,6 +113,59 @@ export function loadCellsFromIPYNB(ipynb) {
   return result;
 }
 
+export function copyText (fromElement, text){
+  function selectElementText (element) {
+    if (document.selection) {
+      var range = document.body.createTextRange();
+      range.moveToElementText(element);
+      range.select();
+    } else if (window.getSelection) {
+      const range = document.createRange();
+      range.selectNode(element);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+    }
+  }
+
+  function clearSelection () {
+    if ( document.selection ) {
+      document.selection.empty();
+    } else if ( window.getSelection ) {
+      window.getSelection().removeAllRanges();
+    }
+  }
+
+  let element = fromElement;
+
+  // Check if element is set, otherwise create a new one and set the textContent
+  if (!fromElement) {
+    element = document.createElement('DIV');
+    element.textContent = text;
+    document.body.appendChild(element);
+  }
+
+  // Select all of the text in the element
+  selectElementText(element);
+
+  let succeeded = false;
+  try {
+    document.execCommand('copy');
+    succeeded = true;
+  } catch (e) {
+    // unsupported -> Safari
+    console.warn('Copy Text not supported in this browser.');
+  }
+
+  // Delete only our dummy element, not a real one
+  if (!fromElement) {
+    element.remove();
+  }
+
+  clearSelection();
+
+  return succeeded;
+}
+
 /**
  *http://about.asika.tw/fongshen-editor/
 	Class.prototype.insert = function(button)
