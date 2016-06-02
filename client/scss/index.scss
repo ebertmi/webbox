@@ -131,6 +131,15 @@ form .btn,
   justify-content: center;*/
 }
 
+.image-preview-link {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: top;
+}
+
 @include media-breakpoint-down(xs) {
   .entry {
     padding-top: 1rem;

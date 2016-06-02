@@ -146,7 +146,7 @@ export default class MarkdownCell extends React.Component {
       <div className="col-xs-12">
         <strong>Markdown</strong> <Icon className="icon-control" onClick={this.toggleImageUpload} title="Bilderupload anzeigen/schließen" name="cloud-upload"/> <Icon className="icon-control" title="Verfügbare Bilder anzeigen" name="picture-o"/>
         { this.renderImageUploader() }
-        <Editor minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />
+        <Editor fontSize="16px" minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />
       </div>
     );
   }
