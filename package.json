@@ -100,6 +100,7 @@
     "screenfull": "^3.0.0",
     "slug": "^0.9.1",
     "socket.io": "^1.4.6",
+    "spectacle": "github:waywaaard/spectacle",
     "split2": "^2.1.0",
     "term.js": "waywaaard/term.js",
     "thinky": "^2.3.2",

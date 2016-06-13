@@ -146,6 +146,7 @@ export default class CellMetadata extends React.Component {
             <select name="slide_type" value={slideshow.get('slide_type')} onChange={this.onSlideTypeChange}>
               <option value="slide">Folie</option>
               <option value="fragment">Fragment</option>
+              <option value="">Keine Option</option>
               <option value="skip">Nicht anzeigen</option>
             </select>
           </div>
