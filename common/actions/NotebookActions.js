@@ -131,7 +131,7 @@ export function updateCellSlideType(cellId, slideType) {
   return {
     type: Types.UPDATE_CELL_SLIDETYPE,
     cellId: cellId,
-    slideType: slideType
+    slide_type: slideType
   };
 }
 

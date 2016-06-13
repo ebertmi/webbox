@@ -3,6 +3,7 @@ import * as Types from '../../constants/NotebookActionTypes';
 import UUID from 'uuid';
 
 import isArray from 'lodash/isArray';
+import isInteger from 'lodash/isInteger';
 
 export const initialState = Immutable.Map({
   metadata: Immutable.fromJS({
@@ -106,17 +107,6 @@ export default function notebook(state = initialState, action) {
   }
 }
 
-function getCellFromIndex(state, index) {
-  const key = state.getIn(['cellOrder', index]);
-
-  if (!key) {
-    console.warn(`NotebookReducer.getCellFromIndex(): index not found (${index})`);
-  }
-
-  // return cell
-  return state.getIn(['cells', key]);
-}
-
 /**
  * Deletes a cell for the given index:
  *  - Removes the cell from "cells" (Map)
@@ -194,7 +184,6 @@ function updateCellSlidetype(state, cellId, slideType) {
 
   // now update the cell
   let newCell = cell.setIn(['metadata', 'slideshow', 'slide_type'], slideType);
-
   return state.set('cells',  cells.set(cellId, newCell));
 }
 
@@ -205,7 +194,7 @@ function createNewCellByType(cellType) {
   let newCell = {
     metadata: {
       slideshow: {
-
+        slide_type: ''
       }
     },
     id: UUID.v4(),
@@ -245,7 +234,7 @@ export function addCellWithIndex(state, index, newCell) {
   let cellId = newCell.get('id');
   newState = state.set('cells', state.get('cells').set(cellId, newCell));
 
-  if (index) {
+  if (isInteger(index)) {
     newState = newState.set('cellOrder', newState.get('cellOrder').insert(index, cellId));
   } else {
     // when not index is specified, we just push the cell to the end of the list

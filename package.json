@@ -81,6 +81,7 @@
     "markdown-it-hashtag": "^0.4.0",
     "markdown-it-header-sections": "^0.2.2",
     "markdown-it-math": "^4.0.1",
+    "markdown-react-js": "github:waywaaard/markdown-react-js",
     "moment": "^2.13.0",
     "nodemailer": "^2.4.2",
     "nodemailer-sendgrid-transport": "^0.2.0",

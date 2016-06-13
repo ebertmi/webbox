@@ -133,7 +133,7 @@ export default class CellMetadata extends React.Component {
   }
 
   renderEditing() {
-    let slideshow = this.props.metadata.get('slideshow');
+    let slideType = this.props.metadata.getIn(['slideshow', 'slide_type']);
     let metadata = this.props.metadata.remove('slideshow');
     let classes = "cell-header " + this.props.className;
 
@@ -143,7 +143,7 @@ export default class CellMetadata extends React.Component {
         <div className="form-group row">
           <label className="col-sm-2 form-control-label">Slide-Type</label>
           <div className="col-sm-8">
-            <select name="slide_type" value={slideshow.get('slide_type')} onChange={this.onSlideTypeChange}>
+            <select name="slide_type" value={slideType} onChange={this.onSlideTypeChange}>
               <option value="slide">Folie</option>
               <option value="fragment">Fragment</option>
               <option value="">Keine Option</option>

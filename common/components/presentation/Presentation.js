@@ -3,6 +3,8 @@ import LazyLoad from 'react-lazyload';
 import assign from 'lodash/assign';
 
 import CustomMarkdown from './CustomMarkdown';
+import Highlight from './Highlight';
+import { toMarkdownComponent } from './markdownRenderer';
 
 import {
   Appear,
@@ -39,7 +41,7 @@ import { sourceFromCell } from '../../util/nbUtil';
 import RawCell from '../notebook/RawCell';
 
 import { mdastConfigDefault } from 'spectacle/lib/components/markdown';
-
+/*
 class HTMLWrapper extends React.Component {
   constructor(props) {
     super(props);
@@ -63,6 +65,7 @@ customMdast.entities = false;
 //customMdast.commonmark = true;
 //customMdast.xhtml = false;
 console.log(customMdast);
+*/
 
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
@@ -84,11 +87,12 @@ export default class Presentation extends React.Component {
     // push actual cell
     switch (cell.get('cell_type')) {
       case 'markdown':
-        return <CustomMarkdown source={source} />;
-        //return <Markdown mdastConfig={customMdast} >{ source }</Markdown>;
+        return toMarkdownComponent({source: source});
+        //return <CustomMarkdown source={source} />;
       case 'code':
         lang = cell.getIn(['metadata', 'mode'], '');
-        return <CodePane source={source} lang={lang}></CodePane>;
+        return <Highlight source={source} lang={lang}></Highlight>;
+        //return <CodePane source={source} lang={lang}></CodePane>;
       case 'codeembed':
         return (
           <LazyLoad height={cell.getIn(['metadata', 'height'], 400)} once>
