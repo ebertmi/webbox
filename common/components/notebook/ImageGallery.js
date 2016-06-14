@@ -29,14 +29,6 @@ export default class ImageGallery extends React.Component {
       return path.substring(lastSlashPos);
     }
 
-    function stripLeadingSlash(path) {
-      if (path[0] === '/') {
-        return path.substring(1);
-      }
-
-      return path;
-    }
-
     function addLeadingSlash(path) {
       if (path[0] !== '/') {
         return '/' + path;

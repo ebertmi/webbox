@@ -22,7 +22,6 @@ class Highlight extends React.Component {
   }
 
   onRef(node) {
-    console.log('onRef', node);
     this.preNode = node;
   }
 

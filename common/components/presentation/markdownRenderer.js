@@ -1,6 +1,6 @@
 import React from 'react';
 import MDReactComponent from './MDReactComponent';
-import { S, Code, BlockQuote, Quote, Heading, Image, Link, Text, ListItem } from "spectacle/lib/index";
+import { S, Code, BlockQuote, Quote, Heading, Image, Link, Text, ListItem, List } from "spectacle/lib/index";
 import Math from './Math';
 import MarkdownHTMLElement from './MarkdownHTMLElement';
 import Highlight from './Highlight';
@@ -71,6 +71,9 @@ export const mdOptions = {
 
       case 'li':
         return <ListItem {...props}>{children}</ListItem>;
+
+      case 'ul':
+        return <List {...props}>{children}</List>;
 
       case 'math':
         displayMode = props.display === 'inline' ? false : true;

@@ -143,7 +143,7 @@ export default class MarkdownCell extends React.Component {
   }
 
   renderImageUploader() {
-    if (this.state.showImageUpload === true) {
+    if (this.state.showImageGallery === true) {
       return (
         <ImageUpload onInsertImage={this.onInsertImage} course={this.props.course} />
       );
@@ -162,9 +162,11 @@ export default class MarkdownCell extends React.Component {
       this.session.setUndoManager(new UndoManager);
     }
 
+    // <Icon className="icon-control" onClick={this.toggleImageUpload} title="Bilderupload anzeigen/schließen" name="cloud-upload"/>
+
     return (
       <div className="col-xs-12">
-        <strong>Markdown</strong> <Icon className="icon-control" onClick={this.toggleImageUpload} title="Bilderupload anzeigen/schließen" name="cloud-upload"/> <Icon className="icon-control" onClick={this.toggleImageGallery} title="Verfügbare Bilder anzeigen" name="picture-o"/>
+        <strong>Markdown</strong>  <Icon className="icon-control" onClick={this.toggleImageGallery} title="Verfügbare Bilder anzeigen" name="picture-o"/>
         { this.renderImageUploader() }
         { this.renderImageGallery() }
         <Editor fontSize="16px" minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />
