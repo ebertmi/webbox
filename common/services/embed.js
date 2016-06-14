@@ -18,5 +18,19 @@ export const EmbedAPI = {
       return data;
     })
     .catch(commonErrorHandler);
+  },
+  createEmbed(params, payload) {
+    return fetch(`/embed/create/`, {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: getDefaultHeaders(),
+      body: JSON.stringify(payload)
+    })
+    .then(checkStatus)
+    .then(parseJSON)
+    .then(data => {
+      return data;
+    })
+    .catch(commonErrorHandler);
   }
 };

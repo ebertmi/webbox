@@ -97,9 +97,23 @@
       "logout": {
         "success": "Sie wurden abgemeldet.",
         "alreadyLoggedOut": "Sie sind bereits abgemeldet."
+      },
+      "embed": {
+        "create": {
+          "invalid": "Name, Typ oder Sprache ('language') ist ungültig.",
+          "invalidEmbedType": "Ungültigen Typ angegeben: ",
+          "saveFailed": "Speicherung ist fehlgeschlagen. Bitte versuchen Sie es erneut."
+        },
+        "save": {
+          "invalidCodeData": "Request beinhaltet ungültige Code-Daten.",
+          "invalid": "Ungültige Anfrage bzw. ungültige Parameter.",
+          "getFailed": "Beispiel konnte nicht gefunden werden.",
+          "saveFailed": "Speicherung ist fehlgeschlagen. Bitte versuchen Sie es erneut."
+        }
       }
     },
     "sourcebox": {
-      "url": "http://52.58.54.59/"
+      "url": "http://52.58.54.59/",
+      "secret": "ItsASecretToEverybody!"
     }
 }

@@ -9,10 +9,24 @@ import TaggedInput from '../TaggedInput';
 export class UserForm extends Component {
   constructor (props) {
     super(props);
+
+    this.addRole = this.addRole.bind(this);
   }
 
   componentWillMount () {
     this.setState(UserForm.getInitialState());
+  }
+
+  addRole(e) {
+    e.preventDefault();
+    const role = e.target.getAttribute('data-role');
+
+    // User has already this role
+    if (this.props.user.roles.includes(role)) {
+      return;
+    }
+
+    this.handleRoleChange(role, this.props.user.roles.concat(role));
   }
 
   /**
@@ -161,6 +175,11 @@ export class UserForm extends Component {
           <label>Rollen</label>
           <TaggedInput onAddTag={this.handleRoleChange.bind(this)} onRemoveTag={this.handleRoleChange.bind(this)} name="roles" placeholder="Benutzerrollen" tags={this.props.user.roles} />
           <small className="text-muted">Hier können die Benutzerrollen verändert werden. Diese entscheiden über die Zugriffsrechte auf der Seite.</small>
+        </div>
+        <div className="form-group">
+          <button className="btn btn-info btn-sm" onClick={this.addRole} data-role="admin">Admin</button>
+          <button className="btn btn-info btn-sm" onClick={this.addRole} data-role="author">Autor (Darf Beispiele und Dokumente anlegen)</button>
+          <small className="text-muted">Klicken Sie auf einen der Buttons um dem Nutzer die Rolle zuzuweisen.</small>
         </div>
         {formButtons}
         {deleteContent}

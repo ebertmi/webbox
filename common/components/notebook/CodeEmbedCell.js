@@ -1,11 +1,13 @@
 import React from 'react';
-import Immutable from 'immutable';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 import IFrame from './IFrame';
 import { EditButtonGroup } from './EditButtonGroup';
 import CellMetadata from './CellMetadata';
 import { editCell, deleteCell, stopEditCell, updateCell, moveCellUp, moveCellDown } from '../../actions/NotebookActions';
 import { sourceFromCell } from '../../util/nbUtil';
+import { API } from '../../services';
+
 
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
@@ -14,6 +16,7 @@ export default class CodeEmbedCell extends React.Component {
   constructor(props) {
     super(props);
 
+    // Bind callbacks to right context (this)
     this.onEdit = this.onEdit.bind(this);
     this.onDelete = this.onDelete.bind(this);
     this.onStopEdit = this.onStopEdit.bind(this);
@@ -23,17 +26,31 @@ export default class CodeEmbedCell extends React.Component {
 
     this.onShowCreateEmbed = this.onShowCreateEmbed.bind(this);
     this.onCancelCreateEmbed = this.onCancelCreateEmbed.bind(this);
+    this.onFormDataChange = this.onFormDataChange.bind(this);
+    this.onCreateEmbed = this.onCreateEmbed.bind(this);
+
+    // Fast shouldComponentUpdate for immutable.js
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
+  /**
+   * Set initial state
+   */
   componentWillMount() {
     this.setState({
-      showCreateEmbed: false
+      showCreateEmbed: false,
+      formData: {
+        language: 'python3',
+        embedType: 'sourcebox',
+        name: ''
+      },
+      message: ''
     });
   }
 
-  componentDidMount() {
-  }
-
+  /**
+   * Show the embed creation form
+   */
   onShowCreateEmbed(e) {
     e.preventDefault();
     this.setState({
@@ -41,10 +58,53 @@ export default class CodeEmbedCell extends React.Component {
     });
   }
 
+  /**
+   * Hide/Cancel the embed creation
+   */
   onCancelCreateEmbed(e) {
     e.preventDefault();
     this.setState({
       showCreateEmbed: false
+    });
+  }
+
+  /**
+   * Handles changes on the form data
+   */
+  onFormDataChange(e) {
+    const name = e.target.name;
+    const value = e.target.value;
+    const newFormData = {};
+    newFormData[name] = value;
+    const formData = Object.assign({}, this.state.formData, newFormData);
+
+    this.setState({formData: formData});
+  }
+
+  /**
+   * Callback for creating an embed!
+   * 1. Get form data
+   * 2. Send request to server
+   * 3. If successful change current id to the returned one
+   * 3. If failed, show message
+   */
+  onCreateEmbed(e) {
+    e.preventDefault();
+    API.embed.createEmbed({}, this.state.formData).then(res => {
+      if (!res.error) {
+        this.props.dispatch(updateCell(this.props.cell.get('id'), res.id));
+        this.setState({
+          message: ''
+        });
+      } else {
+        this.setState({
+          message: res.error
+        });
+      }
+    }).catch(err => {
+      this.setState({
+        message: err.message
+      });
     });
   }
 
@@ -77,38 +137,37 @@ export default class CodeEmbedCell extends React.Component {
     this.props.dispatch(updateCell(this.props.cell.get('id'), value));
   }
 
-  /**
-   * Check if component needs update:
-    cell
-    isAuthor
-    editing
-    cellIndex
-   */
-  shouldComponentUpdate(nextProps, nextState) {
-    if (nextState.showCreateEmbed != this.state.showCreateEmbed || !Immutable.is(this.props.cell, nextProps.cell) || this.props.editing !== nextProps.editing || this.props.cellIndex !== nextProps.cellIndex) {
-      return true;
-    }
-
-    return false;
-  }
-
   renderCreateEmbed() {
     return (
       <div>
         <strong>Neues Beispiel erstellen</strong>
         <div className="form-group">
           <label className="form-control-label">Sprache/Typ</label>
-          <input className="form-control" type="text" placeholer="python3" value={''}/>
+          <select className="form-control" name="language" onChange={this.onFormDataChange} value={this.state.formData.language}>
+            <option value="python3">Python 3</option>
+            <option value="python2">Python 2</option>
+            <option value="java">Java</option>
+            <option value="c">C</option>
+          </select>
           <small className="text-muted">Spezifiziert die zu verwendente Sprache für das Beispiel. <code>python3</code> für Python3 und <code>python</code> für Python 2</small>
         </div>
         <div className="form-group">
           <label className="form-control-label">Name</label>
-          <input className="form-control" type="text" placeholer="z. B. String Methoden" value={''}/>
+          <input className="form-control" type="text" placeholer="z. B. String Methoden" name="name" onChange={this.onFormDataChange} value={this.state.formData.name}/>
           <small className="text-muted">Name, der das Beispiel beschreibt. Dieser wird oben rechts angezeigt.</small>
         </div>
         <div className="form-group">
-          <button className="btn btn-success btn-sm m-r-1">Erstellen</button>
+          <label className="form-control-label">Typ</label>
+          <select className="form-control" name="embedType" onChange={this.onFormDataChange} value={this.state.formData.embedType}>
+            <option value="sourcebox">Sourcebox (serverseitig)</option>
+            <option value="skulpt">Skulpt (clientseitig, nur Python)</option>
+          </select>
+          <small className="text-muted">Der Typ eines Beispiels definiert mit welchem Mechanismus der Code ausgeführt wird. <em>sourcebox</em> wird serverseitig ausgeführt. <em>skulpt</em> erlaubt die clientseitige Ausführung von Python (3).</small>
+        </div>
+        <div className="form-group">
+          <button className="btn btn-success btn-sm m-r-1" onClick={this.onCreateEmbed}>Erstellen</button>
           <button onClick={this.onCancelCreateEmbed} className="btn btn-danger btn-sm">Abbrechen</button>
+          <p className="text-muted">{this.state.message}</p>
         </div>
       </div>
     );
