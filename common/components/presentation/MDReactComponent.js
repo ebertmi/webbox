@@ -58,8 +58,8 @@ const DEFAULT_RULES = {
     return [compact(['htmlblock', attrs, token.content])];
   },
 
-  htmlInline(token) {
-    return token.content;
+  htmlInline(token, attrs) {
+    return [compact(['htmlinline', attrs, token.content])];
   },
 
   inline(token, attrs, children) {

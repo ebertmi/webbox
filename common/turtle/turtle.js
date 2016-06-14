@@ -1,5 +1,9 @@
 import { Writable } from 'stream';
-//return '{"cmd": "result", "result": "400"}'
+
+/**
+ * Consumes turtle stream messages and converts the bytestream to a string and then parses the json.
+ * After successfully parsing a json message the turtle.onStreamMessage method is called with the json data.
+ */
 export class TurtleMessageConsumer extends Writable {
   constructor(turtle, options) {
     super(options);

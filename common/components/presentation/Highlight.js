@@ -26,7 +26,6 @@ class Highlight extends React.Component {
   }
 
   highlightCode () {
-    console.log(this.preNode);
     if (!this.preNode) {
       return;
     }

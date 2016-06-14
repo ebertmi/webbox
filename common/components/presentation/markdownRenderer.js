@@ -90,6 +90,7 @@ export const mdOptions = {
 
   },
   plugins: [
+    require('markdown-it-decorate'),
     {
       plugin: mkitm,
       args: [{

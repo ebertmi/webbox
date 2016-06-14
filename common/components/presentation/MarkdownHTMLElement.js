@@ -1,18 +1,15 @@
 import React from "react";
 
-export class MarkdownHTMLElement extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+/**
+ * Pure Render Component for inserting inner HTML
+ */
+export default function MarkdownHTMLElement (props) {
+  const {style, content, ...rest} = props;
 
-  render() {
-    const markup = {__html: this.props.content};
-    if (this.props.displayMode === false) {
-      return <span style={this.props.style} dangerouslySetInnerHTML={markup}></span>;
-    } else {
-      return <div style={this.props.style} dangerouslySetInnerHTML={markup}></div>;
-    }
+  const markup = {__html: content};
+  if (props.displayMode === false) {
+    return <span style={style} {...rest} dangerouslySetInnerHTML={markup}></span>;
+  } else {
+    return <div style={style} {...rest} dangerouslySetInnerHTML={markup}></div>;
   }
 }
-
-export default MarkdownHTMLElement;

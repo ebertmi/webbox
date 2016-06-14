@@ -9,6 +9,10 @@ export class Math extends React.Component {
     };
   }
 
+  shouldComponentUpdate() {
+    return false;
+  }
+
   componentWillUpdate(nextProps, nextState) {
     nextState.html = this.generateHtml(nextProps);
   }

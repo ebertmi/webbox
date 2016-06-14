@@ -66,9 +66,6 @@ const FENCE = function (tokens, idx, options, env, slf) {
 // add plugins
 markdownit.use(require('markdown-it-decorate'));
 
-// this wraps the content into section elements after each heading
-markdownit.use(require('markdown-it-header-sections'));
-
 // render math with katex
 markdownit.use(require('markdown-it-math'), {
   inlineOpen: '$',
@@ -88,20 +85,6 @@ markdownit.use(require('markdown-it-math'), {
     });
   }
 });
-
-markdownit.use(require('markdown-it-hashtag'));
-
-// custom override for hashtag plugin for our embeds
-markdownit.renderer.rules.hashtag_open  = function (tokens, idx) {
-  var tagName = tokens[idx].content.toLowerCase();
-  return '<a href="/tags/' + tagName + '" class="tag">';
-};
-
-markdownit.renderer.rules.hashtag_text  = function (tokens, idx) {
-  return '#' + tokens[idx].content;
-};
-
-markdownit.renderer.rules.hashtag_close = function () { return '</a>'; };
 
 markdownit.renderer.rules.fence = FENCE;
 
