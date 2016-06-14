@@ -40,6 +40,8 @@ export default class Presentation extends React.Component {
     const dispatch = this.props.dispatch;
 
     let lang;
+    let embedType;
+    let runId;
     let source = sourceFromCell(cell);
 
     // Push cell
@@ -48,7 +50,9 @@ export default class Presentation extends React.Component {
         return toMarkdownComponent({source: source});
       case 'code':
         lang = cell.getIn(['metadata', 'mode'], '');
-        return <Highlight source={source} lang={lang}></Highlight>;
+        embedType = cell.getIn(['metadata', 'embedType']);
+        runId = cell.getIn(['metadata', 'runid']);
+        return <Highlight showRunButton={true} embedType={embedType} runId={runId} source={source} lang={lang}></Highlight>;
         //return <CodePane source={source} lang={lang}></CodePane>;
       case 'codeembed':
         return (

@@ -1,13 +1,15 @@
 import React from 'react';
-import MDReactComponent from './MDReactComponent';
+import katex from 'katex';
+import mkitm from 'markdown-it-math';
+import isString from 'lodash/isString';
 import { S, Code, BlockQuote, Quote, Heading, Image, Link, Text, ListItem, List } from "spectacle/lib/index";
+
+import MDReactComponent from './MDReactComponent';
 import Math from './Math';
 import MarkdownHTMLElement from './MarkdownHTMLElement';
 import Highlight from './Highlight';
 import OrderedList from './OrderedList';
-import katex from 'katex';
-import mkitm from 'markdown-it-math';
-import isString from 'lodash/isString';
+
 
 /**
  * Transforms any inline HTML from text to real HTML (react)
@@ -186,6 +188,10 @@ export const mdOptions = {
   }
 };
 
+/**
+ * Transforms markdown text to React Nodes. Highlights code with highlight.js, uses KaTeX for math rendering.
+ * Allows to use inline html inside paragraphs and list items.
+ */
 export function toMarkdownComponent(props) {
   return <MDReactComponent text={props.source} {...mdOptions} {...props} />;
 }

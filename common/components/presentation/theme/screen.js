@@ -202,7 +202,7 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         },
         h2: {
           color: colors.secondary,
-          fontSize: "2.2rem",
+          fontSize: "2.3rem",
           fontFamily: fonts.primary,
           lineHeight: 1,
           fontWeight: "bold",
