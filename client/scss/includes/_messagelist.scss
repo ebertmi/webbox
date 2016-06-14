@@ -19,7 +19,7 @@
  *--------------------------------------------------------------------------------------------*/
 .global-message-list {
 	font-size: 12px;
-	position: absolute;
+	position: fixed;
 	z-index: 2000; /* on top of the world */
 	color: $state-info-text;
 	box-shadow: 0 2px 8px #A8A8A8;

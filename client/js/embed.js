@@ -5,7 +5,7 @@ import {render} from 'react-dom';
 
 import Ide from '../../common/components/ide/Ide';
 import SourceboxProject from '../../common/models/sourcebox';
-import { MessageList } from '../../common/models/messages';
+import { MessageListModel } from '../../common/models/messages';
 import { usageConsole } from '../../common/util/usageLogger';
 
 // depending on the way we serve the embeds we can either just get the initial data from
@@ -21,7 +21,7 @@ if (window.INITIAL_DATA.meta.embedType === 'sourcebox') {
 }
 
 // we maintain a IDE wide message list (notifications)
-let messageList = new MessageList(usageConsole);
+let messageList = new MessageListModel(usageConsole);
 project.setMessageList(messageList); // project provides convience methods for displaying messages
 project.setUserData(window.USER_DATA);
 

@@ -7,7 +7,7 @@ import CellMetadata from './CellMetadata';
 import { editCell, deleteCell, stopEditCell, updateCell, moveCellUp, moveCellDown } from '../../actions/NotebookActions';
 import { sourceFromCell } from '../../util/nbUtil';
 import { API } from '../../services';
-
+import { Severity } from '../../models/severity';
 
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
@@ -93,18 +93,11 @@ export default class CodeEmbedCell extends React.Component {
     API.embed.createEmbed({}, this.state.formData).then(res => {
       if (!res.error) {
         this.props.dispatch(updateCell(this.props.cell.get('id'), res.id));
-        this.setState({
-          message: ''
-        });
       } else {
-        this.setState({
-          message: res.error
-        });
+        this.context.messageList.showMessage(Severity.Error, res.error);
       }
     }).catch(err => {
-      this.setState({
-        message: err.message
-      });
+      this.context.messageList.showMessage(Severity.Error, err);
     });
   }
 
@@ -167,7 +160,6 @@ export default class CodeEmbedCell extends React.Component {
         <div className="form-group">
           <button className="btn btn-success btn-sm m-r-1" onClick={this.onCreateEmbed}>Erstellen</button>
           <button onClick={this.onCancelCreateEmbed} className="btn btn-danger btn-sm">Abbrechen</button>
-          <p className="text-muted">{this.state.message}</p>
         </div>
       </div>
     );
@@ -241,4 +233,8 @@ CodeEmbedCell.propTypes = {
 
 CodeEmbedCell.defaultProps = {
   lazy: true
+};
+
+CodeEmbedCell.contextTypes = {
+  messageList: React.PropTypes.object
 };

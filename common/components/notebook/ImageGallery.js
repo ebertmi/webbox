@@ -1,6 +1,7 @@
 import React from 'react';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 
+import { Severity } from '../../models/severity';
 import ImagePreview from './ImagePreview';
 import { API } from '../../services';
 
@@ -54,7 +55,7 @@ export default class ImageGallery extends React.Component {
         });
       })
       .catch(err => {
-        console.log(err);
+        this.context.messageList.showMessage(Severity.Error, err);
       });
     }
   }
@@ -84,4 +85,8 @@ ImageGallery.propTypes = {
 };
 
 ImageGallery.defaultProps = {
+};
+
+ImageGallery.contextTypes = {
+  messageList: React.PropTypes.object
 };

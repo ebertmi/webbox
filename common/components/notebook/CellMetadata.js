@@ -3,6 +3,7 @@ import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 import Icon from '../Icon';
 import { updateCellSlideType, updateCellMetadata } from '../../actions/NotebookActions';
+import { Severity } from '../../models/severity';
 
 const METAKEY_VALID = 'control-outline';
 const METAKEY_INVALID = 'has-danger';
@@ -34,8 +35,7 @@ export default class CellMetadata extends React.Component {
     this.setState({
       newKey: '',
       newValue: '',
-      newValid: METAKEY_VALID,
-      validationMessage: ''
+      newValid: METAKEY_VALID
     });
   }
 
@@ -99,18 +99,11 @@ export default class CellMetadata extends React.Component {
 
     // ToDo: what happens when adding duplicate keys?
     if (this.state.newValid === METAKEY_INVALID) {
-      this.setState({
-        validationMessage: 'Ungültiger Schlüssel'
-      });
+      this.context.messageList.showMessage(Severity.Error, `Ungültiger Schlüsselname: ${this.state.newKey}`);
 
       // no update!
       return;
     }
-
-    // clear validation message
-    this.setState({
-      validationMessage: ''
-    });
 
     this.props.dispatch(updateCellMetadata(this.props.cellId, this.state.newKey, this.state.newValue));
 
@@ -169,7 +162,6 @@ export default class CellMetadata extends React.Component {
           <label className="col-sm-2 form-control-label"><input onChange={this.onNewMetadataChange} className="form-control form-control-sm" placeholder="Name" name="metadataKey" value={this.state.newKey} /></label>
           <div className="col-sm-8">
             <input onChange={this.onNewMetadataChange} className="form-control form-control-sm" placeholder="Wert" name="metadataValue" value={this.state.newValue} />
-            <small className="text-muted">{this.state.validationMessage}</small>
           </div>
           <div className="col-sm-2">
             <button onClick={this.onAddMetadata} className="btn btn-info btn-sm btn-round">+</button>
@@ -192,4 +184,8 @@ export default class CellMetadata extends React.Component {
 CellMetadata.propTypes = {
   metadata: React.PropTypes.object.isRequired,
   cellId: React.PropTypes.string.isRequired
+};
+
+CellMetadata.contextTypes = {
+  messageList: React.PropTypes.object
 };

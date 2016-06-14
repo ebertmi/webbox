@@ -4,6 +4,7 @@ import UUID from 'uuid';
 
 import isArray from 'lodash/isArray';
 import isInteger from 'lodash/isInteger';
+import isFunction from 'lodash/isFunction';
 
 export const initialState = Immutable.Map({
   metadata: Immutable.fromJS({
@@ -96,11 +97,18 @@ export default function notebook(state = initialState, action) {
     case Types.ADD_CELLS_FROM_JS:
       // avoid history for initial state
       newState = updateAddCellsFromJS(state, action.cells, action.language);
+
       if (action.withHistory === true) {
-        return updateStateWithHistory(state, newState);
-      } else {
-        return newState;
+        newState = updateStateWithHistory(state, newState);
       }
+
+      // trigger callback if any
+      if (isFunction(action.callback)) {
+        action.callback.call(null);
+      }
+
+      return newState;
+
 
     default:
       return state;

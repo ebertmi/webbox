@@ -83,12 +83,13 @@ export function updateCellMetadata(cellId, keyPath, value) {
   };
 }
 
-export function addCellsFromJS(cells, language, withHistory) {
+export function addCellsFromJS(cells, language, withHistory, callback) {
   return {
     type: Types.ADD_CELLS_FROM_JS,
     cells: cells,
     language: language,
-    withHistory: withHistory
+    withHistory: withHistory,
+    callback: callback
   };
 }
 

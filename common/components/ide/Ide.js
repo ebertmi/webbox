@@ -3,7 +3,6 @@ import React from 'react';
 import TabBar from './TabBar';
 import StatusBar from './StatusBar';
 import PanelArea from './PanelArea';
-import { Severity } from '../../models/severity';
 
 export default class Ide extends React.Component {
   constructor(props) {

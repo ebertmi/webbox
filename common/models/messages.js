@@ -60,14 +60,14 @@ export class MessageEntry extends EventEmitter {
 /**
  * Maintains a list of messages
  */
-export class MessageList extends EventEmitter {
-  constructor(usageLogger, options = { purgeInterval: MessageList.DEFAULT_MESSAGE_PURGER_INTERVAL, maxMessages: MessageList.DEFAULT_MAX_MESSAGES }) {
+export class MessageListModel extends EventEmitter {
+  constructor(usageLogger, options = { purgeInterval: MessageListModel.DEFAULT_MESSAGE_PURGER_INTERVAL, maxMessages: MessageListModel.DEFAULT_MAX_MESSAGES }) {
     super();
 
     this.messages = [];
     this._aggregatedMessages = []; // do not change this manually
     this.messageListPurger = null;
-    this.usageLogger = usageLogger;
+    this.usageLogger = usageLogger || { log: () => {}};
     this.options = options;
   }
 
@@ -271,5 +271,5 @@ export class MessageList extends EventEmitter {
 }
 
 // defaults
-MessageList.DEFAULT_MESSAGE_PURGER_INTERVAL = 10000;
-MessageList.DEFAULT_MAX_MESSAGES = 5;
+MessageListModel.DEFAULT_MESSAGE_PURGER_INTERVAL = 10000;
+MessageListModel.DEFAULT_MAX_MESSAGES = 5;

@@ -4,6 +4,7 @@ import Immutable from 'immutable';
 
 import Dropzone from 'react-dropzone';
 
+import { Severity } from '../../models/severity';
 import ImagePreview from './ImagePreview';
 import { API } from '../../services';
 
@@ -76,7 +77,7 @@ export default class ImageUpload extends React.Component {
   }
 
   onError(message) {
-    console.log(message);
+    this.context.messageList.showMessage(Severity.Error, message);
   }
 
   onImageClick(src) {
@@ -118,4 +119,8 @@ ImageUpload.propTypes = {
 };
 
 ImageUpload.defaultProps = {
+};
+
+ImageUpload.contextTypes = {
+  messageList: React.PropTypes.object
 };

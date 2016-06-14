@@ -7,6 +7,10 @@ import CodeCell from './CodeCell';
 import AddControls from './AddControls';
 import NotebookMetadata from './NotebookMetadata';
 
+import { MessageListModel } from '../../models/messages';
+import { Severity } from '../../models/severity';
+import { MessageList } from '../messageList/messageList';
+
 import { loadCellsFromIPYNB, stateToJS } from '../../util/nbUtil';
 import { addCellsFromJS } from '../../actions/NotebookActions';
 
@@ -19,9 +23,19 @@ export default class Notebook extends React.Component {
   constructor(props) {
     super(props);
 
+    // Create global message list
+    this.messageList = new MessageListModel();
+
     this.onDrop = this.onDrop.bind(this);
     this.onDragOver = this.onDragOver.bind(this);
     this.onSave = this.onSave.bind(this);
+  }
+
+  // Make messageList available in the tree
+  getChildContext() {
+    return {
+      messageList: this.messageList
+    };
   }
 
   componentWillMount() {
@@ -34,12 +48,10 @@ export default class Notebook extends React.Component {
     // ToDo: register saving and redo shortcuts!
   }
 
-  onSave(e) {
+  onSave() {
     const documentObj = stateToJS(this.props.notebook);
-    // trigger save, somehow
-    API.document.save({ id: documentObj.id }, { document: documentObj }).then(res => {
-      // ToDo: done, maybe use the IDE showMessage Infrastructure
-      //console.log(res);
+    API.document.save({ id: documentObj.id }, { document: documentObj }).then(() => {
+      this.messageList.showMessage(Severity.Info, 'Erfolgreich gespeichert.');
     }).catch(err => {
       console.log(err);
     });
@@ -56,17 +68,22 @@ export default class Notebook extends React.Component {
 
       // notebook format
       if (file.name && file.name.endsWith('.ipynb')) {
+        this.messageList.showMessage(Severity.Info, `Importiere ${file.name}... Dies kann einen Moment dauern.`);
         let reader = new FileReader();
 
         reader.onload = () => {
           let {cells, language} = loadCellsFromIPYNB(reader.result);
 
-          this.props.dispatch(addCellsFromJS(cells, language));
+          this.props.dispatch(addCellsFromJS(cells, language, false, () => {
+            this.messageList.showMessage(Severity.Info, 'Daten wurden importiert.');
+          }));
+
         };
 
         reader.readAsText(file);
       } else {
         // ToDo: handle images
+        this.messageList.showMessage(Severity.Warning, 'Es werden derzeit nur ipynb-Dateien unterstützt.');
       }
     }
 
@@ -149,6 +166,9 @@ export default class Notebook extends React.Component {
 
     return (
       <div data-drag={true} className="notebook row" onDragOver={this.onDragOver} onDrop={this.onDrop.bind(this) }>
+        <div className="global-message-list">
+          <MessageList messageList={this.messageList} />
+        </div>
         <NotebookMetadata
         canToggleEditMode={this.props.notebook.get('canToggleEditMode')}
         isAuthor={this.props.notebook.get('isAuthor')}
@@ -163,3 +183,7 @@ export default class Notebook extends React.Component {
     );
   }
 }
+
+Notebook.childContextTypes = {
+  messageList: React.PropTypes.object
+};
