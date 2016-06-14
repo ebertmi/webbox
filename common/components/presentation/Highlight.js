@@ -3,6 +3,11 @@ import hljs from 'highlight.js';
 import { getStyles } from "spectacle/lib/utils/base";
 import Radium from "radium";
 
+/**
+ * Highlights CodePanes using highlight.js.
+ * Uses the same styles are the original CodePane Component.
+ * You can pass in a language and the source (string).
+ */
 class Highlight extends React.Component {
   constructor(props) {
     super(props);

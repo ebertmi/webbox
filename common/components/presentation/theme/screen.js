@@ -182,11 +182,11 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         }
       },
       code: {
-        color: "black",
+        /*color: "black",*/
         fontSize: "2rem",
         fontFamily: fonts.tertiary,
         margin: "0.25rem auto",
-        backgroundColor: "rgba(0,0,0,0.15)",
+        backgroundColor: "transparent"/*"rgba(0,0,0,0.15)"*/,
         padding: "0 10px",
         borderRadius: 3
       },
@@ -256,6 +256,11 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         listStylePosition: "inside",
         padding: 0
       },
+      orderedList: {
+        textAlign: "left",
+        listStylePosition: "inside",
+        padding: 0
+      },
       s: {
         strikethrough: {}
       },
@@ -273,7 +278,8 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         color: "black",
         fontSize: "2rem",
         fontFamily: fonts.primary,
-        margin: "0.25rem auto"
+        margin: "0.25rem auto",
+        textAlign: "left"
       }
     }
   };

@@ -4,9 +4,61 @@ import { S, Code, BlockQuote, Quote, Heading, Image, Link, Text, ListItem, List 
 import Math from './Math';
 import MarkdownHTMLElement from './MarkdownHTMLElement';
 import Highlight from './Highlight';
+import OrderedList from './OrderedList';
 import katex from 'katex';
 import mkitm from 'markdown-it-math';
 import isString from 'lodash/isString';
+
+/**
+ * Transforms any inline HTML from text to real HTML (react)
+ */
+function makeChildren(children, props) {
+  let result = [];
+  let keyCounter = 0;
+  let openTags = 0;
+  let htmlContent = [];
+
+  if (!Array.isArray(children)) {
+    children = [].push(children);
+  }
+
+  /**
+   * Push all normal children to result.
+   * If we find an opening tag, we push the content to the htmlContent
+   *  -> now every child is pushed to htmlContent until we find an closing tag
+   *  -> if there are multiple opening tags, we wait until we found the last closing one
+   *
+   * WARNING: This will fail if somebody injects errornous HTML code, which causes to not render the node at all.
+   */
+  for (let child of children) {
+    if (child.type && child.type === 'htmlinline') {
+      // 1. Is opening Tag?
+      if (child.content.indexOf('/') < 0) {
+        openTags += 1;
+        htmlContent.push(child.content);
+      } else {
+        // closing tag
+        openTags -= 1;
+        htmlContent.push(child.content);
+
+        // done
+        if (openTags === 0) {
+          let {key, ...rest} = props; // Extract key from props
+          result.push(<MarkdownHTMLElement key={`${key}-inlinehtml-${keyCounter}`} {...rest} displayMode={false} content={htmlContent.join('')} />);
+          keyCounter += 1;
+          htmlContent = []; // Reset
+        }
+      }
+    } else if (openTags > 0) {
+      // add child to html
+      htmlContent.push(child);
+    } else {
+      result.push(child);
+    }
+  }
+
+  return result;
+}
 
 export const mdOptions = {
   onIterate: function (tag, props, children) {
@@ -38,8 +90,8 @@ export const mdOptions = {
         return <Highlight lang={lang} source={source} {...props} />;
 
       case 'p':
-        console.log('p', children);
-        return <Text {...props}>{children}</Text>;
+        content = makeChildren(children, props);
+        return <Text {...props}>{content}</Text>;
 
       case 'img':
         return <Image src={props.src} {...props} />;
@@ -70,10 +122,14 @@ export const mdOptions = {
         return <BlockQuote><Quote>{children}</Quote></BlockQuote>;
 
       case 'li':
-        return <ListItem {...props}>{children}</ListItem>;
+        content = makeChildren(children, props);
+        return <ListItem {...props}>{content}</ListItem>;
 
       case 'ul':
         return <List {...props}>{children}</List>;
+
+      case 'ol':
+        return <OrderedList {...props}>{children}</OrderedList>;
 
       case 'math':
         displayMode = props.display === 'inline' ? false : true;
@@ -83,6 +139,17 @@ export const mdOptions = {
       case 'htmlblock':
         content = Array.isArray(children) ? children.join('') : children;
         return <MarkdownHTMLElement content={content} {...props} />;
+
+      /**
+       * Special inline HTML treatment to embed the HTML as HTML-Nodes and not as escaped text.
+       * Requires to use makeChildren function to get the transformed list of children.
+       */
+      case 'htmlinline':
+        content = Array.isArray(children) ? children.join('') : children;
+        return {
+          type: 'htmlinline',
+          content
+        };
 
       default:
         return null; // now MDReactComponent is going to create the tag with React.createElement
