@@ -107,7 +107,7 @@ export function loadCellsFromIPYNB(ipynb) {
     }
 
   } catch (e) {
-    console.log(e);
+    return new Error('Konnte Datei nicht lesen. Ungültiges Dateiformat.');
   }
 
   return result;

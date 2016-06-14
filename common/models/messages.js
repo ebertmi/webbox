@@ -29,6 +29,10 @@ import { Severity } from './severity';
 import Promise from 'bluebird';
 import isString from 'lodash/isString';
 
+Promise.config({
+  cancellation: true
+});
+
 export class MessageWithAction {
   constructor(message, actions) {
     this.message = message;

@@ -50,10 +50,14 @@ export default class Notebook extends React.Component {
 
   onSave() {
     const documentObj = stateToJS(this.props.notebook);
-    API.document.save({ id: documentObj.id }, { document: documentObj }).then(() => {
-      this.messageList.showMessage(Severity.Info, 'Erfolgreich gespeichert.');
+    API.document.save({ id: documentObj.id }, { document: documentObj }).then(res => {
+      if (res.error) {
+        this.messageList.showMessage(Severity.Info, 'Erfolgreich gespeichert.');
+      } else {
+        this.messageList.showMessage(Severity.Error, res.error);
+      }
     }).catch(err => {
-      console.log(err);
+      this.messageList.showMessage(Severity.Error, err);
     });
   }
 
@@ -72,7 +76,15 @@ export default class Notebook extends React.Component {
         let reader = new FileReader();
 
         reader.onload = () => {
-          let {cells, language} = loadCellsFromIPYNB(reader.result);
+          let result = loadCellsFromIPYNB(reader.result);
+
+          // Check if an error as occured during parsing the file!
+          if (result instanceof Error) {
+            this.messageList.showMessage(Severity.Error, result);
+            return;
+          }
+
+          let {cells, language} = result;
 
           this.props.dispatch(addCellsFromJS(cells, language, false, () => {
             this.messageList.showMessage(Severity.Info, 'Daten wurden importiert.');
