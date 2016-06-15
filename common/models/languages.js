@@ -1,4 +1,4 @@
-import RegexParser from './parser';
+import { RegexParser, PythonErrorParser } from './parser';
 
 // a few default languages
 
@@ -54,13 +54,15 @@ export default {
       MPLBACKEND: 'module://backend_sb'
     },
     streams: 3,
-    streamsObjectMode: [false, false, false] /* set the mode for the additional streams */
+    streamsObjectMode: [false, false, false] /* set the mode for the additional streams */,
+    errorParser: new PythonErrorParser()
   },
 
   // this allows us also to run any commands and configure matplotlib etc
   python2: {
     exec: ['python', './main.py'],
-    displayName: 'Python 2 (Sourcebox)'
+    displayName: 'Python 2 (Sourcebox)',
+    errorParser: new PythonErrorParser()
   }
 
 };

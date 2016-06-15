@@ -30,7 +30,8 @@ module.exports = {
     ace: true,
     'highlight.js': 'hljs',
     'markdown-it': 'markdownit',
-    'katex': 'katex'
+    'katex': 'katex',
+    /*'socket.io-client': true*/
   },
   module: {
     loaders: [

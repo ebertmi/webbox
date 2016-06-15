@@ -11,3 +11,9 @@ const sourceboxOptions = {
 ```
 
 Yet, we need to test if we can lower the memory usage.
+
+## Run Sourcebox Server with pm2
+`sudo DEBUG=*.sourcebox pm2 start index`
+
+## Sourcebox 503 errors
+This error might indicate that your IP for the EC2-Instance has changed.

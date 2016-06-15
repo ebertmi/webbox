@@ -6,6 +6,7 @@ import { Severity  } from './severity';
 import Project from './project';
 import Runner from './sourceboxRunner';
 import languages from './languages';
+import { EventLog } from './socketCommunication';
 
 const PROCESS_DEFAULTS = {
   term: true

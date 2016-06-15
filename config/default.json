@@ -113,7 +113,11 @@
       }
     },
     "sourcebox": {
-      "url": "http://52.58.54.59/",
+      "url": "http://52.58.227.70:80",
       "secret": "ItsASecretToEverybody!"
+    },
+    "websocket": {
+      "url": "http://localhost:3000",
+      "secret": "WebSocketCommunicationSecretThatNobodyShouldKnowJustSaying!"
     }
 }

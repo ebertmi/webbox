@@ -11,8 +11,8 @@ html(lang="de")
     #ide-container
 
     script.
-      window.authToken = '!{authToken}';
-      window.server = '!{server}';
+      window.sourcebox = !{sourcebox};
+      window.websocket = !{websocket};
       window.INITIAL_DATA = !{INITIAL_DATA};
       window.USER_DATA = !{USER_DATA};
     //- script(src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/ace.js")
@@ -21,5 +21,6 @@ html(lang="de")
     script(src="https://cdn.jsdelivr.net/ace/1.2.3/min/ace.js")
     script(src="https://cdn.jsdelivr.net/ace/1.2.3/min/ext-themelist.js")
     script(src="https://cdn.jsdelivr.net/ace/1.2.3/min/ext-modelist.js")
+    //script(src=server + "/socket.io.js")
     script(src="/public/js/react-commons.bundle.js")
     script(src="/public/js/embed.bundle.js")

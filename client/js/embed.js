@@ -13,12 +13,14 @@ import { usageConsole } from '../../common/util/usageLogger';
 let project;
 if (window.INITIAL_DATA.meta.embedType === 'sourcebox') {
   project = new SourceboxProject(window.INITIAL_DATA, {
-    auth: window.authToken,
-    server: window.server
+    auth: window.sourcebox.authToken,
+    server: window.sourcebox.server
   });
 } else {
   console.log('Unsupported embedType', window.INITIAL_DATA);
 }
+
+project.setCommunicationData(window.websocket.authToken, window.websocket.server);
 
 // we maintain a IDE wide message list (notifications)
 let messageList = new MessageListModel(usageConsole);

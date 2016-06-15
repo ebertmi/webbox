@@ -9,7 +9,11 @@ import isFunction from 'lodash/isFunction';
 import split from 'split2';
 
 import { Turtle } from '../turtle/turtle';
+import { EventLog } from './socketCommunication';
 
+/**
+ * Allows to cancel promises (bluebird specific)
+ */
 Promise.config({
   cancellation: true
 });
@@ -46,6 +50,9 @@ function streamPromise(...streams) {
   }));
 }
 
+/**
+ * Replaces newlines (\n) with \r\n (for term.js)
+ */
 class TerminalTransform extends Transform {
   _transform(chunk, encoding, callback) {
     this.push(chunk.toString().replace(/\n/g, '\r\n'));
@@ -124,10 +131,19 @@ export default class Runner extends EventEmitter {
     this.stdio = [this.stdin, this.stdout, this.stderr];
   }
 
+  /**
+   * Run is the main entry method for starting a process:
+   *  1. Write all files on the disk
+   *  2. Try to compile (depending of the language)
+   *  3. Try to execute (if other steps are successfull or are skipped)
+   */
   run() {
     if (this.isRunning()) {
       return;
     }
+
+    let runEvent = new EventLog(EventLog.NAME_RUN, { execCommand: this.project.config.exec });
+    this.project.sendEvent(runEvent);
 
     this.files = this.project.getFiles();
     this.path = this.project.name || '.';
@@ -150,6 +166,7 @@ export default class Runner extends EventEmitter {
         this._status('Ausführung Beendet');
       })
       .catch((err) => {
+        console.trace(err);
         this._status(err.message);
       })
       .finally(() => {
@@ -157,6 +174,9 @@ export default class Runner extends EventEmitter {
       });
   }
 
+  /**
+   * Stops the current process
+   */
   stop() {
     if (this.isRunning()) {
       this.promiseChain.cancel();
@@ -164,6 +184,9 @@ export default class Runner extends EventEmitter {
     }
   }
 
+  /**
+   * Creates all directory that are required for writing the files
+   */
   _ensureDirs() {
     let paths = this.files.map(file => {
       let path = pathModule.join(this.path, file.getName());
@@ -179,6 +202,9 @@ export default class Runner extends EventEmitter {
     }
   }
 
+  /**
+   * Writes all files on the disk of the sourcebox
+   */
   _writeFiles() {
     return Promise.map(this.files, file => {
       let path = pathModule.join(this.path, file.getName());
@@ -186,6 +212,9 @@ export default class Runner extends EventEmitter {
     });
   }
 
+  /**
+   * Tries to compile the sourcecode, if configured (see languages.js)
+   */
   _compile() {
     if (!this.config.compile) {
       return;
@@ -202,6 +231,8 @@ export default class Runner extends EventEmitter {
     });
 
     let transform = new TerminalTransform();
+
+    // ToDo: Pipe stderr to special buffer, so that we can analyze the errors
     compiler.stderr.pipe(transform, {end: false});
     compiler.stdout.pipe(transform, {end: false});
 
@@ -248,6 +279,9 @@ export default class Runner extends EventEmitter {
     });
   }
 
+  /**
+   * Executes the process with the provides config params (see languages.js)
+   */
   _exec() {
     if (!this.config.exec) {
       throw new Error('No exec command');
@@ -266,9 +300,20 @@ export default class Runner extends EventEmitter {
     });
 
     this.process.on('error', (error) => {
-      console.log(error);
       this.project.showMessage('danger', 'Verbindung zum Server fehlgeschlagen.');
+
+      // Log the failure, maybe something weird has happend
+      let failureEvent = new EventLog(EventLog.NAME_FAILURE, { message: error.message } );
+      this.project.sendEvent(failureEvent);
     });
+
+    // Pipe stderr through our error logger, to get the error message
+    if (this.config.errorParser) {
+      if (isFunction(this.config.errorParser.clear)) {
+        this.config.errorParser.clear(); // reset parser
+      }
+      this.process.stderr.pipe(split()).pipe(this.config.errorParser, {end: false});
+    }
 
     this.stdin.pipe(this.process.stdin);
     this.process.stdout.pipe(this.stdout, {end: false});
@@ -281,8 +326,7 @@ export default class Runner extends EventEmitter {
 
     // turtle streams
     if (this.process.stdio[4] && this.process.stdio[5]) {
-      let turtle = new Turtle(this.process.stdio[4], this.process.stdio[5], this.project);
-      //this.process.stdio[4].pipe(this.stdout, {end: false});
+      new Turtle(this.process.stdio[4], this.process.stdio[5], this.project);
     }
 
     return Promise.join(processPromise(this.process, false).reflect(), streamPromise(this.process.stdout), processPromise => {
@@ -290,11 +334,28 @@ export default class Runner extends EventEmitter {
         throw new Error('Ausführen fehlgeschlagen');
       }
     }).finally(() => {
+      // Check for any error that might occur
+      if (this.config.errorParser && this.config.errorParser.hasError()) {
+        let errObj = this.config.errorParser.getAsObject();
+
+        // Try to get file content
+        let tabIndex = this.project.getIndexForFilename(errObj.file.replace('./', ''));
+
+        let fileContent = tabIndex > -1 ? this.project.getTabs()[tabIndex].item.getValue() : '';
+
+        let errorEvent = new EventLog(EventLog.NAME_ERROR, Object.assign({}, errObj, { fileContent: fileContent }));
+        this.project.sendEvent(errorEvent);
+        console.info(errorEvent);
+      }
+
       this.stdin.unpipe(this.process.stdin);
       delete this.process;
     });
   }
 
+  /**
+   * Outputs our status messages on the terminal with special formatting
+   */
   _status(msg, dashes=true) {
     let dash = dashes ? ' ---- ' : '';
     this.stdout.write(`\x1b[34m${dash}${msg}${dash}\x1b[m\r\n`);
@@ -322,6 +383,9 @@ export default class Runner extends EventEmitter {
     }
   }
 
+  /**
+   * Returns true if the process is currently running
+   */
   isRunning() {
     return this.promiseChain && this.promiseChain.isPending();
   }

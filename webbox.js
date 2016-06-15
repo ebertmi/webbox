@@ -75,6 +75,21 @@ server.register({
 });
 
 
+// Add jwt auth plugin
+server.register(require('hapi-auth-jwt2'), (err) => {
+  if(err){
+    console.log(err);
+  }
+
+  server.auth.strategy('jwt', 'jwt', {
+    key: config.websocket.secret,
+    validateFunc: (decoded, request, callback) => {
+      console.info(decoded);
+      callback(null, true);
+    }
+  });
+});
+
 // add ratelimiting middleware
 // requires redis
 /*server.register({

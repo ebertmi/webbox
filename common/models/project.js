@@ -1,4 +1,4 @@
-import {EventEmitter} from 'events';
+import { EventEmitter } from 'events';
 
 import File from './file';
 import isString from 'lodash/isString';
@@ -10,7 +10,7 @@ import { MessageWithAction } from './messages';
 import { Severity  } from './severity';
 import { Action } from './actions';
 import { MODES } from '../constants/Embed';
-
+import { SocketCommunication } from './socketCommunication';
 
 /**
  * User Rights limit the operations:
@@ -19,7 +19,6 @@ import { MODES } from '../constants/Embed';
  *  - ViewDocument
  *
  */
-
 export default class Project extends EventEmitter {
   constructor(data) {
     super();
@@ -49,16 +48,25 @@ export default class Project extends EventEmitter {
     this.saveEmbed = throttle(this._saveEmbed, 800);
   }
 
+  /**
+   * Setup our project wide message system (notifications)
+   */
   setMessageList(messageList) {
     this.messageList = messageList;
   }
 
+  /**
+   * Show a message as a box
+   */
   showMessage(severity, message) {
     if (this.messageList) {
       this.messageList.showMessage(severity, message);
     }
   }
 
+  /**
+   * Hide a specific message from the message list
+   */
   hideMessage(obj) {
     if (this.messageList) {
       this.messageList.hideMessage(obj);
@@ -90,6 +98,9 @@ export default class Project extends EventEmitter {
     return index;
   }
 
+  /**
+   * Return all tabs of the project
+   */
   getTabs() {
     return this.tabs;
   }
@@ -157,6 +168,9 @@ export default class Project extends EventEmitter {
     }
   }
 
+  /**
+   * Switch to tab at the given index
+   */
   switchTab(index) {
     let tab = this.tabs[index];
 
@@ -176,6 +190,9 @@ export default class Project extends EventEmitter {
     }
   }
 
+  /**
+   * Set internal project consistency. Are there any weird files, etc?
+   */
   setConsistency(val) {
     this.isConsistent = val;
     this.emitChange();
@@ -185,6 +202,9 @@ export default class Project extends EventEmitter {
     return this.isConsistent;
   }
 
+  /**
+   * Handles renaming of files and filters out duplicates and shows a message with possible actions
+   */
   onChangedFileName(e) {
     let messageObj;
     let duplicateTab;
@@ -246,21 +266,9 @@ export default class Project extends EventEmitter {
     this.addTab('file', { item: file, active: active});
   }
 
-  promptFileName() {
-    let filename = prompt('Dateiname?');
-    let pattern = /([^ !$`&*()+]|(\\[ !$`&*()+]))+/;
-
-    // ToDo: regex filename/filepath
-    // ToDo: maybe we should also create the files on the disk...
-    if (filename && pattern.test(filename)) {
-      return filename;
-    } else {
-      // ToDo: Message with unallowed filename
-      this.showMessage(Severity.Error, 'Ungültiger Pfad bzw. Dateiname!');
-      return null;
-    }
-  }
-
+  /**
+   * Tries to resolve a tab for the given file or returns null
+   */
   getTabForFileOrNull(file) {
     let tab = null;
     let matchingTabs = this.tabs.filter(tab => tab.type === 'file').filter(tab => tab.item === file);
@@ -322,6 +330,29 @@ export default class Project extends EventEmitter {
   }
 
   /**
+   * Setup the websocket communicaton for sending events and actions to the server
+   */
+  setCommunicationData(jwt, url) {
+    this.socketCommunication = new SocketCommunication(jwt, url);
+  }
+
+  sendEvent(eventLog) {
+    if (this.socketCommunication instanceof SocketCommunication) {
+      this.socketCommunication.sendEvent(eventLog);
+    } else {
+      console.warn('Project.SocketCommunication not configured. Cannot send events.');
+    }
+  }
+
+  sendAction(action) {
+    if (this.socketCommunication instanceof SocketCommunication) {
+      this.socketCommunication.sendAction(action);
+    } else {
+      console.warn('Project.SocketCommunication not configured. Cannot send events.');
+    }
+  }
+
+  /**
    * Sets the user data associated with the trinket
    */
   setUserData(data) {
@@ -348,6 +379,9 @@ export default class Project extends EventEmitter {
     }
   }
 
+  /**
+   * Init the project from the given data object
+   */
   fromInitialData(data) {
     // TODO: add some basic checks maybe
     // ToDo: load _document data and do not change original embed no server

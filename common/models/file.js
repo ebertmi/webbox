@@ -41,9 +41,22 @@ export default class File extends EditSession {
     }
   }
 
+  /**
+   * Escapes invalid path characters
+   */
+  escapeName(str) {
+    if (!str) {
+      return str;
+    }
+
+    return str.replace(/\\|[!$`&*()+]/, '');
+  }
+
   setName(name) {
+    let escapedName = this.escapeName(name);
+
     this._oldName = this._name;
-    this._name = name;
+    this._name = escapedName;
 
     this._emit('changeName', {
       newName: this._name,
