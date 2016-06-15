@@ -182,6 +182,7 @@ export class Turtle {
           ctx.stroke();
           break;
         case 'image':
+          // ToDo: Support images here
           break;
       }
     }

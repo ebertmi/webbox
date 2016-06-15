@@ -63,7 +63,7 @@ function makeChildren(children, props) {
 }
 
 export const mdOptions = {
-  onIterate: function (tag, props, children) {
+  onIterate: function onIterate(tag, props, children) {
     let lang;
     let content;
     let displayMode;

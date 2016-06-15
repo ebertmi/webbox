@@ -15,6 +15,7 @@ export default class ImageGallery extends React.Component {
     super(props);
 
     this.onImageClick = this.onImageClick.bind(this);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   componentWillMount() {

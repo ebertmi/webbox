@@ -21,9 +21,9 @@
 	font-size: 12px;
 	position: fixed;
 	z-index: 2000; /* on top of the world */
-	color: $state-info-text;
+	color: #000000;
 	box-shadow: 0 2px 8px #A8A8A8;
-	background-color: #2C2C2C;
+	background-color: #ffffff/*#2C2C2C*/;
 	list-style-type: none;
 	line-height: 35px;
 	margin: 0;
@@ -85,14 +85,17 @@
 
   & li.message-list-entry .message-left-side.severity.app-error {
     background-color: $state-danger-bg;
+    color: #ffffff;
   }
 
   & li.message-list-entry .message-left-side.severity.app-warning {
     background-color: $state-warning-bg;
+    color: #ffffff;
   }
 
   & li.message-list-entry .message-left-side.severity.app-info {
     background-color: $state-info-bg;
+    color: #ffffff;
   }
 
   & li.message-list-entry .message-left-side.message-overflow-ellipsis {
@@ -113,6 +116,7 @@
 
 .global-message-list li.message-list-entry .actions-container .message-action {
 	background-color: $brand-primary;
+  color: #ffffff;
 }
 
 .global-message-list li.message-list-entry .actions-container .message-action:hover {

@@ -28,7 +28,7 @@
       "unicodeCodePointEscapes": true,
       "globalReturn": true,
       "jsx": true,
-      "no-danger": true
+      "no-danger": false
     }
   },
   "rules": {

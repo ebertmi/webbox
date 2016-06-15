@@ -1,6 +1,5 @@
 import React from 'react';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
-import Immutable from 'immutable';
 
 import Dropzone from 'react-dropzone';
 
@@ -22,6 +21,7 @@ export default class ImageUpload extends React.Component {
     this.onDone = this.onDone.bind(this);
     this.onError = this.onError.bind(this);
     this.onImageClick = this.onImageClick.bind(this);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   componentWillMount() {
@@ -38,7 +38,7 @@ export default class ImageUpload extends React.Component {
 
   onDrop(files) {
     let course = this.props.course || 'no-course';
-    let uploader = new API.media.ImageUploader(files, course, this.onError, this.onProgress, this.onDone);
+    new API.media.ImageUploader(files, course, this.onError, this.onProgress, this.onDone);
     this.setState({
       isUploading: true
     });

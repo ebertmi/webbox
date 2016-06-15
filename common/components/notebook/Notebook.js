@@ -51,9 +51,10 @@ export default class Notebook extends React.Component {
   onSave() {
     const documentObj = stateToJS(this.props.notebook);
     API.document.save({ id: documentObj.id }, { document: documentObj }).then(res => {
-      if (res.error) {
+      if (!res.error) {
         this.messageList.showMessage(Severity.Info, 'Erfolgreich gespeichert.');
       } else {
+        console.log(res);
         this.messageList.showMessage(Severity.Error, res.error);
       }
     }).catch(err => {
