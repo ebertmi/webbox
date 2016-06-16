@@ -22,13 +22,13 @@ import { SocketCommunication } from './socketCommunication';
 export default class Project extends EventEmitter {
   constructor(data) {
     super();
-    this.unnamedTabCounter = 0;
-
     this.name = data.meta.name || '';
-
     // save original data
     this.data = data;
+    this.mode = data.mode || MODES.Default;
+    this._userData = undefined; // we store here user data later
 
+    this.unnamedTabCounter = 0;
     this.tabs = [];
     this.running = false;
 
@@ -38,13 +38,11 @@ export default class Project extends EventEmitter {
     // switch tab to first one
     this.status = new Status();
 
-    this.mode = data.mode || MODES.Default;
-
     // Project state variables
     this.isConsistent = true;
     this.pendingSave = false;
 
-    // handle throttling and debouncing
+    // Handle throttling and debouncing
     this.saveEmbed = throttle(this._saveEmbed, 800);
   }
 
@@ -338,7 +336,8 @@ export default class Project extends EventEmitter {
 
   sendEvent(eventLog) {
     if (this.socketCommunication instanceof SocketCommunication) {
-      this.socketCommunication.sendEvent(eventLog);
+      eventLog.setContext(this.getContextData());
+      this.socketCommunication.sendEvent(eventLog, eventLog);
     } else {
       console.warn('Project.SocketCommunication not configured. Cannot send events.');
     }
@@ -346,10 +345,28 @@ export default class Project extends EventEmitter {
 
   sendAction(action) {
     if (this.socketCommunication instanceof SocketCommunication) {
+      action.setContext(this.getContextData());
       this.socketCommunication.sendAction(action);
     } else {
       console.warn('Project.SocketCommunication not configured. Cannot send events.');
     }
+  }
+
+  /**
+   * Returns an object containing all relevant context information about the current project (code embed)
+   */
+  getContextData() {
+    const embedName = this.name;
+    const embedId = this.data.id;
+    const embedDocument = this.data.document ? this.data.document.id : undefined;
+    const embedUser = this._userData && this._userData.email ? this._userData.email : 'anonymous';
+
+    return {
+      embedName,
+      embedId,
+      embedDocument,
+      embedUser
+    };
   }
 
   /**

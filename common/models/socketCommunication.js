@@ -23,13 +23,19 @@ export class EventLog {
     this._name = name;
     this._data = data;
     this._timeStamp = new Date();
+    this._context = {};
+  }
+
+  setContext(context) {
+    this._context = context;
   }
 
   asObject() {
     return {
       eventName: this._name,
       eventData: this._data,
-      timeStamp: this._timeStamp
+      timeStamp: this._timeStamp,
+      ...this._context
     };
   }
 
@@ -63,6 +69,11 @@ export class Action {
     this._data = data;
     this._timeStamp = new Date();
     this._callback = callback;
+    this._context = {};
+  }
+
+  setContext(context) {
+    this._context = context;
   }
 
   asObject() {
@@ -70,7 +81,8 @@ export class Action {
       action: this._action,
       actionData: this._data,
       actionUser: this._user,
-      timeStamp: this._timeStamp
+      timeStamp: this._timeStamp,
+      ...this._context
     };
   }
 
@@ -89,13 +101,13 @@ export class Action {
 }
 
 export class SocketCommunication extends EventEmitter {
-  constructor(jwt, url, port=80) {
+  constructor(connection={jwt:'', url:'', port:80}) {
     super();
     this._queue = [];
     this._socket;
-    this._jwt = jwt;
-    this._url = url;
-    this._port = port;
+    this._jwt = connection.jwt;
+    this._url = connection.url;
+    this._port = connection.port;
   }
 
   connect() {
@@ -141,11 +153,11 @@ export class SocketCommunication extends EventEmitter {
     const queue = this._queue.splice(0, this._queue.length);
 
     if (this.isConnected()) {
-      for (let item of queue) {
-        if (item instanceof Action) {
-          this.sendAction(item);
-        } else if (item instanceof EventLog) {
-          this.sendEvent(item);
+      for (let elm of queue) {
+        if (elm instanceof Action) {
+          this.sendAction(elm);
+        } else if (elm instanceof EventLog) {
+          this.sendEvent(elm);
         } else {
           throw new Error('SocketCommunication.purgeQueue queue contains invalid item.');
         }
@@ -171,7 +183,7 @@ export class SocketCommunication extends EventEmitter {
     if (!this.isConnected()) {
       action.run({ error: 'Keine Verbindung zum Server. Ihre Aktion kann nicht ausgeführt werden.' });
     } else {
-      this._socket.emit('embed-action', action.asObject(), res => {
+      this._socket.emit('embed-action',action.asObject(), res => {
         action.run(res);
       });
     }
@@ -188,7 +200,6 @@ export class SocketCommunication extends EventEmitter {
 
     // Check if we have a open connection
     if (this.isConnected()) {
-      console.info('emitting event', eventLog);
       this._socket.emit('embed-event', eventLog.asObject(), res => {
         console.info(res);
       });

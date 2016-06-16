@@ -20,7 +20,10 @@ if (window.INITIAL_DATA.meta.embedType === 'sourcebox') {
   console.log('Unsupported embedType', window.INITIAL_DATA);
 }
 
-project.setCommunicationData(window.websocket.authToken, window.websocket.server);
+project.setCommunicationData({
+  jwt: window.websocket.authToken,
+  url: window.websocket.server
+});
 
 // we maintain a IDE wide message list (notifications)
 let messageList = new MessageListModel(usageConsole);
