@@ -26,6 +26,12 @@ export class EventLog {
     this._context = {};
   }
 
+  /**
+   * Set context information about the event. E.g.:
+   *  - embed id
+   *  - user
+   * - ...
+   */
   setContext(context) {
     this._context = context;
   }
@@ -72,6 +78,12 @@ export class Action {
     this._context = {};
   }
 
+  /**
+   * Set context information about the event. E.g.:
+   *  - embed id
+   *  - user
+   * - ...
+   */
   setContext(context) {
     this._context = context;
   }
@@ -100,6 +112,14 @@ export class Action {
   }
 }
 
+/**
+ * Establishes a websocket connection to the server on demand and allows to send events and actions.
+ * The SocketCommunication instance emits multiple events:
+ *  - "connect" when the connection to the server is established
+ *  - "disconnect" when the connection is lost
+ *  - "reconnect" when the socket reconnected successfully
+ *  - "reconnect_failed" when the socket could not reconnect after the specified reconnect_attempts
+ */
 export class SocketCommunication extends EventEmitter {
   constructor(connection={jwt:'', url:'', port:80}) {
     super();
@@ -110,6 +130,10 @@ export class SocketCommunication extends EventEmitter {
     this._port = connection.port;
   }
 
+  /**
+   * Try to create a socket connection.
+   * NOTE: The socket tries to reconnect automatically
+   */
   connect() {
     if (this._socket) {
       return;
@@ -148,6 +172,10 @@ export class SocketCommunication extends EventEmitter {
     this.emit('error', err);
   }
 
+  /**
+   * Try to empty the queue of EventLogs and Actions. We make a copy of the current queue and remove all items that are copied.
+   * Then we try to send those to server. If sending fails, those will be automatically added to the queue again.
+   */
   purgeQueue() {
     // Empty queue und store items in local one. This prevents infinite loops when the connection is failing in between.
     const queue = this._queue.splice(0, this._queue.length);
@@ -166,7 +194,9 @@ export class SocketCommunication extends EventEmitter {
   }
 
   /**
-   * Send an action
+   * Send an action. If there is no socket connection, it will be established and the action will be queued.
+   * If there is an connection, but the socket is currently not connected, we just discard the action.
+   * Actions are immediate interactions and queuing them up during offline usage may cause side effects.
    */
   sendAction(action) {
     if (!(action instanceof Action)) {
@@ -189,6 +219,9 @@ export class SocketCommunication extends EventEmitter {
     }
   }
 
+  /**
+   * Sends the logged event. If there is not socket connection, it will be created. Events are queued if we have not connection.
+   */
   sendEvent(eventLog) {
     if (!(eventLog instanceof EventLog)) {
       throw new Error(`SocketCommunication.sendEvent requires an instance of EventLog. Got ${typeof eventLog}`);
@@ -208,6 +241,9 @@ export class SocketCommunication extends EventEmitter {
     }
   }
 
+  /**
+   * Returns true if we have a valid socket connection and if the socket is connected currently
+   */
   isConnected() {
     return this._socket && this._socket.connected;
   }

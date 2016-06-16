@@ -332,6 +332,11 @@ export default class Project extends EventEmitter {
    */
   setCommunicationData(jwt, url) {
     this.socketCommunication = new SocketCommunication(jwt, url);
+    this.socketCommunication.on('reconnect_failed', this.onReconnectFailed.bind(this));
+  }
+
+  onReconnectFailed() {
+    this.showMessage(Severity.Warning, 'Derzeit konnte keine Verbindung zum Server hergestellt werden. Sind sie offline?');
   }
 
   sendEvent(eventLog) {
@@ -462,7 +467,11 @@ export default class Project extends EventEmitter {
       API.embed.saveEmbed(params, payload).then(res => {
         //this.showMessage(Severity.Info, 'Gespeichert!');
         // ToDo: Maybe we should also use something similar to showMessage for the StatusBar
-        this.status.setStatusMessage('Gespeichert.', '', Severity.Info);
+        if (res.error) {
+          this.status.setStatusMessage('Beim Speichern ist ein Fehler augetreten.', Severity.Error);
+        } else {
+          this.status.setStatusMessage('Gespeichert.', '', Severity.Info);
+        }
 
         // ToDo: update document, if received any
       }).catch(err => {

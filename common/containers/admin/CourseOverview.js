@@ -39,7 +39,7 @@ class CourseOverview extends Component {
           pages={this.props.courseOverview.pages}
           pagesQuery={this.props.courseOverview.pagesQuery}
           location={this.props.location}>
-        <h2>Codebeispiele</h2>
+        <h2>Kurse</h2>
         <LoadingContainer isLoading={this.props.courseOverview.isFetching}>
           {content}
         </LoadingContainer>

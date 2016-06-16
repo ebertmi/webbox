@@ -23,6 +23,9 @@ require('yargs').usage('webboxcli <cmd> [args]')
   .command('addEmbed <userid>', 'Adds a new embed with some sample content', {}, function (argv) {
     addEmbed(argv.userid);
   })
+  .command('removeEmbed <id>', 'Removes the embed', {}, function (argv) {
+    removeEmbed(argv.id);
+  })
   .help('help')
   .argv;
 
@@ -107,7 +110,7 @@ function removeUser (id) {
   })
   .finally(() => {
     process.exit();
-  });;
+  });
 }
 
 function addCourse (slug, userid) {
@@ -182,6 +185,24 @@ function addEmbed (userid) {
   ce.save()
   .then(() => {
     console.log('Created code embed');
+  })
+  .error((err) => {
+    console.log(err);
+  })
+  .finally(() => {
+    process.exit();
+  });
+}
+
+function removeEmbed (id) {
+  var CodeEmbed = require('../lib/models/codeEmbed');
+
+  CodeEmbed.get(id).run()
+  .then((embed) => {
+    return embed.delete();
+  })
+  .then(() => {
+    console.log('Removed embed with id: ', id);
   })
   .error((err) => {
     console.log(err);

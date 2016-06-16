@@ -9,7 +9,7 @@ export function AuthAttemptTableRow (props) {
     <tr>
       <td>{props.data.username}</td>
       <td>{props.data.ip}</td>
-      <td>{this.props.data.id}</td>
+      <td>{props.data.id}</td>
       <td>
         <Time value={props.data.time} locale="de" relative={true}/>
       </td>

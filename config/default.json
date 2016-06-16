@@ -6,6 +6,7 @@
             "protocol": "http"
         }
     },
+    "security": true,
     "views": {
         "jade": { },
         "compileOptions": {
