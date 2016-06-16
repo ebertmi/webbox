@@ -6,7 +6,6 @@ import { Time } from '../Time';
  * Renders a course row
  */
 export function EmbedTableRow (props) {
-  console.info(props);
   const userDetailPath = `/admin/user/${props.data.creator.id}`;
   const embedPath = `/embed/${props.data.id}`;
 

@@ -67,7 +67,41 @@ block content
   else
     main.site-content#content
       .container
-        h3 Willkomen zurück #{user.username}
+        h2 Übersicht
+        p.
+          Willkommen zurück <strong>!{user.username}</strong>. Wir haben hier ihre letzten Beispiele und Dokumente für Sie aufgelistet.
+          Alternativ können Sie auch einen bestimmten Kurs auswählen.
+        .row
+          if documents.length > 0
+            .col-xs-12
+              h4 Ihre Dokumente
+              p.text-muted Die letzten 10 Dokumente/Notebooks
+
+              ul
+                - each doc in documents
+                  li
+                    a(href="/d/" + doc.id, ) !{doc.metadata.title}
+
+          if embeds && embeds.length > 0
+            .col-xs-12
+              h4 Ihre erstellten Beispiele
+              p.text-muted Die letzten 10...
+
+              ul
+                - each embed in embeds
+                  li
+                    a(href="/embed/" + embed.id, ) !{embed.meta.name}
+
+          if codeDocuments && codeDocuments.length > 0
+            .col-xs-12
+              h4 Zuletzt bearbeitete Beispiele
+              p.text-muted Die letzten 10 von Ihnen bearbeiteten Beispiele
+
+              ul
+                - each doc in codeDocuments
+                  li
+                    a(href="/embed/" + doc.codeEmbedId + "?showDocument=" + doc.id ) !{doc.embed.meta.name}
+
 
   .container.second-entry
       if user.isAnonymous
