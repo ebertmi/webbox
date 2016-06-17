@@ -119,16 +119,14 @@ form .btn,
   text-align: center;
 }
 
-.image-dropzone {
-  /*height: 7rem;
-  border-width: 2px;
-  border-color: #666;
-  border-style: dashed;
-  border-radius: 5px;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;*/
+.card {
+  box-shadow: none;
+}
+
+.card-header-for-list {
+  font-size: 1rem;
+  margin-bottom: 0;
+  border-bottom: none;
 }
 
 .image-preview-link {

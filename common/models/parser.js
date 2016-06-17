@@ -126,7 +126,8 @@ export class PythonErrorParser extends Transform {
 }
 
 PythonErrorParser.FILENAME_REGEX = /^\s*File\s"(.+)",\sline\s(.*)$/;
-PythonErrorParser.ERROR_REGEX = /^\s*(.+Error):\s(.*)$/;
+PythonErrorParser.ERROR_REGEX = /^\s*(.+[Error|Exception|Interrupt|Exit]):\s(.*)$/;
+/*PythonErrorParser.ERROR_REGEX = /^\s*(.+[Error|Exception|Interrupt|Exit]):\s(.*)$/;*/
 
 export class RegexParser extends Transform  {
   constructor() {
