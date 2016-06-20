@@ -9,7 +9,7 @@ import isFunction from 'lodash/isFunction';
 import split from 'split2';
 
 import { Turtle } from '../turtle/turtle';
-import { EventLog } from './socketCommunication';
+import { EventLog } from './socketConnection';
 
 /**
  * Allows to cancel promises (bluebird specific)

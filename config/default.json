@@ -112,6 +112,9 @@
           "getFailed": "Beispiel konnte nicht gefunden werden.",
           "saveFailed": "Speicherung ist fehlgeschlagen. Bitte versuchen Sie es erneut."
         }
+      },
+      "websocket": {
+        "subscribeNotAllowed": "Sie besitzen nicht die benötigten Rechte, um Live-Daten zu erhalten."
       }
     },
     "sourcebox": {
@@ -120,6 +123,9 @@
     },
     "websocket": {
       "url": "http://localhost:3000",
-      "secret": "WebSocketCommunicationSecretThatNobodyShouldKnowJustSaying!"
+      "secret": "WebSocketCommunicationSecretThatNobodyShouldKnowJustSaying!",
+      "notify": {
+        "authorsAllowed": true
+      }
     }
 }

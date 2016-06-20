@@ -20,7 +20,7 @@ export default class MatplotlibPanel extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="math-panel">
         <div ref={this.onRef.bind(this)}></div>
       </div>
     );

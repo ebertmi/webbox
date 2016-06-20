@@ -5,6 +5,7 @@ html(lang="de")
         meta(charset="utf-8")
         meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
         meta(http-equiv="x-ua-compatible" content="ie=edge")
+        meta(theme-color="#2196F3")
 
         block styles
           script(src="https://use.fontawesome.com/3797abfac7.js")
@@ -25,7 +26,8 @@ html(lang="de")
           header
             nav.navbar.navbar-light.wb-navbar
               .nav.navbar-nav
-                a.navbar-brand(href="/") trycoding.io
+                a.navbar-brand(href="/")
+                  img(src="/public/img/trycoding_logo.png", alt="trycoding.io")
                 a(class="nav-item nav-link", href="/") Startseite
                 a(class="nav-item nav-link", href="/courseoverview") Kurse
                 block navbar-extra

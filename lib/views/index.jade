@@ -16,6 +16,7 @@ block content
               p= errorMessage
 
       if user.isAnonymous
+        img.logo(src="/public/img/trycoding_logo.png", alt="trycoding logo")
         p.
           <span class="text-muted font-weight-bold">trycoding.io</span>
           ermöglicht das Programmieren im Browser für jede Programmiersprache. Zusätzlich
@@ -27,10 +28,10 @@ block content
           .col-xs-12
             p Hier finden Sie alle Kurse, zum Ausführen der Beispiele müssen Sie jedoch angemeldet sein.
           .col-xs-12
-            div.card-deck
+            div.card-columns
               - each course in courses
                 div.card
-                  img.card-img-top(src="")
+                  img.card-img-top(src="", alt="Kurs-Thumbnail" + course.title)
                   div.card-block
                     h4.card-title= course.title
                     p.card-text= course.description

@@ -25,7 +25,7 @@ export default class TurtlePanel extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="turtle-panel">
         <h1>Turtle-Ausgabe</h1>
         <div ref={this.onRef.bind(this)}></div>
       </div>

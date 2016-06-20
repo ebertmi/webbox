@@ -72,15 +72,15 @@ export default class OptionsPanel extends React.Component {
     return (
       <div onChange={this.onChange.bind(this, ['ace'])}>
         <legend>Editor</legend>
-        <Input type="select" label="Farbschema" name="theme" value={options.theme}>
+        <Input type="select" label="Farbschema" name="theme" defaultValue={options.theme}>
           <optgroup label="Hell">{themes.light}</optgroup>
           <optgroup label="Dunkel">{themes.dark}</optgroup>
         </Input>
-        <Input label="Aktive Zeile hervorheben" type="checkbox" name="highlightActiveLine" checked={options.highlightActiveLine}/>
-        <Input label="Ausgewähltes Wort hervorheben" type="checkbox" name="highlightSelectedWord" checked={options.highlightSelectedWord}/>
-        <Input label="Unsichtbare Zeichen anzeigen" type="checkbox" name="showInvisibles" checked={options.showInvisibles}/>
-        <Input label="Einrückung anzeigen" type="checkbox" name="displayIndentGuides" checked={options.displayIndentGuides}/>
-        <Input label="Zeilen umbrechen" type="checkbox" name="wrap" checked={options.wrap}/>
+        <Input label="Aktive Zeile hervorheben" type="checkbox" name="highlightActiveLine" defaultChecked={options.highlightActiveLine}/>
+        <Input label="Ausgewähltes Wort hervorheben" type="checkbox" name="highlightSelectedWord" defaultChecked={options.highlightSelectedWord}/>
+        <Input label="Unsichtbare Zeichen anzeigen" type="checkbox" name="showInvisibles" defaultChecked={options.showInvisibles}/>
+        <Input label="Einrückung anzeigen" type="checkbox" name="displayIndentGuides" defaultChecked={options.displayIndentGuides}/>
+        <Input label="Zeilen umbrechen" type="checkbox" name="wrap" defaultChecked={options.wrap}/>
       </div>
     );
   }
@@ -91,7 +91,7 @@ export default class OptionsPanel extends React.Component {
     return (
       <div onChange={this.onChange.bind(this, ['terminal'])}>
         <legend>Terminal</legend>
-        <Input label="Akustisches Signal" type="checkbox" name="audibleBell" checked={options.audibleBell}/>
+        <Input label="Akustisches Signal" type="checkbox" name="audibleBell" defaultChecked={options.audibleBell}/>
       </div>
     );
   }
@@ -102,8 +102,8 @@ export default class OptionsPanel extends React.Component {
     return (
       <form className="options-panel" onChange={this.onChange.bind(this, [])} onSubmit={e => e.preventDefault()}>
         <legend>Allgemeine Einstellungen</legend>
-        <Input label="Schriftart" type="text" name='font' value={options.font}/>
-        <Input label="Schriftgröße" type="number" min="1" max="50" step="1" name='fontSize' value={options.fontSize}/>
+        <Input label="Schriftart" type="text" name='font' defaultValue={options.font}/>
+        <Input label="Schriftgröße" type="number" min="1" max="50" step="1" name='fontSize' defaultValue={options.fontSize}/>
         {this.renderAceOptions()}
         {this.renderTerminalOptions()}
         <hr/>

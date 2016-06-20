@@ -5,7 +5,8 @@ import screenfull from 'screenfull';
 import optionManager from '../../models/options';
 
 import Icon from '../Icon';
-import {NavDropdown, DropdownItem, DropdownDivider, Button} from '../bootstrap';
+import { NavDropdown, DropdownItem, DropdownDivider, Button } from '../bootstrap';
+import { generateZip, saveZipAsFile, saveTextAsFile } from '../../util/saveUtil';
 
 export default class Menu extends React.Component {
   componentWillMount() {
@@ -28,17 +29,14 @@ export default class Menu extends React.Component {
     return false;
   }
 
+  /**
+   * Handler for creating new files. Delegates the file creation to the project model associated
+   * with this Menu.
+   *
+   * @param e Event object
+   */
   onNewFile(e) {
     e.preventDefault();
-
-    // TODO use bootstrap modal
-    //let filename = prompt('Dateiname?');
-
-    // TODO what about duplicate files?
-    // maybe we should also create the files on the disk...
-    //if (filename) {
-    //  this.props.project.addFile(filename);
-    //}
 
     this.props.project.addFile();
   }
@@ -52,7 +50,7 @@ export default class Menu extends React.Component {
   onInsights(e) {
     e.preventDefault();
 
-    this.props.project.addTab('insights');
+    this.props.project.showInsights();
   }
 
   onAttributes(e) {
@@ -70,7 +68,7 @@ export default class Menu extends React.Component {
   onImport(e) {
     e.preventDefault();
 
-    // TODO move this into project
+    // ToDo: add zip support
     let files = e.target.files;
     let project = this.props.project;
 
@@ -89,8 +87,19 @@ export default class Menu extends React.Component {
   onExport(e) {
     e.preventDefault();
 
-    // TODO, maybe add all files to a zip?
-    //let files = this.project.getFiles();
+    const files = this.props.project.getFiles();
+    const name = this.props.project.name;
+
+    if (files.length === 0) {
+      // Show Message
+      return;
+    } else if (files.length > 1) {
+      const zipFile = generateZip(name, files);
+      saveZipAsFile(name, zipFile);
+    } else {
+      // download as single file
+      saveTextAsFile(files[0]);
+    }
   }
 
   onToggleFullscreen() {
@@ -117,6 +126,37 @@ export default class Menu extends React.Component {
     this.changeFontSize(2);
   }
 
+  onShowShareableLink(e) {
+    e.preventDefault();
+    this.props.project.showShareableLink();
+  }
+
+  renderStatisticsItem() {
+    const userData = this.props.project.getUserData();
+    if (userData.anonymous === true || userData.isAuthor === false) {
+      return null;
+    }
+
+    return (
+      <DropdownItem onClick={this.onInsights.bind(this)}>
+        <Icon name="bar-chart" fixedWidth/> Statistiken
+      </DropdownItem>
+    );
+  }
+
+  renderEmbedAttributes() {
+    const userData = this.props.project.getUserData();
+    if (userData.anonymous === true || userData.isAuthor === false) {
+      return null;
+    }
+
+    return (
+      <DropdownItem onClick={this.onAttributes.bind(this)}>
+        <Icon name="info" fixedWidth/> Eigenschaften
+      </DropdownItem>
+    );
+  }
+
   render() {
     let project = this.props.project;
 
@@ -140,14 +180,12 @@ export default class Menu extends React.Component {
 
         <DropdownDivider/>
 
-        {/* ToDo: add here a check if the user may have access to those items */}
-        <DropdownItem onClick={this.onInsights.bind(this)}>
-          <Icon name="bar-chart" fixedWidth/> Statistiken
+        <DropdownItem onClick={this.onShowShareableLink.bind(this)}>
+          <Icon name="share" fixedWidth/> Teilen (Link)
         </DropdownItem>
 
-        <DropdownItem onClick={this.onAttributes.bind(this)}>
-          <Icon name="info" fixedWidth/> Eigenschaften
-        </DropdownItem>
+        { this.renderStatisticsItem() }
+        { this.renderEmbedAttributes() }
 
         {/*
         <DropdownItem>
@@ -155,15 +193,15 @@ export default class Menu extends React.Component {
         </DropdownItem>
         */}
 
+        <DropdownDivider/>
+
         <DropdownItem onClick={this.input.click.bind(this.input)}>
           <Icon name="upload" fixedWidth/> Importieren
         </DropdownItem>
 
-        {/*
         <DropdownItem onClick={this.onExport.bind(this)}>
-          <Icon name="download" fixedWidth/> Exportieren
+          <Icon name="download" fixedWidth title="Beispiel herunterladen" /> Exportieren
         </DropdownItem>
-        */}
 
         <DropdownDivider/>
 

@@ -22,3 +22,11 @@
   overflow: auto;
   padding: 1rem;
 }
+
+.turtle-panel,
+.math-panel {
+  min-height: 100%;
+  overflow: auto;
+  padding: 1rem;
+  background-color: white;
+}

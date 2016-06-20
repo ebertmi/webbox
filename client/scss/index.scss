@@ -18,6 +18,19 @@ $line-height: 1.5rem;
 @import "ide/ide";
 @import "notebook/notebook";
 
+.logo {
+  padding-bottom: 1rem;
+}
+
+.navbar-brand {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.navbar-brand img {
+  height: 1.25rem;
+}
+
 section {
   margin-bottom: 1.5rem;
 }
@@ -64,32 +77,12 @@ form .btn,
   max-width: 20em;
 }
 
-/**
- * Centered row items using flexbox
- */
- .row.welcome-message {
-   margin-bottom: 2rem;
-
-   & h1 {
-    text-align: center;
-    color: #FFF !important;
-    text-shadow: 1px 1px 2px #828282;
-    padding-bottom: 1rem;
-   }
-
-   & .typer-code {
-     background-color: #ffffff;
-   }
- }
+.card-title {
+  word-break: break-word;
+}
 
 .index-content,
 .admin-content {
-  background-color: #D6D6D6;
-  background: linear-gradient(to bottom left, rgba(216, 207, 229, 0) 0%, rgb(216, 207, 229) 100%), linear-gradient(to top left, rgba(38, 47, 63, 0) 0%, rgb(38, 47, 63) 100%), linear-gradient(to bottom right, rgba(179, 182, 208, 0) 0%, rgb(179, 182, 208) 100%), linear-gradient(to top right, rgba(166, 159, 124, 0) 0%, rgb(166, 159, 124) 100%);
-  background-image: url('/public/img/laptop.jpg');
-  background-repeat: no-repeat;
-  background-size: cover;
-  padding-bottom: 4rem;
   padding-top: 3rem;
 
   & .entry p,
@@ -101,22 +94,8 @@ form .btn,
   }
 }
 
-.entry {
-  padding-top: 6rem;
-  /*padding-bottom: 20rem;*/
-}
-
 .second-entry {
-  padding-top: 3rem;
   padding-bottom: 3rem;
-}
-
-.intro-text {
-  font-size: 150%;
-  font-weight: 400;
-  background-color: rgba(0, 0, 0, 0.21);
-  padding: 5px 5px 5px 5px;
-  text-align: center;
 }
 
 .card {
@@ -139,17 +118,8 @@ form .btn,
 }
 
 @include media-breakpoint-down(xs) {
-  .entry {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-  }
-
   .auth .col-xs-12,
   .grid-divider .col-xs-12 {
     margin-bottom: 1.5rem;
-  }
-
-  .welcome-message .line-number {
-    display: none
   }
 }

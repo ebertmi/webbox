@@ -3,8 +3,48 @@
  */
 import React from 'react';
 import { toSeverityAppClass, toTextLabel } from '../../models/severity';
+import { Action } from '../../models/actions';
 
 export class Message extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.onActionChanged = this.onActionChanged.bind(this);
+  }
+
+  componentDidMount() {
+    if (!this.props.message || !this.props.message.actions) {
+      return;
+    }
+
+    // Listen to action changes
+    this.props.message.actions.map((action) => {
+      action.on(Action.LABEL, this.onActionChanged);
+      action.on(Action.CLASS, this.onActionChanged);
+      action.on(Action.ENABLED, this.onActionChanged);
+      action.on(Action.CHECKED, this.onActionChanged);
+      action.on(Action.TOOLTIP, this.onActionChanged);
+    });
+  }
+
+  componentWillUnmount() {
+    if (!this.props.message || !this.props.message.actions) {
+      return;
+    }
+
+    // Cleanup listeners
+    this.props.message.actions.map((action) => {
+      action.removeListener(Action.LABEL, this.onActionChanged);
+      action.removeListener(Action.CLASS, this.onActionChanged);
+      action.removeListener(Action.ENABLED, this.onActionChanged);
+      action.removeListener(Action.CHECKED, this.onActionChanged);
+      action.removeListener(Action.TOOLTIP, this.onActionChanged);
+    });
+  }
+
+  onActionChanged() {
+    this.forceUpdate();
+  }
 
   renderActions() {
     return (

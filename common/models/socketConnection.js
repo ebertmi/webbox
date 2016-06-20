@@ -120,7 +120,7 @@ export class Action {
  *  - "reconnect" when the socket reconnected successfully
  *  - "reconnect_failed" when the socket could not reconnect after the specified reconnect_attempts
  */
-export class SocketCommunication extends EventEmitter {
+export class SocketConnection extends EventEmitter {
   constructor(connection={jwt:'', url:'', port:80}) {
     super();
     this._queue = [];
@@ -139,6 +139,7 @@ export class SocketCommunication extends EventEmitter {
       return;
     }
 
+    // CSRF token (hapi crumb plugin)
     let crumb = getCookie('crumb');
 
     // Defer the connection until we receive our first message or event
@@ -198,7 +199,7 @@ export class SocketCommunication extends EventEmitter {
    * If there is an connection, but the socket is currently not connected, we just discard the action.
    * Actions are immediate interactions and queuing them up during offline usage may cause side effects.
    */
-  sendAction(action) {
+  sendAction(action, useQueue=false) {
     if (!(action instanceof Action)) {
       throw new Error(`SocketCommunication.sendAction requires an instance of Action. Got ${typeof action}`);
     }
@@ -207,11 +208,16 @@ export class SocketCommunication extends EventEmitter {
     if (!this._socket) {
       this._queue.push(action);
       this.connect();
+      return;
     }
 
     // Only send action if we have a valid connection
     if (!this.isConnected()) {
-      action.run({ error: 'Keine Verbindung zum Server. Ihre Aktion kann nicht ausgeführt werden.' });
+      if (useQueue) {
+        this._queue.push(action);
+      } else {
+        action.run({ error: 'Keine Verbindung zum Server. Ihre Aktion kann nicht ausgeführt werden.' });
+      }
     } else {
       this._socket.emit('embed-action',action.asObject(), res => {
         action.run(res);
@@ -239,6 +245,16 @@ export class SocketCommunication extends EventEmitter {
     } else {
       this._queue.push(eventLog);
     }
+  }
+
+  /**
+   * Add a listener for events from the socket connection.
+   *
+   * @param {String} event Event to listen on
+   * @param {Function} handler Function to handle the messages for the specified event
+   */
+  addSocketEventListener(event, handler) {
+    this._socket.on(event, handler);
   }
 
   /**

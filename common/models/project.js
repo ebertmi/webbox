@@ -1,16 +1,20 @@
 import { EventEmitter } from 'events';
 
-import File from './file';
 import isString from 'lodash/isString';
 import uniqueId from 'lodash/uniqueId';
 import throttle from 'lodash/throttle';
+
+import assert from '../util/assert';
+import { copyText } from '../util/nbUtil';
 import { API } from '../services';
 import { Status } from './status';
+import File from './file';
 import { MessageWithAction } from './messages';
 import { Severity  } from './severity';
 import { Action } from './actions';
 import { MODES } from '../constants/Embed';
-import { SocketCommunication } from './socketCommunication';
+import { SocketConnection } from './socketConnection';
+import { Insights } from './insights';
 
 /**
  * User Rights limit the operations:
@@ -25,6 +29,11 @@ export default class Project extends EventEmitter {
     this.name = data.meta.name || '';
     // save original data
     this.data = data;
+
+    // Insights instance, when required
+    this.insights = undefined;
+    this.socketConnection = undefined;
+
     this.mode = data.mode || MODES.Default;
     this._userData = undefined; // we store here user data later
 
@@ -167,7 +176,9 @@ export default class Project extends EventEmitter {
   }
 
   /**
-   * Switch to tab at the given index
+   * ext install addDocComments
+   *
+   * @param {Number} index The index of the tab, that shuld be focused/activated
    */
   switchTab(index) {
     let tab = this.tabs[index];
@@ -186,6 +197,23 @@ export default class Project extends EventEmitter {
       tab.active = !tab.active;
       this.emitChange();
     }
+  }
+
+  showInsights() {
+    // Check rights
+    if (this.mode !== MODES.Default) {
+      console.warn('Project.showInsights called within wrong mode', this.mode);
+      return;
+    }
+
+    if (!this.insights) {
+      assert(this.socketConnection, 'Passing undefined SocketConnection instance to Insights');
+
+      this.socketConnection.connect();
+      this.insights = new Insights(this.socketConnection, this);
+    }
+
+    this.addTab('insights', { item: this.insights, active: true });
   }
 
   /**
@@ -299,6 +327,12 @@ export default class Project extends EventEmitter {
     return tab;
   }
 
+  /**
+   * Returns the tab index for the given file name.
+   * @see Project#getTabs
+   * @param {string} name The file name to search for (can be also a path)
+   * @return {Number|undefined} Returns the index of tab for the file name
+   */
   getIndexForFilename(name) {
     let index = this.tabs.findIndex(tab => {
       return tab.type === 'file' && tab.item.getName() === name;
@@ -309,6 +343,7 @@ export default class Project extends EventEmitter {
 
   /**
    * Checks if there is a file with the given name
+   * @param {string} name The file name to check
    */
   hasFile(name) {
     return this.getFiles().filter(file => file.getName() === name).length > 0;
@@ -323,42 +358,56 @@ export default class Project extends EventEmitter {
       .map(tab => tab.item);
   }
 
+  /**
+   * Emits a change event to all registered listeners.
+   * Project inherits the EventEmitter interface.
+   */
   emitChange() {
     this.emit('change');
   }
 
   /**
    * Setup the websocket communicaton for sending events and actions to the server
+   * @param {String} jwt The jsonwebtoken required for authentification
+   * @param {String} url The url for the websocket connection
    */
   setCommunicationData(jwt, url) {
-    this.socketCommunication = new SocketCommunication(jwt, url);
-    this.socketCommunication.on('reconnect_failed', this.onReconnectFailed.bind(this));
+    this.socketConnection = new SocketConnection(jwt, url);
+    this.socketConnection.on('reconnect_failed', this.onReconnectFailed.bind(this));
   }
 
   onReconnectFailed() {
     this.showMessage(Severity.Warning, 'Derzeit konnte keine Verbindung zum Server hergestellt werden. Sind sie offline?');
   }
 
+  /**
+   * Sends a EventLog to the server via the websocket connection.
+   * The project sets the context information automatically for all events.
+   * @see Project#getContextData
+   * @param {EventLog} eventLog Event describes all relevant data
+   */
   sendEvent(eventLog) {
-    if (this.socketCommunication instanceof SocketCommunication) {
+    if (this.socketConnection instanceof SocketConnection) {
       eventLog.setContext(this.getContextData());
-      this.socketCommunication.sendEvent(eventLog, eventLog);
+      this.socketConnection.sendEvent(eventLog, eventLog);
     } else {
-      console.warn('Project.SocketCommunication not configured. Cannot send events.');
+      console.warn('Project.socketConnection not configured. Cannot send events.');
     }
   }
 
-  sendAction(action) {
-    if (this.socketCommunication instanceof SocketCommunication) {
+  sendAction(action, useQueue) {
+    if (this.socketConnection instanceof SocketConnection) {
       action.setContext(this.getContextData());
-      this.socketCommunication.sendAction(action);
+      this.socketConnection.sendAction(action, useQueue);
     } else {
-      console.warn('Project.SocketCommunication not configured. Cannot send events.');
+      console.warn('Project.socketConnection not configured. Cannot send events.');
     }
   }
 
   /**
    * Returns an object containing all relevant context information about the current project (code embed)
+   *
+   * @return {Object} The context data for events and actions containing information about the embed and user
    */
   getContextData() {
     const embedName = this.name;
@@ -382,6 +431,16 @@ export default class Project extends EventEmitter {
     this.status.setUsername(data.email || data.username); // display username or email if available
   }
 
+  getUserData() {
+    if (this._userData) {
+      return this._userData;
+    }
+
+    return {
+      anonymous: true
+    };
+  }
+
   /**
    * Return true if the current user can save the embed
    */
@@ -399,6 +458,50 @@ export default class Project extends EventEmitter {
       default:
         return true;
     }
+  }
+
+
+  /**
+   * Creates a url for sharing this embed
+   *
+   * @return {String} Absolute URL for this embed for this user
+   */
+  getSharableLink() {
+    const host = window.location.host;
+    const viewDocument = this.data.document ? `?showDocument=${this.data.document.id}`: '';
+    const idOrSlug = this.data.slug || this.data.id;
+
+    return `${host}/embed/${idOrSlug}${viewDocument}`;
+  }
+
+
+  /**
+   * Shows a message with the sharablelink.
+   */
+  showShareableLink() {
+    let copyAction;
+    let closeAction;
+    let messageObj;
+    const link = this.getSharableLink();
+
+    copyAction = new Action('copy.sharablelink.action', 'Kopieren', null, true, () => {
+      let succeeded = copyText(null, link);
+      if (succeeded) {
+        copyAction.setLabel('Kopiert');
+      } else {
+        this.showMessage(Severity.Warning, 'Link konnte nicht automatisch in die Zwischenablage kopiert werden. Bitte manuell markieren und kopieren.');
+      }
+    });
+
+    closeAction = new Action('close.sharablelink.action', 'Schließen', null, true, () => {
+      this.messageList.hideMessage(messageObj);
+    });
+
+    // Create message instance
+    messageObj = new MessageWithAction(`Ihr Link: ${link}`, [copyAction, closeAction]);
+
+    // Show it
+    this.showMessage(Severity.Ignore, messageObj);
   }
 
   /**
@@ -471,9 +574,11 @@ export default class Project extends EventEmitter {
           this.status.setStatusMessage('Beim Speichern ist ein Fehler augetreten.', Severity.Error);
         } else {
           this.status.setStatusMessage('Gespeichert.', '', Severity.Info);
+          // Update the document, if received any and not set
+          if (res.document) {
+            this.data._document = document;
+          }
         }
-
-        // ToDo: update document, if received any
       }).catch(err => {
         this.showMessage(Severity.Error, 'Speichern fehlgeschlagen!');
         console.log(err);

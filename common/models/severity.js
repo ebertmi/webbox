@@ -33,6 +33,7 @@ export function toTextLabel(severity) {
     case Severity.Info: return 'Info';
     case Severity.Warning: return 'Hinweis';
     case Severity.Error: return 'Fehler';
+    case Severity.Ignore: return 'Meldung';
     default: return '';
   }
 }
