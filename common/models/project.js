@@ -508,10 +508,17 @@ export default class Project extends EventEmitter {
    * Init the project from the given data object
    */
   fromInitialData(data) {
-    // TODO: add some basic checks maybe
-    // ToDo: load _document data and do not change original embed no server
-    for (let file in data.code) {
-      let fileData = data.code[file];
+    let code;
+
+    // Check if there is already a document on the data and try to load from there
+    if (data._document && data._document.code) {
+      code = data._document.code;
+    } else {
+      code = data.code;
+    }
+
+    for (let file in code) {
+      let fileData = code[file];
       if (isString(fileData)) {
         this.addFile(file, fileData);
       } else {

@@ -13,6 +13,7 @@ import InsightsTab from './tabs/InsightsTab';
 import AttributesTab from './tabs/AttributesTab';
 import MatplotlibTab from './tabs/MatplotlibTab';
 import TurtleTab from './tabs/TurtleTab';
+import { MODES } from '../../constants/Embed';
 
 const TAB_TYPES = {
   file: FileTab,
@@ -82,6 +83,12 @@ export default class TabBar extends React.Component {
     this.props.project.saveEmbed();
   }
 
+  onShareWithTeacher(e) {
+    e.preventDefault();
+    this.props.project.shareWithTeacher();
+  }
+
+
   renderTabs() {
     let project = this.props.project;
 
@@ -104,6 +111,7 @@ export default class TabBar extends React.Component {
   render() {
     let project = this.props.project;
     let startStop;
+    let shareWithTeacher;
 
     if (project.run) {
       startStop = (
@@ -113,6 +121,13 @@ export default class TabBar extends React.Component {
       );
     }
 
+    if (this.props.project.mode === MODES.Default) {
+      shareWithTeacher = (
+          <NavItem onClick={this.onShareWithTeacher.bind(this)} useHref={false} title="An Dozenten schicken" >
+            <Icon name="paper-plane" title="An Dozenten schicken" />
+          </NavItem>
+      );
+    }
 
     return (
       <div className="control-bar">
@@ -122,9 +137,10 @@ export default class TabBar extends React.Component {
         <span className="embed-title">{project.name}</span>
         <Nav className="controls" bsStyle="pills">
           {startStop}
-          <NavItem onClick={this.onSave.bind(this)} useHref={false}>
+          <NavItem onClick={this.onSave.bind(this)} useHref={false} title="Speichern">
             <Icon name="save" />
           </NavItem>
+          { shareWithTeacher }
           <Menu project={project}/>
         </Nav>
       </div>
