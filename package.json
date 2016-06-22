@@ -89,6 +89,7 @@
     "react-addons-create-fragment": "^15.1.0",
     "react-addons-css-transition-group": "^15.1.0",
     "react-addons-pure-render-mixin": "^15.1.0",
+    "react-datepicker": "^0.27.0",
     "react-dom": "^15.1.0",
     "react-dropzone": "^3.5.0",
     "react-json-tree": "^0.8.0",

@@ -15,7 +15,12 @@ export class Insights extends EventEmitter {
 
     this.errors = [];
     this.events = [];
-    this.dateMaps = this.getInitialMaps();
+    this.dateMaps = this.getInitialDateClusterMaps();
+    this.dateClusterResolution = 'day';
+    this.dateClusterStart = null;
+    this.dateClusterEnd = null;
+
+    this.errorClusters = this.getInitialErrorClusters();
 
     this.sendInActivated = false; // is send-in active
     this.submissions = []; // send in submissions
@@ -26,12 +31,16 @@ export class Insights extends EventEmitter {
   }
 
 
+  getInitialErrorClusters() {
+    return new Map();
+  }
+
   /**
    * Create an object holding Maps for mapping events to dates
    *
    * @returns
    */
-  getInitialMaps() {
+  getInitialDateClusterMaps() {
     return {
       run: new Map(),
       failure: new Map(),
@@ -53,7 +62,7 @@ export class Insights extends EventEmitter {
         console.error(res.error);
         this.isSubscribed = false;
       } else {
-        console.info('subscribed');
+
         this.isSubscribed = true;
         this._con.addSocketEventListener(SocketEvents.IdeEvent, msg => {
           if (!Array.isArray()) {
@@ -67,7 +76,6 @@ export class Insights extends EventEmitter {
     this._project.sendAction(subscribeAction, true);
   }
 
-  // ToDo: Maybe we need to throttle the change emitting
   onEvents(events) {
     assert(Array.isArray(events), 'Insights.onEvents expected array of events');
 
@@ -79,34 +87,110 @@ export class Insights extends EventEmitter {
       }
     }
 
+    this.clusterErrors(events);
     this.clusterDates(events);
 
     this.emit('change');
   }
 
-  clusterDates(events) {
-    for (let event of events) {
-      let eventKey;
-      let date = this.normalizeDate(event.timeStamp);
-      let dateStr = date.toISOString();
+  changeDatesClusterSettings(startDate, endDate, resolution) {
+    let isChange = startDate !== this.dateClusterStart || resolution !== this.dateClusterResolution || endDate !== this.dateClusterEnd;
 
-      eventKey = this.dateMaps[event.name] ? event.name : 'rest';
+    if (isChange) {
+      this.dateClusterStart = startDate;
+      this.dateClusterResolution = resolution;
+      this.dateClusterEnd = endDate;
 
-      // Create index, if not present
-      if (!this.dateMaps[eventKey].has(dateStr)) {
-        this.dateMaps[eventKey].set(dateStr, 0);
-      }
-
-      // increment
-      this.dateMaps[eventKey].set(dateStr, this.dateMaps[eventKey].get(dateStr) + 1);
+      // Recluster
+      this.dateMaps = this.getInitialDateClusterMaps();
+      this.clusterDates(this.events.concat(this.errors));
+      this.emit('change');
     }
   }
 
+  /**
+   * Clusters a event to the dates maps. The clustering is based on the event name and
+   * the current cluster interval (day, hour, month) and date bounds.
+   *
+   * @param {EventLog} event Event to cluster
+   * @returns
+   */
+  clusterEventOnDates(event) {
+    assert(event != null, 'Received invalid event');
+
+    let eventKey;
+    let date = this.normalizeDate(event.timeStamp);
+
+    // Check if date is outside the date bounds
+    if (this.dateClusterStart && date < this.dateClusterStart) {
+      return;
+    } else if (this.dateClusterEnd && date > this.dateClusterEnd) {
+      return;
+    }
+
+    let dateStr = date.toISOString();
+
+    eventKey = this.dateMaps[event.name] != null ? event.name : 'rest';
+
+    // Create index, if not present
+    if (!this.dateMaps[eventKey].has(dateStr)) {
+      this.dateMaps[eventKey].set(dateStr, 0);
+    }
+
+    // Increment count of the event on date cluster
+    this.dateMaps[eventKey].set(dateStr, this.dateMaps[eventKey].get(dateStr) + 1);
+  }
+
+  clusterErrorOnType(error){
+    assert(error != null, 'clusterErrorOnType failed due to invalid error');
+
+    let key = error.type || 'unknown';
+
+    if (!this.errorClusters.has(key)) {
+      this.errorClusters.set(key, 0);
+    }
+
+    // Increment cluster by one
+    this.errorClusters.set(key, this.errorClusters.get(key) + 1);
+  }
+
+  /**
+   * Clusters all given events to the current date clusters.
+   *
+   * @param {any} events
+   */
+  clusterDates(events) {
+    for (let event of events) {
+      this.clusterEventOnDates(event);
+    }
+  }
+
+  clusterErrors(events) {
+    for (let event of events) {
+      if (event && event.name === 'error') {
+        this.clusterErrorOnType(event);
+      }
+    }
+  }
+
+  /**
+   * Returns the date clusters as series date to be consumed by the visualization. The series data
+   * is an array based representation.
+   *
+   * @returns {Array} array of data series, that contain values
+   */
   dateClustersToSeries() {
     let lineData = [];
 
     let names = ['Ausführungen', 'Fehler', 'Probleme', 'Sonstige'];
     let maps = [this.dateMaps.run, this.dateMaps.error, this.dateMaps.failure, this.dateMaps.rest];
+    let lineStyles = [{
+      strokeWidth: 3,
+      strokeDashArray: "5,5"
+    }, {
+      strokeWidth: 2,
+      stroke: '#e74c3c'
+    }];
 
     let values;
     for (let i = 0; i < names.length; i += 1) {
@@ -119,29 +203,78 @@ export class Insights extends EventEmitter {
         });
       }
 
+      // Add a dummy date to force displaying of lines
+      if (values.length === 1) {
+        values.push({
+          x: new Date(),
+          y: 0
+        });
+      }
+
       lineData.push({
         name: names[i],
         values: values
       });
+
+      // Apply line styles if available
+      if (lineStyles[i] != null) {
+        lineData[i] = Object.assign({}, lineData[i], lineStyles[i]);
+      }
     }
 
-    console.info(lineData);
     return lineData;
   }
 
+  errorClustersToSeries() {
+    let barData = [];
+
+    let series = {
+      name: "Fehlertypen",
+      values: []
+    };
+
+    for (let cluster of this.errorClusters) {
+      console.info(cluster);
+      series.values.push({
+        x: cluster[0],
+        y: cluster[1]
+      });
+    }
+
+    barData.push(series);
+
+    return barData;
+  }
+
   /**
-   * Normalize a date to return only day, month and year
+   * Normalize a date depending on the current "dateClusterResolution"
    * @param {any} str
    * @returns
   */
   normalizeDate(str) {
     let dt = new Date(str);
 
-    return new Date(
-        dt.getFullYear(),
-        dt.getMonth(),
-        dt.getDate()
-    );
+    switch (this.dateClusterResolution) {
+      case 'month':
+        return new Date(
+          dt.getFullYear(),
+          dt.getMonth()
+        );
+      case 'hour':
+        return new Date(
+            dt.getFullYear(),
+            dt.getMonth(),
+            dt.getDate(),
+            dt.getHours()
+        );
+      case 'day':
+      default:
+        return new Date(
+            dt.getFullYear(),
+            dt.getMonth(),
+            dt.getDate()
+        );
+    }
   }
 
   getEvents() {
@@ -156,10 +289,5 @@ export class Insights extends EventEmitter {
     });
 
     this._project.sendAction(action, true);
-  }
-
-  getRecentErrors(n) {
-    assert(n > 0, 'getRecentErrors n must be greater than 0');
-    return this.errors.slice(-n);
   }
 }

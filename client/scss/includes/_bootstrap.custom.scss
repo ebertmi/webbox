@@ -63,3 +63,10 @@ $state-danger-border:            darken($state-danger-bg, 5%) !default;
 .form-footer button {
   margin-top: 0.5rem;
 }
+
+.form-inline .form-group {
+  display: inline-block;
+  margin-bottom: 0;
+  vertical-align: middle;
+  margin-right: 0.25rem;
+}

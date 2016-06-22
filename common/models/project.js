@@ -383,10 +383,16 @@ export default class Project extends EventEmitter {
   /**
    * Sends a EventLog to the server via the websocket connection.
    * The project sets the context information automatically for all events.
+   *
+   * We do only send events in default mode
    * @see Project#getContextData
    * @param {EventLog} eventLog Event describes all relevant data
    */
   sendEvent(eventLog) {
+    if (this.mode !== MODES.Default) {
+      return;
+    }
+
     if (this.socketConnection instanceof SocketConnection) {
       eventLog.setContext(this.getContextData());
       this.socketConnection.sendEvent(eventLog, eventLog);
@@ -474,6 +480,9 @@ export default class Project extends EventEmitter {
     return `${host}/embed/${idOrSlug}${viewDocument}`;
   }
 
+  shareWithTeacher() {
+    // ToDo:
+  }
 
   /**
    * Shows a message with the sharablelink.
