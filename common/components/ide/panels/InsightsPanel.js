@@ -1,11 +1,9 @@
 import React from 'react';
 
-import {Button, Input} from '../../bootstrap';
 import throttle from 'lodash/throttle';
 import EventDatesClusterChart from './EventDatesClusterChart';
 import ErrorView from './ErrorView';
-import rd3 from 'rd3';
-const BarChart = rd3.BarChart;
+import ErrorClusterView from './ErrorClusterView';
 
 export default class InsightsPanel extends React.Component {
   constructor(props) {
@@ -18,11 +16,9 @@ export default class InsightsPanel extends React.Component {
   onChange() {
     // Rerender
     let dateClusters = this.props.item.dateClustersToSeries();
-    let errorClusters = this.props.item.errorClustersToSeries();
 
     this.setState({
       dateClusters: dateClusters,
-      errorClusters: errorClusters,
       events: this.props.item.events,
       errors: this.props.item.errors
     });
@@ -30,13 +26,12 @@ export default class InsightsPanel extends React.Component {
 
   componentWillMount() {
     this.props.item.getEvents();
-    this.props.item.subscribe();
+    this.props.item.subscribeOnEvents();
 
     this.props.item.on('change', this.onChange);
 
     this.setState({
       dateClusters: [],
-      errorClusters: [],
       events: this.props.item.events,
       errors: this.props.item.errors
     });
@@ -75,34 +70,11 @@ export default class InsightsPanel extends React.Component {
         <hr/>
 
         <h3>Daten</h3>
-        <div className="container-fluid">
-          <EventDatesClusterChart onSettingsChange={this.onDateClusterSettingsChange} lineData={this.state.dateClusters} dateClusterResolution={this.props.item.dateClusterResolution} />
-        </div>
-        <div className="container-fluid">
-          <div className="row">
-            <div className="col-xs-12">
-              <BarChart
-                data={this.state.errorClusters}
-                valuesAccessor={d => {
-                  // This fixes the rendering with now series data!
-                  return d != null ? d.values : [];
-                }}
-                width={800}
-                height={300}
-                title="Fehlertypen"
-                xAxisLabel="Typ"
-                yAxisLabel="Anzahl"
-              />
-            </div>
-          </div>
-        </div>
-        <div className="container-fluid">
-          <div className="row">
-            <div className="col-xs-12">
-              <ErrorView errors={this.state.errors} />
-            </div>
-          </div>
-        </div>
+
+        <EventDatesClusterChart onSettingsChange={this.onDateClusterSettingsChange} lineData={this.state.dateClusters} dateClusterResolution={this.props.item.dateClusterResolution} />
+        <ErrorClusterView errorClusters={this.props.item.errorClusters}/>
+
+        <ErrorView insights={this.props.item} />
       </div>
     );
   }

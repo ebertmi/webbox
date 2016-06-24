@@ -1,8 +1,74 @@
 import { EventEmitter } from 'events';
 import assert from '../util/assert';
 
+import { Submissions } from './submissions';
 import { Action, SocketEvents } from './socketConnection';
-import d3 from 'd3';
+
+class ErrorClusters extends EventEmitter {
+  constructor() {
+    super();
+
+    this._errorClusters = new Map();
+  }
+
+  clusterErrorOnType(error){
+    assert(error != null, 'clusterErrorOnType failed due to invalid error');
+
+    let key = error.type || 'unknown';
+
+    if (!this._errorClusters.has(key)) {
+      this._errorClusters.set(key, 0);
+    }
+
+    // Increment cluster by one
+    this._errorClusters.set(key, this._errorClusters.get(key) + 1);
+  }
+
+  cluster(events) {
+    let hasChanged = false;
+
+    for (let event of events) {
+      if (event && event.name === 'error') {
+        this.clusterErrorOnType(event);
+        hasChanged = true;
+      }
+    }
+
+    if (hasChanged) {
+      this.emit('change');
+    }
+  }
+
+  reset() {
+    this._errorCluster = new Map();
+
+    this.emit('change');
+  }
+
+  getClusters() {
+    return this._errorClusters;
+  }
+
+  toSeries(name="Fehlertypen") {
+    let barData = [];
+
+    let series = {
+      name: name,
+      values: []
+    };
+
+    for (let cluster of this._errorClusters) {
+      series.values.push({
+        x: cluster[0],
+        y: cluster[1]
+      });
+    }
+
+    barData.push(series);
+
+    return barData;
+  }
+}
 
 /**
  * The Insights Module subscribes to all relevant events and stores the stat data
@@ -11,7 +77,7 @@ export class Insights extends EventEmitter {
   constructor(socketConnection, project) {
     super();
     this._project = project;
-    this._con = socketConnection;
+    this._connection = socketConnection;
 
     this.errors = [];
     this.events = [];
@@ -20,19 +86,15 @@ export class Insights extends EventEmitter {
     this.dateClusterStart = null;
     this.dateClusterEnd = null;
 
-    this.errorClusters = this.getInitialErrorClusters();
-
-    this.sendInActivated = false; // is send-in active
-    this.submissions = []; // send in submissions
+    this.errorClusters = new ErrorClusters();
 
     this.eventStartDate = null; // display only events older than this date
 
     this.isSubscribed = false;
-  }
 
-
-  getInitialErrorClusters() {
-    return new Map();
+    // Submission model, submits its own change events, then we can hook this up components
+    // that only need to update on submission changes
+    this.submissions = new Submissions(this._connection);
   }
 
   /**
@@ -49,7 +111,9 @@ export class Insights extends EventEmitter {
     };
   }
 
-  subscribe() {
+
+
+  subscribeOnEvents() {
     if (this.isSubscribed) {
       return;
     }
@@ -64,7 +128,7 @@ export class Insights extends EventEmitter {
       } else {
 
         this.isSubscribed = true;
-        this._con.addSocketEventListener(SocketEvents.IdeEvent, msg => {
+        this._connection.addSocketEventListener(SocketEvents.IdeEvent, msg => {
           if (!Array.isArray()) {
             msg = [msg];
           }
@@ -79,15 +143,23 @@ export class Insights extends EventEmitter {
   onEvents(events) {
     assert(Array.isArray(events), 'Insights.onEvents expected array of events');
 
+    let hasNewErrors = false;
+
     for (let event of events) {
       if (event && event.name === 'error') {
         this.errors.push(event);
+        hasNewErrors = true;
       } else {
         this.events.push(event);
       }
     }
 
-    this.clusterErrors(events);
+    // Update the clusters
+    if (hasNewErrors) {
+      this.errorClusters.cluster(events);
+      this.emit('newErrors');
+    }
+
     this.clusterDates(events);
 
     this.emit('change');
@@ -141,18 +213,7 @@ export class Insights extends EventEmitter {
     this.dateMaps[eventKey].set(dateStr, this.dateMaps[eventKey].get(dateStr) + 1);
   }
 
-  clusterErrorOnType(error){
-    assert(error != null, 'clusterErrorOnType failed due to invalid error');
 
-    let key = error.type || 'unknown';
-
-    if (!this.errorClusters.has(key)) {
-      this.errorClusters.set(key, 0);
-    }
-
-    // Increment cluster by one
-    this.errorClusters.set(key, this.errorClusters.get(key) + 1);
-  }
 
   /**
    * Clusters all given events to the current date clusters.
@@ -162,14 +223,6 @@ export class Insights extends EventEmitter {
   clusterDates(events) {
     for (let event of events) {
       this.clusterEventOnDates(event);
-    }
-  }
-
-  clusterErrors(events) {
-    for (let event of events) {
-      if (event && event.name === 'error') {
-        this.clusterErrorOnType(event);
-      }
     }
   }
 
@@ -225,27 +278,6 @@ export class Insights extends EventEmitter {
     return lineData;
   }
 
-  errorClustersToSeries() {
-    let barData = [];
-
-    let series = {
-      name: "Fehlertypen",
-      values: []
-    };
-
-    for (let cluster of this.errorClusters) {
-      console.info(cluster);
-      series.values.push({
-        x: cluster[0],
-        y: cluster[1]
-      });
-    }
-
-    barData.push(series);
-
-    return barData;
-  }
-
   /**
    * Normalize a date depending on the current "dateClusterResolution"
    * @param {any} str
@@ -277,6 +309,43 @@ export class Insights extends EventEmitter {
     }
   }
 
+  // ToDo: Maybe improve the filtering by maintaing the last result and see if a
+  // new event just needs to be filtered and appended to the last result
+  // This would prevent us from iterating everytime!
+  filterErrors(n, filter={}) {
+    if (this.errors.length > 600) {
+      console.warn('High amount of errors to filter. Please contact admin.');
+    }
+
+    console.info('filterErrors', n, filter);
+
+    return new Promise((resolve, reject) => {
+      let subset = this.errors;
+
+      // ToDo: make this more generic
+      // Maybe we should iterate over all filter elements and check each
+      if (filter.isActive === true) {
+        subset = subset.filter(error => {
+          if (filter.filterType != null && filter.filterType !== '' && error.type.toLowerCase() !== filter.filterType.toLowerCase()) {
+            return false;
+          }
+
+          if (filter.filterUsername != null && filter.filterUsername !== '' && error.username.toLowerCase() !== filter.filterUsername.toLowerCase()) {
+            return false;
+          }
+
+          return true;
+        });
+      }
+
+      if (n !== 'all') {
+        resolve(subset.slice(-n).reverse());
+      }
+
+      resolve(subset.reverse());
+    });
+  }
+
   getEvents() {
     let action = new Action('get-events', this._project.getUserData(), {
       startDate: this.eventStartDate
@@ -284,6 +353,7 @@ export class Insights extends EventEmitter {
       if (res.error) {
         console.error(res.error);
       } else {
+        this.errorClusters.reset();
         this.onEvents(res.events);
       }
     });

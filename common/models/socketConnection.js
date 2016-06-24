@@ -16,7 +16,8 @@ import isFunction from 'lodash/isFunction';
 import { getCookie } from '../services/utils';
 
 export const SocketEvents = {
-  IdeEvent: 'ide-event'
+  IdeEvent: 'ide-event',
+  Submission: 'submission'
 };
 
 /**

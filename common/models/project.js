@@ -13,7 +13,7 @@ import { MessageWithAction } from './messages';
 import { Severity  } from './severity';
 import { Action } from './actions';
 import { MODES } from '../constants/Embed';
-import { SocketConnection } from './socketConnection';
+import { SocketConnection, Action as RemoteAction } from './socketConnection';
 import { Insights } from './insights';
 
 /**
@@ -480,8 +480,40 @@ export default class Project extends EventEmitter {
     return `${host}/embed/${idOrSlug}${viewDocument}`;
   }
 
+  /**
+   * Sends the current document to the teacher. The teacher only receives this message if
+   * he has activated the sharing.
+   */
   shareWithTeacher() {
-    // ToDo:
+    let shareMessage;
+    let shareAction;
+    let closeAction;
+
+    var closeMessage = () => {
+      this.messageList.hideMessage(shareMessage);
+    };
+
+    shareAction = new Action('share.sharewithteacher.action', 'Abschicken', null, true, () => {
+      let remoteAction = new RemoteAction('submission', this.getUserData(), {
+        shareableLink: this.getSharableLink()},
+        res => {
+          // ToDo:!
+          console.info(res);
+        }
+      );
+      this.sendAction(remoteAction);
+      closeMessage();
+    });
+
+    closeAction = new Action('close.sharablelink.action', 'Schließen', null, true, () => {
+      closeMessage();
+    });
+
+    // Create message instance
+    shareMessage = new MessageWithAction('Aktuelle Lösung an den Dozenten schicken?', [shareAction, closeAction]);
+
+    // Show it
+    this.showMessage(Severity.Warning, shareMessage);
   }
 
   /**

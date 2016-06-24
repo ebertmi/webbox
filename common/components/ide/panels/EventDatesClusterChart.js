@@ -34,7 +34,6 @@ export default class EventDatesClusterChart extends React.Component {
   }
 
   onStartDateChange(value) {
-    console.info(value);
     this.setState({ dateClusterStart: value });
   }
 
@@ -67,62 +66,75 @@ export default class EventDatesClusterChart extends React.Component {
     });
   }
 
+  getXAxisTickInterval() {
+    // This allows d3 to automatically pick a good scale
+    return undefined;
+  }
+
+  getXAxisScale() {
+    return d3.time.scale;
+  }
+
   render() {
     return (
-      <div className="row">
-        <div className="col-md-12 col-xs-12">
-          <h4>Anzahl der Events</h4>
-        </div>
-        <div className="col-md-6 col-xs-12">
-          <LineChart
-              legend={true}
-              data={this.props.lineData}
-              width='100%'
-              height={400}
-              viewBoxObject={{
-                x: 0,
-                y: 0,
-                width: 800,
-                height: 400
-              }}
-              circleRadius={4}
-              yAxisLabel="Anzahl"
-              yAccessor={d => d.y}
-              xAxisTickInterval={{unit: this.props.dateClusterResolution, interval: 1}}
-              xAxisFormatter={germanTimeFormat}
-              xAccessor={d => d.x}
-              xScale={d3.time.scale}
-              xAxisLabel="Datum (Zeitstrahl)"
-              domain={{x:d3.extent(this.props.lineData, d => d.x), y: [0,]}}
-              gridHorizontal={true}
-              sideOffset={200}
-              colors={d3.scale.category10()}
-            />
-        </div>
-        <div className="col-md-4 col-xs-12">
-          <form>
-            <div className="form-group">
-              <label htmlFor="dateClusterResolution">Cluster-Einstellung</label>
-              <select className="form-control" id="dateClusterResolution" value={this.state.dateClusterResolution} onChange={this.onDateClusterResolutionChange}>
-                <option value="day">Tagesweise</option>
-                <option value="hour">Stundenweise</option>
-                <option value="month">Monatsweise</option>
-              </select>
-              <p className="text-muted">Hiermit können Sie die das Intervall der Cluster bestimmen. Bei jeder Veränderung werden die Cluster neu berechnet.</p>
-            </div>
-            <div className="form-group">
-              <label htmlFor="dateClusterStartDate">Anfang</label>
-              <div styles={{display: "block"}}><DatePicker styles={{display: "block"}} className="form-control" selected={this.state.dateClusterStart} onChange={this.onStartDateChange} locale="de-DE" placeholderText="Kein Datum gewählt" /></div>
-              <p className="text-muted">Anfangszeitpunkt ab dem die Daten geclustered werden sollen. Ältere Datenpunkte werden ignoriert.</p>
-            </div>
-            <div className="form-group">
-              <label htmlFor="dateClusterEndDate">Ende</label>
-              <div styles={{display: "block"}}><DatePicker className="form-control" selected={this.state.dateClusterEnd} onChange={this.onEndDateChange} locale="de-DE" placeholderText="Kein Datum gewählt" /></div>
-              <p className="text-muted">Endzeitpunkt bis zu dem die Daten geclustered werden sollen. Jüngere Datenpunkte werden ignoriert.</p>
-            </div>
-            <button className="btn btn-success btn-sm" onClick={this.onApply}>Anwenden</button>
-            <button className="btn btn-warning btn-sm" title="Setzt alle Eigenschaften zurück.">Zurücksetzen</button>
-          </form>
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-md-12 col-xs-12">
+            <h4>Anzahl der Events</h4>
+          </div>
+          <div className="col-md-7 col-xs-12">
+            <LineChart
+                legend={true}
+                data={this.props.lineData}
+                width='100%'
+                height={400}
+                viewBoxObject={{
+                  x: 0,
+                  y: 0,
+                  width: 800,
+                  height: 400
+                }}
+                circleRadius={4}
+                yAxisLabel="Anzahl"
+                yAccessor={d => d.y}
+                xAxisTickInterval={this.getXAxisTickInterval()}
+                xAxisFormatter={germanTimeFormat}
+                xAccessor={d => {
+                  return d.x;
+                }}
+                xScale={this.getXAxisScale()}
+                xAxisLabel="Datum (Zeitstrahl)"
+                domain={{x:d3.extent(this.props.lineData, d => d.x), y: [0,]}}
+                gridHorizontal={true}
+                sideOffset={200}
+                colors={d3.scale.category10()}
+              />
+          </div>
+          <div className="col-md-4 col-xs-12">
+            <form>
+              <div className="form-group">
+                <label htmlFor="dateClusterResolution">Cluster-Einstellung</label>
+                <select className="form-control" id="dateClusterResolution" value={this.state.dateClusterResolution} onChange={this.onDateClusterResolutionChange}>
+                  <option value="day">Tagesweise</option>
+                  <option value="hour">Stundenweise</option>
+                  <option value="month">Monatsweise</option>
+                </select>
+                <p className="text-muted">Hiermit können Sie die das Intervall der Cluster bestimmen. Bei jeder Veränderung werden die Cluster neu berechnet.</p>
+              </div>
+              <div className="form-group">
+                <label htmlFor="dateClusterStartDate">Anfang</label>
+                <div styles={{display: "block"}}><DatePicker styles={{display: "block"}} className="form-control" selected={this.state.dateClusterStart} onChange={this.onStartDateChange} locale="de-DE" placeholderText="Kein Datum gewählt" /></div>
+                <p className="text-muted">Anfangszeitpunkt ab dem die Daten geclustered werden sollen. Ältere Datenpunkte werden ignoriert.</p>
+              </div>
+              <div className="form-group">
+                <label htmlFor="dateClusterEndDate">Ende</label>
+                <div styles={{display: "block"}}><DatePicker className="form-control" selected={this.state.dateClusterEnd} onChange={this.onEndDateChange} locale="de-DE" placeholderText="Kein Datum gewählt" /></div>
+                <p className="text-muted">Endzeitpunkt bis zu dem die Daten geclustered werden sollen. Jüngere Datenpunkte werden ignoriert.</p>
+              </div>
+              <button className="btn btn-success btn-sm" onClick={this.onApply}>Anwenden</button>
+              <button className="btn btn-warning btn-sm" title="Setzt alle Eigenschaften zurück.">Zurücksetzen</button>
+            </form>
+          </div>
         </div>
       </div>
     );
