@@ -317,8 +317,6 @@ export class Insights extends EventEmitter {
       console.warn('High amount of errors to filter. Please contact admin.');
     }
 
-    console.info('filterErrors', n, filter);
-
     return new Promise((resolve, reject) => {
       let subset = this.errors;
 

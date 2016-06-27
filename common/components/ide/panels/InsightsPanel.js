@@ -4,6 +4,7 @@ import throttle from 'lodash/throttle';
 import EventDatesClusterChart from './EventDatesClusterChart';
 import ErrorView from './ErrorView';
 import ErrorClusterView from './ErrorClusterView';
+import SubmissionView from './SubmissionView';
 
 export default class InsightsPanel extends React.Component {
   constructor(props) {
@@ -67,6 +68,7 @@ export default class InsightsPanel extends React.Component {
     return (
       <div className="options-panel" onSubmit={e => e.preventDefault()}>
         <h3>Interaktionen</h3>
+        <SubmissionView submissions={this.props.item.submissions} />
         <hr/>
 
         <h3>Daten</h3>

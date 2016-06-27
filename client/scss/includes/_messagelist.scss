@@ -110,6 +110,17 @@
 	float: right;
 }
 
+.global-message-list li.message-list-entry .actions-container .message-action input {
+    padding-left: 10px;
+    padding-right: 10px;
+    display: inline-block;
+    height: 35px;
+    border-right: 1px solid #eee;
+    border-top: none;
+    border-bottom: none;
+    border-left: 1px solid #eee;
+}
+
 .global-message-list li.message-list-entry .actions-container .message-action {
 	display: inline-block;
 }

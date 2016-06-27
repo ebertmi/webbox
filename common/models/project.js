@@ -494,16 +494,23 @@ export default class Project extends EventEmitter {
     };
 
     shareAction = new Action('share.sharewithteacher.action', 'Abschicken', null, true, () => {
+      let message = shareAction.input ? shareAction.input.value : '';
       let remoteAction = new RemoteAction('submission', this.getUserData(), {
-        shareableLink: this.getSharableLink()},
+        shareableLink: this.getSharableLink(),
+        message: message
+      },
         res => {
-          // ToDo:!
-          console.info(res);
+          if (res.error) {
+            this.showMessage(Severity.Error, 'Das Senden ist fehlgeschlagen :()');
+            console.error(res.error);
+          }
         }
       );
       this.sendAction(remoteAction);
       closeMessage();
     });
+
+    shareAction.addInput('text', 'Nachricht...', '');
 
     closeAction = new Action('close.sharablelink.action', 'Schließen', null, true, () => {
       closeMessage();

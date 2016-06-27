@@ -262,6 +262,10 @@ export class SocketConnection extends EventEmitter {
     this._socket.on(event, handler);
   }
 
+  removeSocketEventListener(event, handler) {
+    this._socket.removeListener(event, handler);
+  }
+
   /**
    * Returns true if we have a valid socket connection and if the socket is connected currently
    */

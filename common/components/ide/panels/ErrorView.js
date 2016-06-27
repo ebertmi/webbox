@@ -2,6 +2,13 @@ import React from 'react';
 
 import { Time } from '../../Time';
 
+/**
+ * Displays and filters recent errors in a table
+ *
+ * @export
+ * @class ErrorView
+ * @extends {React.Component}
+ */
 export default class ErrorView extends React.Component {
   constructor(props) {
     super(props);

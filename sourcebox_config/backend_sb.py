@@ -32,6 +32,12 @@ import sys
 
 def show():
     for manager in Gcf.get_all_fig_managers():
+        # try to set the transparency for saved images
+        try:
+            manager.canvas.figure.patch.set_alpha(0)
+        except e:
+            pass
+
         canvas = FigureCanvasAgg(manager.canvas.figure)
 
 
@@ -40,8 +46,8 @@ def show():
             fd = os.fdopen(3, 'wb')
             fd.write(b'STARTIMGAGE')
             fd.flush()
-            canvas.print_png(fd)
-            #canvas.print_jpg(fd, quality=95)
+            #canvas.print_png(fd, transparent=True)
+            canvas.print_jpg(fd, quality=95)
             fd.flush()
             fd.write(b'ENDIMAGE')
             fd.flush()
