@@ -122,6 +122,11 @@ form .btn,
   padding-left: 1rem;
 }
 
+.course-logo {
+  max-height: 200px;
+  width: 350px;
+}
+
 @include media-breakpoint-down(xs) {
   .auth .col-xs-12,
   .grid-divider .col-xs-12 {

@@ -162,8 +162,6 @@ export default class MarkdownCell extends React.Component {
       this.session.setUndoManager(new UndoManager);
     }
 
-    // <Icon className="icon-control" onClick={this.toggleImageUpload} title="Bilderupload anzeigen/schließen" name="cloud-upload"/>
-
     return (
       <div className="col-xs-12">
         <strong>Markdown</strong>  <Icon className="icon-control" onClick={this.toggleImageGallery} title="Verfügbare Bilder anzeigen" name="picture-o"/>

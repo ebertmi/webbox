@@ -1,4 +1,5 @@
 import Immutable from 'immutable';
+import UUID from 'uuid';
 import { addCellWithIndex, initialState } from '../reducers/notebook/notebookReducer';
 
 /**
@@ -75,6 +76,11 @@ export function documentToState(document) {
 
   // now add cells
   for (let cell of document.cells) {
+    // Check for missing id
+    if (!cell.id) {
+      cell.id = UUID.v4()
+    }
+
     newState = addCellWithIndex(newState, null, Immutable.fromJS(cell));
   }
 
