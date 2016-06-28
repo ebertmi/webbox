@@ -68,6 +68,7 @@ form .btn,
 .loader-hidden {
   display: none;
 }
+
 .loader-active {
   display: flex;
   align-items: center;
@@ -115,6 +116,10 @@ form .btn,
   text-overflow: ellipsis;
   white-space: nowrap;
   vertical-align: top;
+}
+
+.new-course-form {
+  padding-left: 1rem;
 }
 
 @include media-breakpoint-down(xs) {

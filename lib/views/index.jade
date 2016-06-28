@@ -51,7 +51,12 @@ block content
                 h3.card-header.card-header-for-list
                   span Ihre Dokumente
                   =' '
+                  small.pull-xs-right
+                    form.new-course-form.form-inline(method="POST", action="/document/create")
+                      input(type="hidden", name="crumb", value=crumb)
+                      button.btn.btn-primary.btn-round.btn-sm(type="submit", title="Neues Dokument anlegen") +
                   small.pull-xs-right Die letzten 10 Dokumente
+
                 ul.list-group.list-group-flush
                   - each doc in documents
                     li.list-group-item

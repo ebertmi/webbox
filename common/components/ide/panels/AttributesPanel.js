@@ -7,6 +7,13 @@ import {Button, Input} from '../../bootstrap';
 
 Slug.defaults.mode = 'rfc3986';
 
+/**
+ * Displays and allows to change embed attributes.
+ *
+ * @export
+ * @class AttributePanel
+ * @extends {React.Component}
+ */
 export default class AttributePanel extends React.Component {
   constructor(props) {
     super(props);
@@ -19,12 +26,11 @@ export default class AttributePanel extends React.Component {
     this.onReset = this.onReset.bind(this);
   }
 
-  componentWillMount() {
-  }
-
-  componentWillUnmount() {
-  }
-
+  /**
+   * Clone the current project.data object.
+   *
+   * @returns cloned (shallow) embed object
+   */
   cloneFromProps() {
     return clone(this.props.item.data);
   }
@@ -62,17 +68,32 @@ export default class AttributePanel extends React.Component {
     this.setState(newState);
   }
 
+  /**
+   * Saves the changes. It requires a reload, so that all changes are really made.
+   *
+   * @param {any} e React event
+   */
   onSave(e) {
     e.preventDefault();
     this.props.item.updateEmbed(this.state.embed);
   }
 
+  /**
+   * Resets the state to the original embed data
+   *
+   * @param {any} e React event
+   */
   onReset(e) {
     e.preventDefault();
 
     this.setState({
       embed: this.cloneFromProps()
     });
+  }
+
+  // ToDo:
+  renderAssets() {
+
   }
 
   render() {
@@ -121,12 +142,3 @@ export default class AttributePanel extends React.Component {
     );
   }
 }
-
-/**
- * slug
- * meta.language
- * meta.embedType
- * meta.name
- * meta.mainFile
- * assets...
- */

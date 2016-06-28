@@ -65,6 +65,17 @@
         "path": "./media",
         "maxBytes":  5242880
     },
+    "document": {
+      "sampleCell": {
+        "cell_type": "markdown",
+        "metadata": {
+          "slideshow": {
+            "slide_type": ""
+          }
+        },
+        "source": "## Neues Dokument\n\nWir haben hier einen Textbaustein für Sie vorbereitet. Diesen können Sie nun nach \nIhren wünschen anpassen, löschen, ...\n\nVergessen Sie nicht die Metadaten zu bearbeiten."
+      }
+    },
     "blibb": {
       "showStart": true,
       "showAuth": true
