@@ -7,7 +7,8 @@ import CodeCell from './CodeCell';
 import AddControls from './AddControls';
 import NotebookMetadata from './NotebookMetadata';
 
-import { MessageListModel } from '../../models/messages';
+import { MessageListModel, MessageWithAction } from '../../models/messages';
+import { Action } from '../../models/actions';
 import { Severity } from '../../models/severity';
 import { MessageList } from '../messageList/messageList';
 
@@ -29,6 +30,7 @@ export default class Notebook extends React.Component {
     this.onDrop = this.onDrop.bind(this);
     this.onDragOver = this.onDragOver.bind(this);
     this.onSave = this.onSave.bind(this);
+    this.onDelete = this.onDelete.bind(this);
   }
 
   // Make messageList available in the tree
@@ -61,6 +63,36 @@ export default class Notebook extends React.Component {
       this.messageList.showMessage(Severity.Error, err);
     });
   }
+
+  onDelete() {
+    const id = this.props.notebook.get('id');
+    let messageObj;
+    let deleteAction = new Action('delete.delete.action', 'Löschen', '', true, () => {
+      API.document.delete({ id: id }).then(res => {
+        if (!res.error) {
+          // Redirect to main page
+          window.location.replace(`${window.location.protocol}//${window.location.host}`);
+        } else {
+          console.log(res);
+          this.messageList.showMessage(Severity.Error, res.error);
+        }
+      }).catch(err => {
+        this.messageList.showMessage(Severity.Error, err);
+      });
+
+      // Hide message
+      this.messageList.hideMessage(messageObj);
+    });
+
+    let cancelAction = new Action('cancel.delete.document', 'Abbrechen', '', true, () => {
+      this.messageList.hideMessage(messageObj);
+    });
+
+    messageObj = new MessageWithAction('Wollen Sie das Dokument wirklich löschen? Sie können davor das Dokument auch exportieren.', [deleteAction, cancelAction]);
+
+    this.messageList.showMessage(Severity.Warning, messageObj);
+  }
+
 
   onDrop(e) {
     e.preventDefault();
@@ -186,6 +218,7 @@ export default class Notebook extends React.Component {
         canToggleEditMode={this.props.notebook.get('canToggleEditMode')}
         isAuthor={this.props.notebook.get('isAuthor')}
         onSave={this.onSave}
+        onDelete={this.onDelete}
         redoStackSize={redoStackSize}
         undoStackSize={undoStackSize}
         editable={this.props.notebook.get('notebookMetadataEditable')}

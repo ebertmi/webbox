@@ -146,6 +146,9 @@ class NotebookMetadata extends React.Component {
           <span className="metadata-item">
             <button className="btn btn-info btn-sm" onClick={this.toggleEditClicked}><Icon className={''} name={editIconName} title={editTitleText} /> {editTitleText}</button>
           </span>
+          <span className="metadata-item pull-xs-right">
+            <button className="btn btn-danger btn-sm" onClick={this.props.onDelete}><Icon className={''} name="times-circle-o" title="Dokument Löschen" /> Dokument löschen</button>
+          </span>
           <hr/>
         </div>
       );
@@ -159,7 +162,7 @@ class NotebookMetadata extends React.Component {
           </span>
           <span className="metadata-sep">{'\u00a0//\u00a0'}</span>
           <span className="metadata-item">
-            <Icon name="clock-o" />{'\u00a0 Zuletzt aktualisiert'}<Time value={date} locale="de" relative={true} />
+            <Icon name="clock-o" />{'\u00a0 Zuletzt aktualisiert '}<Time value={date} locale="de" relative={true} />
           </span>
           { isAuthor ? this.renderButtons() : null }
           { this.renderViewMode() }

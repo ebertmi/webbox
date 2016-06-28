@@ -17,5 +17,18 @@ export const DocumentAPI = {
       return data;
     })
     .catch(commonErrorHandler);
+  },
+  delete(params) {
+    return fetch(`/d/${params.id}`, {
+      method: 'delete',
+      credentials: 'same-origin',
+      headers: getDefaultHeaders()
+    })
+    .then(checkStatus)
+    .then(parseJSON)
+    .then(data => {
+      return data;
+    })
+    .catch(commonErrorHandler);
   }
 };
