@@ -1,0 +1,24 @@
+doctype html
+html(lang="de")
+
+  meta(charset="utf-8")
+  script(src="https://use.fontawesome.com/3797abfac7.js")
+  title trycoding.io - Hochschule Coburg
+  if isProd
+    link(rel="stylesheet", href="/public/css/all.bundle.#{webboxVersion}.css")
+
+  body.ide
+    #ide-container
+
+    script.
+      window.websocket = !{websocket};
+      window.INITIAL_DATA = !{INITIAL_DATA};
+      window.USER_DATA = !{USER_DATA};
+
+    script(src="https://cdn.jsdelivr.net/ace/1.2.3/min/ace.js")
+    script(src="https://cdn.jsdelivr.net/ace/1.2.3/min/ext-themelist.js")
+    script(src="https://cdn.jsdelivr.net/ace/1.2.3/min/ext-modelist.js")
+    script(src="/public/skulpt/skulpt-min.js")
+    script(src="/public/skulpt/skulpt-stdlib.js")
+    script(src="/public/js/react-commons.bundle.js")
+    script(src="/public/js/embed.bundle.js")

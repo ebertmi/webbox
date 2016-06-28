@@ -56,7 +56,7 @@ export default class Menu extends React.Component {
   onAttributes(e) {
     e.preventDefault();
 
-    this.props.project.addTab('attributes');
+    this.props.project.addTab('attributes', {item: this.props.project});
   }
 
   onNewTerminal(e) {

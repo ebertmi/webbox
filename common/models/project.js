@@ -341,6 +341,17 @@ export default class Project extends EventEmitter {
     return index;
   }
 
+  getFileForName(name) {
+    let index = this.getIndexForFilename(name);
+
+    if (!index) {
+      return undefined;
+    }
+
+    // Return item, that is the file
+    return this.getTabs()[index].item;
+  }
+
   /**
    * Checks if there is a file with the given name
    * @param {string} name The file name to check
@@ -636,7 +647,7 @@ export default class Project extends EventEmitter {
         }
       }).catch(err => {
         this.showMessage(Severity.Error, 'Speichern fehlgeschlagen!');
-        console.log(err);
+        console.error(err);
       }).then(() => {
         this.pendingSave = false;
       });
@@ -646,9 +657,30 @@ export default class Project extends EventEmitter {
     }
   }
 
-  toCodeEmbed() {
-    // ToDo: return all files and assets as to be saved for server side representation
-    //
+  /**
+   * Update the embed attributes. This does not save any file changes.
+   *
+   * @param {any} embed
+   */
+  updateEmbed(embed) {
+    let params = {
+      id: this.data.id
+    };
+
+    let payload = {
+      data: embed
+    };
+
+    API.embed.updateEmbed(params, payload).then(res => {
+      if (res.error) {
+        this.showMessage(Severity.Error, 'Beim Aktualisieren ist ein Fehler augetreten.');
+      } else {
+        this.showMessage(Severity.Info, 'Die Eigenschaften wurden erfolgreich aktualisiert.');
+      }
+    }).catch(err => {
+      this.showMessage(Severity.Error, 'Aktualisieren fehlgeschlagen!');
+      console.error(err);
+    });
   }
 
   toCodeDocument() {
