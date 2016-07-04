@@ -150,12 +150,12 @@ export default class ErrorView extends React.Component {
               </thead>
               <tbody>
                 {this.state.errors.map((err) => {
-
+                  console.info(err);
                   return (
                     <tr key={err.id}>
                       <td>{err.type}</td>
                       <td><code>{err.message}</code></td>
-                      <td><pre>{err.data.fileContent}</pre></td>
+                      <td><pre>{err.data.errorHint}</pre></td>
                       <td>in <strong>{err.data.file}</strong> <span>Zeile: {err.data.line}</span></td>
                       <td title={err.username}>{err.userId}</td>
                       <td><Time value={new Date(err.timeStamp)} locale="de" relative={true} invalidDateString="Nicht verfügbar"></Time></td>

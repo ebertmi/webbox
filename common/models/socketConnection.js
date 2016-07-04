@@ -246,7 +246,7 @@ export class SocketConnection extends EventEmitter {
     if (this.isConnected()) {
       this._socket.emit('embed-event', eventLog.asObject(), res => {
         // ToDo:
-        if (res.error) {
+        if (res && res.error) {
           console.error(res.error);
         }
       });

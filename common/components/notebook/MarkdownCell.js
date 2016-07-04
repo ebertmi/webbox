@@ -142,16 +142,6 @@ export default class MarkdownCell extends React.Component {
     return null;
   }
 
-  renderImageUploader() {
-    if (this.state.showImageGallery === true) {
-      return (
-        <ImageUpload onInsertImage={this.onInsertImage} course={this.props.course} />
-      );
-    }
-
-    return null;
-  }
-
   renderEditMode() {
     let minHeight = this.renderedHeight ? this.renderedHeight : this.props.minHeight;
     let source = sourceFromCell(this.props.cell);
@@ -165,7 +155,6 @@ export default class MarkdownCell extends React.Component {
     return (
       <div className="col-xs-12">
         <strong>Markdown</strong>  <Icon className="icon-control" onClick={this.toggleImageGallery} title="Verfügbare Bilder anzeigen" name="picture-o"/>
-        { this.renderImageUploader() }
         { this.renderImageGallery() }
         <Editor fontSize="16px" minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />
       </div>

@@ -60,6 +60,7 @@ export class PythonErrorParser extends Transform {
   constructor() {
     super({ readableObjectMode: true });
 
+    // Reset all variables/set to default
     this.clear();
   }
 
@@ -69,6 +70,7 @@ export class PythonErrorParser extends Transform {
     this._error = '';
     this._errorMessage = '';
     this._buffer = [];
+    this._errorHintBuffer = [];
   }
 
   matchFileAndLine(str){
@@ -98,8 +100,13 @@ export class PythonErrorParser extends Transform {
   }
 
   match(str) {
-    this.matchFileAndLine(str);
+    let matchefFile;
+    matchefFile = this.matchFileAndLine(str);
     this.matchErrorAndMessage(str);
+
+    if (!matchefFile && this._filename !== '' && this._error === '') {
+      this._errorHintBuffer.push(str);
+    }
   }
 
   hasError() {
@@ -107,12 +114,15 @@ export class PythonErrorParser extends Transform {
   }
 
   getAsObject() {
+    let raw = this._buffer.join('');
+
     return {
       file: this._filename,
       line: this._line,
       error: this._error,
       message: this._errorMessage,
-      raw: this._buffer.join('')
+      errorHint: this._errorHintBuffer.join('\n'),
+      raw: raw
     };
   }
 
@@ -127,7 +137,6 @@ export class PythonErrorParser extends Transform {
 
 PythonErrorParser.FILENAME_REGEX = /^\s*File\s"(.+)",\sline\s(.*)$/;
 PythonErrorParser.ERROR_REGEX = /^\s*(.+[Error|Exception|Interrupt|Exit]):\s(.*)$/;
-/*PythonErrorParser.ERROR_REGEX = /^\s*(.+[Error|Exception|Interrupt|Exit]):\s(.*)$/;*/
 
 export class RegexParser extends Transform  {
   constructor() {

@@ -24,5 +24,6 @@ python3: {
 ## Turtle
 The client-server Turtle support requires the use of a custom turtle implementation (see turtle.py:WebCommunication).
 
-TODO
-**Not working currenlty**
+Serverside Turtle module is now working for basic drawing and stuff.
+The only things missing are keyboard and mouse events. See `/common/turtle/turtle.js` and the out commented code for handling
+those.

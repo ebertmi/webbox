@@ -21,9 +21,9 @@ export default class ImagePreview extends React.Component {
   render() {
     return (
       <div className="card" style={{ maxWidth: this.props.width + 2 }}>
-        <img className="card-img-top" data-path={this.props.src} src={this.props.src} title={this.props.filename} width={this.props.width} height={this.props.height} onClick={this.onImageClick}/>
+        <img className="card-img-top" data-path={this.props.src} src={this.props.src} title={"Einfügen - " + this.props.filename} width={this.props.width} height={this.props.height} onClick={this.onImageClick}/>
         <div className="card-block">
-          <small className="text-muted"><a className="image-preview-link" target="_blank" href={this.props.src}>{this.props.src}</a></small>
+          <small className="text-muted"><a className="image-preview-link" title="In neuem Tab öffnen" target="_blank" href={this.props.src}>{this.props.src}</a></small>
         </div>
       </div>
     );

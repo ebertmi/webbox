@@ -96,6 +96,12 @@ export default class Notebook extends React.Component {
 
   onDrop(e) {
     e.preventDefault();
+    let target = e.target;
+
+    // Stop image upload drops bubbling up, here
+    if (target.getAttribute('data-name') === 'image-upload') {
+      return;
+    }
 
     // handle uploading
     let files = e.dataTransfer.files;

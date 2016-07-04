@@ -3,6 +3,7 @@ import PureRenderMixin from 'react-addons-pure-render-mixin';
 
 import { Severity } from '../../models/severity';
 import ImagePreview from './ImagePreview';
+import ImageUpload from './ImageUpload';
 import { API } from '../../services';
 
 const MAX_WIDTH = 200;
@@ -71,7 +72,9 @@ export default class ImageGallery extends React.Component {
     const images = this.state.images || [];
     return (
       <div>
-        <div className="card-deck">
+        <p className="text-muted">Klicken Sie auf ein Bild, um dieses in das Dokument einzufügen. Klicken auf den angezeigten Link, um das Bild in einem neuen Tab zu öffnen.</p>
+        <div className="card-columns">
+          <ImageUpload onInsertImage={this.props.onInsertImage} course={this.props.course} />
           { images.map(img => {
             return <ImagePreview width={MAX_WIDTH} key={img.path} src={img.path} filename={img.filename} onClick={this.onImageClick} />;
           })}
@@ -82,7 +85,8 @@ export default class ImageGallery extends React.Component {
 }
 
 ImageGallery.propTypes = {
-
+  onInsertImage: React.PropTypes.func.isRequired,
+  course: React.PropTypes.object.isRequired
 };
 
 ImageGallery.defaultProps = {

@@ -314,10 +314,11 @@ function toggleNotebookMetadataEditable(state) {
 
 /**
  * Toggles the edit tools and icons for authors
+ * Disables the edit mode for the current active block/cell
  */
 function toggleViewMode(state) {
   if (state.get('isAuthor')) {
-    return state.set('isAuthor', false);
+    return state.set('isAuthor', false).set('activeBlock', -1);
   } else {
     return state.set('isAuthor', true);
   }
