@@ -35,7 +35,7 @@ class NotebookMetadata extends React.Component {
     let name = e.target.name;
     let value = e.target.value;
 
-    this.props.dispatch(NotebookActions.updateNotebookMetadata( name, value));
+    this.props.dispatch(NotebookActions.updateNotebookMetadata(name, value));
   }
 
   toggleEditClicked(e) {
@@ -106,6 +106,9 @@ class NotebookMetadata extends React.Component {
     const author = metadata.get('author');
     const date = metadata.get('lastUpdate');
     const title = metadata.get('title');
+    const language_name = metadata.getIn(['language_info', 'name']);
+    const language_version = metadata.getIn(['language_info', 'version']);
+    const language = `${language_name}-${language_version}`;
 
     document.title = title;
     const editIconName = editable ? '' : 'edit';
@@ -123,6 +126,18 @@ class NotebookMetadata extends React.Component {
             </div>
           </div>
           <div className="metadata">
+            <div className="form-group row">
+              <label className={"col-sm-2 form-control-label"} ><Icon name="language" /> Sprache</label>
+              <div className={"col-sm-10"}>
+                <select className="form-control" defaultValue={language} name="language" ref="languageField" onBlur={e => {}} title="Sprache" >
+                  <option value="python-3">Python 3</option>
+                  <option value="python-2">Python 2</option>
+                  <option value="java-8">Java 8</option>
+                  <option value="c-13">C</option>
+                </select>
+                <small>Spracheinstellung für dieses Dokument. Die Spracheinstellung wird für die ausführbaren Beispiele und die Metadaten benötigt. Die Sprache wird automatisch in die <em>kernelspec</em> und <em>language_info</em> übernommen (<em>Kompatibel zu Jupyter Notebook Format)</em>).</small>
+              </div>
+            </div>
             <div className="form-group row">
               <label className={"col-sm-2 form-control-label"} ><Icon name="user" /> Autor</label>
               <div className={"col-sm-10"}>

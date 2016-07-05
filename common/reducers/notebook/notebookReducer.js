@@ -5,6 +5,9 @@ import UUID from 'uuid';
 import isArray from 'lodash/isArray';
 import isInteger from 'lodash/isInteger';
 import isFunction from 'lodash/isFunction';
+import capitalize from 'lodash/capitalize';
+
+import assert from '../../util/assert';
 
 export const initialState = Immutable.Map({
   metadata: Immutable.fromJS({
@@ -325,6 +328,11 @@ function toggleViewMode(state) {
 }
 
 function updateNotebookMetadata(state, name, value) {
+  let _split;
+  let _name; // language name
+  let _version;
+  let newState;
+
   switch(name) {
     case 'slug':
       return state.set('slug', value);
@@ -333,6 +341,23 @@ function updateNotebookMetadata(state, name, value) {
     case 'title':
     case 'author':
       return state.setIn(['metadata', name], value);
+    case 'language':
+      // Set the kernelspec and language_info automatically
+      // In the UI we use values like "python-3" for every language "language-version", all lower case
+      assert(value.includes('-'), 'notebookReducer.updateNotebookMetadata received invalid value for "language"', value);
+      _split = value.split('-'); // special format
+
+      assert(_split.length === 2, 'notebookReducer.updateNotebookMetadata received invalid value for "language"', value);
+
+      _name = _split[0];
+      _version = _split[1];
+
+      newState = state.setIn(['metadata', 'kernelspec', 'language'], _name);
+      newState = newState.setIn(['metadata', 'kernelspec', 'display_name'], `${capitalize(_name)} ${_version}`);
+      newState = newState.setIn(['metadata', 'language_info', 'name'], _name);
+      newState = newState.setIn(['metadata', 'language_info', 'version'], _version);
+
+      return newState;
     default:
       return state;
   }
