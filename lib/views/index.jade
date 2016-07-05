@@ -92,6 +92,16 @@ block content
                       span.pull-xs-right
                         small Letzte Änderung !{doc.lastUpdate}
 
+          if recentlyViewedDocuments && recentlyViewedDocuments.length > 0
+            .col-xs-12
+              div.card
+                h3.card-header.card-header-for-list
+                  span Zuletzt angeschaut
+                ul.list-group.list-group-flush
+                  - each doc in recentlyViewedDocuments
+                    li.list-group-item
+                      a(href="/d/" + doc.id, ) !{doc.title}
+
   .container.second-entry
     if user.isAnonymous
       .row.auth
