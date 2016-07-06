@@ -634,7 +634,6 @@ export default class Project extends EventEmitter {
 
       // trigger save
       API.embed.saveEmbed(params, payload).then(res => {
-        //this.showMessage(Severity.Info, 'Gespeichert!');
         // ToDo: Maybe we should also use something similar to showMessage for the StatusBar
         if (res.error) {
           this.status.setStatusMessage('Beim Speichern ist ein Fehler augetreten.', Severity.Error);
@@ -644,6 +643,10 @@ export default class Project extends EventEmitter {
           if (res.document) {
             this.data._document = document;
           }
+
+          window.setTimeout(() => {
+            this.status.setStatusMessage('', '', Severity.Ignore);
+          }, 1500);
         }
       }).catch(err => {
         this.showMessage(Severity.Error, 'Speichern fehlgeschlagen!');

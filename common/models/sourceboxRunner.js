@@ -163,7 +163,8 @@ export default class Runner extends EventEmitter {
       .then(this._compile)
       .then(this._exec)
       .tap(() => {
-        this._status('Ausführung Beendet');
+        this._status('\n', false);
+        this._status('Ausführung Beendet', true);
       })
       .catch((err) => {
         console.trace(err);
@@ -180,7 +181,8 @@ export default class Runner extends EventEmitter {
   stop() {
     if (this.isRunning()) {
       this.promiseChain.cancel();
-      this._status('Ausführung abgebrochen');
+      this._status('\n', false);
+      this._status('Ausführung abgebrochen', true);
     }
   }
 
@@ -364,6 +366,8 @@ export default class Runner extends EventEmitter {
   _commandArray(command) {
     let fileNames = this.files.map(file => file.getName());
     // for now we will just use the first file as the "main file"
+
+    // ToDo: add main file handling here!
     let mainFile = fileNames[0];
 
     if (isString(command)) {

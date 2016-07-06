@@ -131,7 +131,7 @@ export default class AttributePanel extends React.Component {
         <div className="form-group">
           <label className="form-control-label">Main-File</label>
           <input className="form-control" type="text" placeholer="main.py" name="mainFile" onChange={this.onChangeOption.bind(this, ['embed', 'meta'])} value={embed.meta.mainFile}/>
-          <small className="text-muted">Datei, die zum Ausführen verwendet werden soll.</small>
+          <small className="text-muted">Datei, die zum Ausführen verwendet werden soll. Hat nur Auswirkungen auf bestimmte Sprache wie z.B. Python.</small>
         </div>
         <Button bsStyle="success" className="form-group" onClick={this.onSave}>Speichern</Button>
         <Button bsStyle="danger" className="form-group" onClick={this.onReset}>Zurücksetzen</Button>

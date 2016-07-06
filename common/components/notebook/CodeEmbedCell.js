@@ -92,7 +92,11 @@ export default class CodeEmbedCell extends React.Component {
     e.preventDefault();
     API.embed.createEmbed({}, this.state.formData).then(res => {
       if (!res.error) {
+        // Successfully created a new embed, now update the cell and hide the form
         this.props.dispatch(updateCell(this.props.cell.get('id'), res.id));
+        this.setState({
+          showCreateEmbed: false
+        });
       } else {
         this.context.messageList.showMessage(Severity.Error, res.error);
       }

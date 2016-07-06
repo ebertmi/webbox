@@ -139,12 +139,26 @@ PythonErrorParser.FILENAME_REGEX = /^\s*File\s"(.+)",\sline\s(.*)$/;
 PythonErrorParser.ERROR_REGEX = /^\s*(.+[Error|Exception|Interrupt|Exit]):\s(.*)$/;
 
 export class RegexParser extends Transform  {
-  constructor() {
+  constructor(matchers, lines) {
     super({ readableObjectMode: true });
 
+    if (!Array.isArray(matchers)) {
+      matchers = [matchers];
+    }
 
     this.lines = lines || 1;
     this.buffer = [];
+
+    this.matchers = matchers.map(matcher => {
+      if (!matcher.regex) {
+        throw new Error('Regex is required');
+      }
+
+      return {
+        regex: matcher.regex,
+        callback: mapLabels(matcher.labels, matcher.callback || defaultCallback)
+      };
+    });
   }
 
   match() {

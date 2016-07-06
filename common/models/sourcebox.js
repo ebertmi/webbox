@@ -40,7 +40,6 @@ export default class SourceboxProject extends Project {
 
   exec(cmd, args=[], options=PROCESS_DEFAULTS) {
     let combinedOptions = Object.assign({}, {env: this.config.env}, options);
-    console.log(combinedOptions);
     let process = this.sourcebox.exec('bash', args, combinedOptions);
 
     this.addTab('process', {
