@@ -289,9 +289,9 @@ export default class Runner extends EventEmitter {
       throw new Error('No exec command');
     }
 
-    this._status(this.config.exec.join(' '), false); // output run call
-
     let command = this._commandArray(this.config.exec);
+
+    this._status(command.join(' '), false); // output run call
 
     this.process = this.sourcebox.exec(command.shift(), command, {
       term: true,
@@ -367,8 +367,12 @@ export default class Runner extends EventEmitter {
     let fileNames = this.files.map(file => file.getName());
     // for now we will just use the first file as the "main file"
 
-    // ToDo: add main file handling here!
-    let mainFile = fileNames[0];
+    // Try to get the main file if configured, else use first file
+    let mainFile = this.project.getMainFile();
+
+    if (mainFile == null) {
+      mainFile = fileNames[0];
+    }
 
     if (isString(command)) {
       command = command.replace(/\$FILES/, () => {

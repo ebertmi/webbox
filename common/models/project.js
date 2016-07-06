@@ -370,6 +370,19 @@ export default class Project extends EventEmitter {
   }
 
   /**
+   * Returns the name of the specifiec main file, if any.
+   *
+   * @returns
+   */
+  getMainFile() {
+    if (this.data.meta.mainFile && this.data.meta.mainFile !== '') {
+      return this.data.meta.mainFile;
+    }
+
+    return null;
+  }
+
+  /**
    * Emits a change event to all registered listeners.
    * Project inherits the EventEmitter interface.
    */

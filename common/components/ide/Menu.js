@@ -131,6 +131,12 @@ export default class Menu extends React.Component {
     this.props.project.showShareableLink();
   }
 
+  onOpenInNewWindow(e) {
+    e.preventDefault();
+    let link = this.props.project.getSharableLink();
+    window.open(link, '_blank');
+  }
+
   renderStatisticsItem() {
     const userData = this.props.project.getUserData();
     if (userData.anonymous === true || userData.isAuthor === false) {
@@ -223,6 +229,10 @@ export default class Menu extends React.Component {
 
         <DropdownItem onClick={this.onOptions.bind(this)}>
           <Icon name="gear" fixedWidth/> Einstellungen
+        </DropdownItem>
+
+        <DropdownItem onClick={this.onOpenInNewWindow.bind(this)}>
+          <Icon name="link" fixedWidth/> In neuem Fenster öffnen
         </DropdownItem>
       </NavDropdown>
     );

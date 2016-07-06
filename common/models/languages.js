@@ -47,7 +47,9 @@ export default {
 
   // this allows us also to run any commands and configure matplotlib etc
   python3: {
-    exec: ['python3', './main.py'],
+    exec(files, mainFile='./main.py') {
+      return ['python3', mainFile];
+    },
     displayName: 'Python 3 (Sourcebox)',
     env: {
       PYTHONPATH: '/home/user/PythonTest',
@@ -60,7 +62,9 @@ export default {
 
   // this allows us also to run any commands and configure matplotlib etc
   python2: {
-    exec: ['python', './main.py'],
+    exec(files, mainFile='./main.py') {
+      return ['python', mainFile];
+    },
     displayName: 'Python 2 (Sourcebox)',
     errorParser: new PythonErrorParser()
   }
