@@ -18,7 +18,8 @@ export default class Terminal extends React.Component {
 
   componentDidMount() {
     this.terminal = new Term({
-      useStyle: false
+      useStyle: false,
+      screenKeys: true
     });
 
     this.terminal.open(this.container);

@@ -344,7 +344,7 @@ export default class Project extends EventEmitter {
   getFileForName(name) {
     let index = this.getIndexForFilename(name);
 
-    if (!index) {
+    if (index < 0 || index == null) {
       return undefined;
     }
 
@@ -611,6 +611,15 @@ export default class Project extends EventEmitter {
     // switch to first tab
     if (this.tabs.length > 1) {
       this.switchTab(index);
+    }
+
+    // Update title
+    this.setTitle();
+  }
+
+  setTitle() {
+    if (this.data.meta.name) {
+      document.title = `${this.data.meta.name} | ${document.title}`;
     }
   }
 

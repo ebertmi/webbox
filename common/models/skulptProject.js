@@ -1,19 +1,14 @@
-import Sourcebox from '@sourcebox/web';
 import isString from 'lodash/isString';
-import pathModule from 'path';
-import { Severity } from './severity';
+import { Severity  } from './severity';
 
 import Project from './project';
-import Runner from './sourceboxRunner';
+import Runner from './skulptRunner';
 import languages from './languages';
 import { EventLog } from './socketConnection';
 
-const PROCESS_DEFAULTS = {
-  term: true
-};
 
-export default class SourceboxProject extends Project {
-  constructor(data, serverConfig) {
+export default class SkulptProject extends Project {
+  constructor(data) {
     super(data);
 
     if (isString(data.meta.language)) {
@@ -21,12 +16,6 @@ export default class SourceboxProject extends Project {
     } else {
       this.config = data.meta.language;
     }
-
-    let {server, ...sbConfig} = serverConfig;
-    this.sourcebox = new Sourcebox(server, sbConfig);
-
-    // register error handler
-    this.sourcebox.on('error', this.onError.bind(this));
 
     this.status.setLanguageInformation(this.config.displayName);
   }
@@ -38,10 +27,10 @@ export default class SourceboxProject extends Project {
     this.showMessage(Severity.Error, error);
   }
 
-  exec(cmd, args=[], options=PROCESS_DEFAULTS) {
-    let combinedOptions = Object.assign({}, {env: this.config.env}, options);
-    let process = this.sourcebox.exec('bash', args, combinedOptions);
-
+  exec(cmd, args=[], options={}) {
+    let process = {
+      options: options
+    };
     this.addTab('process', {
       item: process,
       callback: function () {
@@ -94,30 +83,25 @@ export default class SourceboxProject extends Project {
     this.runner.run();
   }
 
+  readFile(name){
+    // ToDo: is this the right way of handling files on the same hierarchy?
+    let file = this.getFileForName(name.replace('./', ''));
+
+    if (file != null) {
+      return file.getValue();
+    }
+
+    return null;
+  }
+
+  writeFile(name, mode) {
+
+  }
+
   stop() {
     if (this.isRunning()) {
       this.runner.stop();
     }
-  }
-
-  removeTab(tab, index) {
-    super.removeTab(tab, index);
-
-    // special file tab handling
-    if (tab.type === 'file') {
-      // delete file from disk to avoid using old files
-      var filePath = tab.item.getName();
-      this.deleteFile(filePath);
-
-
-    }
-  }
-
-  deleteFile(filename) {
-    let path = this.name || '.';
-    path = pathModule.join(path, filename);
-
-    return this.sourcebox.rm([path], { term: false }); // call rm method
   }
 
   isRunning() {

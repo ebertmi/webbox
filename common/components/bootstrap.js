@@ -35,13 +35,15 @@ export function Nav(props) {
 }
 
 export function NavItem(props) {
+  let { useHref, active, ...rest } = props;
+
   let classes = classNames('nav-item nav-link', {
-    active: props.active
+    active: active
   });
 
-  if (!props.useHref) {
+  if (!useHref) {
     return (
-      <a {...props} className={classes}>
+      <a {...rest} className={classes}>
         {props.children}
       </a>
     );
@@ -175,12 +177,14 @@ Input.propTypes = {
 };
 
 export function Button(props) {
+  let { className, bsStyle, ...rest } = props;
+
   let classes = classNames('btn', {
-    ['btn-' + props.bsStyle]: props.bsStyle
-  }, props.className);
+    ['btn-' + bsStyle]: bsStyle
+  }, className);
 
   return (
-    <button type="button" {...props} className={classes}>
+    <button type="button" {...rest} className={classes}>
       {props.children}
     </button>
   );

@@ -150,7 +150,7 @@ export default class CodeEmbedCell extends React.Component {
         </div>
         <div className="form-group">
           <label className="form-control-label">Name</label>
-          <input className="form-control" type="text" placeholer="z. B. String Methoden" name="name" onChange={this.onFormDataChange} value={this.state.formData.name}/>
+          <input className="form-control" type="text" placeholder="z. B. String Methoden" name="name" onChange={this.onFormDataChange} value={this.state.formData.name}/>
           <small className="text-muted">Name, der das Beispiel beschreibt. Dieser wird oben rechts angezeigt.</small>
         </div>
         <div className="form-group">
@@ -188,7 +188,7 @@ export default class CodeEmbedCell extends React.Component {
         <strong>Codebeispiel-Einstellungen</strong>
         <div className="form-group">
           <label className="form-control-label">Beispiel-ID</label>
-          <input className="form-control" type="text" placeholer="ID..." onChange={this.onUpdateCell} value={source}/>
+          <input className="form-control" type="text" placeholder="ID..." onChange={this.onUpdateCell} value={source}/>
         </div>
         <hr className="top-sep" />
         { createForm }

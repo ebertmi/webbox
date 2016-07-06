@@ -17,6 +17,6 @@
     "NODE_ENV": "development"
   },
   "execMap": {
-    "js": "node --harmony --harmony_destructuring"
+    "js": "node --harmony"
   }
 }

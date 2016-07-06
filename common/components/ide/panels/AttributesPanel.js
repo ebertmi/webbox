@@ -117,7 +117,7 @@ export default class AttributePanel extends React.Component {
         </div>
         <div className="form-group">
           <label className="form-control-label">Name</label>
-          <input className="form-control" type="text" placeholer="z. B. String Methoden" name="name" onChange={this.onChangeOption.bind(this, ['embed', 'meta'])} value={embed.meta.name}/>
+          <input className="form-control" type="text" placeholder="z. B. String Methoden" name="name" onChange={this.onChangeOption.bind(this, ['embed', 'meta'])} value={embed.meta.name}/>
           <small className="text-muted">Name, der das Beispiel beschreibt. Dieser wird oben rechts angezeigt.</small>
         </div>
         <div className="form-group">
@@ -130,7 +130,7 @@ export default class AttributePanel extends React.Component {
         </div>
         <div className="form-group">
           <label className="form-control-label">Main-File</label>
-          <input className="form-control" type="text" placeholer="main.py" name="mainFile" onChange={this.onChangeOption.bind(this, ['embed', 'meta'])} value={embed.meta.mainFile}/>
+          <input className="form-control" type="text" placeholder="main.py" name="mainFile" onChange={this.onChangeOption.bind(this, ['embed', 'meta'])} value={embed.meta.mainFile}/>
           <small className="text-muted">Datei, die zum Ausführen verwendet werden soll. Hat nur Auswirkungen auf bestimmte Sprache wie z.B. Python.</small>
         </div>
         <Button bsStyle="success" className="form-group" onClick={this.onSave}>Speichern</Button>

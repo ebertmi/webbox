@@ -5,6 +5,7 @@ import {render} from 'react-dom';
 
 import Ide from '../../common/components/ide/Ide';
 import SourceboxProject from '../../common/models/sourcebox';
+import SkulptProject from '../../common/models/skulptProject';
 import { MessageListModel } from '../../common/models/messages';
 import { usageConsole } from '../../common/util/usageLogger';
 
@@ -16,8 +17,10 @@ if (window.INITIAL_DATA.meta.embedType === 'sourcebox') {
     auth: window.sourcebox.authToken,
     server: window.sourcebox.server
   });
+} else if (window.INITIAL_DATA.meta.embedType === 'skulpt') {
+  project = new SkulptProject(window.INITIAL_DATA);
 } else {
-  console.log('Unsupported embedType', window.INITIAL_DATA);
+  console.error('Unsupported embedType', window.INITIAL_DATA);
 }
 
 project.setCommunicationData({

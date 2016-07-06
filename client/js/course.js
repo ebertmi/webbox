@@ -1,3 +1,4 @@
+/*
 import 'scss/course/course';
 
 const Stickyfill = require('exports?Stickyfill!Stickyfill/src/stickyfill');
@@ -31,3 +32,4 @@ var Dropdowns = document.querySelectorAll('[data-toggle=dropdown]'), i = 0, ddl 
 for (i; i < ddl; i++) {
   new Dropdown(Dropdowns[i]);
 }
+*/
