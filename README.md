@@ -65,6 +65,15 @@ Currently, good is used to log any events. You can find the logs under `logs` an
 ### rethinkdb
 In order to use webbox you need to install [rethinkdb](https://www.rethinkdb.com/).
 
+**RethinkDB 2.3**
+RethinkDB uses now an admin account. The admin account has not password by default. So please set one.
+
+See http://rethinkdb.com/docs/security/#securing-the-driver-port for more information about setting the password.
+You need to set the password then in the rethinkdb configuration.
+See https://rethinkdb.com/docs/permissions-and-accounts/ for information about creating users and setting permissions.
+
+
+**WARNING** This applies to RethinkDB 2.0
 Use the rethinkdb `Data Explorer` to set the `authKey` with the following command:
 ```javascript
 r.db('rethinkdb').table('cluster_config').get('auth').update({auth_key: 'newkey'})
