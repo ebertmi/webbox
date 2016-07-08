@@ -1,11 +1,13 @@
 import { EventEmitter } from 'events';
-import { Transform, PassThrough, } from 'stream';
+import { PassThrough, } from 'stream';
 
 import Promise from 'bluebird';
 import uniq from 'lodash/uniq';
 import isString from 'lodash/isString';
 import isFunction from 'lodash/isFunction';
 import split from 'split2';
+import { EventLog } from './socketConnection';
+import { TerminalTransform } from '../util/streamUtils';
 
 Promise.config({
   cancellation: true
@@ -15,25 +17,6 @@ Promise.config({
 const RUN_DEFAULTS = {
   execLimit: 30000
 };
-
-/**
- * Replaces newlines (\n) with \r\n (for term.js)
- */
-class TerminalTransform extends Transform {
-  _transform(chunk, encoding, callback) {
-    let str = chunk.toString();
-    this.push(str.replace(/\n/g, '\r\n'));
-    callback();
-  }
-}
-
-function streamPromise(...streams) {
-  return Promise.all(streams.map(stream => {
-    return new Promise(resolve => {
-      stream.on('end', resolve);
-    });
-  }));
-}
 
 // this class pretends to be a "Process", so it can be "displayed" by
 // ProcessPanel and ProcessTab
@@ -94,6 +77,7 @@ export default class Runner extends EventEmitter {
     }
 
     this.config = this.project.config;
+    this.files = this.project.getFiles();
 
     let emitChange = () => {
       process.nextTick(() => {
@@ -139,10 +123,56 @@ export default class Runner extends EventEmitter {
     });
   }
 
+  /**
+   * Handles skulpt errors that occur during execution.
+   *
+   * @param {any} err
+   */
   handleSkulptError(err) {
-    console.trace(err);
+    let annotationMap = {};
+    let errObj = this.skulptErrorToErrorObject(err);
+    this._error(errObj.raw);
 
-    let ret = err.toString();
+    let tabIndex = this.project.getIndexForFilename(errObj.file.replace('./', ''));
+    let fileContent = tabIndex > -1 ? this.project.getTabs()[tabIndex].item.getValue() : '';
+
+    let errorEvent = new EventLog(EventLog.NAME_ERROR, Object.assign({}, errObj, { fileContent: fileContent }));
+
+    // Log error event
+    this.project.sendEvent(errorEvent);
+
+    let normalizedFileName = errObj.file.replace('./', '');
+
+    if (annotationMap[normalizedFileName] == null) {
+      annotationMap[normalizedFileName] = [];
+    }
+
+    // Add annotation for code editor
+    annotationMap[normalizedFileName].push({
+      row: errObj.line - 1,
+      column: errObj.column != null ? errObj.column  : 0,
+      text: errObj.message,
+      type: 'error'
+    });
+
+    // Display annotations
+    this.files.forEach((file) => {
+      let annotations = annotationMap[file.getName()];
+      file.setAnnotations(annotations || []);
+    });
+  }
+
+  /**
+   * Transforms the error/exception to a common format, that
+   * is used within sourcebox/webbox.
+   *
+   * @param {any} err Skulpt Exception
+   * @returns
+   */
+  skulptErrorToErrorObject(err) {
+    let ret = err.toString(); // Simple output message
+
+    // Create stacktrace message
     if (err.traceback) {
       for (let i = 0; i < err.traceback.length; i++) {
         ret += "\n  at " + err.traceback[i].filename + " line " + err.traceback[i].lineno;
@@ -152,7 +182,25 @@ export default class Runner extends EventEmitter {
       }
     }
 
-    this._error(ret);
+    let fileName = this.getMainFile().name;
+    let lineno = 0;
+    let colno = 0;
+
+    if (err.traceback && err.traceback.length > 0) {
+      fileName = err.traceback[0].filename;
+      lineno = err.traceback[0].lineno;
+      colno = err.traceback[0].colno;
+    }
+
+    return {
+      file: fileName,
+      line: lineno,
+      column: colno,
+      error: err.tp$name || 'Error',
+      message: err.toString(),
+      errorHint: ret,
+      raw: ret
+    };
   }
 
   _output(text) {
