@@ -289,6 +289,8 @@ export default class Runner extends EventEmitter {
       throw new Error('No exec command');
     }
 
+    let annotationMap = {};
+
     let command = this._commandArray(this.config.exec);
 
     this._status(command.join(' '), false); // output run call
@@ -348,7 +350,24 @@ export default class Runner extends EventEmitter {
         let errorEvent = new EventLog(EventLog.NAME_ERROR, Object.assign({}, errObj, { fileContent: fileContent }));
         this.project.sendEvent(errorEvent);
         console.info(errorEvent);
+
+        let normalizedFileName = errObj.file.replace('./', '');
+        if (annotationMap[normalizedFileName] == null) {
+          annotationMap[normalizedFileName] = [];
+        }
+        annotationMap[normalizedFileName].push({
+          row: errObj.line - 1,
+          column: errObj.column != null ? errObj : 0,
+          text: errObj.message,
+          type: 'error'
+        });
       }
+
+      this.files.forEach((file) => {
+        let annotations = annotationMap[file.getName()];
+        file.setAnnotations(annotations || []);
+      });
+
 
       this.stdin.unpipe(this.process.stdin);
       delete this.process;
