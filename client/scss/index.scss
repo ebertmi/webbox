@@ -120,6 +120,11 @@ form .btn,
 
 .new-course-form {
   padding-left: 1rem;
+  display: inline !important;
+}
+
+.new-course-form-btn {
+  font-size: 0.575rem;
 }
 
 .course-logo {
@@ -132,4 +137,14 @@ form .btn,
   .grid-divider .col-xs-12 {
     margin-bottom: 1.5rem;
   }
+}
+
+.card-header-flex {
+  padding: 10px 10px 10px;
+  display: flex;
+  align-items: center;
+}
+
+.pull-right-flex {
+    margin-left: auto;
 }

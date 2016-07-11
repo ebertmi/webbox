@@ -35,7 +35,8 @@ export default class SourceboxProject extends Project {
    * Shows Error Messages that come from sourcebox
    */
   onError(error) {
-    this.showMessage(Severity.Error, error);
+    console.warn(error);
+    this.showMessage(Severity.Error, 'Es ist ein Fehler augetreten. Ggf. kann keine Verbindung hergestellt werden. Bei Problemen bitte die Seite neu laden.');
   }
 
   exec(cmd, args=[], options=PROCESS_DEFAULTS) {
@@ -108,7 +109,6 @@ export default class SourceboxProject extends Project {
       // delete file from disk to avoid using old files
       var filePath = tab.item.getName();
       this.deleteFile(filePath);
-
 
     }
   }
