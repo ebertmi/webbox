@@ -708,6 +708,35 @@ export default class Project extends EventEmitter {
     });
   }
 
+  deleteEmbed() {
+    const id = this.data.id;
+    let messageObj;
+    let deleteAction = new Action('delete.delete.action', 'Löschen', '', true, () => {
+      API.embed.deleteEmbed({ id: id }).then(res => {
+        if (!res.error) {
+          // Redirect to main page
+          window.location.replace(`${window.location.protocol}//${window.location.host}`);
+        } else {
+          console.log(res);
+          this.messageList.showMessage(Severity.Error, res.error);
+        }
+      }).catch(err => {
+        this.messageList.showMessage(Severity.Error, err);
+      });
+
+      // Hide message
+      this.messageList.hideMessage(messageObj);
+    });
+
+    let cancelAction = new Action('cancel.delete.document', 'Abbrechen', '', true, () => {
+      this.messageList.hideMessage(messageObj);
+    });
+
+    messageObj = new MessageWithAction('Wollen Sie das Beispiel wirklich löschen? Sie können das Beispiel davor auch exportieren.', [deleteAction, cancelAction]);
+
+    this.messageList.showMessage(Severity.Warning, messageObj);
+  }
+
   toCodeDocument() {
     // Return all files (altered by an user [not owner]) to be saved
     let code = { };

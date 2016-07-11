@@ -45,5 +45,18 @@ export const EmbedAPI = {
       return data;
     })
     .catch(commonErrorHandler);
+  },
+  deleteEmbed(params) {
+    return fetch(`/embed/${params.id}`, {
+      method: 'delete',
+      credentials: 'same-origin',
+      headers: getDefaultHeaders()
+    })
+    .then(checkStatus)
+    .then(parseJSON)
+    .then(data => {
+      return data;
+    })
+    .catch(commonErrorHandler);
   }
 };

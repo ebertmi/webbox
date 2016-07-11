@@ -24,6 +24,7 @@ export default class AttributePanel extends React.Component {
 
     this.onSave = this.onSave.bind(this);
     this.onReset = this.onReset.bind(this);
+    this.onDelete = this.onDelete.bind(this);
   }
 
   /**
@@ -33,6 +34,17 @@ export default class AttributePanel extends React.Component {
    */
   cloneFromProps() {
     return clone(this.props.item.data);
+  }
+
+  /**
+   * Delets the embed after confirmation by the user.
+   *
+   * @param {any} e
+   */
+  onDelete(e) {
+    e.preventDefault();
+
+    this.props.item.deleteEmbed();
   }
 
   /**
@@ -135,9 +147,14 @@ export default class AttributePanel extends React.Component {
           <small className="text-muted">Datei, die zum Ausführen verwendet werden soll. Hat nur Auswirkungen auf bestimmte Sprache wie z.B. Python.</small>
         </div>
         <Button bsStyle="success" className="form-group" onClick={this.onSave}>Speichern</Button>
-        <Button bsStyle="danger" className="form-group" onClick={this.onReset}>Zurücksetzen</Button>
+        <Button bsStyle="warn" className="form-group" onClick={this.onReset}>Zurücksetzen</Button>
         <div className="form-group">
           <p className="text-muted">Die Änderungen werden erst nach erneutem Laden des Beispiels wirksam. Drücken Sie nach dem Speichern die F5-Taste oder das Refresh-Symbol ihres Browsers. Alternativ können Sie <a href="javascript:location.reload();">hier</a> zum erneutem Laden klicken.</p>
+        </div>
+        <hr />
+        <Button bsStyle="danger" className="form-group" onClick={this.onDelete}>Löschen</Button>
+        <div className="form-group">
+          <p className="text-muted">Es werden auch alle gespeicherten Dokumente anderer Benutzer gelöscht.</p>
         </div>
       </form>
     );
