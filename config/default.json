@@ -125,7 +125,8 @@
           "invalid": "Ungültige Anfrage bzw. ungültige Parameter.",
           "getFailed": "Beispiel konnte nicht gefunden werden.",
           "saveFailed": "Speicherung ist fehlgeschlagen. Bitte versuchen Sie es erneut."
-        }
+        },
+        "notAuthenticated": "Sie sind nicht angemeldet."
       },
       "websocket": {
         "subscribeNotAllowed": "Sie besitzen nicht die benötigten Rechte, um Live-Daten zu erhalten."

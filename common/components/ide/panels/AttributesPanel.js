@@ -98,11 +98,12 @@ export default class AttributePanel extends React.Component {
 
   render() {
     let embed = this.state.embed;
+    let slug = embed.slug != null ? embed.slug : '';
 
     return (
       <form className="options-panel" onSubmit={e => e.preventDefault()}>
         <legend>Allgemeine Eigenschaften</legend>
-        <Input label="Kurzlink" type="text" name="slug" value={embed.slug || ''} onChange={this.onChangeOption.bind(this, ['embed'])} muted="Sie können hier einen mehrere Wörter (a-Z und -, aber keine Leerzeichen) definieren. Damit können Sie über einen lesbaren Link auf dieses Beispiel zugreifen. Es werden automatisch Zeichen entfernt bzw. ersetzt!" />
+        <Input label="Kurzlink" type="text" name="slug" value={slug} onChange={this.onChangeOption.bind(this, ['embed'])} muted="Sie können hier einen mehrere Wörter (a-Z und -, aber keine Leerzeichen) definieren. Damit können Sie über einen lesbaren Link auf dieses Beispiel zugreifen. Es werden automatisch Zeichen entfernt bzw. ersetzt!" />
         <hr/>
         <legend>Metadaten</legend>
         <div className="form-group">

@@ -81,6 +81,8 @@ export default class OptionsPanel extends React.Component {
         <Input label="Unsichtbare Zeichen anzeigen" type="checkbox" name="showInvisibles" defaultChecked={options.showInvisibles}/>
         <Input label="Einrückung anzeigen" type="checkbox" name="displayIndentGuides" defaultChecked={options.displayIndentGuides}/>
         <Input label="Zeilen umbrechen" type="checkbox" name="wrap" defaultChecked={options.wrap}/>
+        <Input label="Autovervollständigung" type="checkbox" name="enableBasicAutocompletion" defaultChecked={options.enableBasicAutocompletion}/>
+        <Input label="Beim Tippen vervollständigen" type="checkbox" name="enableLiveAutocompletion" defaultChecked={options.enableLiveAutocompletion}/>
       </div>
     );
   }

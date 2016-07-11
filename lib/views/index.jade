@@ -58,7 +58,6 @@ block content
                         input(type="hidden", name="crumb", value=crumb)
                         button.btn.btn-primary.btn-sm.new-course-form-btn(type="submit", title="Neues Dokument anlegen") +
 
-
                 ul.list-group.list-group-flush
                   - each doc in documents
                     li.list-group-item
@@ -69,10 +68,18 @@ block content
           if embeds && embeds.length > 0
             .col-xs-12
               div.card
-                h3.card-header.card-header-for-list
+                h3.card-header.card-header-for-list.card-header-flex
                   span Ihre erstellten Beispiele
                   =' '
-                  small.pull-xs-right Die letzten 10 Beispiele
+                  span.pull-right-flex
+                    small Die letzten 10 Beispiele
+                    small
+                      form.new-course-form.form-inline(method="POST", action="/embed/redirectcreate")
+                        input(type="hidden", name="crumb", value=crumb)
+                        input(type="hidden", name="name", value="Neues Codebeispiel")
+                        input(type="hidden", name="embedType", value="sourcebox")
+                        input(type="hidden", name="language", value="python3")
+                        button.btn.btn-primary.btn-sm.new-course-form-btn(type="submit", title="Neues Codebeispiel anlegen") +
                 ul.list-group.list-group-flush
                   - each embed in embeds
                     li.list-group-item

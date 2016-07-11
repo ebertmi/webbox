@@ -12,6 +12,14 @@ const PROCESS_DEFAULTS = {
   term: true
 };
 
+/**
+ * The SourceboxProject handles communication and scaffolding with the sourcebox sandbox
+ * for executing code (remote execution).
+ *
+ * @export
+ * @class SourceboxProject
+ * @extends {Project}
+ */
 export default class SourceboxProject extends Project {
   constructor(data, serverConfig) {
     super(data);

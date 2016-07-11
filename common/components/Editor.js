@@ -30,6 +30,13 @@ export default class Editor extends React.Component {
     }
 
     this.editor.setOptions(options);
+
+    if (Ace.config.$defaultOptions.editor.enableBasicAutocompletion == null) {
+      Ace.config.loadModule("ace/ext/language_tools", () => {
+        this.editor.setOptions(options);
+      });
+    }
+
   }
 
   focus() {

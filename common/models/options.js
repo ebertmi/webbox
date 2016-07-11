@@ -19,7 +19,9 @@ const DEFAULT_OPTIONS = {
     highlightSelectedWord: true,
     displayIndentGuides: false,
     showGutter: true,
-    wrap: false
+    wrap: false,
+    enableBasicAutocompletion: true,
+    enableLiveAutocompletion: false
   }
 };
 
