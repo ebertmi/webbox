@@ -63,7 +63,8 @@ body.ide,
     }
 
     & .status-username {
-      padding: 0.25em 1em;
+      padding: 0 1em;
+      align-self: center;
       font-weight: 400;
       border-right: #ddd solid 1px;
 
@@ -73,7 +74,17 @@ body.ide,
     }
 
     & .status-message {
-      padding: 0.25em 1em;
+      align-self: center;
+      padding: 0 1em;
+    }
+
+    & .status-navigation {
+      align-self: center;
+      margin-left: auto;
+      padding-right: 1em;
+      padding-left: 1em;
+      border-left: #ddd solid 1px;
+      font-weight: 400;
     }
 
     &.danger {

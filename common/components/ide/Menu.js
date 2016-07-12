@@ -209,6 +209,9 @@ export default class Menu extends React.Component {
           <Icon name="download" fixedWidth title="Beispiel herunterladen" /> Exportieren
         </DropdownItem>
 
+        <DropdownItem onClick={this.onOpenInNewWindow.bind(this)}>
+          <Icon name="link" fixedWidth/> In neuem Fenster öffnen
+        </DropdownItem>
         <DropdownDivider/>
 
         <form className="form-inline" onSubmit={e => e.preventDefault()}>
@@ -231,9 +234,6 @@ export default class Menu extends React.Component {
           <Icon name="gear" fixedWidth/> Einstellungen
         </DropdownItem>
 
-        <DropdownItem onClick={this.onOpenInNewWindow.bind(this)}>
-          <Icon name="link" fixedWidth/> In neuem Fenster öffnen
-        </DropdownItem>
       </NavDropdown>
     );
   }

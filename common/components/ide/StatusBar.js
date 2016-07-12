@@ -37,6 +37,7 @@ export default class StatusBar extends React.Component {
         <span className="status-language-information">{this.state.status.languageInformation}</span>
         <span className="status-username pull-right"><span className="prefix">angemeldet als </span>{this.state.status.username}</span>
         <span className="status-message">{this.state.status.message}</span>
+        <span className="status-navigation pull-xs-right"><a href="/" title="Startseite">Startseite</a></span>
       </div>
     );
   }
