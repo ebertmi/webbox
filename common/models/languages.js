@@ -14,7 +14,7 @@ export default {
   c: {
     compile(files) {
       files = files.filter(file => file.endsWith('.c'));
-      return ['gcc', '-Wall'].concat(files);
+      return ['gcc', '-lm', '-Wall'].concat(files);
     },
     exec: ['./a.out'],
     parser() {

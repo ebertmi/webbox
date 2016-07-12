@@ -164,6 +164,8 @@ export default class Runner extends EventEmitter {
 
     let command = this._commandArray(this.config.compile);
 
+    this._status(command.join(' '), false);
+
     let compiler = this.sourcebox.exec(command.shift(), command, {
       cwd: this.path,
       term: false,

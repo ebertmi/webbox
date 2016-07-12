@@ -116,6 +116,12 @@ export class PythonErrorParser extends Transform {
   getAsObject() {
     let raw = this._buffer.join('');
 
+    // Normalize line, remove text
+    if (this._line.includes(', ')) {
+      let split_result = this._line.split(',');
+      this._line = split_result[0];
+    }
+
     return {
       file: this._filename,
       line: this._line,
