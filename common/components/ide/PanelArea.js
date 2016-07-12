@@ -67,6 +67,7 @@ export default class PanelArea extends React.Component {
   render() {
     return (
       <div className="panel-area">
+        <div className="scroll-decoration" />
         {this.renderGlobalMessageList()}
         {this.renderPanels()}
       </div>

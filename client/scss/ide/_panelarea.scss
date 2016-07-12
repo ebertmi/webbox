@@ -30,3 +30,15 @@
   padding: 1rem;
   background-color: white;
 }
+
+.scroll-decoration {
+  position: absolute;
+  top: 34px; /* ToDo: check this in other browsers */
+  left: 0;
+  height: 6px;
+  box-shadow: inset 0 6px 6px -6px #ddd;
+  z-index: 1000;
+  z-index: 1;
+  overflow: hidden;
+  width: 100%;
+}

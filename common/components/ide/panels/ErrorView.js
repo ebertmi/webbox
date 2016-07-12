@@ -150,7 +150,6 @@ export default class ErrorView extends React.Component {
               </thead>
               <tbody>
                 {this.state.errors.map((err) => {
-                  console.info(err);
                   return (
                     <tr key={err.id}>
                       <td>{err.type}</td>

@@ -80,12 +80,13 @@ export default class Runner extends EventEmitter {
       return;
     }
 
-    let runEvent = new EventLog(EventLog.NAME_RUN, { execCommand: this.project.config.exec });
-    this.project.sendEvent(runEvent);
-
     this.files = this.project.getFiles();
     this.path = this.project.name || '.';
     this.config = this.project.config;
+
+    let command = this._commandArray(this.project.config.exec);
+    let runEvent = new EventLog(EventLog.NAME_RUN, { execCommand: command });
+    this.project.sendEvent(runEvent);
 
     let emitChange = () => {
       process.nextTick(() => {
