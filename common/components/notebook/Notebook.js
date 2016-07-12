@@ -214,6 +214,7 @@ export default class Notebook extends React.Component {
     const undoStackSize = this.props.notebook.get('undoStack').size;
     const redoStackSize = this.props.notebook.get('redoStack').size;
     const course = this.props.notebook.get('course');
+    const id = this.props.notebook.get('id');
 
     return (
       <div data-drag={true} className="notebook row" onDragOver={this.onDragOver} onDrop={this.onDrop.bind(this) }>
@@ -229,7 +230,8 @@ export default class Notebook extends React.Component {
         undoStackSize={undoStackSize}
         editable={this.props.notebook.get('notebookMetadataEditable')}
         slug={this.props.notebook.get('slug')}
-        course={course} />
+        course={course}
+        id={id} />
         { this.renderCells() }
       </div>
     );

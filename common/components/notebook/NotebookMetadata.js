@@ -102,7 +102,7 @@ class NotebookMetadata extends React.Component {
   }
 
   render() {
-    const { isAuthor, editable, metadata, slug, course } = this.props;
+    const { isAuthor, editable, metadata, slug, course, id } = this.props;
     const author = metadata.get('author');
     const date = metadata.get('lastUpdate');
     const title = metadata.get('title');
@@ -165,6 +165,9 @@ class NotebookMetadata extends React.Component {
             <button className="btn btn-danger btn-sm" onClick={this.props.onDelete}><Icon className={''} name="times-circle-o" title="Dokument Löschen" /> Dokument löschen</button>
           </span>
           <hr/>
+          <span className="metadata-item">
+            <a href={`/export/d/${id}`} download={`${title}.ipynb`}>Export (ipynb)</a>
+          </span>
         </div>
       );
     }
