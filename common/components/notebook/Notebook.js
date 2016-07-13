@@ -33,6 +33,23 @@ export default class Notebook extends React.Component {
     this.onDelete = this.onDelete.bind(this);
   }
 
+  replaceIdWithSlug() {
+    let url = window.location.href;
+    const id = this.props.notebook.get('id');
+    const slug = this.props.notebook.get('slug');
+
+
+    if (slug == null || slug == '' || slug.length <= 3) {
+      return;
+    }
+
+    // Check if we need to update
+    if (url.includes(id)) {
+      url = url.replace(id, slug);
+      location.replace(url);
+    }
+  }
+
   // Make messageList available in the tree
   getChildContext() {
     return {
@@ -49,6 +66,9 @@ export default class Notebook extends React.Component {
   componentDidMount() {
     // handle Ctrl+S on the whole document even when nothing is focused
     document.addEventListener('keydown', this.onKeyDown.bind(this));
+
+    // Try to update url
+    this.replaceIdWithSlug();
   }
 
   /**

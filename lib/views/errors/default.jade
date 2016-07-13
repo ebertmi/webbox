@@ -1,5 +1,8 @@
 extends ../layout.jade
 
+block title
+  title BAAAM - Fehler - trycoding.io - Hochschule Coburg
+
 block content
   main.site-content.index-content#content
     .container
@@ -7,5 +10,3 @@ block content
         .col-md-12
           h1 #{statusCode} - #{errName}
           p= errorMessage
-          p.
-            Es ist ein Fehler aufgetreten.

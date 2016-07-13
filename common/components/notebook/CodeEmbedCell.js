@@ -186,6 +186,7 @@ export default class CodeEmbedCell extends React.Component {
     return (
       <div className="col-xs-12">
         <strong>Codebeispiel-Einstellungen</strong>
+        <p className="text-muted">Sie können die Größe (Höhe und Breite) über die Metadaten auch selbst steuern. Nutzen Sie dazu die Schlüssel <code>height</code> bzw. <code>width</code> und einen numerischen Wert (z.B. <code>500</code>) ohne Einheit.</p>
         <div className="form-group">
           <label className="form-control-label">Beispiel-ID</label>
           <input className="form-control" type="text" placeholder="ID..." onChange={this.onUpdateCell} value={source}/>

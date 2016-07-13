@@ -17,10 +17,15 @@ export default class IFrame extends React.Component {
   }
 
   initIFrame() {
+    return;
+
+    // dynamic resizing disabled for now, seems to work without
+    /*
     if (this.iframe) {
       const height = Math.max( this.iframe.contentWindow.document.body.scrollHeight,  this.iframe.contentWindow.document.body.offsetHeight,  this.iframe.contentWindow.document.documentElement.clientHeight,  this.iframe.contentWindow.document.documentElement.scrollHeight,  this.iframe.contentWindow.document.documentElement.offsetHeight);
       this.iframe.style.height = height + 'px';
     }
+    */
   }
 
   onRef(ref) {
