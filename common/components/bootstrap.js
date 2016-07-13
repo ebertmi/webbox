@@ -133,22 +133,24 @@ export class Input extends React.Component {
 
 
     return (
-      <fieldset className={classes}>
+      <div className={classes}>
         {this.props.label ? <label htmlFor={this.id}>{this.props.label}</label> : undefined}
         {element}
         {this.renderMuted()}
-      </fieldset>
+      </div>
     );
   }
 
   renderCheckboxRadio() {
     let classes = classNames(this.props.type, this.getStyleClass());
 
+    let {label, muted, mutedParagraph, ...rest} = this.props;
+
     return (
       <div className={classes}>
         <label>
-          <input {...this.props}/>
-          {this.props.label}
+          <input {...rest}/>
+          {label}
           {this.renderMuted()}
         </label>
       </div>
@@ -158,6 +160,10 @@ export class Input extends React.Component {
   renderMuted() {
     if (this.props.muted) {
       return <small className="text-muted">{this.props.muted}</small>;
+    }
+
+    if (this.props.mutedParagraph) {
+      return <p className="text-muted">{this.props.mutedParagraph}</p>;
     }
   }
 
@@ -173,11 +179,12 @@ Input.propTypes = {
   className: React.PropTypes.string,
   id: React.PropTypes.string,
   muted: React.PropTypes.string,
+  mutedParagraph: React.PropTypes.string,
   bsStyle: React.PropTypes.oneOf(['success', 'warning', 'error'])
 };
 
 export function Button(props) {
-  let { className, bsStyle, ...rest } = props;
+  let { inputClassName, className, bsStyle, ...rest } = props;
 
   let classes = classNames('btn', {
     ['btn-' + bsStyle]: bsStyle

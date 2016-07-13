@@ -98,6 +98,50 @@ export function changeCoursesPage(page) {
   };
 }
 
+export function updateCourse(course) {
+  return {
+    type: types.GET_COURSE_SUCCESS,
+    course: course
+  };
+}
+
+export function getCourse(id) {
+  return {
+    type: types.GET_COURSE_REQUEST,
+    params: {
+      id: id
+    }
+  };
+}
+
+export function updateCourseForm(update) {
+  return {
+    type: types.CHANGE_COURSE_FORMDATA,
+    update: update
+  };
+}
+
+export function saveCourse(course) {
+  return {
+    type: types.SAVE_COURSE_REQUEST,
+    payload: {
+      course: course
+    },
+    params: {
+      id: course.id
+    }
+  };
+}
+
+export function deleteCourse(course) {
+  return {
+    type: types.DELETE_COURSE_REQUEST,
+    params: {
+      id: course.id
+    }
+  };
+}
+
 /**
  * Admin/Embed
  */

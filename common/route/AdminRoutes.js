@@ -8,6 +8,7 @@ import LogOverview from '../containers/admin/LogOverview';
 import EmbedOverview from '../containers/admin/EmbedOverview';
 import AuthAttemptOverview from '../containers/admin/AuthAttemptOverview';
 import User from '../components/admin/User';
+import Course from '../components/admin/Course';
 
 export default (
   <Route path='/admin' component={AdminApp}>
@@ -15,6 +16,7 @@ export default (
     <Route path='/admin/users' component={UserOverview} />
     <Route path='/admin/user/:id' component={User} />
     <Route path='/admin/courses' component={CourseOverview} />
+    <Route path='/admin/course/:id' component={Course} />
     <Route path='/admin/embeds' component={EmbedOverview} />
     <Route path='/admin/authattempts' component={AuthAttemptOverview} />
   </Route>

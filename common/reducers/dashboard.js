@@ -14,12 +14,16 @@ export default function dashboard(state = INITIAL_DASHBOARD_STATE, action) {
     case adminTypes.GET_EMBEDS_FAILURE:
     case adminTypes.GET_COURSES_FAILURE:
     case adminTypes.GET_AUTHATTEMPTS_FAILURE:
+    case adminTypes.DELETE_COURSE_FAILURE:
+    case adminTypes.SAVE_COURSE_FAILURE:
+    case adminTypes.GET_COURSE_FAILURE:
       return Object.assign({}, state, {
         message: {
           type: 'error',
           content: action.message
         }
       });
+    case adminTypes.SAVE_COURSE_REQUEST:
     case adminTypes.SAVE_USER_SUCCESS:
       return Object.assign({}, state, {
         message: {

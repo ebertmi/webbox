@@ -56,23 +56,6 @@ function* deleteUser (action) {
   }
 }
 
-function* resendConfirmationEmail (action) {
-  try {
-    // reset notification message
-    yield put({ type: adminTypes.RESET_MESSAGE });
-
-    const data = yield call(API.admin.resendConfirmationEmail, action.params);
-
-    if (data.error) {
-      yield put({type: adminTypes.RESEND_USER_CONFIRMATION_EMAIL_FAILURE, message: data.error.message});
-    } else {
-      yield put({type: adminTypes.RESEND_USER_CONFIRMATION_EMAIL_SUCCESS});
-    }
-  } catch (e) {
-    yield put({type: adminTypes.RESEND_USER_CONFIRMATION_EMAIL_FAILURE, message: e.message});
-  }
-}
-
 function* saveUser (action) {
   try {
     // reset notification message
@@ -90,24 +73,21 @@ function* saveUser (action) {
   }
 }
 
-function* watchGetUsers() {
-  yield* takeLatest(adminTypes.GET_USERS_REQUEST, fetchUsers);
-}
+function* resendConfirmationEmail (action) {
+  try {
+    // reset notification message
+    yield put({ type: adminTypes.RESET_MESSAGE });
 
-function* watchGetUser() {
-  yield* takeLatest(adminTypes.GET_USER_REQUEST, fetchUser);
-}
+    const data = yield call(API.admin.resendConfirmationEmail, action.params);
 
-function* watchSaveUser() {
-  yield* takeLatest(adminTypes.SAVE_USER_REQUEST, saveUser);
-}
-
-function* watchDeleteUser() {
-  yield* takeLatest(adminTypes.DELETE_USER_REQUEST, deleteUser);
-}
-
-function* watchResendConfirmationEmail() {
-  yield* takeLatest(adminTypes.RESEND_USER_CONFIRMATION_EMAIL_REQUEST, resendConfirmationEmail);
+    if (data.error) {
+      yield put({type: adminTypes.RESEND_USER_CONFIRMATION_EMAIL_FAILURE, message: data.error.message});
+    } else {
+      yield put({type: adminTypes.RESEND_USER_CONFIRMATION_EMAIL_SUCCESS});
+    }
+  } catch (e) {
+    yield put({type: adminTypes.RESEND_USER_CONFIRMATION_EMAIL_FAILURE, message: e.message});
+  }
 }
 
 /**
@@ -130,8 +110,56 @@ function* fetchCourses (action) {
   }
 }
 
-function* watchGetCourses() {
-  yield* takeLatest(adminTypes.GET_COURSES_REQUEST, fetchCourses);
+// worker Saga : will be fired on GET_USERS_REQUEST actions
+function* fetchCourse (action) {
+  try {
+    // reset notification message
+    yield put({ type: adminTypes.RESET_MESSAGE });
+
+    const data = yield call(API.admin.getCourse, action.params);
+
+    if (data.error) {
+      yield put({type: adminTypes.GET_COURSE_FAILURE, message: data.error.message});
+    } else {
+      yield put({type: adminTypes.GET_COURSE_SUCCESS, course: data.course});
+    }
+  } catch (e) {
+    yield put({type: adminTypes.GET_COURSE_FAILURE, message: e.message});
+  }
+}
+
+function* deleteCourse (action) {
+  try {
+    // reset notification message
+    yield put({ type: adminTypes.RESET_MESSAGE });
+
+    const data = yield call(API.admin.deleteCourse, action.params, action.payload);
+
+    if (data.error) {
+      yield put({type: adminTypes.DELETE_COURSE_FAILURE, message: data.error.message});
+    } else {
+      yield put({type: adminTypes.DELETE_COURSE_SUCCESS});
+    }
+  } catch (e) {
+    yield put({type: adminTypes.DELETE_COURSE_FAILURE, message: e.message});
+  }
+}
+
+function* saveCourse (action) {
+  try {
+    // reset notification message
+    yield put({ type: adminTypes.RESET_MESSAGE });
+
+    const data = yield call(API.admin.saveCourse, action.params, action.payload);
+
+    if (data.error) {
+      yield put({type: adminTypes.SAVE_COURSE_FAILURE, message: data.error.message});
+    } else {
+      yield put({type: adminTypes.SAVE_COURSE_SUCCESS, course: data.course});
+    }
+  } catch (e) {
+    yield put({type: adminTypes.SAVE_COURSE_FAILURE, message: e.message});
+  }
 }
 
 /**
@@ -154,10 +182,6 @@ function* fetchEmbeds (action) {
   }
 }
 
-function* watchGetEmbeds() {
-  yield* takeLatest(adminTypes.GET_EMBEDS_REQUEST, fetchEmbeds);
-}
-
 /**
  * Log fetching...
  */
@@ -176,10 +200,6 @@ function* fetchLogs (action) {
   } catch (e) {
     yield put({type: adminTypes.GET_LOGS_FAILURE, message: e.message});
   }
-}
-
-function* watchGetLogs() {
-  yield* takeLatest(adminTypes.GET_LOGS_REQUEST, fetchLogs);
 }
 
 /**
@@ -202,21 +222,20 @@ function* fetchAuthAttempts (action) {
   }
 }
 
-function* watchGetAuthAttempts() {
-  yield* takeLatest(adminTypes.GET_AUTHATTEMPTS_REQUEST, fetchAuthAttempts);
-}
-
 export default function* adminSaga () {
   // avoid multiple fetching of the same data
   yield [
-    fork(watchGetUser),
-    fork(watchSaveUser),
-    fork(watchGetUsers),
-    fork(watchDeleteUser),
-    fork(watchResendConfirmationEmail),
-    fork(watchGetEmbeds),
-    fork(watchGetCourses),
-    fork(watchGetLogs),
-    fork(watchGetAuthAttempts)
+    fork(takeLatest, adminTypes.GET_USER_REQUEST, fetchUser),
+    fork(takeLatest, adminTypes.SAVE_USER_REQUEST, saveUser),
+    fork(takeLatest, adminTypes.GET_USERS_REQUEST, fetchUsers),
+    fork(takeLatest, adminTypes.DELETE_USER_REQUEST, deleteUser),
+    fork(takeLatest, adminTypes.RESEND_USER_CONFIRMATION_EMAIL_REQUEST, resendConfirmationEmail),
+    fork(takeLatest, adminTypes.GET_EMBEDS_REQUEST, fetchEmbeds),
+    fork(takeLatest, adminTypes.GET_COURSES_REQUEST, fetchCourses),
+    fork(takeLatest, adminTypes.GET_COURSE_REQUEST, fetchCourse),
+    fork(takeLatest, adminTypes.SAVE_COURSE_REQUEST, saveCourse),
+    fork(takeLatest, adminTypes.DELETE_COURSE_REQUEST, deleteCourse),
+    fork(takeLatest, adminTypes.GET_LOGS_REQUEST, fetchLogs),
+    fork(takeLatest, adminTypes.GET_AUTHATTEMPTS_REQUEST, fetchAuthAttempts)
   ];
 }

@@ -24,10 +24,6 @@ export default function course(state = INITIAL_COURSE_STATE, action) {
       return Object.assign({}, state, {
         isFetching: true
       });
-    case adminTypes.GET_COURSES_FAILURE:
-      return Object.assign({}, state, {
-        isFetching: false
-      });
     case adminTypes.CHANGE_COURSES_PAGE:
       return Object.assign({}, state, {
         pagesQuery: {
@@ -41,6 +37,47 @@ export default function course(state = INITIAL_COURSE_STATE, action) {
           page: state.pagesQuery.page,
           limit: action.limit
         }
+      });
+    case adminTypes.GET_COURSE_SUCCESS:
+      return Object.assign({}, state, {
+        isFetching: false,
+        course: action.course
+      });
+    case adminTypes.GET_COURSE_REQUEST:
+      return Object.assign({}, state, {
+        isFetching: true
+      });
+    case adminTypes.CHANGE_COURSE_FORMDATA:
+      return Object.assign({}, state, {
+        course: Object.assign({}, state.course, action.update)
+      });
+    case adminTypes.SAVE_COURSE_SUCCESS:
+      return Object.assign({}, state, {
+        isFetching: false,
+        course: action.course
+      });
+    case adminTypes.SAVE_COURSE_REQUEST:
+      return Object.assign({}, state, {
+        isFetching: true
+      });
+    case adminTypes.DELETE_COURSE_SUCCESS:
+      return Object.assign({}, state, {
+        isFetching: false,
+        course: {
+          isDeleted: true
+        }
+      });
+    case adminTypes.DELETE_COURSE_REQUEST:
+      return Object.assign({}, state, {
+        isFetching: true
+      });
+    /* Case fallthrough */
+    case adminTypes.DELETE_COURSE_FAILURE:
+    case adminTypes.SAVE_COURSE_FAILURE:
+    case adminTypes.GET_COURSE_FAILURE:
+    case adminTypes.GET_COURSES_FAILURE:
+      return Object.assign({}, state, {
+        isFetching: false
       });
     default:
       return state;

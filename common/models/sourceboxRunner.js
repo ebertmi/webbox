@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { Transform, PassThrough } from 'stream';
+import { PassThrough } from 'stream';
 import pathModule from 'path';
 
 import Promise from 'bluebird';
@@ -10,7 +10,7 @@ import split from 'split2';
 
 import { Turtle } from '../turtle/turtle';
 import { EventLog } from './socketConnection';
-import { TerminalTransform, MatplotLibTransfrom } from '../util/streamUtils';
+import { TerminalTransform, MatplotLibTransfrom, TerminalRedColorTransform } from '../util/streamUtils';
 
 /**
  * Allows to cancel promises (bluebird specific)
@@ -257,7 +257,7 @@ export default class Runner extends EventEmitter {
       if (isFunction(this.config.errorParser.clear)) {
         this.config.errorParser.clear(); // reset parser
       }
-      this.process.stderr.pipe(split()).pipe(this.config.errorParser, {end: false});
+      this.process.stderr.pipe(split()).pipe(this.config.errorParser, { end: false });
     }
 
     this.stdin.pipe(this.process.stdin);

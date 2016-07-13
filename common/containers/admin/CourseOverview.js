@@ -30,6 +30,25 @@ class CourseOverview extends Component {
         </table>);
   }
 
+  onAddClick (event) {
+    event.preventDefault();
+    //this.props.searchClickHandler(this.state.q);
+  }
+
+  renderNewCourseButton() {
+    return (
+      <div className="row table-search-bar">
+        <div className="col-sm-6">
+          <form className="form-inline">
+            <div className="form-group">
+              <a className="btn btn-success btn-sm" href="/course/create" >Neuen Kurs anlegen</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
   render () {
     const content = this.renderTable();
     return (
@@ -40,6 +59,7 @@ class CourseOverview extends Component {
           pagesQuery={this.props.courseOverview.pagesQuery}
           location={this.props.location}>
         <h2>Kurse</h2>
+        { this.renderNewCourseButton() }
         <LoadingContainer isLoading={this.props.courseOverview.isFetching}>
           {content}
         </LoadingContainer>

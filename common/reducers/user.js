@@ -19,10 +19,6 @@ export default function user(state = INITIAL_USER_STATE, action) {
       return Object.assign({}, state, {
         isFetching: true
       });
-    case adminTypes.GET_USERS_FAILURE:
-      return Object.assign({}, state, {
-        isFetching: false
-      });
     case adminTypes.GET_USERS_SUCCESS:
       return Object.assign({}, state, {
         isFetching: false,
@@ -38,10 +34,6 @@ export default function user(state = INITIAL_USER_STATE, action) {
       return Object.assign({}, state, {
         isFetching: true
       });
-    case adminTypes.GET_USER_FAILURE:
-      return Object.assign({}, state, {
-        isFetching: false
-      });
     case adminTypes.CHANGE_USER_FORMDATA:
       return Object.assign({}, state, {
         user: Object.assign({}, state.user, action.update)
@@ -55,10 +47,6 @@ export default function user(state = INITIAL_USER_STATE, action) {
       return Object.assign({}, state, {
         isFetching: true
       });
-    case adminTypes.SAVE_USER_FAILURE:
-      return Object.assign({}, state, {
-        isFetching: false
-      });
     case adminTypes.DELETE_USER_SUCCESS:
       return Object.assign({}, state, {
         isFetching: false,
@@ -69,10 +57,6 @@ export default function user(state = INITIAL_USER_STATE, action) {
     case adminTypes.DELETE_USER_REQUEST:
       return Object.assign({}, state, {
         isFetching: true
-      });
-    case adminTypes.DELETE_USER_FAILURE:
-      return Object.assign({}, state, {
-        isFetching: false
       });
     case adminTypes.CHANGE_USERS_PAGE:
       return Object.assign({}, state, {
@@ -97,6 +81,13 @@ export default function user(state = INITIAL_USER_STATE, action) {
           limit: state.pagesQuery.limit,
           q: action.q
         }
+      });
+    case adminTypes.DELETE_USER_FAILURE:
+    case adminTypes.GET_USERS_FAILURE:
+    case adminTypes.GET_USER_FAILURE:
+    case adminTypes.SAVE_USER_FAILURE:
+      return Object.assign({}, state, {
+        isFetching: false
       });
     default:
       return state;

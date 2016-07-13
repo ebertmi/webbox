@@ -80,6 +80,45 @@ export const AdminAPI = {
     })
     .catch(commonErrorHandler);
   },
+  getCourse(params) {
+    return fetch(`/api/course/${params.id}`, {
+      credentials: 'same-origin',
+      headers: getDefaultHeaders()
+    })
+    .then(checkStatus)
+    .then(parseJSON)
+    .then(data => {
+      return data;
+    })
+    .catch(commonErrorHandler);
+  },
+  saveCourse(params, payload) {
+    return fetch(`/api/course/${params.id}`, {
+      method: 'PUT',
+      credentials: 'same-origin',
+      headers: getDefaultHeaders(),
+      body: JSON.stringify(payload)
+    })
+    .then(checkStatus)
+    .then(parseJSON)
+    .then(data => {
+      return data;
+    })
+    .catch(commonErrorHandler);
+  },
+  deleteCourse(params) {
+    return fetch(`/api/course/${params.id}`, {
+      method: 'DELETE',
+      credentials: 'same-origin',
+      headers: getDefaultHeaders()
+    })
+    .then(checkStatus)
+    .then(parseJSON)
+    .then(data => {
+      return data;
+    })
+    .catch(commonErrorHandler);
+  },
   getEmbeds(query) {
     return fetch(`/api/embeds?page=${query.page}&limit=${query.limit}`, {
       credentials: 'same-origin',
