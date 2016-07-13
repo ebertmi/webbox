@@ -37,9 +37,18 @@ export default class IFrame extends React.Component {
   }
 
   render() {
+    let height = this.props.height;
+
+    let parsedHeight = parseInt(height);
+    if (isNaN(parsedHeight)) {
+      height = IFrame.defaultProps.height;
+    } else {
+      height = parsedHeight;
+    }
+
     if (this.props.lazy) {
       return (
-        <LazyLoad height={this.props.height} once>
+        <LazyLoad height={height} once>
           {this.renderIFrame()}
         </LazyLoad>
       );
@@ -52,8 +61,8 @@ export default class IFrame extends React.Component {
 
 IFrame.propTypes = {
   src: React.PropTypes.string.isRequired,
-  width: React.PropTypes.number,
-  height: React.PropTypes.number,
+  width: React.PropTypes.oneOfType([React.PropTypes.number, React.PropTypes.string]),
+  height: React.PropTypes.oneOfType([React.PropTypes.number, React.PropTypes.string]),
   resizable: React.PropTypes.bool,
   frameBorder: React.PropTypes.string,
   lazy: React.PropTypes.bool
