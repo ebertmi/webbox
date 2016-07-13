@@ -39,11 +39,9 @@ export default class IFrame extends React.Component {
   render() {
     let height = this.props.height;
 
-    let parsedHeight = parseInt(height);
-    if (isNaN(parsedHeight)) {
+    height = parseInt(height);
+    if (isNaN(height)) {
       height = IFrame.defaultProps.height;
-    } else {
-      height = parsedHeight;
     }
 
     if (this.props.lazy) {

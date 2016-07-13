@@ -56,7 +56,7 @@ export default class Presentation extends React.Component {
         //return <CodePane source={source} lang={lang}></CodePane>;
       case 'codeembed':
         return (
-          <LazyLoad height={cell.getIn(['metadata', 'height'], 400)} once>
+          <LazyLoad height={cell.getIn(['metadata', 'height'], 350)} once>
             <iframe className={this.props.className} width={cell.getIn(['metadata', 'width'], 800)} height={cell.getIn(['metadata', 'height'], 400)} src={`/embed/${source}`} seamless={true} allowFullScreen={true} frameBorder="0" />
           </LazyLoad>
         );
