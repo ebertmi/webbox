@@ -53,6 +53,9 @@ block content
                   =' '
                   span.pull-right-flex
                     small Die letzten 10 Dokumente
+                    small !{" | "}
+                    small
+                      a(href="/documents", title="Alle Anzeigen") Alle
                     small
                       form.new-course-form.form-inline(method="POST", action="/document/create")
                         input(type="hidden", name="crumb", value=crumb)
@@ -61,7 +64,8 @@ block content
                 ul.list-group.list-group-flush
                   - each doc in documents
                     li.list-group-item
-                      a(href="/d/" + doc.id, ) !{doc.metadata.title}
+                      - var urlPart = doc.slug != null && doc.slug != '' ? doc.slug : doc.id;
+                      a(href="/d/" + urlPart) !{doc.metadata.title}
                       span.pull-xs-right
                         small Letzte Änderung !{doc.metadata.lastUpdate}
 
@@ -83,7 +87,8 @@ block content
                 ul.list-group.list-group-flush
                   - each embed in embeds
                     li.list-group-item
-                      a(href="/embed/" + embed.id, ) !{embed.meta.name}
+                      - var urlPart = embed.slug != null && embed.slug != '' ? embed.slug : embed.id;
+                      a(href="/embed/" + urlPart, ) !{embed.meta.name}
                       span.pull-xs-right
                         small Letzte Änderung !{embed.lastUpdate}
 
@@ -97,6 +102,7 @@ block content
                 ul.list-group.list-group-flush
                   - each doc in codeDocuments
                     li.list-group-item
+                      a(href="/d/" + urlPart) !{doc.metadata.title}
                       a(href="/embed/" + doc.codeEmbedId + "?showDocument=" + doc.id ) !{doc.embed.meta.name}
                       span.pull-xs-right
                         small Letzte Änderung !{doc.lastUpdate}

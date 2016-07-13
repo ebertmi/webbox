@@ -151,9 +151,13 @@ server.ext('onPreResponse', function (request, reply) {
     }
 
 
-    const err = request.response;
+    let err = request.response;
     const errName = err.output.payload.error;
     const statusCode = err.output.payload.statusCode;
+
+    if (statusCode === 403) {
+      err = 'Sie besitzten nicht die benötigten Rechte, um auf diese Seite zuzugreifen.';
+    }
 
     return reply.view('errors/default', {
       statusCode: statusCode,

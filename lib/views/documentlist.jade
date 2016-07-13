@@ -1,0 +1,58 @@
+extends ./layout.jade
+
+block title
+  title trycoding.io - Startseite
+
+block content
+  main.site-content#content
+    .container
+      .row
+        section.col-xs-12
+          if infoMessage
+            div.alert.alert-info
+              p= infoMessage
+          if errorMessage
+            div.alert.alert-danger
+              p= errorMessage
+
+      if !user.isAnonymous
+        .row
+          h4 Ihre Dokumente (Notebooks)
+          p.
+            Folgende Liste enthält nur Ihre eigenen Dokumente.
+          if documents && documents.length > 0
+            .col-xs-12
+              div.card
+                h3.card-header.card-header-for-list.card-header-flex
+                  span Ihre Dokumente
+                  =' '
+                  span.pull-right-flex
+                    small Die letzten 10 Dokumente
+                    small
+                      form.new-course-form.form-inline(method="POST", action="/document/create")
+                        input(type="hidden", name="crumb", value=crumb)
+                        button.btn.btn-primary.btn-sm.new-course-form-btn(type="submit", title="Neues Dokument anlegen") +
+
+                ul.list-group.list-group-flush
+                  - each doc in documents
+                    li.list-group-item
+                      - var urlPart = doc.slug != null && doc.slug != '' ? doc.slug : doc.id;
+                      a(href="/d/" + urlPart) !{doc.metadata.title}
+                      span.pull-xs-right
+                        small Letzte Änderung !{doc.metadata.lastUpdate}
+
+  .container.second-entry
+    if user.isAnonymous
+      .row.auth
+        .col-xs-12
+          p.
+            Nur angemeldete Benutzer können ihre Dokumente einsehen.
+      .row.grid-divider
+        .col-md-5.col-xs-12
+          h2 Login
+          include ./includes/_login.jade
+        .col-md-2.hidden-sm-down.divider.vertical
+          p Oder
+        .col-md-5.col-xs-12
+          h2 Registrierung
+          include ./includes/_signup.jade
