@@ -47,14 +47,28 @@ export default class Notebook extends React.Component {
   }
 
   componentDidMount() {
-    // ToDo: register saving and redo shortcuts!
+    // handle Ctrl+S on the whole document even when nothing is focused
+    document.addEventListener('keydown', this.onKeyDown.bind(this));
+  }
+
+  /**
+   * Check for Ctrl+S and try to save the document if possible
+   */
+  onKeyDown(e) {
+    let key = e.which || e.keyCode;
+    if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 83) {
+
+      // ToDo: debounce or throttle the calls?
+      this.onSave();
+      e.preventDefault();
+    }
   }
 
   onSave() {
     const documentObj = stateToJS(this.props.notebook);
     API.document.save({ id: documentObj.id }, { document: documentObj }).then(res => {
       if (!res.error) {
-        this.messageList.showMessage(Severity.Info, 'Erfolgreich gespeichert.');
+        this.messageList.showMessage(Severity.Ignore, 'Erfolgreich gespeichert.');
       } else {
         console.log(res);
         this.messageList.showMessage(Severity.Error, res.error);

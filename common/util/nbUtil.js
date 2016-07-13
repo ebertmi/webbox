@@ -81,7 +81,8 @@ export function documentToState(document) {
       cell.id = UUID.v4()
     }
 
-    newState = addCellWithIndex(newState, null, Immutable.fromJS(cell));
+    let res = addCellWithIndex(newState, null, Immutable.fromJS(cell));
+    newState = res.state;
   }
 
   return newState;

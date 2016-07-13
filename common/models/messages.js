@@ -53,6 +53,7 @@ export class MessageEntry extends EventEmitter {
     this.count = data.count || 1;
     this.actions = data.actions || null;
     this.key = data.key;
+    this.timeout = null;
   }
 
 
@@ -119,14 +120,28 @@ export class MessageListModel extends EventEmitter {
     this.purgeMessages();
 
     // new messages come first so that they show up on top
-    this.messages.unshift(new MessageEntry({
+    let messageEntry = new MessageEntry({
       id: id,
       text: message,
       severity: severity,
       time: new Date().getTime(),
       actions: id.actions,
       key: 'ME' + _internalMessageCounter++
-    }));
+    });
+
+    // Enable auto hide for ignore messages
+    if (messageEntry.severity === Severity.Ignore) {
+      // Clear previous and set new, if we have the same message multiple times
+      if (messageEntry.timeout != null) {
+        window.clearTimeout(messageEntry.timeout);
+      }
+
+      messageEntry.timeout = window.setTimeout(() => {
+        this.hideMessage(id);
+      }, MessageListModel.DEFAULT_TIMEOUT_INTERVAL);
+    }
+
+    this.messages.unshift(messageEntry);
 
     // trigger change
     this.prepareRenderMessages(true, 1);
@@ -277,3 +292,4 @@ export class MessageListModel extends EventEmitter {
 // defaults
 MessageListModel.DEFAULT_MESSAGE_PURGER_INTERVAL = 10000;
 MessageListModel.DEFAULT_MAX_MESSAGES = 5;
+MessageListModel.DEFAULT_TIMEOUT_INTERVAL = 1000 * 5;

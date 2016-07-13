@@ -48,12 +48,53 @@ export default class Runner extends EventEmitter {
     return Sk.builtinFiles.files[x];
   }
 
-  fileWrite(pyFile, x) {
-    console.info('fileWrite', pyFile, x);
+  _fileWrite(pyFile, str) {
+    console.info('fileWrite', pyFile, str);
+    if (pyFile.mode === 'r') {
+      throw new Sk.builtin.IOError("File is in readonly mode, cannot write");
+    }
+
+    let name = pyFile.name.replace('./', '');
+    let file = this.project.getFileForName(name);
+
+    if (file != null) {
+      let value = file.getValue();
+      file.setValue(value + str);
+    } else {
+      // error
+      throw new Sk.builtin.IOError("File has been deleted, cannot write.");
+    }
   }
 
-  fileRead(pyFile, x) {
-    console.info('fileRead', pyFile, x);
+  _fileRead(x, mode='r') {
+    let name = x.replace('./', '');
+    let file = this.project.getFileForName(name);
+
+    // Check mode
+    if (mode === 'w') {
+      if (file != null) {
+        file.setValue('');
+      } else {
+        // Create new file
+        this.project.addFile(name, '', undefined, false);
+      }
+
+      return '';
+    }
+
+    if (file == null && mode === 'x') {
+      // Create new file
+      this.project.addFile(name, '', undefined, false);
+      return '';
+    }
+
+    if (mode === 'b') {
+      throw new Sk.builtin.IOError("Binary mode is not supported");
+    }
+
+    if (file != null) {
+      return file.getValue();
+    }
   }
 
   getMainFile() {
@@ -87,7 +128,8 @@ export default class Runner extends EventEmitter {
 
     emitChange();
 
-    // ToDo: add here check for python2/python3
+    // Check for python2/python3
+    let isPython3 = this.project.data.meta.language === 'python3';
 
     Sk.configure({
       output: text => {
@@ -99,14 +141,17 @@ export default class Runner extends EventEmitter {
       read: x => {
         return this.defaultFileRead(x);
       },
+      fileread: (x, mode) => {
+        return this._fileRead(x, mode);
+      },
       filewrite: (pyFile, x) => {
-        this.fileWrite(pyFile, x);
+        this._fileWrite(pyFile, x);
       },
       fileopen: pyFile => {
         console.info(pyFile);
       },
       nonreadopen: true,
-      python3: true,
+      python3: isPython3,
       execLimit: RUN_DEFAULTS.execLimit
     });
 
@@ -220,6 +265,9 @@ export default class Runner extends EventEmitter {
     let command = ['python3']; //this._commandArray(this.config.exec);
 
     let mainFile = this.getMainFile();
+
+    let runEvent = new EventLog(EventLog.NAME_RUN, { execCommand: [command, mainFile].join(' ') });
+    this.project.sendEvent(runEvent);
 
     this._status(command.join(' '), false); // output run call
 

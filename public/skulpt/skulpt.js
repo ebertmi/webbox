@@ -1,4 +1,16 @@
-// Copyright 2006 The Closure Library Authors. All Rights Reserved.
+(function(){function k(b,a){s[b]||(typeof console!=="undefined"&&typeof console.warn=="function"&&console.warn("[WARNING] "+b+" is deprecated and will be removed in version 1.0. Instead, use `"+a+"`."),s[b]=!0)}function t(b){b.localize=i.localize.bind(i);b.timezone=i.timezone.bind(i);b.utc=i.utc.bind(i)}function r(b,a,e){a&&a.days&&(e=a,a=void 0);e&&k("`"+g+"(format, [date], [locale])`","var s = "+g+".localize(locale); s(format, [date])");return(e?i.localize(e):i)(b,a)}function u(b,a,e){e?k("`"+g+
+".strftime(format, [date], [locale])`","var s = "+g+".localize(locale); s(format, [date])"):k("`"+g+".strftime(format, [date])`",g+"(format, [date])");return(e?i.localize(e):i)(b,a)}function p(b,a,e){function g(b,c,h,a){for(var d="",f=null,e=!1,i=b.length,j=!1,o=0;o<i;o++){var n=b.charCodeAt(o);if(e===!0)if(n===45)f="";else if(n===95)f=" ";else if(n===48)f="0";else if(n===58)j&&typeof console!=="undefined"&&typeof console.warn=="function"&&console.warn("[WARNING] detected use of unsupported %:: or %::: modifiers to strftime"),
+j=!0;else{switch(n){case 65:d+=h.days[c.getDay()];break;case 66:d+=h.months[c.getMonth()];break;case 67:d+=l(Math.floor(c.getFullYear()/100),f);break;case 68:d+=g(h.formats.D,c,h,a);break;case 70:d+=g(h.formats.F,c,h,a);break;case 72:d+=l(c.getHours(),f);break;case 73:d+=l(v(c.getHours()),f);break;case 76:d+=Math.floor(a%1E3)>99?Math.floor(a%1E3):Math.floor(a%1E3)>9?"0"+Math.floor(a%1E3):"00"+Math.floor(a%1E3);break;case 77:d+=l(c.getMinutes(),f);break;case 80:d+=c.getHours()<12?h.am:h.pm;break;case 82:d+=
+g(h.formats.R,c,h,a);break;case 83:d+=l(c.getSeconds(),f);break;case 84:d+=g(h.formats.T,c,h,a);break;case 85:d+=l(w(c,"sunday"),f);break;case 87:d+=l(w(c,"monday"),f);break;case 88:d+=g(h.formats.X,c,h,a);break;case 89:d+=c.getFullYear();break;case 90:k&&m===0?d+="GMT":(f=c.toString().match(/\(([\w\s]+)\)/),d+=f&&f[1]||"");break;case 97:d+=h.shortDays[c.getDay()];break;case 98:d+=h.shortMonths[c.getMonth()];break;case 99:d+=g(h.formats.c,c,h,a);break;case 100:d+=l(c.getDate(),f);break;case 101:d+=
+l(c.getDate(),f==null?" ":f);break;case 104:d+=h.shortMonths[c.getMonth()];break;case 106:f=new Date(c.getFullYear(),0,1);f=Math.ceil((c.getTime()-f.getTime())/864E5);d+=f>99?f:f>9?"0"+f:"00"+f;break;case 107:d+=l(c.getHours(),f==null?" ":f);break;case 108:d+=l(v(c.getHours()),f==null?" ":f);break;case 109:d+=l(c.getMonth()+1,f);break;case 110:d+="\n";break;case 111:d+=String(c.getDate())+A(c.getDate());break;case 112:d+=c.getHours()<12?h.AM:h.PM;break;case 114:d+=g(h.formats.r,c,h,a);break;case 115:d+=
+Math.floor(a/1E3);break;case 116:d+="\t";break;case 117:f=c.getDay();d+=f===0?7:f;break;case 118:d+=g(h.formats.v,c,h,a);break;case 119:d+=c.getDay();break;case 120:d+=g(h.formats.x,c,h,a);break;case 121:d+=(""+c.getFullYear()).slice(2);break;case 122:k&&m===0?d+=j?"+00:00":"+0000":(f=m!==0?m/6E4:-c.getTimezoneOffset(),e=j?":":"",n=Math.abs(f%60),d+=(f<0?"-":"+")+l(Math.floor(Math.abs(f/60)))+e+l(n));break;default:d+=b[o]}f=null;e=!1}else n===37?e=!0:d+=b[o]}return d}var i=b||x,m=a||0,k=e||!1,j=0,
+q,b=function(b,c){var a;c?(a=c.getTime(),k&&(c=new Date(c.getTime()+(c.getTimezoneOffset()||0)*6E4+m))):(a=Date.now(),a>j?(j=a,q=new Date(j),a=j,k&&(q=new Date(j+(q.getTimezoneOffset()||0)*6E4+m))):a=j,c=q);return g(b,c,i,a)};b.localize=function(a){return new p(a||i,m,k)};b.timezone=function(a){var c=m,b=k,e=typeof a;if(e==="number"||e==="string")b=!0,e==="string"?(c=a[0]==="-"?-1:1,e=parseInt(a.slice(1,3),10),a=parseInt(a.slice(3,5),10),c=c*(60*e+a)*6E4):e==="number"&&(c=a*6E4);return new p(i,c,
+b)};b.utc=function(){return new p(i,m,!0)};return b}function l(b,a){if(a===""||b>9)return b;a==null&&(a="0");return a+b}function v(b){if(b===0)return 12;else if(b>12)return b-12;return b}function w(b,a){var a=a||"sunday",e=b.getDay();a==="monday"&&(e===0?e=6:e--);var g=Date.UTC(b.getFullYear(),0,1),i=Date.UTC(b.getFullYear(),b.getMonth(),b.getDate());return Math.floor((Math.floor((i-g)/864E5)+7-e)/7)}function A(b){var a=b%10;b%=100;if(b>=11&&b<=13||a===0||a>=4)return"th";switch(a){case 1:return"st";
+case 2:return"nd";case 3:return"rd"}}var x={days:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],shortDays:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],months:["January","February","March","April","May","June","July","August","September","October","November","December"],shortMonths:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],AM:"AM",PM:"PM",am:"am",pm:"pm",formats:{D:"%m/%d/%y",F:"%Y-%m-%d",R:"%H:%M",T:"%H:%M:%S",X:"%T",c:"%a %b %d %X %Y",r:"%I:%M:%S %p",
+v:"%e-%b-%Y",x:"%D"}},i=new p(x,0,!1),y=typeof module!=="undefined",j;y?(j=module.exports=r,j.strftime=u):(j=function(){return this||(0,eval)("this")}(),j.strftime=r);var g=y?"require('strftime')":"strftime",s={};j.strftimeTZ=function(b,a,e,j){if((typeof e=="number"||typeof e=="string")&&j==null)j=e,e=void 0;e?k("`"+g+".strftimeTZ(format, date, locale, tz)`","var s = "+g+".localize(locale).timezone(tz); s(format, [date])` or `var s = "+g+".localize(locale); s.timezone(tz)(format, [date])"):k("`"+
+g+".strftimeTZ(format, date, tz)`","var s = "+g+".timezone(tz); s(format, [date])` or `"+g+".timezone(tz)(format, [date])");return(e?i.localize(e):i).timezone(j)(b,a)};j.strftimeUTC=function(b,a,e){e?k("`"+g+".strftimeUTC(format, date, locale)`","var s = "+g+".localize(locale).utc(); s(format, [date])"):k("`"+g+".strftimeUTC(format, [date])`","var s = "+g+".utc(); s(format, [date])");return(e?z.localize(e):z)(b,a)};j.localizedStrftime=function(b){k("`"+g+".localizedStrftime(locale)`",g+".localize(locale)");
+return i.localize(b)};t(r);t(u);var z=i.utc();if(typeof Date.now!=="function")Date.now=function(){return+new Date}})();
+!function(){"use strict";var strptime=function(str,format,local){return strptime.parse(str,format,local)};strptime.version="0.0.1";var namespace;if(typeof module!=="undefined"){namespace=module.exports=strptime}else{namespace=function(){return this||(1,eval)("this")}()}namespace.strptime=strptime;!function(strptime){strptime.locale={a:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],A:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],b:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],B:["January","February","March","April","May","June","July","August","September","October","November","December"],f:["Jan.","Feb.","Mar.","Apr.","May","Jun.","Jul.","Aug.","Sep.","Oct.","Nov.","Dec."],c:"%Y-%m-%d %H:%M:%S",P:["am","pm"],r:"%I:%M:%S %p",x:"%m/%d/%y",X:"%H:%M:%S",day:["Yesterday","Today","Tomorrow"],bg:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],Bg:["January","February","March","April","May","June","July","August","September","October","November","December"],fg:["Jan.","Feb.","Mar.","Apr.","May","Jun.","Jul.","Aug.","Sep.","Oct.","Nov.","Dec."],Date_dBY_year_in_HM:"%#B %-d, %Y at %-H:%M",Date_dBY_year:"%#B %-d, %Y",Date_dBY:"%#B %-d, %Y",Date_AdBY:"%A, %#B %-d, %Y",Date_dBA:"%#B %-d, %A",Date_df_in_HM:"%#f, %-d at %-H:%M",Date_dfY:"%-d %#f %Y",Date_dB_in_HM:"%#B %-d at %-H:%M",Date_df:"%-d %#f"}}(strptime);!function(strptime){var inArray=Array.prototype.indexOf||function(el){var l=this.length;var i=0;while(i<l){if(el==this[i]){return i}i++}return-1};var locale=strptime.locale;var strRegNum2="[\\d\\s]?\\d";var strRegStr="\\S+";var specifiers={"%":"\\%",a:strRegStr,A:strRegStr,b:{reg:strRegStr,make:function(date,data,mod,gen){data=inArray.call(gen?locale.bg:locale.b,toLetterCaseReverse(data,mod));if(data===-1){return false}date.setUTCMonth(data);return true}},h:{reg:strRegStr,make:function(date,data,mod,gen){data=inArray.call(gen?locale.bg:locale.b,toLetterCaseReverse(data,mod));if(data===-1){return false}date.setUTCMonth(data);return true}},B:{reg:strRegStr,make:function(date,data,mod,gen){data=inArray.call(gen?locale.Bg:locale.B,toLetterCaseReverse(data,mod));if(data===-1){return false}date.setUTCMonth(data);return true}},f:{reg:strRegStr,make:function(date,data,mod,gen){data=inArray.call(gen?locale.fg:locale.f,toLetterCaseReverse(data,mod));if(data===-1){return false}date.setUTCMonth(data);return true}},g:{reg:strRegNum2,make:function(date,data){data=parseInt(data,10);if(data<0||data>99){return false}data=data+100*parseInt((new Date).getUTCFullYear()/100,10);date.setUTCFullYear(data);return true}},G:{reg:"\\d{4}",make:function(date,data){data=parseInt(data,10);date.setUTCFullYear(data);return true}},d:{reg:strRegNum2,make:function(date,data){data=parseInt(data,10);if(data<1||data>31){return false}date.setUTCDate(data);return true}},e:{reg:strRegNum2,make:function(date,data){data=parseInt(data,10);if(data<1||data>31){return false}date.setUTCDate(data);return true}},H:{reg:strRegNum2,make:function(date,data){data=parseInt(data,10);if(data<0||data>23){return false}date.setUTCHours(data);return true}},I:{reg:strRegNum2,make:function(date,data){data=parseInt(data,10);if(data<1||data>12){return false}date.setUTCHours(date.getUTCHours()+data);return true}},m:{reg:strRegNum2,make:function(date,data){data=parseInt(data,10);if(data<1||data>12){return false}date.setUTCMonth(data-1);return true}},M:{reg:strRegNum2,make:function(date,data){data=parseInt(data,10);if(data<0||data>59){return false}date.setUTCMinutes(data);return true}},n:"\\n",p:{reg:strRegStr,make:function(date,data){data=inArray.call(locale.P,data.toLowerCase());if(data===-1){return false}if(data===1){date.setUTCHours(date.getUTCHours()+12)}return true}},P:{reg:strRegStr,make:function(date,data){data=inArray.call(locale.P,data.toLowerCase());if(data===-1){return false}if(data===1){date.setUTCHours(date.getUTCHours()+12)}return true}},S:{reg:strRegNum2,make:function(date,data){data=parseInt(data,10);if(data<0||data>60){return false}date.setUTCSeconds(data);return true}},t:"\\t",u:"\\d",U:strRegNum2,w:"\\d",W:strRegNum2,y:{reg:strRegNum2,make:function(date,data){data=parseInt(data,10);if(data<0||data>99){return false}data=data+100*parseInt((new Date).getUTCFullYear()/100,10);date.setUTCFullYear(data);return true}},Y:{reg:"\\d{4}",make:function(date,data){data=parseInt(data,10);date.setUTCFullYear(data);return true}},z:{reg:"[+\\-]\\d{4}",make:function(date,data){var m=data.match(/^([+\-])(\d{2})(\d{2})$/);if(!m){return false}var offset=(parseInt(m[2],10)*60+parseInt(m[3],10))*6e4;if(m[1]==="+"){offset=-offset}date.setTime(date.getTime()+offset);return true}},l:{reg:strRegNum2,make:function(date,data){data=parseInt(data,10);if(data<1||data>12){return false}date.setUTCHours(date.getUTCHours()+data);return true}},s:{reg:"\\d+",make:function(date,data){data=parseInt(data,10);date.setTime(data*1e3);return true}},c:locale.c,r:locale.r,R:"%H:%M",T:"%H:%M:%S",x:locale.x,X:locale.X,D:"%m/%d/%y",F:"%Y-%m-%d",Date_iso:"%Y-%m-%dT%H:%M:%S",Date_dBY_year_in_HM:locale.Date_dBY_year_in_HM,Date_dBY_year:locale.Date_dBY_year,Date_dBY:locale.Date_dBY,Date_dBA:locale.Date_dBA,Date_AdBY:locale.Date_AdBY,Date_df_in_HM:locale.Date_df_in_HM,Date_dfY:locale.Date_dfY,Date_dB_in_HM:locale.Date_dB_in_HM,Date_dmY__dot:"%d.%m.%Y",Date_df:locale.Date_df,Date_FT:"%F %T",Date_dmY__minus:"%d-%m-%Y"};strptime.parse=function(str,format,local){str=String(str);format=String(format);var loop=5;while(/%(Date_[a-zA-Z0-9_]+|[cDFrRTxX])/g.test(format)&&loop){format=format.replace(/%(Date_[a-zA-Z0-9_]+|[cDFrRTxX])/,formatTransform);loop--}formatTransform.make=[];var reg=format.replace(/%(([#\^!~]{0,2})[aAbBfh]|([0\-_]?)[degHImMSVWyl]|[GnpPtuUwYzZs%])/g,formatTransform);var match=str.match(new RegExp(reg));if(!match||!formatTransform.make.length){return null}var date=new Date(Date.UTC(0,0));for(var i=0,l=formatTransform.make.length;i<l;i++){var build=formatTransform.make[i];if(!build[0](date,match[i+1],build[1],build[2])){return null}}if(local){date.setTime(date.getTime()+date.getTimezoneOffset()*6e4)}return date};function formatTransform(_,spec,mod,numPad,pos,str){spec=String(spec);mod=String(mod);spec=spec.replace(/^[#_0\^\-!~]+/,"");var s=specifiers[spec];if(!s){return _}var genitive=false;if(mod.indexOf("!")===-1&&spec.length===1&&(mod.indexOf("~")>-1||"bBf".indexOf(spec)>-1&&/%[0\-_]?d[\s]+$/.test(str.substr(0,pos)))){genitive=true}if((spec==="I"||spec==="l")&&!/%[pP]/.test(str)){throw new Error("Undefined AM/PM")}switch(typeof s){case"function":return s();case"string":return s;case"object":formatTransform.make.push([s.make,mod,genitive]);return"("+s.reg+")";default:return _}}function toLetterCaseReverse(str,mode){str=String(str);mode=String(mode);if(mode.indexOf("#")!==-1){return str.substr(0,1).toUpperCase()+str.substr(1)}if(mode.indexOf("^")!==-1){return str.substr(0,1)+str.substr(1).toLowerCase()}return str}}(strptime)}();// Copyright 2006 The Closure Library Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -4933,6 +4945,9 @@ Sk.configure = function (options) {
    
     Sk.filewrite = options.filewrite || undefined;
     goog.asserts.assert("function" === typeof Sk.filewrite || "undefined" === typeof Sk.filewrite);
+
+    Sk.fileread = options.fileread || undefined;
+    goog.asserts.assert("function" === typeof Sk.fileread || "undefined" === typeof Sk.fileread);
    
     Sk.timeoutMsg = options["timeoutMsg"] || Sk.timeoutMsg;
     goog.asserts.assert(typeof Sk.timeoutMsg === "function");
@@ -4958,6 +4973,16 @@ Sk.configure = function (options) {
 
     Sk.breakpoints = options["breakpoints"] || function() { return true; };
     goog.asserts.assert(typeof Sk.breakpoints === "function");
+
+    Sk.setTimeout = options["setTimeout"];
+    if (Sk.setTimeout === undefined) {
+        if (typeof setTimeout === "function") {
+            Sk.setTimeout = function(func, delay) { setTimeout(func, delay); };
+        } else {
+            Sk.setTimeout = function(func, delay) { func(); };
+        }
+    }
+    goog.asserts.assert(typeof Sk.setTimeout === "function");
 
     if ("execLimit" in options) {
         Sk.execLimit = options["execLimit"];
@@ -5371,20 +5396,22 @@ Sk.builtin.type = function (name, bases, dict) {
             }
             throw new Sk.builtin.TypeError("'" + tname + "' object is not iterable");
         };
-        klass.prototype.tp$iternext = function () {
+        klass.prototype.tp$iternext = function (canSuspend) {
+            var r;
             var iternextf = this.tp$getattr("next");
-            var ret;
             if (iternextf) {
-                try {
-                    ret = Sk.misceval.callsim(iternextf);
-                } catch (e) {
+                r = Sk.misceval.tryCatch(function() {
+                    return Sk.misceval.callsimOrSuspend(iternextf);
+                }, function(e) {
                     if (e instanceof Sk.builtin.StopIteration) {
-                        ret = undefined;
+                        return undefined;
                     } else {
                         throw e;
                     }
-                }
-                return ret;
+                });
+                return canSuspend ? r : Sk.misceval.retryOptionalSuspensionOrThrow(r);
+            } else {
+                throw new Sk.builtin.TypeError("instance has no next() method");
             }
         };
 
@@ -6614,7 +6641,7 @@ Sk.abstr.iter = function(obj) {
             try {
                 ret = Sk.misceval.callsim(this.getitem, this.myobj, Sk.ffi.remapToPy(this.idx));
             } catch (e) {
-                if (e instanceof Sk.builtin.IndexError) {
+                if (e instanceof Sk.builtin.IndexError || e instanceof Sk.builtin.StopIteration) {
                     return undefined;
                 } else {
                     throw e;
@@ -6628,7 +6655,10 @@ Sk.abstr.iter = function(obj) {
     if (obj.tp$getattr) {
         iter =  Sk.abstr.lookupSpecial(obj,"__iter__");
         if (iter) {
-            return Sk.misceval.callsim(iter,obj);
+            ret = Sk.misceval.callsim(iter, obj);
+            if (ret.tp$iternext) {
+                return ret;
+            }
         }
     }
     if (obj.tp$iter) {
@@ -7284,12 +7314,24 @@ Sk.builtin.checkIterable = function (arg) {
 };
 goog.exportSymbol("Sk.builtin.checkIterable", Sk.builtin.checkIterable);
 
-Sk.builtin.checkCallable = function (arg) {
-    if (typeof arg === "function") {
-        return (!(arg instanceof Sk.builtin.none) && (arg.ob$type !== undefined));
-    } else {
-        return ((arg.tp$call !== undefined) || (arg.__call__ !== undefined));
+Sk.builtin.checkCallable = function (obj) {
+    // takes care of builtin functions and methods, builtins
+    if (typeof obj === "function") {
+        return true;
     }
+    // takes care of python function, methods and lambdas
+    if (obj instanceof Sk.builtin.func) {
+        return true;
+    }
+    // takes care of instances of methods
+    if (obj instanceof Sk.builtin.method) {
+        return true;
+    }
+    // go up the prototype chain to see if the class has a __call__ method
+    if (Sk.abstr.lookupSpecial(obj, "__call__") !== undefined) {
+        return true;
+    } 
+    return false;
 };
 
 Sk.builtin.isNegativeZero = function (arg) {
@@ -7423,11 +7465,20 @@ Sk.builtin.func.prototype.tp$call = function (args, kw) {
     var kwargsarr;
     var expectskw;
     var name;
+    var numargs;
 
     // note: functions expect 'this' to be globals to avoid having to
     // slice/unshift onto the main args
     if (this.func_closure) {
         // todo; OK to modify?
+        if (this.func_code["$defaults"] && this.func_code["co_varnames"]) {
+            // Make sure all default arguments are in args before adding closure
+            numargs = args.length;
+            numvarnames = this.func_code["co_varnames"].length;
+            for (i = numargs; i < numvarnames; i++) {
+                args.push(undefined);
+            }
+        }
         args.push(this.func_closure);
     }
 
@@ -7452,6 +7503,10 @@ Sk.builtin.func.prototype.tp$call = function (args, kw) {
                 }
             }
             if (varnames && j !== numvarnames) {
+                if (j in args) {
+                    name = (this.func_code && this.func_code["co_name"] && this.func_code["co_name"].v) || "<native JS>";
+                    throw new Sk.builtin.TypeError(name + "() got multiple values for keyword argument '" + kw[i] + "'");
+                }
                 args[j] = kw[i + 1];
             } else if (expectskw) {
                 // build kwargs dict
@@ -8496,7 +8551,6 @@ Sk.builtin.hasattr = function hasattr (obj, attr) {
     }
 };
 
-
 Sk.builtin.pow = function pow (a, b, c) {
     var ret;
     var res;
@@ -8697,8 +8751,15 @@ Sk.builtin.reversed = function reversed (seq) {
 Sk.builtin.bytearray = function bytearray () {
     throw new Sk.builtin.NotImplementedError("bytearray is not yet implemented");
 };
-Sk.builtin.callable = function callable () {
-    throw new Sk.builtin.NotImplementedError("callable is not yet implemented");
+
+Sk.builtin.callable = function callable (obj) {
+    // check num of args
+    Sk.builtin.pyCheckArgs("callable", arguments, 1, 1);
+
+    if (Sk.builtin.checkCallable(obj)) {
+        return Sk.builtin.bool.true$;
+    }
+    return Sk.builtin.bool.false$;
 };
 
 Sk.builtin.delattr = function delattr () {
@@ -8715,9 +8776,25 @@ Sk.builtin.frozenset = function frozenset () {
 Sk.builtin.help = function help () {
     throw new Sk.builtin.NotImplementedError("help is not yet implemented");
 };
-Sk.builtin.iter = function iter () {
-    throw new Sk.builtin.NotImplementedError("iter is not yet implemented");
+
+Sk.builtin.iter = function iter (obj, sentinel) {
+    Sk.builtin.pyCheckArgs("iter", arguments, 1, 2);
+    if (arguments.length === 1) {
+        if (!Sk.builtin.checkIterable(obj)) {
+            throw new Sk.builtin.TypeError("'" + Sk.abstr.typeName(obj) + 
+                "' object is not iterable");
+        } else {
+            return new Sk.builtin.iterator(obj);
+        }
+    } else {
+        if (Sk.builtin.checkCallable(obj)) {
+            return new Sk.builtin.iterator(obj, sentinel);
+        } else {
+            throw new TypeError("iter(v, w): v must be callable");
+        }
+    }
 };
+
 Sk.builtin.locals = function locals () {
     /*global Sk.locals */
     if (Sk["locals"] != null) {
@@ -8736,9 +8813,24 @@ Sk.builtin.locals = function locals () {
 Sk.builtin.memoryview = function memoryview () {
     throw new Sk.builtin.NotImplementedError("memoryview is not yet implemented");
 };
-Sk.builtin.next_ = function next_ () {
-    throw new Sk.builtin.NotImplementedError("next is not yet implemented");
+
+Sk.builtin.next_ = function next_ (iter, default_) {
+    var nxt;
+    Sk.builtin.pyCheckArgs("next", arguments, 1, 2);
+    if (!iter.tp$iternext) {
+        throw new Sk.builtin.TypeError("'" + Sk.abstr.typeName(iter) +
+            "' object is not an iterator");
+    }
+    nxt = iter.tp$iternext();
+    if (nxt === undefined) {
+        if (default_) {
+            return default_;
+        }
+        throw new Sk.builtin.StopIteration();
+    }
+    return nxt;
 };
+
 Sk.builtin.property = function property () {
     throw new Sk.builtin.NotImplementedError("property is not yet implemented");
 };
@@ -8761,7 +8853,6 @@ Sk.builtin.coerce = function coerce () {
 Sk.builtin.intern = function intern () {
     throw new Sk.builtin.NotImplementedError("intern is not yet implemented");
 };
-
 
 /*
  Sk.builtinFiles = {};
@@ -9397,6 +9488,23 @@ Sk.builtin.SystemError = function (args) {
 Sk.abstr.setUpInheritance("SystemError", Sk.builtin.SystemError, Sk.builtin.StandardError);
 goog.exportSymbol("Sk.builtin.SystemError", Sk.builtin.SystemError);
 
+/**
+ * @constructor
+ * @extends Sk.builtin.Exception
+ * @param {...*} args
+ */
+Sk.builtin.StopIteration = function (args) {
+    var o;
+    if (!(this instanceof Sk.builtin.StopIteration)) {
+        o = Object.create(Sk.builtin.StopIteration.prototype);
+        o.constructor.apply(o, arguments);
+        return o;
+    }
+    Sk.builtin.Exception.apply(this, arguments);
+};
+Sk.abstr.setUpInheritance("StopIteration", Sk.builtin.StopIteration, Sk.builtin.Exception);
+goog.exportSymbol("Sk.builtin.StopIteration", Sk.builtin.StopIteration);
+
 
 goog.exportSymbol("Sk", Sk);
 /*jshint loopfunc: true */
@@ -9462,65 +9570,20 @@ Sk.builtin.method = function (func, self) {
 goog.exportSymbol("Sk.builtin.method", Sk.builtin.method);
 
 Sk.builtin.method.prototype.tp$call = function (args, kw) {
-    var j;
-    var i;
-    var numvarnames;
-    var varnames;
-    var kwlen;
-    var kwargsarr;
-    var expectskw;
-    var name;
-
     goog.asserts.assert(this.im_self, "should just be a function, not a method since there's no self?");
     goog.asserts.assert(this.im_func instanceof Sk.builtin.func);
 
-    // TODO: This function has an awful lot in common with Sk.builtin.func.prototype.tp$call.
-    // Should we just unshift this.im_self onto the front of args and call that function
-    // instead?
-
-    //print("calling method");
-    // todo; modification OK?
+    // 'args' and 'kw' get mucked around with heavily in applyOrSuspend();
+    // changing it here is OK.
     args.unshift(this.im_self);
 
-    expectskw = this.im_func.func_code["co_kwargs"];
-    kwargsarr = [];
+    // A method call is just a call to this.im_func with 'self' on the beginning of the args.
+    // Do the necessary.
 
-    if (this.im_func.func_code["no_kw"]) {
-        name = (this.im_func.func_code["co_name"] && this.im_func.func_code["co_name"].v) || "<native JS>";
-        throw new Sk.builtin.TypeError(name + "() takes no keyword arguments");
-    }
-
-    if (kw) {
-        // bind the kw args
-        kwlen = kw.length;
-        varnames = this.im_func.func_code["co_varnames"];
-        numvarnames = varnames && varnames.length;
-        for (i = 0; i < kwlen; i += 2) {
-            // todo; make this a dict mapping name to offset
-            for (j = 0; j < numvarnames; ++j) {
-                if (kw[i] === varnames[j]) {
-                    break;
-                }
-            }
-            if (varnames && j !== numvarnames) {
-                args[j] = kw[i + 1];
-            } else if (expectskw) {
-                // build kwargs dict
-                kwargsarr.push(new Sk.builtin.str(kw[i]));
-                kwargsarr.push(kw[i + 1]);
-            } else {
-                name = (this.im_func.func_code && this.im_func.func_code["co_name"] && this.im_func.func_code["co_name"].v) || "<native JS>";
-                throw new Sk.builtin.TypeError(name + "() got an unexpected keyword argument '" + kw[i] + "'");
-            }
-        }
-    }
-    if (expectskw) {
-        args.unshift(kwargsarr);
-    }
-
-    // note: functions expect globals to be their "this". see compile.js and function.js also
-    return this.im_func.func_code.apply(this.im_func.func_globals, args);
+    return this.im_func.tp$call(args, kw);
 };
+
+Sk.builtin.method.prototype.tp$name = "instancemethod";
 
 Sk.builtin.method.prototype["$r"] = function () {
     var name = (this.im_func.func_code && this.im_func.func_code["co_name"] && this.im_func.func_code["co_name"].v) || "<native JS>";
@@ -9552,7 +9615,7 @@ Sk.misceval = {};
  * @param{Object=} data Data attached to this suspension. Will be copied from child if not supplied.
  */
 Sk.misceval.Suspension = function Suspension(resume, child, data) {
-    this.isSuspension = true;
+    this.$isSuspension = true;
     if (resume !== undefined && child !== undefined) {
         this.resume = function() { return resume(child.resume()); };
     }
@@ -10476,8 +10539,10 @@ Sk.misceval.asyncToPromise = function(suspendablefn, suspHandlers) {
                             r.data["promise"].then(resumeWithData, resumeWithError);
                             return;
 
-                        } else if (r.data["type"] == "Sk.yield" && typeof setTimeout === "function") {
-                            setTimeout(resume, 0);
+                        } else if (r.data["type"] == "Sk.yield") {
+                            // Assumes all yields are optional, as Sk.setTimeout might
+                            // not be able to yield.
+                            Sk.setTimeout(resume, 0);
                             return;
 
                         } else if (r.optional) {
@@ -10693,8 +10758,15 @@ Sk.misceval.applyOrSuspend = function (func, kwdict, varargseq, kws, args) {
         }
 
         if (kwdict) {
-            goog.asserts.fail("kwdict not implemented;");
+            for (it = Sk.abstr.iter(kwdict), i = it.tp$iternext(); i!== undefined; i = it.tp$iternext()) {
+                if (!Sk.builtin.checkString(i)) {
+                    throw new Sk.builtin.TypeError("Function keywords must be strings");
+                }
+                kws.push(i.v);
+                kws.push(Sk.abstr.objectGetItem(kwdict, i, false));
+            }
         }
+
         //goog.asserts.assert(((kws === undefined) || (kws.length === 0)));
         //print('kw args location: '+ kws + ' args ' + args.length)
         if (kws !== undefined && kws.length > 0) {
@@ -10744,8 +10816,15 @@ Sk.misceval.applyOrSuspend = function (func, kwdict, varargseq, kws, args) {
                     args.push(i);
                 }
             }
+
             if (kwdict) {
-                goog.asserts.fail("kwdict not implemented;");
+                for (it = Sk.abstr.iter(kwdict), i = it.tp$iternext(); i!== undefined; i = it.tp$iternext()) {
+                    if (!Sk.builtin.checkString(i)) {
+                        throw new Sk.builtin.TypeError("Function keywords must be strings");
+                    }
+                    kws.push(i.v);
+                    kws.push(Sk.abstr.objectGetItem(kwdict, i, false));
+                }
             }
             return fcall.call(func, args, kws, kwdict);
         }
@@ -10757,7 +10836,7 @@ Sk.misceval.applyOrSuspend = function (func, kwdict, varargseq, kws, args) {
             // func is actually the object here because we got __call__
             // from it. todo; should probably use descr_get here
             args.unshift(func);
-            return Sk.misceval.apply(fcall, kws, args, kwdict, varargseq);
+            return Sk.misceval.apply(fcall, kwdict, varargseq, kws, args);
         }
         throw new Sk.builtin.TypeError("'" + Sk.abstr.typeName(func) + "' object is not callable");
     }
@@ -10990,7 +11069,7 @@ Sk.builtin.list = function (L, canSuspend) {
             }
         })(it.tp$iternext(canSuspend));
     } else {
-        throw new Sk.builtin.TypeError("expecting Array or iterable");
+        throw new Sk.builtin.TypeError("'" + Sk.abstr.typeName(L)+ "' " +"object is not iterable");
     }
 
     this["v"] = this.v = v;
@@ -10999,26 +11078,6 @@ Sk.builtin.list = function (L, canSuspend) {
 
 Sk.abstr.setUpInheritance("list", Sk.builtin.list, Sk.builtin.seqtype);
 Sk.abstr.markUnhashable(Sk.builtin.list);
-
-Sk.builtin.list.prototype.list_iter_ = function () {
-    var ret =
-    {
-        tp$iter    : function () {
-            return ret;
-        },
-        $obj       : this,
-        $index     : 0,
-        tp$iternext: function () {
-            // todo; StopIteration
-            if (ret.$index >= ret.$obj.v.length) {
-                return undefined;
-            }
-            return ret.$obj.v[ret.$index++];
-        },
-        tp$name    : "list_iterator"
-    };
-    return ret;
-};
 
 Sk.builtin.list.prototype.list_concat_ = function (other) {
     // other not a list
@@ -11190,7 +11249,15 @@ Sk.builtin.list.prototype.tp$richcompare = function (w, op) {
     return Sk.misceval.richCompareBool(v[i], w[i], op);
 };
 
-Sk.builtin.list.prototype.tp$iter = Sk.builtin.list.prototype.list_iter_;
+Sk.builtin.list.prototype.__iter__ = new Sk.builtin.func(function (self) {
+    Sk.builtin.pyCheckArgs("__iter__", arguments, 0, 0, true, false);
+    return new Sk.builtin.list_iter_(self);
+});
+
+Sk.builtin.list.prototype.tp$iter = function () {
+    return new Sk.builtin.list_iter_(this);
+};
+
 Sk.builtin.list.prototype.sq$length = function () {
     return this.v.length;
 };
@@ -11467,11 +11534,6 @@ Sk.builtin.list.prototype.list_reverse_ = function (self) {
 };
 
 //Sk.builtin.list.prototype.__reversed__ = todo;
-Sk.builtin.list.prototype["__iter__"] = new Sk.builtin.func(function (self) {
-    Sk.builtin.pyCheckArgs("__iter__", arguments, 1, 1);
-
-    return self.list_iter_();
-});
 
 Sk.builtin.list.prototype["append"] = new Sk.builtin.func(function (self, item) {
     Sk.builtin.pyCheckArgs("append", arguments, 2, 2);
@@ -11604,6 +11666,46 @@ Sk.builtin.list.prototype["sort"] = new Sk.builtin.func(Sk.builtin.list.prototyp
 // why this was chosen - csev
 Sk.builtin.list.prototype["sort"].func_code["co_varnames"] = ["__self__", "cmp", "key", "reverse"];
 goog.exportSymbol("Sk.builtin.list", Sk.builtin.list);
+
+/**
+ * @constructor
+ * @param {Object} lst
+ */
+Sk.builtin.list_iter_ = function (lst) {
+    if (!(this instanceof Sk.builtin.list_iter_)) {
+        return new Sk.builtin.list_iter_(lst);
+    }
+    this.$index = 0;
+    this.lst = lst.v.slice();
+    this.sq$length = this.lst.length;
+    this.tp$iter = this;
+    this.tp$iternext = function () {
+        if (this.$index >= this.sq$length) {
+            return undefined;
+        }
+        return this.lst[this.$index++];
+    };
+    this.$r = function () {
+        return new Sk.builtin.str("listiterator");
+    };
+    return this;
+};
+
+Sk.abstr.setUpInheritance("listiterator", Sk.builtin.list_iter_, Sk.builtin.object);
+
+Sk.builtin.list_iter_.prototype.__class__ = Sk.builtin.list_iter_;
+
+Sk.builtin.list_iter_.prototype.__iter__ = new Sk.builtin.func(function (self) {
+    return self;
+});
+
+Sk.builtin.list_iter_.prototype["next"] = new Sk.builtin.func(function (self) {
+    var ret = self.tp$iternext();
+    if (ret === undefined) {
+        throw new Sk.builtin.StopIteration();
+    }
+    return ret;
+});
 Sk.builtin.interned = {};
 
 /**
@@ -11745,24 +11847,12 @@ Sk.builtin.str.prototype.sq$contains = function (ob) {
     return this.v.indexOf(ob.v) != -1;
 };
 
+Sk.builtin.str.prototype.__iter__ = new Sk.builtin.func(function (self) {
+    return new Sk.builtin.str_iter_(self);
+});
+
 Sk.builtin.str.prototype.tp$iter = function () {
-    var ret =
-    {
-        tp$iter    : function () {
-            return ret;
-        },
-        $obj       : this,
-        $index     : 0,
-        tp$iternext: function () {
-            // todo; StopIteration
-            if (ret.$index >= ret.$obj.v.length) {
-                return undefined;
-            }
-            return new Sk.builtin.str(ret.$obj.v.substr(ret.$index++, 1));
-        },
-        tp$name    : "str_iterator"
-    };
-    return ret;
+    return new Sk.builtin.str_iter_(this);
 };
 
 Sk.builtin.str.prototype.tp$richcompare = function (other, op) {
@@ -12798,6 +12888,47 @@ Sk.builtin.str.prototype.nb$remainder = function (rhs) {
     ret = this.v.replace(regex, replFunc);
     return new Sk.builtin.str(ret);
 };
+
+/**
+ * @constructor
+ * @param {Object} obj
+ */
+Sk.builtin.str_iter_ = function (obj) {
+    if (!(this instanceof Sk.builtin.str_iter_)) {
+        return new Sk.builtin.str_iter_(obj);
+    }
+    this.$index = 0;
+    this.$obj = obj.v.slice();
+    this.sq$length = this.$obj.length;
+    this.tp$iter = this;
+    this.tp$iternext = function () {
+        if (this.$index >= this.sq$length) {
+            return undefined;
+        }
+        return new Sk.builtin.str(this.$obj.substr(this.$index++, 1));
+    };
+    this.$r = function () {
+        return new Sk.builtin.str("iterator");
+    };
+    return this;
+};
+
+Sk.abstr.setUpInheritance("iterator", Sk.builtin.str_iter_, Sk.builtin.object);
+
+Sk.builtin.str_iter_.prototype.__class__ = Sk.builtin.str_iter_;
+
+Sk.builtin.str_iter_.prototype.__iter__ = new Sk.builtin.func(function (self) {
+    Sk.builtin.pyCheckArgs("__iter__", arguments, 0, 0, true, false);
+    return self;
+});
+
+Sk.builtin.str_iter_.prototype["next"] = new Sk.builtin.func(function (self) {
+    var ret = self.tp$iternext();
+    if (ret === undefined) {
+        throw new Sk.builtin.StopIteration();
+    }
+    return ret;
+});
 var format = function (kwa) {
     // following PEP 3101
 
@@ -13261,31 +13392,14 @@ Sk.builtin.tuple.prototype.sq$repeat = function (n) {
 Sk.builtin.tuple.prototype.nb$multiply = Sk.builtin.tuple.prototype.sq$repeat;
 Sk.builtin.tuple.prototype.nb$inplace_multiply = Sk.builtin.tuple.prototype.sq$repeat;
 
-Sk.builtin.tuple.prototype.tp$iter = function () {
-    var ret =
-    {
-        tp$iter    : function () {
-            return ret;
-        },
-        $obj       : this,
-        $index     : 0,
-        tp$iternext: function () {
-            // todo; StopIteration
-            if (ret.$index >= ret.$obj.v.length) {
-                return undefined;
-            }
-            return ret.$obj.v[ret.$index++];
-        },
-        tp$name    : "tuple_iterator"
-    };
-    return ret;
-};
-
-Sk.builtin.tuple.prototype["__iter__"] = new Sk.builtin.func(function (self) {
+Sk.builtin.tuple.prototype.__iter__ = new Sk.builtin.func(function (self) {
     Sk.builtin.pyCheckArgs("__iter__", arguments, 1, 1);
-
-    return self.tp$iter();
+    return new Sk.builtin.tuple_iter_(self);
 });
+
+Sk.builtin.tuple.prototype.tp$iter = function () {
+    return new Sk.builtin.tuple_iter_(this);
+};
 
 Sk.builtin.tuple.prototype.tp$richcompare = function (w, op) {
     //print("  tup rc", JSON.stringify(this.v), JSON.stringify(w), op);
@@ -13296,7 +13410,8 @@ Sk.builtin.tuple.prototype.tp$richcompare = function (w, op) {
     var wl;
     var vl;
     var v;
-    if (!w.__class__ || !Sk.builtin.isinstance(w, Sk.builtin.tuple)) {
+    if (!w.__class__ ||
+        !Sk.misceval.isTrue(Sk.builtin.isinstance(w, Sk.builtin.tuple))) {
         // shortcuts for eq/not
         if (op === "Eq") {
             return false;
@@ -13413,6 +13528,46 @@ Sk.builtin.tuple.prototype["count"] = new Sk.builtin.func(function (self, item) 
 });
 
 goog.exportSymbol("Sk.builtin.tuple", Sk.builtin.tuple);
+
+/**
+ * @constructor
+ * @param {Object} obj
+ */
+Sk.builtin.tuple_iter_ = function (obj) {
+    if (!(this instanceof Sk.builtin.tuple_iter_)) {
+        return new Sk.builtin.tuple_iter_(obj);
+    }
+    this.$index = 0;
+    this.$obj = obj.v.slice();
+    this.sq$length = this.$obj.length;
+    this.tp$iter = this;
+    this.tp$iternext = function () {
+        if (this.$index >= this.sq$length) {
+            return undefined;
+        }
+        return this.$obj[this.$index++];
+    };
+    this.$r = function () {
+        return new Sk.builtin.str("tupleiterator");
+    };
+    return this;
+};
+
+Sk.abstr.setUpInheritance("tupleiterator", Sk.builtin.tuple_iter_, Sk.builtin.object);
+
+Sk.builtin.tuple_iter_.prototype.__class__ = Sk.builtin.tuple_iter_;
+
+Sk.builtin.tuple_iter_.prototype.__iter__ = new Sk.builtin.func(function (self) {
+    return self;
+});
+
+Sk.builtin.tuple_iter_.prototype["next"] = new Sk.builtin.func(function (self) {
+    var ret = self.tp$iternext();
+    if (ret === undefined) {
+        throw new Sk.builtin.StopIteration();
+    }
+    return ret;
+});
 /**
  * @constructor
  * @param {Array.<Object>} L
@@ -13591,46 +13746,6 @@ Sk.builtin.dict.prototype.mp$del_subscript = function (key) {
     // Not found in dictionary
     s = new Sk.builtin.str(key);
     throw new Sk.builtin.KeyError(s.v);
-};
-
-Sk.builtin.dict.prototype.tp$iter = function () {
-    var ret;
-    var i;
-    var bucket;
-    var k;
-    var allkeys = [];
-    for (k in this) {
-        if (this.hasOwnProperty(k)) {
-            bucket = this[k];
-            if (bucket && bucket.$hash !== undefined && bucket.items !== undefined) {
-                // skip internal stuff. todo; merge pyobj and this
-                for (i = 0; i < bucket.items.length; i++) {
-                    allkeys.push(bucket.items[i].lhs);
-                }
-            }
-        }
-    }
-    //print(allkeys);
-
-    ret =
-    {
-        tp$iter    : function () {
-            return ret;
-        },
-        $obj       : this,
-        $index     : 0,
-        $keys      : allkeys,
-        tp$iternext: function () {
-            // todo; StopIteration
-            if (ret.$index >= ret.$keys.length) {
-                return undefined;
-            }
-            return ret.$keys[ret.$index++];
-            // return ret.$obj[ret.$keys[ret.$index++]].lhs;
-        },
-        tp$name    : "dict_keyiterator"
-    };
-    return ret;
 };
 
 Sk.builtin.dict.prototype["$r"] = function () {
@@ -13903,8 +14018,12 @@ Sk.builtin.dict.prototype.__getattr__ = new Sk.builtin.func(function (self, attr
 Sk.builtin.dict.prototype.__iter__ = new Sk.builtin.func(function (self) {
     Sk.builtin.pyCheckArgs("__iter__", arguments, 0, 0, false, true);
 
-    return Sk.builtin.dict.prototype.tp$iter.call(self);
+    return new Sk.builtin.dict_iter_(self);
 });
+
+Sk.builtin.dict.prototype.tp$iter = function () {
+    return new Sk.builtin.dict_iter_(this);
+};
 
 Sk.builtin.dict.prototype.__repr__ = new Sk.builtin.func(function (self) {
     Sk.builtin.pyCheckArgs("__repr__", arguments, 0, 0, false, true);
@@ -13993,6 +14112,61 @@ Sk.builtin.dict.prototype["viewvalues"] = new Sk.builtin.func(function (self) {
 });
 
 goog.exportSymbol("Sk.builtin.dict", Sk.builtin.dict);
+
+/**
+ * @constructor
+ * @param {Object} obj
+ */
+Sk.builtin.dict_iter_ = function (obj) {
+    var k, i, bucket, allkeys;
+    if (!(this instanceof Sk.builtin.dict_iter_)) {
+        return new Sk.builtin.dict_iter_(obj);
+    }
+    this.$index = 0;
+    this.$obj = obj;
+    allkeys = [];
+    for (k in obj) {
+        if (obj.hasOwnProperty(k)) {
+            bucket = obj[k];
+            if (bucket && bucket.$hash !== undefined && bucket.items !== undefined) {
+                // skip internal stuff. todo; merge pyobj and this
+                for (i = 0; i < bucket.items.length; i++) {
+                    allkeys.push(bucket.items[i].lhs);
+                }
+            }
+        }
+    }
+    this.$keys = allkeys;
+    this.tp$iter = this;
+    this.tp$iternext = function () {
+        // todo; StopIteration
+        if (this.$index >= this.$keys.length) {
+            return undefined;
+        }
+        return this.$keys[this.$index++];
+        // return this.$obj[this.$keys[this.$index++]].lhs;
+    };
+    this.$r = function () {
+        return new Sk.builtin.str("dictionary-keyiterator");
+    };
+    return this;
+};
+
+Sk.abstr.setUpInheritance("dictionary-keyiterator", Sk.builtin.dict_iter_, Sk.builtin.object);
+
+Sk.builtin.dict_iter_.prototype.__class__ = Sk.builtin.dict_iter_;
+
+Sk.builtin.dict_iter_.prototype.__iter__ = new Sk.builtin.func(function (self) {
+    return self;
+});
+
+Sk.builtin.dict_iter_.prototype["next"] = new Sk.builtin.func(function (self) {
+    var ret = self.tp$iternext();
+    if (ret === undefined) {
+        throw new Sk.builtin.StopIteration();
+    }
+    return ret;
+});
 /**
  * @constructor
  * Sk.builtin.numtype
@@ -21099,13 +21273,6 @@ Sk.builtin.set = function (S) {
 Sk.abstr.setUpInheritance("set", Sk.builtin.set, Sk.builtin.object);
 Sk.abstr.markUnhashable(Sk.builtin.set);
 
-Sk.builtin.set.prototype.set_iter_ = function () {
-    var iter = this["v"].tp$iter();
-    iter.tp$name = "set_iterator";
-
-    return iter;
-};
-
 Sk.builtin.set.prototype.set_reset_ = function () {
     this.v = new Sk.builtin.dict([]);
 };
@@ -21219,15 +21386,15 @@ Sk.builtin.set.prototype.ob$ge = function (other) {
     return this["issuperset"].func_code(this, other);
 };
 
-Sk.builtin.set.prototype["__iter__"] = new Sk.builtin.func(function(self) {
-
+Sk.builtin.set.prototype["__iter__"] = new Sk.builtin.func(function (self) {
     Sk.builtin.pyCheckArgs("__iter__", arguments, 0, 0, false, true);
-
-    return Sk.builtin.set.prototype.tp$iter.call(self);
-
+    return new Sk.builtin.set_iter_(self);
 });
 
-Sk.builtin.set.prototype.tp$iter = Sk.builtin.set.prototype.set_iter_;
+Sk.builtin.set.prototype.tp$iter = function () {
+    return new Sk.builtin.set_iter_(this);
+};
+
 Sk.builtin.set.prototype.sq$length = function () {
     return this["v"].mp$length();
 };
@@ -21385,8 +21552,61 @@ Sk.builtin.set.prototype["remove"] = new Sk.builtin.func(function (self, item) {
     return Sk.builtin.none.none$;
 });
 
-
 goog.exportSymbol("Sk.builtin.set", Sk.builtin.set);
+
+/**
+ * @constructor
+ * @param {Object} obj
+ */
+Sk.builtin.set_iter_ = function (obj) {
+    var allkeys, k, i, bucket;
+    if (!(this instanceof Sk.builtin.set_iter_)) {
+        return new Sk.builtin.set_iter_(obj);
+    }
+    this.$obj = obj;
+    this.tp$iter = this;
+    allkeys = [];
+    for (k in obj.v) {
+        if (obj.v.hasOwnProperty(k)) {
+            bucket = obj.v[k];
+            if (bucket && bucket.$hash !== undefined && bucket.items !== undefined) {
+                // skip internal stuff. todo; merge pyobj and this
+                for (i = 0; i < bucket.items.length; i++) {
+                    allkeys.push(bucket.items[i].lhs);
+                }
+            }
+        }
+    }
+    this.$index = 0;
+    this.$keys = allkeys;
+    this.tp$iternext = function () {
+        if (this.$index >= this.$keys.length) {
+            return undefined;
+        }
+        return this.$keys[this.$index++];
+    };
+    this.$r = function () {
+        return new Sk.builtin.str("setiterator");
+    };
+    return this;
+};
+
+Sk.abstr.setUpInheritance("setiterator", Sk.builtin.set_iter_, Sk.builtin.object);
+
+Sk.builtin.set_iter_.prototype.__class__ = Sk.builtin.set_iter_;
+
+Sk.builtin.set_iter_.prototype.__iter__ = new Sk.builtin.func(function (self) {
+    Sk.builtin.pyCheckArgs("__iter__", arguments, 0, 0, true, false);
+    return self;
+});
+
+Sk.builtin.set_iter_.prototype["next"] = new Sk.builtin.func(function (self) {
+    var ret = self.tp$iternext();
+    if (ret === undefined) {
+        throw new Sk.builtin.StopIteration();
+    }
+    return ret;
+});
 /*
 	Implementation of the Python3 print version. Due to Python2 grammar we have
 	to mimic the named keywords after *args as kwargs. Though this does not change
@@ -21501,49 +21721,48 @@ Sk.builtin.module.prototype["$r"] = function () {
     return new Sk.builtin.str(str);
 };Sk.builtin.structseq_types = {};
 
-Sk.builtin.make_structseq = function (module, name, fields) {
+Sk.builtin.make_structseq = function (module, name, fields, doc) {
     var nm = module + "." + name;
-    var flds = fields;
+    var flds = [];
+    var docs = [];
+    var i;
+    for (var key in fields) {
+        flds.push(key);
+        docs.push(fields[key]);
+    }
 
-    var cons = function structseq_constructor(args) {
+    var cons = function structseq_constructor(arg) {
         Sk.builtin.pyCheckArgs(nm, arguments, 1, 1);
         var o;
+        var it, i, v;
         if (!(this instanceof Sk.builtin.structseq_types[nm])) {
             o = Object.create(Sk.builtin.structseq_types[nm].prototype);
             o.constructor.apply(o, arguments);
             return o;
         }
-        var it, i;
-        if (Object.prototype.toString.apply(args) === "[object Array]") {
-            this.v = args;
+
+        if (Object.prototype.toString.apply(arg) === "[object Array]") {
+            v = arg;
         } else {
-            this.v = [];
-            if (args.tp$iter) {
-                var cnt = 0;
-                for (it = args.tp$iter(), i = it.tp$iternext(); i !== undefined && cnt < flds.length; i = it.tp$iternext()) {
-                    this.v.push(i);
-                    cnt++;
-                }
-                if (cnt < flds.length) {
-                    throw new Sk.builtin.TypeError(nm + "() takes a " + flds.length + "-sequence (" + cnt + "-sequence given)");
-                }
-            } else if (args.__getitem__) {
-                for(var idx=0; idx<=flds.length; idx++) {
-                    Sk.misceval.apply(args.__getitem__, undefined, undefined, undefined, [Sk.builtin.asnum$(idx)]);
-                }
-            }  else {
-                throw new Sk.builtin.TypeError("constructor requires a sequence");
-            } 
+            v = [];
+            for (it = Sk.abstr.iter(arg), i = it.tp$iternext(); i !== undefined; i = it.tp$iternext()) {
+                v.push(i);
+            }
+            if (v.length != flds.length) {
+                throw new Sk.builtin.TypeError(nm + "() takes a " + flds.length + "-sequence (" + v.length + "-sequence given)");
+            }
         }
 
-        Sk.builtin.tuple.apply(this, arguments);
+        Sk.builtin.tuple.call(this, v);
 
         this.__class__ = Sk.builtin.structseq_types[nm];
     };
-    cons["co_kwargs"] = true;
     Sk.builtin.structseq_types[nm] = cons;
 
     goog.inherits(cons, Sk.builtin.tuple);
+    if (doc) {
+        cons.prototype.__doc__ = doc;
+    }
     cons.prototype.tp$name = nm;
     cons.prototype.ob$type = Sk.builtin.type.makeIntoTypeObj(nm, Sk.builtin.structseq_types[nm]);
     cons.prototype.ob$type["$d"] = new Sk.builtin.dict([]);
@@ -21554,15 +21773,9 @@ Sk.builtin.make_structseq = function (module, name, fields) {
     cons.prototype.__getitem__ = new Sk.builtin.func(function (self, index) {
         return Sk.builtin.tuple.prototype.mp$subscript.call(self, index);
     });
-
-    function makeGetter(i) {
-        return function() {
-            return this.v[i];
-        };
-    }
-    for(var i=0; i<flds.length; i++) {
-        cons.prototype[flds[i]] = makeGetter;
-    }
+    cons.prototype.__reduce__ = new Sk.builtin.func(function (self) {
+        throw new Sk.builtin.Exception("__reduce__ is not implemented");
+    });
 
     cons.prototype["$r"] = function () {
         var ret;
@@ -21582,9 +21795,15 @@ Sk.builtin.make_structseq = function (module, name, fields) {
         return new Sk.builtin.str(nm + "(" + ret + ")");
     };
     cons.prototype.tp$setattr = function (name, value) {
+        throw new Sk.builtin.AttributeError("readonly property");
+    };
+
+    cons.prototype.tp$getattr = function (name) {
         var i = flds.indexOf(name);
         if (i >= 0) {
-            this.v[i] = value;
+            return this.v[i];
+        } else {
+            return  Sk.builtin.object.prototype.GenericGetAttr(name);
         }
     };
 
@@ -21735,7 +21954,7 @@ Sk.builtin.file = function (name, mode, buffering) {
         return new Sk.builtin.file(name, mode, buffering);
     }
 
-    this.mode = mode;
+    this.mode = Sk.ffi.remapToJs(mode);
     this.name = Sk.ffi.remapToJs(name);
     this.closed = false;
 
@@ -21747,30 +21966,33 @@ Sk.builtin.file = function (name, mode, buffering) {
     } else if (this.name === "/dev/stderr") {
         this.fileno = 2;
     } else {
-        if (Sk.inBrowser) {  // todo:  Maybe provide a replaceable function for non-import files
-            this.fileno = 10;
-            elem = document.getElementById(name.v);
-            if (elem == null) {
-                throw new Sk.builtin.IOError("[Errno 2] No such file or directory: '" + name.v + "'");
-            } else {
-                if (elem.nodeName.toLowerCase() == "textarea") {
-                    this.data$ = elem.value;
-                } else {
-                    this.data$ = elem.textContent;
-                }
+        if (Sk.inBrowser) {
+            this.fileno = 11;
+            this.data$ = Sk["fileread"](this.name, this.mode);
+            
+            if (mode.v === "x" && this.data$ != null) {
+                throw new Sk.builtin.IOError("[Errno 2] File already exists: '" + name.v + "'");
             }
+
+            if (this.data$ == null) {
+                throw new Sk.builtin.IOError("[Errno 2] No such file or directory: '" + name.v + "'");
+            }
+
+            this.lineList = this.data$.split("\n");
+            this.lineList = this.lineList.slice(0, -1);
+
+            for (i in this.lineList) {
+                this.lineList[i] = this.lineList[i] + "\n";
+            }
+            this.currentLine = 0;
         } else {
             this.fileno = 11;
             this.data$ = Sk.read(name.v);
-        }
 
-        this.lineList = this.data$.split("\n");
-        this.lineList = this.lineList.slice(0, -1);
-
-        for (i in this.lineList) {
-            this.lineList[i] = this.lineList[i] + "\n";
+            if (this.data$ == null) {
+                throw new Sk.builtin.IOError("[Errno 2] No such file or directory: '" + name.v + "'");
+            }
         }
-        this.currentLine = 0;
     }
     this.pos$ = 0;
 
@@ -21924,8 +22146,8 @@ Sk.builtin.file.prototype.write = new Sk.builtin.func(function(self, str) {
         if (self.closed) {
             throw new Sk.builtin.ValueError("I/O operation on closed file");
         }
-        if ("w" === self.mode.v || "b" === self.mode.v || "a" === self.mode.v || "a+" === self.mode.v || "w+" === self.mode.v) {
-            Sk.filewrite(self, str);
+        if ("w" === self.mode || "b" === self.mode || "a" === self.mode || "a+" === self.mode || "w+" === self.mode) {
+            Sk.filewrite(self, Sk.ffi.remapToJs(str));
         } else {
             throw new Sk.builtin.IOError("File not open for writing");
         }
@@ -21959,6 +22181,8 @@ Sk.ffi.remapToPy = function (obj) {
             arr.push(Sk.ffi.remapToPy(obj[i]));
         }
         return new Sk.builtin.list(arr);
+    } else if (obj === null) {
+        return Sk.builtin.none.none$;
     } else if (typeof obj === "object") {
         kvs = [];
         for (k in obj) {
@@ -22011,6 +22235,8 @@ Sk.ffi.remapToJs = function (obj) {
             ret.push(Sk.ffi.remapToJs(obj.v[i]));
         }
         return ret;
+    } else if (obj instanceof Sk.builtin.bool) {
+        return obj.v ? true : false;
     } else if (obj instanceof Sk.builtin.int_) {
         return Sk.builtin.asnum$(obj);
     } else if (obj instanceof Sk.builtin.float_) {
@@ -22081,6 +22307,108 @@ Sk.ffi.unwrapn = function (obj) {
     return obj["v"];
 };
 goog.exportSymbol("Sk.ffi.unwrapn", Sk.ffi.unwrapn);
+/**
+  * Builds an iterator that outputs the items from the inputted object
+  * @constructor
+  * @param {*} obj must support iter protocol (has __iter__ and next methods), if sentinel defined:
+  * obj must be callable
+  * @param {*=} sentinel optional if defined returns an object that makes a call to obj until
+  * sentinel is reached
+  * @extends Sk.builtin.object
+  *
+  * @description
+  * Constructor for Python iterator.
+  *
+  */
+Sk.builtin.iterator = function (obj, sentinel) {
+    var objit;
+    if (obj instanceof Sk.builtin.generator) {
+        return obj;
+    }
+    objit = Sk.abstr.lookupSpecial(obj, "__iter__");
+    if (objit) {
+        return Sk.misceval.callsim(objit, obj);
+    }
+    this.sentinel = sentinel;
+    this.flag = false;
+    this.idx = 0;
+    this.obj = obj;
+    if (sentinel === undefined) {
+        this.getitem = Sk.abstr.lookupSpecial(obj, "__getitem__");
+        this.$r = function () {
+            return new Sk.builtin.str("<iterator object>");
+        };
+    } else {
+        this.call = Sk.abstr.lookupSpecial(obj, "__call__");
+        this.$r = function () {
+            return new Sk.builtin.str("<callable-iterator object>");
+        };
+    }
+    return this;
+};
+
+Sk.abstr.setUpInheritance("iterator", Sk.builtin.iterator, Sk.builtin.object);
+
+Sk.builtin.iterator.prototype.__class__ = Sk.builtin.iterator;
+
+Sk.builtin.iterator.prototype.__iter__ = new Sk.builtin.func(function (self) {
+    return self.tp$iter();
+});
+
+Sk.builtin.iterator.prototype.tp$iter =  function () {
+    return this;
+};
+
+Sk.builtin.iterator.prototype.tp$iternext = function (canSuspend) {
+    var r;
+    var self = this;
+
+    if (this.flag === true) {
+        // Iterator has already completed
+        return undefined;
+    }
+
+    if (this.getitem) {
+        r = Sk.misceval.tryCatch(function() {
+            return Sk.misceval.callsimOrSuspend(self.getitem, self.obj, Sk.ffi.remapToPy(self.idx++));
+        }, function(e) {
+            if (e instanceof Sk.builtin.StopIteration || e instanceof Sk.builtin.IndexError) {
+                return undefined;
+            } else {
+                throw e;
+            }
+        });
+        return canSuspend ? r : Sk.misceval.retryOptionalSuspensionOrThrow(r);
+    }
+
+    var checkSentinel = function (ret) {
+        // Iteration is complete if ret value is the sentinel
+        if (Sk.misceval.richCompareBool(ret, self.sentinel, "Eq")) {
+            self.flag = true;
+            return undefined;
+        }
+        return ret;
+    };
+
+    if (this.call) {
+        r = Sk.misceval.chain(Sk.misceval.callsimOrSuspend(this.call, this.obj), checkSentinel);
+    } else {
+        var obj = /** @type {Object} */ (this.obj);
+        r = Sk.misceval.chain(Sk.misceval.callsimOrSuspend(obj), checkSentinel);
+    }
+
+    return canSuspend ? r : Sk.misceval.retryOptionalSuspensionOrThrow(r);
+};
+
+Sk.builtin.iterator.prototype["next"] = new Sk.builtin.func(function (self) {
+    var ret = self.tp$iternext();
+    if (!ret) {
+        throw new Sk.builtin.StopIteration();
+    }
+    return ret;
+});
+
+goog.exportSymbol("Sk.builtin.iterator", Sk.builtin.iterator);
 /**
  * @constructor
  * @param {Object} iterable
@@ -29167,8 +29495,8 @@ Compiler.prototype.annotateSource = function (ast) {
         }
         out("^\n//\n");
 
-        out("currLineNo = ", lineno, ";\ncurrColNo = ", col_offset, ";\n\n");
-        out("Sk.locals = $loc;\n\n");
+        out("$currLineNo = ", lineno, ";\n$currColNo = ", col_offset, ";\n\n");
+        //out("Sk.locals = $loc;\n\n");
     }
 };
 
@@ -29337,7 +29665,7 @@ Compiler.prototype.outputInterruptTest = function () { // Added by RNL
         }
         if (Sk.yieldLimit !== null && this.u.canSuspend) {
             output += "if ($dateNow - Sk.lastYield > Sk.yieldLimit) {";
-            output += "var $susp = $saveSuspension({data: {type: 'Sk.yield'}, resume: function() {}}, '"+this.filename+"',currLineNo,currColNo);";
+            output += "var $susp = $saveSuspension({data: {type: 'Sk.yield'}, resume: function() {}}, '"+this.filename+"',$currLineNo,$currColNo);";
             output += "$susp.$blk = $blk;";
             output += "$susp.optional = true;";
             output += "return $susp;";
@@ -29380,15 +29708,15 @@ Compiler.prototype._checkSuspension = function(e) {
         this._jump(retblk);
         this.setBlock(retblk);
 
-        e = e || {lineno: "currLineNo", col_offset: "currColNo"};
+        e = e || {lineno: "$currLineNo", col_offset: "$currColNo"};
 
-        out ("if ($ret && $ret.isSuspension) { return $saveSuspension($ret,'"+this.filename+"',"+e.lineno+","+e.col_offset+"); }");
+        out ("if ($ret && $ret.$isSuspension) { return $saveSuspension($ret,'"+this.filename+"',"+e.lineno+","+e.col_offset+"); }");
 
         this.u.doesSuspend = true;
         this.u.tempsToSave = this.u.tempsToSave.concat(this.u.localtemps);
 
     } else {
-        out ("if ($ret && $ret.isSuspension) { $ret = Sk.misceval.retryOptionalSuspensionOrThrow($ret); }");
+        out ("if ($ret && $ret.$isSuspension) { $ret = Sk.misceval.retryOptionalSuspensionOrThrow($ret); }");
     }
 };
 Compiler.prototype.ctuplelistorset = function(e, data, tuporlist) {
@@ -29994,9 +30322,9 @@ Compiler.prototype.outputSuspensionHelpers = function (unit) {
     var seenTemps = {};
     var hasCell = unit.ste.blockType === FunctionBlock && unit.ste.childHasFree;
     var output = "var $wakeFromSuspension = function() {" +
-                    "var susp = "+unit.scopename+".wakingSuspension; delete "+unit.scopename+".wakingSuspension;" +
+                    "var susp = "+unit.scopename+".$wakingSuspension; delete "+unit.scopename+".$wakingSuspension;" +
                     "$blk=susp.$blk; $loc=susp.$loc; $gbl=susp.$gbl; $exc=susp.$exc; $err=susp.$err;" +
-                    "currLineNo=susp.lineno; currColNo=susp.colno; Sk.lastYield=Date.now();" +
+                    "$currLineNo=susp.$lineno; $currColNo=susp.$colno; Sk.lastYield=Date.now();" +
                     (hasCell?"$cell=susp.$cell;":"");
 
     for (i = 0; i < localsToSave.length; i++) {
@@ -30007,15 +30335,15 @@ Compiler.prototype.outputSuspensionHelpers = function (unit) {
         }
     }
 
-    output +=  "try { $ret=susp.child.resume(); } catch(err) { if (!(err instanceof Sk.builtin.BaseException)) { err = new Sk.builtin.ExternalError(err); } err.traceback.push({lineno: currLineNo, colno: currColNo, filename: '"+this.filename+"'}); if($exc.length>0) { $err=err; $blk=$exc.pop(); } else { throw err; } }" +
+    output +=  "try { $ret=susp.child.resume(); } catch(err) { if (!(err instanceof Sk.builtin.BaseException)) { err = new Sk.builtin.ExternalError(err); } err.traceback.push({lineno: $currLineNo, colno: $currColNo, filename: '"+this.filename+"'}); if($exc.length>0) { $err=err; $blk=$exc.pop(); } else { throw err; } }" +
                 "};";
 
-    output += "var $saveSuspension = function(child, filename, lineno, colno) {" +
-                "var susp = new Sk.misceval.Suspension(); susp.child=child;" +
-                "susp.resume=function(){"+unit.scopename+".wakingSuspension=susp; return "+unit.scopename+"("+(unit.ste.generator?"$gen":"")+"); };" +
+    output += "var $saveSuspension = function($child, $filename, $lineno, $colno) {" +
+                "var susp = new Sk.misceval.Suspension(); susp.child=$child;" +
+                "susp.resume=function(){"+unit.scopename+".$wakingSuspension=susp; return "+unit.scopename+"("+(unit.ste.generator?"$gen":"")+"); };" +
                 "susp.data=susp.child.data;susp.$blk=$blk;susp.$loc=$loc;susp.$gbl=$gbl;susp.$exc=$exc;susp.$err=$err;" +
-                "susp.filename=filename;susp.lineno=lineno;susp.colno=colno;" +
-                "susp.optional=child.optional;" +
+                "susp.$filename=$filename;susp.$lineno=$lineno;susp.$colno=$colno;" +
+                "susp.optional=susp.child.optional;" +
                 (hasCell ? "susp.$cell=$cell;" : "");
 
     seenTemps = {};
@@ -30223,42 +30551,32 @@ Compiler.prototype.cfor = function (s) {
 };
 
 Compiler.prototype.craise = function (s) {
-    var inst, exc;
-    if (s && s.type && s.type.id && (s.type.id.v === "StopIteration")) {
-        // currently, we only handle StopIteration, and all it does it return
-        // undefined which is what our iterator protocol requires.
-        //
-        // totally hacky, but good enough for now.
-        out("return undefined;");
+    var inst = "", exc;
+    if (s.inst) {
+        // handles: raise Error, arguments
+        inst = this.vexpr(s.inst);
+        out("throw ", this.vexpr(s.type), "(", inst, ");");
     }
-    else {
-        inst = "";
-        if (s.inst) {
-            // handles: raise Error, arguments
-            inst = this.vexpr(s.inst);
-            out("throw ", this.vexpr(s.type), "(", inst, ");");
-        }
-        else if (s.type) {
-            if (s.type.func) {
-                // handles: raise Error(arguments)
-                out("throw ", this.vexpr(s.type), ";");
-            }
-            else {
-                // handles: raise Error OR raise someinstance
-                exc = this._gr("err", this.vexpr(s.type));
-                out("if(",exc," instanceof Sk.builtin.type) {",
-                    "throw Sk.misceval.callsim(", exc, ");",
-                    "} else if(typeof(",exc,") === 'function') {",
-                    "throw ",exc,"();",
-                    "} else {",
-                    "throw ", exc, ";",
-                    "}");
-            }
+    else if (s.type) {
+        if (s.type.func) {
+            // handles: raise Error(arguments)
+            out("throw ", this.vexpr(s.type), ";");
         }
         else {
-            // re-raise
-            out("throw $err;");
+            // handles: raise Error OR raise someinstance
+            exc = this._gr("err", this.vexpr(s.type));
+            out("if(",exc," instanceof Sk.builtin.type) {",
+                "throw Sk.misceval.callsim(", exc, ");",
+                "} else if(typeof(",exc,") === 'function') {",
+                "throw ",exc,"();",
+                "} else {",
+                "throw ", exc, ";",
+                "}");
         }
+    }
+    else {
+        // re-raise
+        out("throw $err;");
     }
 };
 
@@ -30580,7 +30898,7 @@ Compiler.prototype.buildcodeobj = function (n, coname, decorator_list, args, cal
 
     // note special usage of 'this' to avoid having to slice globals into
     // all function invocations in call
-    this.u.varDeclsCode += "var $blk=" + entryBlock + ",$exc=[],$loc=" + locals + cells + ",$gbl=this,$err=undefined,$ret=undefined,currLineNo=undefined,currColNo=undefined;";
+    this.u.varDeclsCode += "var $blk=" + entryBlock + ",$exc=[],$loc=" + locals + cells + ",$gbl=this,$err=undefined,$ret=undefined,$currLineNo=undefined,$currColNo=undefined;";
     if (Sk.execLimit !== null) {
         this.u.varDeclsCode += "if (typeof Sk.execStart === 'undefined') {Sk.execStart = Date.now()}";
     }
@@ -30592,7 +30910,7 @@ Compiler.prototype.buildcodeobj = function (n, coname, decorator_list, args, cal
     // If there is a suspension, resume from it. Otherwise, initialise
     // parameters appropriately.
     //
-    this.u.varDeclsCode += "if ("+scopename+".wakingSuspension!==undefined) { $wakeFromSuspension(); } else {";
+    this.u.varDeclsCode += "if ("+scopename+".$wakingSuspension!==undefined) { $wakeFromSuspension(); } else {";
 
     //
     // initialize default arguments. we store the values of the defaults to
@@ -30666,7 +30984,7 @@ Compiler.prototype.buildcodeobj = function (n, coname, decorator_list, args, cal
     this.u.switchCode = "while(true){try{"
     this.u.switchCode += this.outputInterruptTest();
     this.u.switchCode += "switch($blk){";
-    this.u.suffixCode = "} }catch(err){ if (!(err instanceof Sk.builtin.BaseException)) { err = new Sk.builtin.ExternalError(err); } err.traceback.push({lineno: currLineNo, colno: currColNo, filename: '"+this.filename+"'}); if ($exc.length>0) { $err = err; $blk=$exc.pop(); continue; } else { throw err; }} }});";
+    this.u.suffixCode = "} }catch(err){ if (!(err instanceof Sk.builtin.BaseException)) { err = new Sk.builtin.ExternalError(err); } err.traceback.push({lineno: $currLineNo, colno: $currColNo, filename: '"+this.filename+"'}); if ($exc.length>0) { $err = err; $blk=$exc.pop(); continue; } else { throw err; }} }});";
 
     //
     // jump back to the handler so it can do the main actual work of the
@@ -30917,7 +31235,7 @@ Compiler.prototype.cclass = function (s) {
 
     this.u.prefixCode = "var " + scopename + "=(function $" + s.name.v + "$class_outer($globals,$locals,$rest){var $gbl=$globals,$loc=$locals;";
     this.u.switchCode += "(function $" + s.name.v + "$_closure(){";
-    this.u.switchCode += "var $blk=" + entryBlock + ",$exc=[],$ret=undefined,currLineNo=undefined,currColNo=undefined;"
+    this.u.switchCode += "var $blk=" + entryBlock + ",$exc=[],$ret=undefined,$currLineNo=undefined,$currColNo=undefined;"
     if (Sk.execLimit !== null) {
         this.u.switchCode += "if (typeof Sk.execStart === 'undefined') {Sk.execStart = Date.now()}";
     }
@@ -30928,7 +31246,7 @@ Compiler.prototype.cclass = function (s) {
     this.u.switchCode += "while(true){try{";
     this.u.switchCode += this.outputInterruptTest();
     this.u.switchCode += "switch($blk){";
-    this.u.suffixCode = "}}catch(err){ if (!(err instanceof Sk.builtin.BaseException)) { err = new Sk.builtin.ExternalError(err); } err.traceback.push({lineno: currLineNo, colno: currColNo, filename: '"+this.filename+"'}); if ($exc.length>0) { $err = err; $blk=$exc.pop(); continue; } else { throw err; }}}"
+    this.u.suffixCode = "}}catch(err){ if (!(err instanceof Sk.builtin.BaseException)) { err = new Sk.builtin.ExternalError(err); } err.traceback.push({lineno: $currLineNo, colno: $currColNo, filename: '"+this.filename+"'}); if ($exc.length>0) { $err = err; $blk=$exc.pop(); continue; } else { throw err; }}}"
     this.u.suffixCode += "}).apply(null,$rest);});";
 
     this.u.private_ = s.name;
@@ -31322,7 +31640,7 @@ Compiler.prototype.cmod = function (mod) {
     this.u.varDeclsCode =
         "var $gbl = {}, $blk=" + entryBlock +
         ",$exc=[],$loc=$gbl,$err=undefined;$gbl.__name__=$modname;$loc.__file__=new Sk.builtins.str('" + this.filename +
-        "');var $ret=undefined,currLineNo=undefined,currColNo=undefined;";
+        "');var $ret=undefined,$currLineNo=undefined,$currColNo=undefined;";
 
     if (Sk.execLimit !== null) {
         this.u.varDeclsCode += "if (typeof Sk.execStart === 'undefined') {Sk.execStart = Date.now()}";
@@ -31332,7 +31650,7 @@ Compiler.prototype.cmod = function (mod) {
         this.u.varDeclsCode += "if (typeof Sk.lastYield === 'undefined') {Sk.lastYield = Date.now()}";
     }
 
-    this.u.varDeclsCode += "if ("+modf+".wakingSuspension!==undefined) { $wakeFromSuspension(); }" +
+    this.u.varDeclsCode += "if ("+modf+".$wakingSuspension!==undefined) { $wakeFromSuspension(); }" +
         "if (Sk.retainGlobals) {" +
         "    if (Sk.globals) { $gbl = Sk.globals; Sk.globals = $gbl; $loc = $gbl; }" +
         "    else { Sk.globals = $gbl; }" +
@@ -31351,7 +31669,7 @@ Compiler.prototype.cmod = function (mod) {
     this.u.switchCode += this.outputInterruptTest();
     this.u.switchCode += "switch($blk){";
     this.u.suffixCode = "}"
-    this.u.suffixCode += "}catch(err){ if (!(err instanceof Sk.builtin.BaseException)) { err = new Sk.builtin.ExternalError(err); } err.traceback.push({lineno: currLineNo, colno: currColNo, filename: '"+this.filename+"'}); if ($exc.length>0) { $err = err; $blk=$exc.pop(); continue; } else { throw err; }} } });";
+    this.u.suffixCode += "}catch(err){ if (!(err instanceof Sk.builtin.BaseException)) { err = new Sk.builtin.ExternalError(err); } err.traceback.push({lineno: $currLineNo, colno: $currColNo, filename: '"+this.filename+"'}); if ($exc.length>0) { $err = err; $blk=$exc.pop(); continue; } else { throw err; }} } });";
 
     // Note - this change may need to be adjusted for all the other instances of
     // switchCode and suffixCode in this file.  Not knowing how to test those
@@ -31977,23 +32295,36 @@ Sk.builtin.__import__ = function (name, globals, locals, fromlist) {
         if (saveSk !== Sk.globals) {
             Sk.globals = saveSk;
         }
+
+        // There is no fromlist, so we have reached the end of the lookup, return
         if (!fromlist || fromlist.length === 0) {
             return ret;
         } else {
             // try to load the module from the file system if it is not present on the module itself
             var i;
-            var fromNameRet; // module returned
             var fromName; // name of current module for fromlist
             var fromImportName; // dotted name
             var dottedName = name.split("."); // get last module in dotted path
-            dottedName = dottedName[dottedName.length-1];
+            var lastDottedName = dottedName[dottedName.length-1];
+            
+            var found; // Contains sysmodules the "name"
+            var foundFromName; // Contains the sysmodules[name] the current item from the fromList
+
             for (i = 0; i < fromlist.length; i++) {
                 fromName = fromlist[i];
-                if (fromName != "*" && ret.$d[fromName] == null && (ret.$d[dottedName] != null || ret.$d.__name__.v == dottedName)) {
+
+                foundFromName = false;
+                found = Sk.sysmodules.sq$contains(name); // Check if "name" is inside sysmodules
+                if (found) {
+                    // Check if the current fromName is already in the "name" module
+                    foundFromName = Sk.sysmodules.mp$subscript(name)["$d"][fromName] != null;
+                }
+
+                // Only import from file system if we have not found the fromName in the current module
+                if (!foundFromName && fromName != "*" && ret.$d[fromName] == null && (ret.$d[lastDottedName] != null || ret.$d.__name__.v == lastDottedName)) {
                     // add the module name to our requiredImport list
                     fromImportName = "" + name + "." + fromName;
-                    fromNameRet = Sk.importModuleInternal_(fromImportName, undefined, undefined, undefined, true, currentDir);
-                    ret["$d"][fromName] = fromNameRet;
+                    Sk.importModuleInternal_(fromImportName, undefined, undefined, undefined, false, currentDir);
                 }
             }
         }
@@ -32883,6 +33214,7 @@ Sk.builtins = {
     "OverflowError"      : Sk.builtin.OverflowError,
     "OperationError"     : Sk.builtin.OperationError,
     "RuntimeError"       : Sk.builtin.RuntimeError,
+    "StopIteration"      : Sk.builtin.StopIteration,
 
     "dict"      : Sk.builtin.dict,
     "file"      : Sk.builtin.file,

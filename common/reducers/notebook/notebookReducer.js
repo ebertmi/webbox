@@ -66,11 +66,12 @@ export default function notebook(state = initialState, action) {
 
     case Types.ADD_CELL:
       newCell = createNewCellByType(action.cellType);
-      newState = addCellWithIndex(state, action.index, newCell);
-      newState = updateStateWithHistory(state, newState);
+      let res = addCellWithIndex(state, action.index, newCell);
+      newState = updateStateWithHistory(state, res.state);
 
       // after adding the cell we immediatelly make it editable
-      return changeActiveBlock(newState, newCell.get('id'));
+      // ToDo: figure out how we get the index of the new file
+      return changeActiveBlock(newState, res.index);
 
     case Types.UPDATE_CELL:
       newState = updateCellWithSource(state, action.cellId, action.source);
@@ -236,6 +237,15 @@ function createNewCellByType(cellType) {
  *  - The cell is added to the "cells" property
  *  - The cell is added to "cellOrder" at the given index or added to the end of the list
  */
+/**
+ *
+ *
+ * @export
+ * @param {any} state
+ * @param {any} index
+ * @param {any} newCell
+ * @returns {Object} containing a state and the index
+ */
 export function addCellWithIndex(state, index, newCell) {
   if (!newCell) {
     console.warn(`NotebookReducer.addCell(): Invalid argument 'newCell' (${newCell})`);
@@ -250,9 +260,13 @@ export function addCellWithIndex(state, index, newCell) {
   } else {
     // when not index is specified, we just push the cell to the end of the list
     newState = newState.set('cellOrder', newState.get('cellOrder').push(cellId));
+    index = newState.get('cellOrder').size - 1;
   }
 
-  return newState;
+  return {
+    state: newState,
+    index: index
+  };
 }
 
 /**
@@ -403,7 +417,7 @@ export function updateAddCellsFromJS(state, cells, lang) {
 
     let immutableCell = Immutable.fromJS(cell);
     // ToDo: Change this
-    newState = addCellWithIndex(newState, null, immutableCell); // push cell to the end of the list
+    newState = addCellWithIndex(newState, null, immutableCell).state; // push cell to the end of the list
   }
 
   return newState;

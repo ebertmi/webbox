@@ -7,15 +7,8 @@ import React, {PropTypes} from 'react';
 
 export class Time extends React.Component {
   render() {
-    let value = this.props.value;
-    let locale = this.props.locale;
-    let invalidDateString = this.props.invalidDateString;
-    let relative = this.props.relative;
-    let format = this.props.format;
-    let valueFormat = this.props.valueFormat;
-    let titleFormat = this.props.titleFormat;
-    let Component = this.props.Component;
-    let props = this.props;
+    // ToDo: Refactor to using rest param
+    let {value, locale, invalidDateString, relative, format, valueFormat, titleFormat, Component, ...rest} = this.props;
 
     if (!value || value === null) {
       const invalidDateText = invalidDateString ? invalidDateString : 'Invalid Date';
@@ -36,14 +29,14 @@ export class Time extends React.Component {
       let humanReadable = relative ? value.fromNow() : value.format(format);
       return (
         <Component
-          {...props}
+          {...rest}
           dateTime={machineReadable}
           title={relative ? value.format(titleFormat) : null}>
           {humanReadable}
         </Component>
       );
     } else {
-      return <time {...props}>{machineReadable}</time>;
+      return <time {...rest}>{machineReadable}</time>;
     }
   }
 }

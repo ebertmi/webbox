@@ -28,7 +28,7 @@ export default class IFrame extends React.Component {
   }
 
   renderIFrame() {
-    return <iframe className={this.props.className} onRef={this.onRef.bind(this)} onLoad={this.initIFrame.bind(this)} width={this.props.width} height={this.props.height} src={this.props.src} seamless={true} allowFullScreen={true} frameBorder="0" />;
+    return <iframe className={this.props.className} ref={this.onRef.bind(this)} onLoad={this.initIFrame.bind(this)} width={this.props.width} height={this.props.height} src={this.props.src} seamless={true} allowFullScreen={true} frameBorder="0" />;
   }
 
   render() {
