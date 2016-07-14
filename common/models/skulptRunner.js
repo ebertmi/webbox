@@ -18,6 +18,8 @@ const RUN_DEFAULTS = {
   execLimit: 30000
 };
 
+let CANVAS_ID_COUNTER = 0;
+
 // this class pretends to be a "Process", so it can be "displayed" by
 // ProcessPanel and ProcessTab
 export default class Runner extends EventEmitter {
@@ -112,6 +114,32 @@ export default class Runner extends EventEmitter {
     };
   }
 
+  getOrCreateCanvasContainer() {
+    if (this.canvas == null) {
+      this.canvas = document.createElement('div');
+      this.canvas.id = `canvas-container-${CANVAS_ID_COUNTER}`;
+      CANVAS_ID_COUNTER += 1;
+    }
+
+    return this.canvas;
+  }
+
+  showTurtleTab() {
+    // add a new tab with the turtle canvas
+    this.project.addTab('turtle', {item: this.canvas});
+  }
+
+
+  onAfterImport(name) {
+    switch (name) {
+      case 'turtle':
+        this.showTurtleTab();
+        break;
+      default:
+        break;
+    }
+  }
+
   run() {
     if (this.isRunning()) {
       return;
@@ -130,6 +158,12 @@ export default class Runner extends EventEmitter {
 
     // Check for python2/python3
     let isPython3 = this.project.data.meta.language === 'python3';
+
+    // Create a new canvas
+    this.canvas = this.getOrCreateCanvasContainer();
+    (Sk.TurtleGraphics || (Sk.TurtleGraphics = {width: 600, height: 400})).target = this.canvas;
+    Sk.onAfterImport = this.onAfterImport.bind(this);
+
 
     Sk.configure({
       output: text => {
@@ -176,6 +210,15 @@ export default class Runner extends EventEmitter {
   handleSkulptError(err) {
     let annotationMap = {};
     let errObj = this.skulptErrorToErrorObject(err);
+
+    // Special Handling of Keyboard Interrupts
+    // Avoid logging and exposing the real error
+    if (errObj.error === "KeyboardInterrupt") {
+      this._error('Ausführung abgebrochen');
+      return;
+    }
+
+    // Normal error handling with logging, etc
     this._error(errObj.raw);
 
     let tabIndex = this.project.getIndexForFilename(errObj.file.replace('./', ''));
@@ -286,15 +329,16 @@ export default class Runner extends EventEmitter {
   }
 
   handleInterrupt() {
-    if (this.promiseChain) {
-      this.promiseChain.cancel();
+    if (this.isRunning() && this.throwInterrupt === true) {
+      this.throwInterrupt = false;
+      throw new Sk.builtin.KeyboardInterrupt('Programm beendet');
     }
   }
 
   stop() {
     if (this.isRunning()) {
-      this.promiseChain.cancel();
-      this._status('Ausführung abgebrochen');
+      this.throwInterrupt = true;
+      //this._status('Ausführung abgebrochen');
     }
   }
 
@@ -322,6 +366,6 @@ export default class Runner extends EventEmitter {
   }
 
   kill() {
-    //this.stop();
+    this.stop();
   }
 }

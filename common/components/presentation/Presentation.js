@@ -127,7 +127,7 @@ export default class Presentation extends React.Component {
     if (slides.length > 0) {
       return (
         <Spectacle theme={theme} onRef={s => this.spectacle = s}>
-          <Deck progress="bar" transition={["slide"]} transitionDuration={200}>
+          <Deck progress="bar" transition={[]} transitionDuration={200}>
             { slides }
           </Deck>
         </Spectacle>
