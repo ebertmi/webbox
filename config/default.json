@@ -134,13 +134,15 @@
     },
     "sourcebox": {
       "url": "http://52.58.227.70:80",
-      "secret": "ItsASecretToEverybody!"
+      "secret": "ItsASecretToEverybody!",
+      "expiresIn": "10h"
     },
     "websocket": {
       "url": "http://localhost:3000",
       "secret": "WebSocketCommunicationSecretThatNobodyShouldKnowJustSaying!",
       "notify": {
         "authorsAllowed": true
-      }
+      },
+      "expiresIn": "10h"
     }
 }

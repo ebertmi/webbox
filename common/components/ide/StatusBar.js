@@ -33,10 +33,10 @@ export default class StatusBar extends React.Component {
   renderUsername() {
     if (this.state.status.username === 'anonymous') {
       let url = window.location.href;
-      let loginUrl = `/login?next=${url}`;
+      let loginUrl = `/login?next=${encodeURI(url)}`;
       return (<span className="status-username pull-right"><span className="prefix">NICHT ANGEMELDET: </span><a href={loginUrl} title="Anmelden und zur Seite zurück">Anmelden</a></span>);
     } else {
-      return (<span className="status-username pull-right"><span className="prefix">angemeldet als </span>{this.state.status.username} {' '} <small>(<a href="/logout">Abmelden</a>)</small></span>);
+      return (<span className="status-username pull-right"><span className="prefix">angemeldet als </span>{this.state.status.username} {' '} <small>(<a href="/logout" title="Abmelden">Abmelden</a>)</small></span>);
     }
   }
 
