@@ -623,11 +623,29 @@ export default class Project extends EventEmitter {
     }
   }
 
+  canSave() {
+    // 1. Check current mode
+    if (this.mode !== MODES.Default) {
+      this.showMessage(Severity.Warning, 'Sie können dieses Beispiel nicht speichern, da es in der Leseansicht geöffnet wurde.');
+      return false;
+    }
+
+    let userData = this.getUserData();
+    if (userData.isAnonymous === true) {
+      this.showMessage(Severity.Warning, 'Sie können dieses Beispiel nicht speichern, da sie nicht angemeldet sind.');
+      return false;
+    }
+
+    return true;
+  }
+
   /**
    * Save file changes, but nothing more
    */
   saveEmbed() {
-    this._saveEmbed();
+    if (this.canSave()) {
+      this._saveEmbed();
+    }
   }
 
   /**
@@ -638,48 +656,42 @@ export default class Project extends EventEmitter {
       return; // pending save request
     }
 
-    // 1. Check current mode
-    if (this.mode === MODES.Default) {
-      this.pendingSave = true;
-      this.status.setStatusMessage('Speichere...', '', Severity.Ignore);
 
-      const params = {
-        id: this.data.id
-      };
+    this.pendingSave = true;
+    this.status.setStatusMessage('Speichere...', '', Severity.Ignore);
 
-      const payload = {
-        data: {
-          code: this.toCodeDocument()
+    const params = {
+      id: this.data.id
+    };
+
+    const payload = {
+      data: {
+        code: this.toCodeDocument()
+      }
+    };
+
+
+    // trigger save
+    API.embed.saveEmbed(params, payload).then(res => {
+      if (res.error) {
+        this.status.setStatusMessage('Beim Speichern ist ein Fehler augetreten.', Severity.Error);
+      } else {
+        this.status.setStatusMessage('Gespeichert.', '', Severity.Info);
+        // Update the document, if received any and not set
+        if (res.document) {
+          this.data._document = document;
         }
-      };
 
-
-      // trigger save
-      API.embed.saveEmbed(params, payload).then(res => {
-        // ToDo: Maybe we should also use something similar to showMessage for the StatusBar
-        if (res.error) {
-          this.status.setStatusMessage('Beim Speichern ist ein Fehler augetreten.', Severity.Error);
-        } else {
-          this.status.setStatusMessage('Gespeichert.', '', Severity.Info);
-          // Update the document, if received any and not set
-          if (res.document) {
-            this.data._document = document;
-          }
-
-          window.setTimeout(() => {
-            this.status.setStatusMessage('', '', Severity.Ignore);
-          }, 1500);
-        }
-      }).catch(err => {
-        this.showMessage(Severity.Error, 'Speichern fehlgeschlagen!');
-        console.error(err);
-      }).then(() => {
-        this.pendingSave = false;
-      });
-    } else {
-      // ToDo: Add action to open the same embed in edit mode
-      this.showMessage(Severity.Warning, 'Sie können dieses Beispiel nicht speichern, da es in der Leseansicht geöffnet wurde.');
-    }
+        window.setTimeout(() => {
+          this.status.setStatusMessage('', '', Severity.Ignore);
+        }, 1500);
+      }
+    }).catch(err => {
+      this.showMessage(Severity.Error, 'Speichern fehlgeschlagen!');
+      console.error(err);
+    }).then(() => {
+      this.pendingSave = false;
+    });
   }
 
   /**
@@ -747,7 +759,7 @@ export default class Project extends EventEmitter {
     return code;
   }
 
-  resetProject() {
+  //resetProject() {
     // ToDo: resets the project to the initial state from the server
-  }
+  //}
 }

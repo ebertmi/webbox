@@ -29,10 +29,6 @@ export default class SkulptProject extends Project {
     this.showMessage(Severity.Error, error);
   }
 
-  exec(cmd, args=[], options={}) {
-    // not implemented/possible in skulpt
-  }
-
   run() {
     if (this.getConsistency() === false) {
       this.showMessage(Severity.Error, 'Das Projekt kann derzeit nicht ausgeführt werden. Haben Sie noch weitere Meldungen offen?');

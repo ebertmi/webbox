@@ -167,12 +167,21 @@ export default class Menu extends React.Component {
     let project = this.props.project;
 
     let newTerminal;
+    let resetProject;
 
     if (project.exec) {
       newTerminal = (
             <DropdownItem onClick={this.onNewTerminal.bind(this)}>
               <Icon name="terminal" fixedWidth/> Neues Terminal
             </DropdownItem>
+      );
+    }
+
+    if (project.reset) {
+      resetProject = (
+        <DropdownItem>
+          <Icon name="refresh" fixedWidth/> Zurücksetzen
+        </DropdownItem>
       );
     }
 
@@ -193,11 +202,7 @@ export default class Menu extends React.Component {
         { this.renderStatisticsItem() }
         { this.renderEmbedAttributes() }
 
-        {/*
-        <DropdownItem>
-          <Icon name="refresh" fixedWidth/> Zurücksetzen
-        </DropdownItem>
-        */}
+        {resetProject}
 
         <DropdownDivider/>
 
