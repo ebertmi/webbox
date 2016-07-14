@@ -1,5 +1,6 @@
 import Sourcebox from '@sourcebox/web';
 import isString from 'lodash/isString';
+import capitalize from 'lodash/capitalize';
 import pathModule from 'path';
 import { Severity } from './severity';
 
@@ -36,7 +37,7 @@ export default class SourceboxProject extends Project {
     // register error handler
     this.sourcebox.on('error', this.onError.bind(this));
 
-    this.status.setLanguageInformation(this.config.displayName);
+    this.status.setLanguageInformation(`${this.config.displayName} (${capitalize(this.data.meta.embedType)})`);
   }
 
   /**

@@ -1,10 +1,12 @@
 import isString from 'lodash/isString';
+import capitalize from 'lodash/capitalize';
 import { Severity  } from './severity';
 
 import Project from './project';
 import Runner from './skulptRunner';
 import languages from './languages';
 import { EventLog } from './socketConnection';
+
 
 
 export default class SkulptProject extends Project {
@@ -17,7 +19,7 @@ export default class SkulptProject extends Project {
       this.config = data.meta.language;
     }
 
-    this.status.setLanguageInformation(this.config.displayName);
+    this.status.setLanguageInformation(`${this.config.displayName} (${capitalize(this.data.meta.embedType)})`);
   }
 
   /**
@@ -28,25 +30,7 @@ export default class SkulptProject extends Project {
   }
 
   exec(cmd, args=[], options={}) {
-    let process = {
-      options: options
-    };
-    this.addTab('process', {
-      item: process,
-      callback: function () {
-        process.kill('SIGHUP');
-      }
-    });
-
-    let index = this.tabs.length - 1;
-
-    process.on('exit', () => {
-      this.closeTab(index);
-    });
-
-    process.on('error', (error) => {
-      this.showMessage(Severity.Error, error);
-    });
+    // not implemented/possible in skulpt
   }
 
   run() {

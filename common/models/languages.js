@@ -23,7 +23,7 @@ export default {
         labels: ['file', 'row', 'column', 'type', 'text']
       });
     },
-    displayName: 'C (Sourcebox)'
+    displayName: 'C'
   },
 
   java: {
@@ -42,7 +42,7 @@ export default {
         }
       }, 3);
     },
-    displayName: 'Java (Sourcebox)'
+    displayName: 'Java'
   },
 
   // this allows us also to run any commands and configure matplotlib etc
@@ -50,7 +50,7 @@ export default {
     exec(files, mainFile='./main.py') {
       return ['python3', mainFile];
     },
-    displayName: 'Python 3 (Sourcebox)',
+    displayName: 'Python 3',
     env: {
       PYTHONPATH: '/home/user/PythonTest',
       MPLBACKEND: 'module://backend_sb'
@@ -65,7 +65,7 @@ export default {
     exec(files, mainFile='./main.py') {
       return ['python', mainFile];
     },
-    displayName: 'Python 2 (Sourcebox)',
+    displayName: 'Python 2',
     errorParser: new PythonErrorParser()
   }
 
