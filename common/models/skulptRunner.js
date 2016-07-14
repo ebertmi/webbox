@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
-import { PassThrough, } from 'stream';
+import { PassThrough, Transform } from 'stream';
 
-import Promise from 'bluebird';
+import Bluebird from 'bluebird';
 import uniq from 'lodash/uniq';
 import isString from 'lodash/isString';
 import isFunction from 'lodash/isFunction';
@@ -9,10 +9,27 @@ import split from 'split2';
 import { EventLog } from './socketConnection';
 import { TerminalTransform } from '../util/streamUtils';
 
-Promise.config({
+Bluebird.config({
   cancellation: true
 });
 
+class SkulptInputTransform extends Transform{
+  _transform(chunk, encoding, callback) {
+
+    let str = chunk.toString();
+
+    if (str && str.length > 0 && str.charCodeAt(0) === 13) {
+      this.skulptBuffer.push('');
+      this.push('\n\r');
+      this.skulptInputDone();
+    } else {
+      this.skulptBuffer.push(str);
+      this.push(chunk);
+    }
+
+    callback();
+  }
+}
 
 const RUN_DEFAULTS = {
   execLimit: 30000
@@ -51,7 +68,6 @@ export default class Runner extends EventEmitter {
   }
 
   _fileWrite(pyFile, str) {
-    console.info('fileWrite', pyFile, str);
     if (pyFile.mode === 'r') {
       throw new Sk.builtin.IOError("File is in readonly mode, cannot write");
     }
@@ -140,6 +156,29 @@ export default class Runner extends EventEmitter {
     }
   }
 
+  readPrompt() {
+    // We need to use here the original Promise and not bluebird,
+    // otherwise the skulpt checks for promises are failing
+    return new Promise((resolve, reject) => {
+      this.readPromptRejectFunction = reject;
+      // Now read from stdin.
+      let inputStr = '';
+
+      let skulptInputTransform = new SkulptInputTransform();
+      skulptInputTransform.skulptBuffer = [];
+      skulptInputTransform.skulptInputDone = () => {
+        inputStr = skulptInputTransform.skulptBuffer.join('');
+        this.stdin.unpipe(skulptInputTransform);
+        this.stdin.unpipe(this.stdoutTransform);
+
+        console.info(inputStr);
+        resolve(inputStr);
+      };
+
+      this.stdin.pipe(skulptInputTransform, { end: false }).pipe(this.stdoutTransform, { end: false });
+    });
+  }
+
   run() {
     if (this.isRunning()) {
       return;
@@ -169,9 +208,7 @@ export default class Runner extends EventEmitter {
       output: text => {
         this._output(text);
       },
-      inputfun: prompt => {
-        this.readPrompt(prompt);
-      },
+      inputfun: this.readPrompt.bind(this),
       read: x => {
         return this.defaultFileRead(x);
       },
@@ -182,7 +219,7 @@ export default class Runner extends EventEmitter {
         this._fileWrite(pyFile, x);
       },
       fileopen: pyFile => {
-        console.info(pyFile);
+        //console.info(pyFile);
       },
       nonreadopen: true,
       python3: isPython3,
@@ -314,7 +351,7 @@ export default class Runner extends EventEmitter {
 
     this._status(command.join(' '), false); // output run call
 
-    let processPromise = new Promise((resolve, reject) => {
+    let processPromise = new Bluebird((resolve, reject) => {
       Sk.misceval.asyncToPromise(() => {
         return Sk.importMainWithBody(mainFile.name.replace('.py',''), false, mainFile.code, true);
       }, {'*': this.handleInterrupt.bind(this)})
@@ -338,7 +375,10 @@ export default class Runner extends EventEmitter {
   stop() {
     if (this.isRunning()) {
       this.throwInterrupt = true;
-      //this._status('Ausführung abgebrochen');
+      if (this.readPromptRejectFunction != null) {
+        this.readPromptRejectFunction();
+        this.readPromptRejectFunction = null;
+      }
     }
   }
 
