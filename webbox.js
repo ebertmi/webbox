@@ -9,6 +9,7 @@ import Crumb from 'crumb';
 import Blipp from 'blipp';
 import HapiIO from 'hapi-io';
 //import hratelimit from 'hapi-ratelimit';
+import Log from './lib/models/log';
 
 // own imports
 import config from './config/webbox.config';
@@ -143,32 +144,56 @@ server.ext('onPreResponse', function (request, reply) {
   }
 
   // ToDo: change this to hide information in production mode
-  if (request.response.isBoom) {
-    if (request.response.output.statusCode >= 500) {
-      console.error(`Repsonse is Error`, request.response.stack);
-    } else {
-      console.log(`Repsonse is Error with status ${request.response.output.statusCode}`);
-    }
-
-
-    let err = request.response;
-    const errName = err.output.payload.error;
-    const statusCode = err.output.payload.statusCode;
-
-    if (statusCode === 403) {
-      err = 'Sie besitzten nicht die benötigten Rechte, um auf diese Seite zuzugreifen.';
-    }
-
-    return reply.view('errors/default', {
-      statusCode: statusCode,
-      errName: errName,
-      errorMessage: err,
-      user: user
-    })
-    .code(statusCode);
+  if (!request.response.isBoom) {
+    return reply.continue();
   }
 
-  reply.continue();
+  if (request.response.output.statusCode >= 500) {
+    console.info('Server error 500', 500);
+    Log.createLog('Server.Error', request.response, {
+      path: request.path,
+      user: request.pre.user || {}
+    }, 'Error');
+    console.error(`Repsonse is Error`, request.response.stack);
+  } else {
+    console.log(`Repsonse is Error with status ${request.response.output.statusCode}`);
+  }
+
+
+  let err = request.response;
+  const errName = err.output.payload.error;
+  const statusCode = err.output.payload.statusCode;
+
+  if (statusCode === 403) {
+    err = 'Sie besitzten nicht die benötigten Rechte, um auf diese Seite zuzugreifen.';
+  }
+
+  return reply.view('errors/default', {
+    statusCode: statusCode,
+    errName: errName,
+    errorMessage: err,
+    user: user
+  })
+  .code(statusCode);
+});
+
+server.on('request-error', function (event) {
+  console.log(event);
+  try {
+    let error = event.response.source || {};
+    error._error = event.response. _error.toString();
+    error.stack = event.response._error.stack || '';
+
+    Log.createLog('Server.Error', 'Response Error', {
+      path: event.path,
+      user: event.auth,
+      error: error,
+    }, 'Error');
+  } catch (e) {
+    Log.createLog('Server.Error', 'Error while loggin server error', {
+      error: e.toString(),
+    }, 'Error');
+  }
 });
 
 // add WebSocket-Plugin
