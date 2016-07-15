@@ -1,7 +1,7 @@
 extends ./layout.jade
 
 block title
-  title Ihre Dokumente - trycoding.io - Startseite
+  title Ihre Beispiele - trycoding.io - Startseite
 
 block content
   main.site-content#content
@@ -17,37 +17,38 @@ block content
 
       if !user.isAnonymous
         .row
-          h4 Ihre Dokumente (Notebooks)
+          h4 Ihre erstellten Beispiele
           .col-xs-12
             p.
-              Folgende Liste enthält nur Ihre eigenen Dokumente.
-          if documents && documents.length > 0
+              Folgende Liste enthält nur von Ihnen erstellte Beispiele.
+          if embeds && embeds.length > 0
             .col-xs-12
               div.card
                 h3.card-header.card-header-for-list.card-header-flex
-                  span Ihre Dokumente
+                  span Ihre erstellten Beispiele
                   =' '
                   span.pull-right-flex
-                    small Die letzten 10 Dokumente
                     small
-                      form.new-course-form.form-inline(method="POST", action="/document/create")
+                      form.new-course-form.form-inline(method="POST", action="/embed/redirectcreate")
                         input(type="hidden", name="crumb", value=crumb)
-                        button.btn.btn-primary.btn-sm.new-course-form-btn(type="submit", title="Neues Dokument anlegen") +
-
+                        input(type="hidden", name="name", value="Neues Codebeispiel")
+                        input(type="hidden", name="embedType", value="sourcebox")
+                        input(type="hidden", name="language", value="python3")
+                        button.btn.btn-primary.btn-sm.new-course-form-btn(type="submit", title="Neues Codebeispiel anlegen") +
                 ul.list-group.list-group-flush
-                  - each doc in documents
+                  - each embed in embeds
                     li.list-group-item
-                      - var urlPart = doc.slug != null && doc.slug != '' ? doc.slug : doc.id;
-                      a(href="/d/" + urlPart) !{doc.metadata.title}
+                      - var urlPart = embed.slug != null && embed.slug != '' ? embed.slug : embed.id;
+                      a(href="/embed/" + urlPart, ) !{embed.meta.name}
                       span.pull-xs-right
-                        small Letzte Änderung !{doc.metadata.lastUpdate}
+                        small Letzte Änderung !{embed.lastUpdate}
 
   .container.second-entry
     if user.isAnonymous
       .row.auth
         .col-xs-12
           p.
-            Nur angemeldete Benutzer können ihre Dokumente einsehen.
+            Nur angemeldete Benutzer können ihre Beispiele einsehen.
       .row.grid-divider
         .col-md-5.col-xs-12
           h2 Login

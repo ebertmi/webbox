@@ -203,7 +203,7 @@ export default class Runner extends EventEmitter {
     (Sk.TurtleGraphics || (Sk.TurtleGraphics = {width: 600, height: 400})).target = this.canvas;
     Sk.onAfterImport = this.onAfterImport.bind(this);
 
-
+    // ToDo: add timeout handling here, skulpt reset stuff
     Sk.configure({
       output: text => {
         this._output(text);
