@@ -8,7 +8,9 @@ import Jade from 'jade';
 import Crumb from 'crumb';
 import Blipp from 'blipp';
 import HapiIO from 'hapi-io';
-//import hratelimit from 'hapi-ratelimit';
+import HapiRateLimit from 'hapi-rate-limit';
+import CatboxMemory from 'catbox-memory';
+import CatboxRedis from 'catbox-redis';
 import Log from './lib/models/log';
 
 // own imports
@@ -21,7 +23,27 @@ const defaultContext = {
   isDev: config.isDev
 };
 
-var server = new Hapi.Server();
+// ToDo import depending on the environment
+let cache;
+
+if (config.isDev) {
+  cache = { engine: CatboxMemory };
+} else {
+  // ToDo: add Redis for production
+  cache = {
+    engine: CatboxRedis,
+    database: config.cache.database,
+    host: config.cache.host,
+    port: config.cache.port,
+    password: config.cache.password,
+    partition: config.cache.partition
+  };
+}
+
+var server = new Hapi.Server({
+  cache: cache
+});
+
 server.connection({
   host: config.app.hostname,
   port: config.app.port,
@@ -32,15 +54,10 @@ server.connection({
   }
 });
 
-// Todo
-/**
- *     cache: [{
-    name: config.cache.name,
-    engine: require('catbox-redis'),
-    host: config.cache.host,
-    partition: config.cache.partition
-  }]
- */
+server.register({
+  register: HapiRateLimit,
+  options: config.ratelimit.cacheOptions
+});
 
 // add the good process monitor/logging plugin
 server.register({
