@@ -109,7 +109,6 @@ block content
                 ul.list-group.list-group-flush
                   - each doc in codeDocuments
                     li.list-group-item
-                      a(href="/d/" + urlPart) !{doc.metadata.title}
                       a(href="/embed/" + doc.codeEmbedId + "?showDocument=" + doc.id ) !{doc.embed.meta.name}
                       span.pull-xs-right
                         small Letzte Änderung !{doc.lastUpdate}

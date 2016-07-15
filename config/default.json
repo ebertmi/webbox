@@ -108,7 +108,8 @@
       },
       "login": {
         "unknownError": "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
-        "invalidCredentials": "Anmeldung fehlgeschlagen. Ungültiger Benutzername oder falsches Passwort."
+        "invalidCredentials": "Anmeldung fehlgeschlagen. Ungültiger Benutzername oder falsches Passwort.",
+        "notVerified": "Ihr Account wurde noch nicht bestätigt bzw. aktiviert."
       },
       "logout": {
         "success": "Sie wurden abgemeldet.",
