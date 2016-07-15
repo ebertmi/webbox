@@ -40,7 +40,11 @@ block content
                       - var urlPart = doc.slug != null && doc.slug != '' ? doc.slug : doc.id;
                       a(href="/d/" + urlPart) !{doc.metadata.title}
                       span.pull-xs-right
-                        small Letzte Änderung !{doc.metadata.lastUpdate}
+                        small Letzte Änderung !{doc.relativeDate}
+          else
+            .col-xs-12
+              p
+              strong Sie haben noch keine eigenen Dokumente erstellt.
 
   .container.second-entry
     if user.isAnonymous

@@ -38,7 +38,11 @@ block content
                       a(href="/d/" + urlPart) !{doc.metadata.title}
                       a(href="/embed/" + doc.codeEmbedId + "?showDocument=" + doc.id ) !{doc.embed.meta.name}
                       span.pull-xs-right
-                        small Letzte Änderung !{doc.lastUpdate}
+                        small Letzte Änderung !{doc.relativeDate}
+          else
+            .col-xs-12
+              p
+                strong Sie haben noch keine gespeicherten Beispiele.
 
   .container.second-entry
     if user.isAnonymous

@@ -41,7 +41,11 @@ block content
                       - var urlPart = embed.slug != null && embed.slug != '' ? embed.slug : embed.id;
                       a(href="/embed/" + urlPart, ) !{embed.meta.name}
                       span.pull-xs-right
-                        small Letzte Änderung !{embed.lastUpdate}
+                        small Letzte Änderung !{embed.relativeDate}
+          else
+            .col-xs-12
+              p
+              strong Sie haben noch keine eigenen Beispiele erstellt.
 
   .container.second-entry
     if user.isAnonymous
