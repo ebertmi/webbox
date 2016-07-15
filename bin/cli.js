@@ -57,11 +57,11 @@ function list (model) {
  */
 function addUser (username, email, password, isAdmin) {
   var User = require('../lib/models/user');
-  var roles = ['user'];
+  var roles = ['user', 'staff', 'admin'];
 
-  if (isAdmin && isAdmin === true) {
+  /*if (isAdmin && isAdmin === true) {
     roles.push('admin');
-  }
+  }*/
 
   User.findByEmailorUsername(username, email)
   .then((user) => {
@@ -80,7 +80,12 @@ function addUser (username, email, password, isAdmin) {
       username: username,
       email: email,
       password: hash,
-      roles: roles
+      roles: roles,
+      isActive: true,
+      verification: {
+        token: undefined,
+        isCompleted: true
+      }
     });
     return newUser.save();
   })

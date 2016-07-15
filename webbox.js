@@ -187,7 +187,7 @@ server.ext('onPreResponse', function (request, reply) {
   let statusCode;
 
   if (config.isProd) {
-    err = request.response;
+    err = ''; //request.response;
     errName = err.output.payload.error;
     statusCode = err.output.payload.statusCode;
   } else {

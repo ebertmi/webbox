@@ -12,19 +12,6 @@ A: If there is an existing volume, attach this in the AWS and using `/dev/sda1` 
 Q: HTTPS?
 A: We use a Load Balancer that redirects 80 and 443 to our internal trycoding.io ec2 instance. Then we use
 a simple [nginx rule](https://thoean.com/using-nginx-on-docker-to-redirect-http-to-https/) to redirect normal http to https:
-```
-events {
-
-}
-http {
-  server {
-    listen       80;
-    location / {
-      return 301 https://$host$request_uri;
-    }
-  }
-}
-```
 
 Q: SSL-Certificate
 A: Use Amazon Certificate Manager to get a free certificate
@@ -34,8 +21,9 @@ A: Make sure that you have allowed port 80/443/ssh on the security groups for th
 
 #### Configuring NGINX
 See: http://nginx.org/en/docs/beginners_guide.html
+https://thomas-leister.de/nginx-installation-konfiguration-einrichtung-ubuntu-server/
 
-You can find the nginx config file here: `/usr/local/etc/nginx`
+You can find the nginx config file here: `/etc/nginx/sites-enabled/*`
 
 **Comments in config file**
 Use `# I am a comment`
@@ -51,3 +39,10 @@ Use `# I am a comment`
 **List of running nginx proccesses**
 
 `ps -ax | grep nginx`
+
+## Trouble Shooting
+P: My Health-Checks are not passing?
+A: Check if your instance allows inbound connection on your configurated port
+
+P: I want to prevent outside inbound access to my ec2 instance, only the load balancer should have access
+A: http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/elb-security-groups.html#elb-classic-security-groups

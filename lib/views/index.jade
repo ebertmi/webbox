@@ -37,6 +37,10 @@ block content
                     p.card-text= course.description
                     - var url = course.slug ? course.slug : course.id
                     a.btn.btn-primary(href="/course/" + url) Zum Kurs
+        else
+          h4 Kurse
+          .col-xs-12
+            p Es wurden bisher keine Kurse angelegt bzw. veröffentlicht.
 
       if !user.isAnonymous
         .row
@@ -45,7 +49,7 @@ block content
             Willkommen zurück <strong>!{user.username}</strong>. Wir haben hier ihre letzten Beispiele und Dokumente für Sie aufgelistet.
             Alternativ können Sie auch einen bestimmten Kurs auswählen.
 
-          if documents && documents.length > 0
+          if documents && (documents.length > 0 || isStaff)
             .col-xs-12
               div.card
                 h3.card-header.card-header-for-list.card-header-flex
@@ -69,7 +73,7 @@ block content
                       span.pull-xs-right
                         small Letzte Änderung !{doc.metadata.lastUpdate}
 
-          if embeds && embeds.length > 0
+          if embeds && (embeds.length > 0 || isStaff)
             .col-xs-12
               div.card
                 h3.card-header.card-header-for-list.card-header-flex

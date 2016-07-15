@@ -21,4 +21,8 @@ block content
                     p.card-text= course.description
                     - var url = course.slug ? course.slug : course.id
                     a.btn.btn-primary(href="/course/" + url) Zum Kurs
+        else
+          h2 Kurse
+          .col-xs-12
+            p Es wurden bisher noch keine Kurse angelegt bzw. veröffentlicht.
 

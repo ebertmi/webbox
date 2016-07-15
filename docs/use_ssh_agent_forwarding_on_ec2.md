@@ -19,3 +19,15 @@ ssh-add id_rsa (or other key)
 ssh-add -l
 ```
 Use the `ssh-add -l` to check the identities that you have added to the agent.
+
+Now before using ssh-agent-forwarding we need to configurate ssh to allow forwarding for our servers.
+
+- Create a `config` (no extension) file inside your `.ssh` directory and then use the following snippet:
+```ssh
+Host HOST1NAMEIP
+	ForwardAgent yes
+Host HOST2NAMEIP
+	ForwardAgent yes
+```
+
+Checkout https://developer.github.com/guides/using-ssh-agent-forwarding/

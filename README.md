@@ -113,3 +113,53 @@ We are using Semantic Versioning (SemVer) *MAJOR.MINOR.PATCH*:
 * *MAJOR*: Breaking changes
 * *MINOR*: New features and fixes, but works with older versions
 * *PATCH*: Fixes that are backward compatible
+
+## Deploying
+Steps:
+1. Upload current version with compiled client files (use `webpack --config=webpack.config.production.js`)
+2. Install `sudo apt-get npm make gcc build-essential g++ lxc lxc-dev btrfs-tools libcap-dev`
+3. Go to the `webbox`directory and run `npm install`
+
+If node-gyp is failing try to update nodejs and then run `npm rebuild`
+
+Then install RethinkDB:
+1. Either visit rethinkdb site and follow the instructions there or paste this:
+```
+source /etc/lsb-release && echo "deb http://download.rethinkdb.com/apt $DISTRIB_CODENAME main" | sudo tee /etc/apt/sources.list.d/rethinkdb.list
+wget -qO- https://download.rethinkdb.com/apt/pubkey.gpg | sudo apt-key add -
+sudo apt-get update
+sudo apt-get install rethinkdb
+```
+
+Now configure rethinkdb to start on system start using https://rethinkdb.com/docs/start-on-startup/
+
+When there is no web-interface for managing rethinkdb, the best way is using python.
+Run `sudo apt-get install python3 python3-pip` and then install the python driver with `sudo pip3 install rethinkdb`
+
+Then you can use the python3 repl and changing the settings and creating databases...
+
+For example:
+```python
+import rethinkdb as r
+r.connect('localhost', 28015).repl()
+r.db_create('webbox').run()
+
+# changing the admin password
+ r.db('rethinkdb').table('users').get('admin').update({'password': 'YOUR_SUPER_STRONG_PASSWORD'}).run()
+ r.db('rethinkdb').table('users').get('admin').run()
+```
+
+And after setting the password you need to connect with it the next time you start the repl
+```python
+import rethinkdb as r
+r.connect('localhost', 28015, user="admin", password="YOUR_SUPER_STRONG_PASSWORD").repl()
+```
+
+Finally, we can start our server. In production mode you need some kind of process monitor/manager. We use pm2 and
+start it like this:
+```
+pm2 kill
+sudo env NODE_ENV=production pm2 start webbox.babel.js
+```
+
+You need the pm2 kill, if you messed up with pm2 before. Otherwise it does not recognize the `NODE_ENV` in cluster mode.

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Input } from '../bootstrap';
-import { Time } from '../time';
+import { Time } from '../Time';
 
 /**
  * The Courseform Component displays a course and allows to edit the course data.
