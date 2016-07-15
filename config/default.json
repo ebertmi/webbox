@@ -53,11 +53,9 @@
         }
     },
     "cache": {
-        "database": "redisCache",
         "host": "localhost",
         "port": "6379",
-        "password": "webbox_redis",
-        "partition": "cache"
+        "password": "webbox_rediswebbox_rediswebbox_rediswebbox_rediswebbox_redis",
     },
     "media": {
         "path": "./media",

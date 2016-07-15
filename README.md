@@ -32,6 +32,13 @@ You can start a local dev server with: `$ NODE_ENV=development node webbox.js` o
 set NODE_ENV=development
 node webbox.babel.js
 ```
+
+Or use the npm scripts in production mode:
+```bash
+npm run startwin // windows
+npm run start // linux
+```
+
 A good way for running the app with auto reload ist *nodemon*. We have included a nodemon config - just run `nodemon webbox.babel.js`.
 Or lastly, you can use `npm run`.
 

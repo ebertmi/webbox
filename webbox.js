@@ -13,6 +13,8 @@ import CatboxMemory from 'catbox-memory';
 import CatboxRedis from 'catbox-redis';
 import Log from './lib/models/log';
 
+import isString from 'lodash/isString';
+
 // own imports
 import config from './config/webbox.config';
 import Package from './package.json';
@@ -32,12 +34,15 @@ if (config.isDev) {
   // ToDo: add Redis for production
   cache = {
     engine: CatboxRedis,
-    database: config.cache.database,
+    /*database: config.cache.database,*/
     host: config.cache.host,
     port: config.cache.port,
     password: config.cache.password,
-    partition: config.cache.partition
+    /*partition: config.cache.partition*/
   };
+
+  // ToDo: Change this
+  cache = { engine: CatboxMemory };
 }
 
 var server = new Hapi.Server({
@@ -131,7 +136,7 @@ server.register(Vision, (err) => {
       },
       path: __dirname + '/lib/views',
       compileOptions: {
-        cache: false,
+        cache: true,
         pretty: true,
         debug: false,
         compileDebug: false
@@ -167,7 +172,8 @@ server.ext('onPreResponse', function (request, reply) {
 
   if (request.response.output.statusCode >= 500) {
     console.info('Server error 500', 500);
-    Log.createLog('Server.Error', request.response, {
+    let errorMessage = isString(request.response) ? request.repsonse : 'Server Error 500';
+    Log.createLog('Server.Error', errorMessage, {
       path: request.path,
       user: request.pre.user || {}
     }, 'Error');
@@ -176,10 +182,21 @@ server.ext('onPreResponse', function (request, reply) {
     console.log(`Repsonse is Error with status ${request.response.output.statusCode}`);
   }
 
+  let err;
+  let errName;
+  let statusCode;
 
-  let err = request.response;
-  const errName = err.output.payload.error;
-  const statusCode = err.output.payload.statusCode;
+  if (config.isProd) {
+    err = request.response;
+    errName = err.output.payload.error;
+    statusCode = err.output.payload.statusCode;
+  } else {
+    err = "Internal Error - Wir kümmern ums darum.";
+    errName = err.output.payload.error;
+    statusCode = err.output.payload.statusCode;
+  }
+
+
 
   if (statusCode === 403) {
     err = 'Sie besitzten nicht die benötigten Rechte, um auf diese Seite zuzugreifen.';
