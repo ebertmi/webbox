@@ -15,7 +15,8 @@ let project;
 if (window.INITIAL_DATA.meta.embedType === 'sourcebox') {
   project = new SourceboxProject(window.INITIAL_DATA, {
     auth: window.sourcebox.authToken,
-    server: window.sourcebox.server
+    server: window.sourcebox.server,
+    transports: window.sourcebox.transports || ['websocket']
   });
 } else if (window.INITIAL_DATA.meta.embedType === 'skulpt') {
   project = new SkulptProject(window.INITIAL_DATA);

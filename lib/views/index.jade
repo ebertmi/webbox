@@ -31,7 +31,7 @@ block content
             div.card-columns
               - each course in courses
                 div.card
-                  img.card-img-top.course-logo(src="/media/" + course.slug + "/logo.png", alt="Kurs-Thumbnail" + course.title)
+                  img.card-img-top.course-logo(src="/media/" + course.slug + "/"+ course.logo, alt="Kurs-Thumbnail" + course.title)
                   div.card-block
                     h5.card-title= course.title
                     p.card-text= course.description
@@ -49,7 +49,7 @@ block content
             Willkommen zurück <strong>!{user.username}</strong>. Wir haben hier ihre letzten Beispiele und Dokumente für Sie aufgelistet.
             Alternativ können Sie auch einen bestimmten Kurs auswählen.
 
-          if documents && (documents.length > 0 || isStaff)
+          if documents && (documents.length > 0 || isAuthor)
             .col-xs-12
               div.card
                 h3.card-header.card-header-for-list.card-header-flex
@@ -73,7 +73,7 @@ block content
                       span.pull-xs-right
                         small Letzte Änderung !{doc.metadata.lastUpdate}
 
-          if embeds && (embeds.length > 0 || isStaff)
+          if embeds && (embeds.length > 0 || isAuthor)
             .col-xs-12
               div.card
                 h3.card-header.card-header-for-list.card-header-flex
@@ -126,6 +126,11 @@ block content
                   - each doc in recentlyViewedDocuments
                     li.list-group-item
                       a(href="/d/" + doc.id, ) !{doc.title}
+          else
+            .col-xs-12
+              div.card
+                h3.card-header.card-header-for-list
+                  span Zuletzt angeschaut
 
   .container.second-entry
     if user.isAnonymous

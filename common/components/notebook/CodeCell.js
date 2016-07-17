@@ -42,21 +42,6 @@ export default class CodeCell extends React.Component {
   }
 
   /**
-   * Check if component needs update:
-    cell
-    isAuthor
-    editing
-    cellIndex
-   */
-  /*shouldComponentUpdate(nextProps, nextState) {
-    if (nextState.rendered != this.state.rendered || !Immutable.is(this.props.cell, nextProps.cell) || this.props.editing !== nextProps.editing || this.props.cellIndex !== nextProps.cellIndex) {
-      return true;
-    }
-
-    return false;
-  }*/
-
-  /**
    * Clicked the run button. Should we enable postMessage communication with the new window?
    * Maybe at some point later
    */
@@ -69,6 +54,7 @@ export default class CodeCell extends React.Component {
      *  - Current course/chapter (for statistics)
      */
     // short test
+    // ToDo: Change this to global notebook metadata
     const code = sourceFromCell(this.props.cell);
     const language = 'python3';
     const embedType = this.props.cell.getIn(['metadata', 'embedType'], 'sourcebox'); // ToDo: get this from the notebook meta

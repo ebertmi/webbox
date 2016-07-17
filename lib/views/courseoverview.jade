@@ -15,7 +15,7 @@ block content
             div.card-columns
               - each course in courses
                 div.card
-                  img.card-img-top.course-logo(src="/media/" + course.slug + "/logo.png", alt="Kurs-Thumbnail" + course.title)
+                  img.card-img-top.course-logo(src="/media/" + course.slug + "/"+ course.logo, alt="Kurs-Thumbnail" + course.title)
                   div.card-block
                     h5.card-title= course.title
                     p.card-text= course.description

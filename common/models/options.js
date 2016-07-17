@@ -7,7 +7,7 @@ import defaultsDeep from 'lodash/defaultsDeep';
 const LOCAL_STORAGE_KEY = 'sourcebox.options';
 
 const DEFAULT_OPTIONS = {
-  fontSize: 10,
+  fontSize: 14,
   font: 'monospace',
   terminal: {
     audibleBell: true

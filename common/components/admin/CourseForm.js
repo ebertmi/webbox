@@ -44,8 +44,29 @@ export class CourseForm extends Component {
    */
   handleSave (event) {
     event.preventDefault();
+    // ToDo: validate before saving
+    let course = this.props.course;
+    const requiredFields = ['slug', 'published', 'document', 'title'];
+    let isValid = true;
 
-    this.props.save(this.props.course);
+    for (let rf of requiredFields) {
+      if (course[rf] == null || course[rf] === '') {
+        // Show message
+        isValid = false;
+        break;
+      }
+    }
+
+    if (isValid) {
+      this.setState({
+        validationMessage: null
+      });
+      this.props.save(this.props.course);
+    } else {
+      this.setState({
+        validationMessage: 'Bitte füllen Sie die Felder: Kurzlink, ID des Indexdokuments und Titel aus.'
+      });
+    }
   }
 
   handleDelete (event) {
@@ -94,10 +115,13 @@ export class CourseForm extends Component {
    * Renders the Save and Delete Buttons
    */
   renderFormButtons (isDirty) {
+    let message = this.state.validationMessage != null ? <p className="text-muted">{this.state.validationMessage}</p> : null;
+
     return (
       <div className="form-footer">
         <button type="submit" onClick={this.handleSave.bind(this)} disabled={!isDirty} className="btn btn-success">Speichern</button>
         <button type="submit" onClick={this.handleDelete.bind(this)} className="btn btn-danger">Löschen</button>
+        { message }
       </div>
     );
   }
@@ -114,7 +138,7 @@ export class CourseForm extends Component {
           <p className="form-control-static"><strong>{this.props.course.id}</strong></p>
           <small className="text-muted">Eindeutige interne ID des Kurses. Diese wird für die interne Datenhaltung verwendet.</small>
         </div>
-        <Input onChange={this.handleChange.bind(this)} name="title" required type="text" label="Kurs Titel" placeholder="Titel des Kurses" muted="Der Titel des Kurses wird auf der Hauptseite angezeigt." value={this.props.course.title} />
+        <Input onChange={this.handleChange.bind(this)} name="title" required type="text" label="Titel" placeholder="Titel des Kurses" muted="Der Titel des Kurses wird auf der Hauptseite angezeigt." value={this.props.course.title} />
         <Input onChange={this.handleChange.bind(this)} name="published" required type="checkbox" label="Veröffentlicht" mutedParagraph="Ist der Kurs veröffentlicht, dann wird er auf der Hauptseite angezeigt." value={this.props.course.published} />
         <Input onChange={this.handleChange.bind(this)} name="description" required type="text" label="Beschreibung" placeholder="Dieser Kurs..." muted="Hier können Sie den Kurs näher beschreiben." value={this.props.course.description} />
         <Input onChange={this.handleChange.bind(this)} name="slug" required type="text" label="Kurzlink" placeholder="Kurzlink" muted="Geben Sie einen Kurzlink an, unter diesem der Kurs erreicht werden kann." value={this.props.course.slug} />
@@ -142,6 +166,7 @@ export class CourseForm extends Component {
 
 CourseForm.getInitialState = function () {
   return {
-    showConfirmDelete: false
+    showConfirmDelete: false,
+    validationMessage: null
   };
 };

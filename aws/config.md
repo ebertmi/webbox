@@ -46,3 +46,11 @@ A: Check if your instance allows inbound connection on your configurated port
 
 P: I want to prevent outside inbound access to my ec2 instance, only the load balancer should have access
 A: http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/elb-security-groups.html#elb-classic-security-groups
+
+P: Where can I find an example for ELB
+A: http://serverfault.com/questions/619971/redirect-all-http-requests-behind-amazon-elb-to-https-without-using-if
+
+P: I get the error `failed: WebSocket opening handshake was canceled` when trying to connect to a secure websocket TCP server
+behind a ELB Load Balancer.
+A: If you use a certificate you cannot use the ELB public dns name, you must use the domain name for the certificate, otherwise
+the connection fails. Try to connect to the ELB public dns name with https://NAME and if this fails, it is a certificate problem.

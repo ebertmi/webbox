@@ -187,19 +187,19 @@ server.ext('onPreResponse', function (request, reply) {
   let statusCode;
 
   if (config.isProd) {
-    err = ''; //request.response;
-    errName = err.output.payload.error;
-    statusCode = err.output.payload.statusCode;
+    err = 'Das hätte nicht passieren sollen - Wir kümmern uns darum!';
+    errName = 'Fehler';
+    statusCode = request.response.output.statusCode;
   } else {
     err = "Internal Error - Wir kümmern ums darum.";
-    errName = err.output.payload.error;
-    statusCode = err.output.payload.statusCode;
+    errName = 'Fehler';
+    statusCode = request.response.output.statusCode;
   }
 
 
 
   if (statusCode === 403) {
-    err = 'Sie besitzten nicht die benötigten Rechte, um auf diese Seite zuzugreifen.';
+    err = 'Sie besitzen nicht die benötigten Rechte, um auf diese Seite zuzugreifen.';
   }
 
   return reply.view('errors/default', {
@@ -212,7 +212,6 @@ server.ext('onPreResponse', function (request, reply) {
 });
 
 server.on('request-error', function (event) {
-  console.log(event);
   try {
     let error = event.response.source || {};
     error._error = event.response. _error.toString();

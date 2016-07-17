@@ -114,6 +114,10 @@ export function addRawCell(index) {
   return addCell(index, 'raw');
 }
 
+export function addCodeCell(index) {
+  return addCell(index, 'code');
+}
+
 export function moveCellUp(index) {
   return {
     type: Types.MOVE_CELL_UP,
