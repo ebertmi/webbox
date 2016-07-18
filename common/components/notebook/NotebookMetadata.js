@@ -151,10 +151,17 @@ class NotebookMetadata extends React.Component {
               </div>
             </div>
             <div className="form-group row">
-              <label className={"col-sm-2 form-control-label"} ><Icon name="link" /> Zugehöriger Kurs</label>
+              <label className={"col-sm-2 form-control-label"} ><Icon name="bank" /> Zugehöriger Kurs</label>
               <div className={"col-sm-10"}>
                 <input className={"form-control"} onChange={this.onUpdate} type="text" defaultValue={course} name="course" ref="courseField" onBlur={e => {}} title="Kurs-Slug" />
                 <small>Angabe eines Kurses (Kurz-Link oder ID), um diese Document zuzuordnen. <strong>Eine Änderung am Kursnamen verschiebt keine Bilder.</strong></small>
+              </div>
+            </div>
+            <div className="form-group row">
+              <label className={"col-sm-2 form-control-label"} ><Icon name="cogs" /> Interne ID</label>
+              <div className={"col-sm-10"}>
+                <input className={"form-control"} disabled readOnly type="text" defaultValue={this.props.id} name="notebookdid" />
+                <small>Interne ID des Dokumentes.</small>
               </div>
             </div>
           </div>
