@@ -32,7 +32,6 @@
   "homepage": "https://github.com/waywaaard/webbox#readme",
   "dependencies": {
     "@sourcebox/web": "git+ssh://git@github.com/waywaaard/sourcebox-web.git",
-    "Stickyfill": "wilddeer/stickyfill",
     "async": "^2.0.0",
     "autoprefixer": "^6.3.7",
     "babel-core": "^6.10.4",

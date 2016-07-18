@@ -99,6 +99,17 @@ form .btn,
   padding-bottom: 3rem;
 }
 
+/* Pagination Ellipse styling */
+.page-break {
+  float: left;
+  position: relative;
+  padding: 0.5rem 0.75rem;
+  margin-left: -1px;
+  text-decoration: none;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+
 .card {
   box-shadow: none;
 }

@@ -15,6 +15,7 @@ export function Pagination (props) {
         previousClassName="page-item"
         nextClassName="page-item"
         pageClassName="page-item"
+        breakClassName="page-break"
         activeClassName="active"
         pageLinkClassName="page-link"
         containerClassName="pagination"
