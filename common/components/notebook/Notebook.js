@@ -13,7 +13,7 @@ import { Severity } from '../../models/severity';
 import { MessageList } from '../messageList/messageList';
 
 import { loadCellsFromIPYNB, stateToJS } from '../../util/nbUtil';
-import { addCellsFromJS } from '../../actions/NotebookActions';
+import { addCellsFromJS, stopEditCell } from '../../actions/NotebookActions';
 
 import { API } from '../../services';
 
@@ -77,10 +77,14 @@ export default class Notebook extends React.Component {
   onKeyDown(e) {
     let key = e.which || e.keyCode;
     if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 83) {
+      // Pressed Ctrl-S for saving
 
       // ToDo: debounce or throttle the calls?
       this.onSave();
       e.preventDefault();
+    } else if (key === 27) {
+      // Escape Key pressed
+      this.props.dispatch(stopEditCell());
     }
   }
 
