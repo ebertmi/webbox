@@ -186,7 +186,7 @@ export default class Menu extends React.Component {
     }
 
     return (
-      <NavDropdown title={<Icon name="bars"/>} right>
+      <NavDropdown className="unselectable" title={<Icon name="bars"/>} right>
         <DropdownItem onClick={this.onNewFile.bind(this)}>
           <Icon name="file" fixedWidth/> Neue Datei
         </DropdownItem>

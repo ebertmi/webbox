@@ -1,0 +1,100 @@
+.tabs-container {
+  display: flex;
+  height: 35px;
+  font-size: 0.9rem;
+}
+
+.tabs-container > .tab::first-child {
+  border-left-color: transparent;
+}
+
+.tabs-container>.tab:not(.active) {
+  background-color: #ececec;
+}
+
+.tabs-container > .tab {
+  border-left-color: #ddd;
+}
+
+.tabs-container > .tab {
+  display: flex;
+  min-width: fit-content;
+  overflow: hidden;
+  white-space: nowrap;
+  cursor: pointer;
+  height: 35px;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  padding-left: 10px;
+}
+
+.ide-editor-background {
+  background-color: #fff;
+}
+
+.tabs-container > .tab.pinned .tab-label {
+  font-style: normal;
+}
+
+.title-label {
+  white-space: nowrap;
+  flex: 1;
+  font-style: italic;
+}
+
+.tab-icon {
+    margin-right: 0.5em;
+}
+
+.tabs-container > .tab .tab-label {
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-right: 0.5rem;
+}
+
+.tabs-container > .tab > .tab-close {
+  margin-top: auto;
+  margin-bottom: auto;
+  width: 100%;
+}
+
+.ide-action-bar {
+  text-align: right;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.ide-action-bar .actions-container {
+  display: flex;
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.ide-action-bar .action-item {
+  cursor: pointer;
+  display: inline-block;
+  -webkit-transition: -webkit-transform .1s ease;
+  transition: transform .1s ease;
+  position: relative;
+}
+
+.ide-action-bar.animated .action-item:active {
+  -webkit-transform: translateY(-3px);
+  transform: translateY(-3px);
+}
+
+.tabs-container > .tab > .tab-close .action-label {
+  opacity: 0;
+  margin-right: 0.5em;
+  display: block;
+}
+
+.tabs-container>.tab.active:hover>.tab-close .action-label,
+.tabs-container>.tab.active>.tab-close .action-label,
+.tabs-container>.tab:hover>.tab-close .action-label,
+.tabs-container>.tab>.tab-close .action-label:focus,
+.tabs-container>.tab.dirty>.tab-close .action-label {
+    opacity: 1;
+}

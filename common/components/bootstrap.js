@@ -37,7 +37,7 @@ export function Nav(props) {
 export function NavItem(props) {
   let { useHref, active, ...rest } = props;
 
-  let classes = classNames('nav-item nav-link', {
+  let classes = classNames('nav-item nav-link', props.className, {
     active: active
   });
 
@@ -57,7 +57,7 @@ export function NavItem(props) {
 }
 
 export function DropdownItem(props) {
-  let classes = classNames('dropdown-item', {
+  let classes = classNames('dropdown-item', props.className, {
     disabled: props.disabled
   });
 

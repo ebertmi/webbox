@@ -118,7 +118,6 @@ export default class SourceboxProject extends Project {
       // delete file from disk to avoid using old files
       var filePath = tab.item.getName();
       this.deleteFile(filePath);
-
     }
   }
 
@@ -126,7 +125,9 @@ export default class SourceboxProject extends Project {
     let path = this.name || '.';
     path = pathModule.join(path, filename);
 
-    return this.sourcebox.rm([path], { term: false }); // call rm method
+    return this.sourcebox.rm([path], { term: false }, e => {
+      // ignore this
+    }); // call rm method
   }
 
   isRunning() {

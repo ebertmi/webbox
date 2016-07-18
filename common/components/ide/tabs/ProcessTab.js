@@ -52,7 +52,7 @@ export default class ProcessTab extends React.Component {
 
   render() {
     return (
-      <Tab {...this.props} icon="terminal">
+      <Tab {...this.props} title="title" icon="terminal">
         {this.state.title}
         {' '}
         {this.renderBell()}
