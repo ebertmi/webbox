@@ -41,7 +41,9 @@ export default class ImageGallery extends React.Component {
     }
 
     if (this.state.images == null) {
-      API.media.getImages({ course: this.props.course })
+      // ToDo: Handle undefined course
+      let course = this.props.course != null ? this.props.course : 'no-course';
+      API.media.getImages({ course: course })
       .then(data => {
         let imageArray = JSON.parse(data.files);
         let images = [];

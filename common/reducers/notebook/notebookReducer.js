@@ -123,11 +123,19 @@ export default function notebook(state = initialState, action) {
  * Deletes a cell for the given index:
  *  - Removes the cell from "cells" (Map)
  *  - Removes the cell from "cellOrder" (List)
+ *  - Unset active block, if it is this cell
  */
 function deleteCellWithIndex(state, index) {
   const key = state.getIn(['cellOrder', index]);
+  let newState = state;
 
-  return state.deleteIn(['cells', key]).deleteIn(['cellOrder', index]);
+  // Disable edit for the index of the cell, otherwise the next cell gets activated
+  let activeBlock = state.get('activeBlock');
+  if (activeBlock === index) {
+    newState = state.set('activeBlock', -1);
+  }
+
+  return newState.deleteIn(['cells', key]).deleteIn(['cellOrder', index]);
 }
 
 /**
