@@ -82,9 +82,6 @@ export default class Notebook extends React.Component {
       // ToDo: debounce or throttle the calls?
       this.onSave();
       e.preventDefault();
-    } else if (key === 27) {
-      // Escape Key pressed
-      this.props.dispatch(stopEditCell());
     }
   }
 

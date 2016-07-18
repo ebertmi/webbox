@@ -29,6 +29,7 @@ export default class CodeEmbedCell extends React.Component {
     this.onCancelCreateEmbed = this.onCancelCreateEmbed.bind(this);
     this.onFormDataChange = this.onFormDataChange.bind(this);
     this.onCreateEmbed = this.onCreateEmbed.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
 
     // Fast shouldComponentUpdate for immutable.js
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
@@ -125,7 +126,10 @@ export default class CodeEmbedCell extends React.Component {
   }
 
   onStopEdit(e) {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
+
     this.props.dispatch(stopEditCell());
   }
 
@@ -133,6 +137,17 @@ export default class CodeEmbedCell extends React.Component {
     e.preventDefault();
     const value = e.target.value || '';
     this.props.dispatch(updateCell(this.props.cell.get('id'), value));
+  }
+
+  /**
+   * Check for Ctrl+S and try to save the document if possible
+   */
+  onKeyDown(e) {
+    let key = e.which || e.keyCode;
+    if (key === 27) {
+      // Escape Key pressed
+      this.onStopEdit();
+    }
   }
 
   renderCreateEmbed() {
@@ -185,7 +200,7 @@ export default class CodeEmbedCell extends React.Component {
     let createForm = this.state.showCreateEmbed ? this.renderCreateEmbed() : this.renderCreateEmbedButton();
 
     return (
-      <div className="col-xs-12">
+      <div className="col-xs-12" onKeyDown={this.onKeyDown}>
         <strong>Codebeispiel-Einstellungen</strong>
         <p className="text-muted">Sie können die Größe (Höhe und Breite) über die Metadaten auch selbst steuern. Nutzen Sie dazu die Schlüssel <code>height</code> bzw. <code>width</code> und einen numerischen Wert (z.B. <code>500</code>) ohne Einheit.</p>
         <div className="form-group">

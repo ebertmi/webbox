@@ -30,6 +30,7 @@ export default class CodeCell extends React.Component {
     this.onCellDown = this.onCellDown.bind(this);
     this.onRun = this.onRun.bind(this);
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
   }
 
   componentWillMount() {
@@ -105,7 +106,10 @@ export default class CodeCell extends React.Component {
   }
 
   onStopEdit(e) {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
+
     this.props.dispatch(stopEditCell());
     this.onUpdateCell();
   }
@@ -126,6 +130,17 @@ export default class CodeCell extends React.Component {
   onRef(node) {
     if (node) {
       this.wrapperNode = node;
+    }
+  }
+
+  /**
+   * Check for Ctrl+S and try to save the document if possible
+   */
+  onKeyDown(e) {
+    let key = e.which || e.keyCode;
+    if (key === 27) {
+      // Escape Key pressed
+      this.onStopEdit();
     }
   }
 
@@ -157,7 +172,7 @@ export default class CodeCell extends React.Component {
     }
 
     return (
-      <div className="col-xs-12">
+      <div className="col-xs-12" onKeyDown={this.onKeyDown}>
         <strong>Code</strong>
         <p className="text-muted">Sie können über die Schlüssel <code>embedType</code> (<em>sourcebox</em> oder <em>skulpt</em>) und <code>mode</code> (Sprache) die Ausführungsumgebung für eine Zelle einzeln definieren. Ansonsten werden die Werte aus den Notebook-Metadaten übernommen.</p>
         <Editor minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />

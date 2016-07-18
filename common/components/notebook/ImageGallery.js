@@ -42,7 +42,7 @@ export default class ImageGallery extends React.Component {
 
     if (this.state.images == null) {
       // ToDo: Handle undefined course
-      let course = this.props.course != null ? this.props.course : 'no-course';
+      let course = this.props.course != null && this.props.course != '' ? this.props.course : 'no-course';
       API.media.getImages({ course: course })
       .then(data => {
         let imageArray = JSON.parse(data.files);
@@ -88,7 +88,7 @@ export default class ImageGallery extends React.Component {
 
 ImageGallery.propTypes = {
   onInsertImage: React.PropTypes.func.isRequired,
-  course: React.PropTypes.object.isRequired
+  course: React.PropTypes.string
 };
 
 ImageGallery.defaultProps = {

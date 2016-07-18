@@ -32,6 +32,7 @@ export default class MarkdownCell extends React.Component {
     this.toggleImageUpload= this.toggleImageUpload.bind(this);
     this.toggleImageGallery= this.toggleImageGallery.bind(this);
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
 
     // Markdown Commands
     this.onInsertImage = this.onInsertImage.bind(this);
@@ -81,7 +82,10 @@ export default class MarkdownCell extends React.Component {
   }
 
   onStopEdit(e) {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
+
     this.props.dispatch(stopEditCell());
     this.onUpdateCell();
   }
@@ -102,6 +106,17 @@ export default class MarkdownCell extends React.Component {
   onRef(node) {
     if (node) {
       this.renderedHeight = Math.min(Math.max(node.offsetHeight, node.scrollHeight, node.clientHeight, this.props.minHeight), MAX_EDITOR_HEIGHT);
+    }
+  }
+
+  /**
+   * Check for Ctrl+S and try to save the document if possible
+   */
+  onKeyDown(e) {
+    let key = e.which || e.keyCode;
+    if (key === 27) {
+      // Escape Key pressed
+      this.onStopEdit();
     }
   }
 
@@ -152,7 +167,7 @@ export default class MarkdownCell extends React.Component {
     }
 
     return (
-      <div className="col-xs-12">
+      <div className="col-xs-12" onKeyDown={this.onKeyDown}>
         <strong>Markdown</strong>  <Icon className="icon-control" onClick={this.toggleImageGallery} title="Verfügbare Bilder anzeigen" name="picture-o"/>
         { this.renderImageGallery() }
         <Editor fontSize="1.3rem" minHeight={minHeight} maxLines={100} session={this.session} showGutter={false} ref={editor => this.editor = editor} />
@@ -191,7 +206,8 @@ MarkdownCell.propTypes = {
   cell: React.PropTypes.object.isRequired,
   isAuthor: React.PropTypes.bool.isRequired,
   editing: React.PropTypes.bool.isRequired,
-  cellIndex: React.PropTypes.number.isRequired
+  cellIndex: React.PropTypes.number.isRequired,
+  course: React.PropTypes.string
 };
 
 MarkdownCell.defaultProps = {
