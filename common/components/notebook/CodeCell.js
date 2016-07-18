@@ -10,6 +10,7 @@ import { EditButtonGroup } from './EditButtonGroup';
 
 import { editCell, deleteCell, stopEditCell, updateCell, moveCellUp, moveCellDown } from '../../actions/NotebookActions';
 
+import { EmbedTypes, RunModeDefaults } from '../../constants/Embed';
 import Markdown from '../../util/markdown';
 import { sourceFromCell } from '../../util/nbUtil';
 
@@ -53,12 +54,14 @@ export default class CodeCell extends React.Component {
      *  - Either use the set id for statistics or generate a new one
      *  - Current course/chapter (for statistics)
      */
-    // short test
-    // ToDo: Change this to global notebook metadata
+
     const code = sourceFromCell(this.props.cell);
     const language = 'python3';
-    const embedType = this.props.cell.getIn(['metadata', 'embedType'], 'sourcebox'); // ToDo: get this from the notebook meta
-    const id = this.props.cell.getIn(['metadata', 'runid'], 'testidwhynot'); // ToDo: change default
+    let notebookEmbedType = this.props.embedType || EmbedTypes.Sourcebox;
+    const embedType = this.props.cell.getIn(['metadata', 'embedType'], notebookEmbedType);
+
+    // Experimental
+    const id = this.props.cell.getIn(['metadata', 'runid'], RunModeDefaults.id);
 
     const url = `${window.location.protocol}//${window.location.host}/run?language=${encodeURIComponent(language)}&id=${encodeURIComponent(id)}&embedType=${encodeURIComponent(embedType)}&code=${encodeURIComponent(code)}`;
     const strWindowFeatures = "menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes";
@@ -156,6 +159,7 @@ export default class CodeCell extends React.Component {
     return (
       <div className="col-xs-12">
         <strong>Code</strong>
+        <p className="text-muted">Sie können über die Schlüssel <code>embedType</code> (<em>sourcebox</em> oder <em>skulpt</em>) und <code>mode</code> (Sprache) die Ausführungsumgebung für eine Zelle einzeln definieren. Ansonsten werden die Werte aus den Notebook-Metadaten übernommen.</p>
         <Editor minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />
       </div>
     );

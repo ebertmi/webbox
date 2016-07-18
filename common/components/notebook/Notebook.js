@@ -200,6 +200,7 @@ export default class Notebook extends React.Component {
     const cells = this.props.notebook.get('cells');
     const cellOrder = this.props.notebook.get('cellOrder');
     const course = this.props.notebook.get('course');
+    const embedType = this.props.notebook.get('embedType');
     const notebookLanguage = this.props.notebook.getIn(['metadata', 'language_info', 'name'], 'plain');
 
     let blocks = [];
@@ -222,7 +223,7 @@ export default class Notebook extends React.Component {
           blocks.push(<MarkdownCell course={course} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor} editing={index === activeBlock}/>);
           break;
         case 'code':
-          blocks.push(<CodeCell course={course} notebookLanguage={notebookLanguage} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor} editing={index === activeBlock}/>);
+          blocks.push(<CodeCell  embedType={embedType} course={course} notebookLanguage={notebookLanguage} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor} editing={index === activeBlock}/>);
           break;
         case 'codeembed':
           blocks.push(<CodeEmbedCell course={course} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor}editing={index === activeBlock}/>);
@@ -249,6 +250,7 @@ export default class Notebook extends React.Component {
     const undoStackSize = this.props.notebook.get('undoStack').size;
     const redoStackSize = this.props.notebook.get('redoStack').size;
     const course = this.props.notebook.get('course');
+    const embedType = this.props.notebook.get('embedType');
     const id = this.props.notebook.get('id');
 
     return (
@@ -266,6 +268,7 @@ export default class Notebook extends React.Component {
         editable={this.props.notebook.get('notebookMetadataEditable')}
         slug={this.props.notebook.get('slug')}
         course={course}
+        embedType={embedType}
         id={id} />
         { this.renderCells() }
       </div>

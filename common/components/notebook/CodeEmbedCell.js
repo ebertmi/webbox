@@ -6,6 +6,7 @@ import { EditButtonGroup } from './EditButtonGroup';
 import CellMetadata from './CellMetadata';
 import { editCell, deleteCell, stopEditCell, updateCell, moveCellUp, moveCellDown } from '../../actions/NotebookActions';
 import { sourceFromCell } from '../../util/nbUtil';
+import { EmbedTypes } from '../../constants/Embed';
 import { API } from '../../services';
 import { Severity } from '../../models/severity';
 
@@ -41,7 +42,7 @@ export default class CodeEmbedCell extends React.Component {
       showCreateEmbed: false,
       formData: {
         language: 'python3',
-        embedType: 'sourcebox',
+        embedType: EmbedTypes.Sourcebox,
         name: ''
       },
       message: ''

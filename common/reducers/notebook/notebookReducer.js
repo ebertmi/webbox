@@ -7,6 +7,7 @@ import isInteger from 'lodash/isInteger';
 import isFunction from 'lodash/isFunction';
 import capitalize from 'lodash/capitalize';
 
+import { EmbedTypes } from '../../constants/Embed';
 import assert from '../../util/assert';
 
 export const initialState = Immutable.Map({
@@ -360,6 +361,13 @@ function updateNotebookMetadata(state, name, value) {
       return state.set('slug', value);
     case 'course':
       return state.set('course', value);
+    case 'embedType':
+      if (value === EmbedTypes.Skulpt || value === EmbedTypes.Sourcebox) {
+        return state.set('embedType', value);
+      } else {
+        console.warn('updateNotebookMetadata called with invalid "embedType"');
+        return state;
+      }
     case 'title':
     case 'author':
       return state.setIn(['metadata', name], value);

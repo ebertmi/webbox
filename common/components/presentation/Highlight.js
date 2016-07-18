@@ -3,6 +3,7 @@ import hljs from 'highlight.js';
 import { getStyles } from "spectacle/lib/utils/base";
 import Radium from "radium";
 
+import { EmbedTypes } from '../../constants/Embed';
 import Icon from '../Icon';
 
 /**
@@ -44,7 +45,7 @@ class Highlight extends React.Component {
     // short test
     const code = this.props.source;
     const language = 'python3';
-    const embedType = this.props.embedType || 'sourcebox'; // ToDo: get this from the notebook meta
+    const embedType = this.props.embedType || EmbedTypes.Sourcebox; // ToDo: get this from the notebook meta
     const id = this.props.runId || 'testidwhynot'; // ToDo: change default
 
     const url = `${window.location.protocol}//${window.location.host}/run?language=${encodeURIComponent(language)}&id=${encodeURIComponent(id)}&embedType=${encodeURIComponent(embedType)}&code=${encodeURIComponent(code)}`;

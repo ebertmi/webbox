@@ -4,6 +4,7 @@ import clone from 'lodash/clone';
 import set from 'lodash/set';
 
 import {Button, Input} from '../../bootstrap';
+import { EmbedTypes } from '../../../constants/Embed';
 
 Slug.defaults.mode = 'rfc3986';
 
@@ -136,8 +137,8 @@ export default class AttributePanel extends React.Component {
         <div className="form-group">
           <label className="form-control-label">Typ</label>
           <select className="form-control" name="embedType" onChange={this.onChangeOption.bind(this, ['embed', 'meta'])} value={embed.meta.embedType}>
-            <option value="sourcebox">Sourcebox (serverseitig)</option>
-            <option value="skulpt">Skulpt (clientseitig, nur Python)</option>
+            <option value={EmbedTypes.Sourcebox}>Sourcebox (serverseitig)</option>
+            <option value={EmbedTypes.Skulpt}>Skulpt (clientseitig, nur Python)</option>
           </select>
           <small className="text-muted">Der Typ eines Beispiels definiert mit welchem Mechanismus der Code ausgeführt wird. <em>sourcebox</em> wird serverseitig ausgeführt. <em>skulpt</em> erlaubt die clientseitige Ausführung von Python (3).</small>
         </div>

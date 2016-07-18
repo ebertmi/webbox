@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Time } from '../Time';
 import Icon from '../Icon';
 import * as NotebookActions from '../../actions/NotebookActions';
+import { EmbedTypes } from '../../constants/Embed';
 
 /**
  * Displays the Notebook-Metadata with:
@@ -102,7 +103,7 @@ class NotebookMetadata extends React.Component {
   }
 
   render() {
-    const { isAuthor, editable, metadata, slug, course, id } = this.props;
+    const { isAuthor, editable, metadata, slug, course, id, embedType } = this.props;
     const author = metadata.get('author');
     const date = metadata.get('lastUpdate');
     const title = metadata.get('title');
@@ -129,13 +130,23 @@ class NotebookMetadata extends React.Component {
             <div className="form-group row">
               <label className={"col-sm-2 form-control-label"} ><Icon name="language" /> Sprache</label>
               <div className={"col-sm-10"}>
-                <select className="form-control" defaultValue={language} name="language" ref="languageField" onBlur={e => {}} title="Sprache" >
+                <select className="form-control" defaultValue={language} onChange={this.onUpdate} name="language" ref="languageField" onBlur={e => {}} title="Sprache" >
                   <option value="python-3">Python 3</option>
                   <option value="python-2">Python 2</option>
                   <option value="java-8">Java 8</option>
                   <option value="c-13">C</option>
                 </select>
                 <small>Spracheinstellung für dieses Dokument. Die Spracheinstellung wird für die ausführbaren Beispiele und die Metadaten benötigt. Die Sprache wird automatisch in die <em>kernelspec</em> und <em>language_info</em> übernommen (<em>Kompatibel zu Jupyter Notebook Format)</em>).</small>
+              </div>
+            </div>
+            <div className="form-group row">
+              <label className={"col-sm-2 form-control-label"}>Typ</label>
+              <div className={"col-sm-10"}>
+                <select className="form-control" name="embedType" onChange={this.onUpdate} defaultValue={embedType}>
+                  <option value={EmbedTypes.Sourcebox}>Sourcebox (serverseitig)</option>
+                  <option value={EmbedTypes.Skulpt}>Skulpt (clientseitig, nur Python)</option>
+                </select>
+                <small className="text-muted">Der Typ eines Beispiels definiert mit welchem Mechanismus der Code ausgeführt wird. <em>sourcebox</em> wird serverseitig ausgeführt. <em>skulpt</em> erlaubt die clientseitige Ausführung von Python (3).</small>
               </div>
             </div>
             <div className="form-group row">

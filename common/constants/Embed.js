@@ -13,3 +13,12 @@ export const MODES = {
   'RunMode': 'RunMode' /* disables saving for the current IDE */,
   'Unknown': 'Unknown'
 };
+
+export const EmbedTypes = {
+  Sourcebox: 'sourcebox',
+  Skulpt: 'skulpt'
+};
+
+export const RunModeDefaults = {
+  id: 'EXPERIMENTAL_RUN_MODE_WITH_ID'
+};
