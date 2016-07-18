@@ -498,10 +498,11 @@ export default class Project extends EventEmitter {
    */
   getSharableLink() {
     const host = window.location.host;
+    const protocol = window.location.protocol;
     const viewDocument = this.data.document ? `?showDocument=${this.data.document.id}`: '';
     const idOrSlug = this.data.slug || this.data.id;
 
-    return `${host}/embed/${idOrSlug}${viewDocument}`;
+    return `${protocol}//${host}/embed/${idOrSlug}${viewDocument}`;
   }
 
   /**
@@ -615,6 +616,25 @@ export default class Project extends EventEmitter {
 
     // Update title
     this.setTitle();
+
+    // Update URL to slug, when possible
+    this.setLocationToSlug();
+  }
+
+  setLocationToSlug() {
+    let url = window.location.href;
+    const id = this.data.id;
+    const slug = this.data.slug;
+
+    if (slug == null || slug == '' || slug.length <= 3) {
+      return;
+    }
+
+    // Check if we need to update
+    if (url.includes(id)) {
+      url = url.replace(id, slug);
+      location.replace(url);
+    }
   }
 
   setTitle() {

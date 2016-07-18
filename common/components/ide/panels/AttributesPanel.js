@@ -147,6 +147,11 @@ export default class AttributePanel extends React.Component {
           <input className="form-control" type="text" placeholder="main.py" name="mainFile" onChange={this.onChangeOption.bind(this, ['embed', 'meta'])} value={embed.meta.mainFile}/>
           <small className="text-muted">Datei, die zum Ausführen verwendet werden soll. Hat nur Auswirkungen auf bestimmte Sprache wie z.B. Python.</small>
         </div>
+          <div className="form-group">
+            <label className="form-control-label" >Interne ID</label>
+            <input className={"form-control"} disabled readOnly type="text" defaultValue={embed.id} name="id" />
+            <small>Interne ID des Dokumentes.</small>
+          </div>
         <Button bsStyle="success" className="form-group" onClick={this.onSave}>Speichern</Button>
         <Button bsStyle="warn" className="form-group" onClick={this.onReset}>Zurücksetzen</Button>
         <div className="form-group">
