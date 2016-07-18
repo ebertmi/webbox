@@ -52,6 +52,15 @@ export function deleteUser(user) {
   };
 }
 
+export function unblockUser(user) {
+  return {
+    type: types.UNBLOCK_USER_REQUEST,
+    params: {
+      id: user.id
+    }
+  };
+}
+
 export function resendUserConfirmationEmail(user) {
   return {
     type: types.RESEND_USER_CONFIRMATION_EMAIL_REQUEST,

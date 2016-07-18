@@ -43,6 +43,11 @@ export class UserForm extends Component {
     this.props.onChange(update);
   }
 
+  handleUnblock (event) {
+    event.preventDefault();
+    this.props.unblockUser(this.props.user);
+  }
+
   /**
    * Handles all input changes and triggers a redux state change using the onChange handler
    * from the parent.
@@ -148,6 +153,7 @@ export class UserForm extends Component {
         <button type="submit" onClick={this.handleSave.bind(this)} disabled={!isDirty} className="btn btn-success">Speichern</button>
         <button type="submit" onClick={this.handleDelete.bind(this)} inputClassName="form-control" className="btn btn-danger">Löschen</button>
         <button type="submit" onClick={this.handleResendConfirmationEmail.bind(this)} inputClassName="form-control" className="btn btn-warning">Aktivierungs-E-Mail erneut schicken</button>
+        <button type="submit" onClick={this.handleUnblock.bind(this)} inputClassName="form-control" className="btn btn-default">Anmeldung wieder erlauben</button>
       </div>
     );
   }

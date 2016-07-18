@@ -90,6 +90,23 @@ function* resendConfirmationEmail (action) {
   }
 }
 
+function* unblockUser (action) {
+  try {
+    // reset notification message
+    yield put({ type: adminTypes.RESET_MESSAGE });
+
+    const data = yield call(API.admin.unblockUser, action.params);
+
+    if (data.error) {
+      yield put({type: adminTypes.UNBLOCK_USER_FAILURE, message: data.error.message});
+    } else {
+      yield put({type: adminTypes.UNBLOCK_USER_SUCCESS});
+    }
+  } catch (e) {
+    yield put({type: adminTypes.UNBLOCK_USER_FAILURE, message: e.message});
+  }
+}
+
 /**
  * Course fetching...
  */
@@ -229,6 +246,7 @@ export default function* adminSaga () {
     fork(takeLatest, adminTypes.SAVE_USER_REQUEST, saveUser),
     fork(takeLatest, adminTypes.GET_USERS_REQUEST, fetchUsers),
     fork(takeLatest, adminTypes.DELETE_USER_REQUEST, deleteUser),
+    fork(takeLatest, adminTypes.UNBLOCK_USER_REQUEST, unblockUser),
     fork(takeLatest, adminTypes.RESEND_USER_CONFIRMATION_EMAIL_REQUEST, resendConfirmationEmail),
     fork(takeLatest, adminTypes.GET_EMBEDS_REQUEST, fetchEmbeds),
     fork(takeLatest, adminTypes.GET_COURSES_REQUEST, fetchCourses),

@@ -8,6 +8,8 @@ export const INITIAL_DASHBOARD_STATE = {
 export default function dashboard(state = INITIAL_DASHBOARD_STATE, action) {
   switch (action.type) {
     case adminTypes.DELETE_USER_FAILURE:
+    case adminTypes.UNBLOCK_USER_FAILURE:
+    case adminTypes.RESEND_USER_CONFIRMATION_EMAIL_FAILURE:
     case adminTypes.SAVE_USER_FAILURE:
     case adminTypes.GET_USER_FAILURE:
     case adminTypes.GET_USERS_FAILURE:
@@ -29,6 +31,14 @@ export default function dashboard(state = INITIAL_DASHBOARD_STATE, action) {
         message: {
           type: 'success',
           content: 'Gespeichert!'
+        }
+      });
+    case adminTypes.RESEND_USER_CONFIRMATION_EMAIL_SUCCESS:
+    case adminTypes.UNBLOCK_USER_SUCCESS:
+      return Object.assign({}, state, {
+        message: {
+          type: 'success',
+          content: 'Durchgeführt.'
         }
       });
     case adminTypes.RESET_MESSAGE:
