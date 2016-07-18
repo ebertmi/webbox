@@ -90,13 +90,15 @@ r.db('rethinkdb').table('cluster_config').get('auth').update({auth_key: 'newkey'
 Use the cli to add a user or list all users:
 
 You can specify if the added user is an admin by setting the isAdmin argument to true
-`node ./bin/cli.js addUser username email password isAdmin`
-Example: `node ./bin/cli.js addUser foobar foo@bar.foo foobar true` which should result in
+`node ./bin/wb.js addUser username email password isAdmin`
+Example: `node ./bin/wb.js addUser foobar foo@bar.foo foobar true` which should result in
 ```bash
 Creating a pool connected to localhost:28015
 Trying to save encrypted password: foobar $2a$10$wYd78IZGAHPliuY.sVCYF.3GgwOq/6x4YSJckB4hdRW/2pF5vaqZ2
 Saved User:  foobar 2f6e1442-359b-4242-a885-401cbbd6932e
 ```
+
+Running the CLI on a production server requires to start it as follows: `NODE_ENV=production node .bin/wb.js`
 
 ### IDE
 The IDE is a react-based UI for programming. See:

@@ -3,10 +3,11 @@
  * Allows rendering Markdown to HTML with custom extensions:
  * - Uses highlight.js for code highlighting
  */
-const md = require('markdown-it');
-const katex = require('katex');
-/*const Promise = require('bluebird');*/
-const hljs = require('highlight.js');
+import md from 'markdown-it';
+import katex from 'katex';
+import hljs from 'highlight.js';
+import Decorate from 'markdown-it-decorate';
+import MarkdownMath from 'markdown-it-math';
 
 
 const COPY_BUTTON = `<div class="course-clipboard">
@@ -64,10 +65,10 @@ const FENCE = function (tokens, idx, options, env, slf) {
 };
 
 // add plugins
-markdownit.use(require('markdown-it-decorate'));
+markdownit.use(Decorate);
 
 // render math with katex
-markdownit.use(require('markdown-it-math'), {
+markdownit.use(MarkdownMath, {
   inlineOpen: '$',
   inlineClose: '$',
   blockOpen: '$$',
@@ -88,7 +89,7 @@ markdownit.use(require('markdown-it-math'), {
 
 markdownit.renderer.rules.fence = FENCE;
 
-module.exports = {
+export default {
   render: function (str) {
     return new Promise(function (resolve, reject) {
       try {

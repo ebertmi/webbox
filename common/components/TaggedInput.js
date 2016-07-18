@@ -1,5 +1,5 @@
 'use-strict';
-var React = require('react');
+import React from 'react';
 
 var KEY_CODES = {
   ENTER: 13,
@@ -23,7 +23,7 @@ var DefaultTagComponent = React.createClass({
 
 });
 
-module.exports = React.createClass({
+export default React.createClass({
   displayName: 'TaggedInput',
 
   propTypes: {

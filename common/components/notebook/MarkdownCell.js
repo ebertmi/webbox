@@ -4,7 +4,6 @@ import { EditSession, UndoManager } from 'ace';
 
 import Icon from '../Icon';
 import Editor from '../Editor';
-import ImageUpload from './ImageUpload';
 import ImageGallery from './ImageGallery';
 import CellMetadata from './CellMetadata';
 import { EditButtonGroup } from './EditButtonGroup';

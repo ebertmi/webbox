@@ -3,6 +3,7 @@ import katex from 'katex';
 import mkitm from 'markdown-it-math';
 import isString from 'lodash/isString';
 import { S, Code, BlockQuote, Quote, Heading, Image, Link, Text, ListItem, List } from "spectacle/lib/index";
+import Decorate from 'markdown-it-decorate';
 
 import MDReactComponent from './MDReactComponent';
 import Math from './Math';
@@ -159,7 +160,7 @@ export const mdOptions = {
 
   },
   plugins: [
-    require('markdown-it-decorate'),
+    Decorate,
     {
       plugin: mkitm,
       args: [{

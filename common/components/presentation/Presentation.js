@@ -9,8 +9,8 @@ import {
   Slide,
   Spectacle,
   Text
-} from "spectacle/lib/index";
-require("spectacle/lib/themes/default/index");
+} from 'spectacle/lib/index';
+import 'spectacle/lib/themes/default/index';
 
 // Custom Modules
 import Highlight from './Highlight';

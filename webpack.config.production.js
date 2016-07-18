@@ -65,11 +65,6 @@ module.exports = {
   },
   postcss: [ autoprefixer({ browsers: ['last 2 versions'] }) ],
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production')
-      }
-    }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'react-commons',
       chunks: ['dashboard', 'embed', 'notebook', 'presentation']
@@ -78,17 +73,14 @@ module.exports = {
       allChunks: true,
       disable: false
     }),
-
-    new webpack.optimize.UglifyJsPlugin({
-      compressor: {
-        warnings: false
-      },
-      sourceMap: false,
-      mangle: true
+    new webpack.DefinePlugin({
+      "process.env": {
+        NODE_ENV: JSON.stringify("production")
+      }
     })
   ],
   node: {
     Buffer: true,
     fs: 'empty' // needed for term.js
-  }
+  },
 };

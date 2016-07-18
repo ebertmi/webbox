@@ -137,7 +137,8 @@ export default class CodeCell extends React.Component {
   renderEditMode() {
     let minHeight = this.getWrapperHeightOrMin();
     let source = sourceFromCell(this.props.cell);
-    let mode = this.props.cell.getIn(['metadata', 'mode']);
+    // ToDo: get default language from notebook if mode is not available
+    let mode = this.props.cell.getIn(['metadata', 'mode'], 'python');
     if (this.session) {
       this.session.setValue(source);
       this.session.setMode('ace/mode/' + mode);

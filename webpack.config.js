@@ -13,7 +13,6 @@ module.exports = {
     dashboard: './js/dashboard.js',
     index: './js/index.js',
     embed: './js/embed.js',
-    course: './js/course.js',
     notebook: './js/notebook.js',
     presentation: './js/presentation'
   },
