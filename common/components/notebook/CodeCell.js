@@ -70,7 +70,10 @@ export default class CodeCell extends React.Component {
    * Renders marks down and sets the returned markup as state when finished.
    */
   renderMarkdown(source) {
-    let mode = this.props.cell.getIn(['metadata', 'mode'], '');
+    // Get default language from notebook if mode is not available
+    let language = this.props.notebookLanguage || 'python';
+    let mode = this.props.cell.getIn(['metadata', 'mode'], language);
+
     const codeSource = '```' + mode + '\n' + source + '\n```';
     Markdown.render(codeSource)
     .then((rendered) => {
@@ -137,8 +140,11 @@ export default class CodeCell extends React.Component {
   renderEditMode() {
     let minHeight = this.getWrapperHeightOrMin();
     let source = sourceFromCell(this.props.cell);
-    // ToDo: get default language from notebook if mode is not available
-    let mode = this.props.cell.getIn(['metadata', 'mode'], 'python');
+
+    // Get default language from notebook if mode is not available
+    let language = this.props.notebookLanguage || 'python';
+    let mode = this.props.cell.getIn(['metadata', 'mode'], language);
+
     if (this.session) {
       this.session.setValue(source);
       this.session.setMode('ace/mode/' + mode);

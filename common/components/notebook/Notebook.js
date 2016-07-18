@@ -200,6 +200,7 @@ export default class Notebook extends React.Component {
     const cells = this.props.notebook.get('cells');
     const cellOrder = this.props.notebook.get('cellOrder');
     const course = this.props.notebook.get('course');
+    const notebookLanguage = this.props.notebook.getIn(['metadata', 'language_info', 'name'], 'plain');
 
     let blocks = [];
     let dispatch = this.props.dispatch;
@@ -221,7 +222,7 @@ export default class Notebook extends React.Component {
           blocks.push(<MarkdownCell course={course} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor} editing={index === activeBlock}/>);
           break;
         case 'code':
-          blocks.push(<CodeCell course={course} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor} editing={index === activeBlock}/>);
+          blocks.push(<CodeCell course={course} notebookLanguage={notebookLanguage} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor} editing={index === activeBlock}/>);
           break;
         case 'codeembed':
           blocks.push(<CodeEmbedCell course={course} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor}editing={index === activeBlock}/>);
