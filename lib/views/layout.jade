@@ -37,7 +37,7 @@ html(lang="de")
                 else
                   .pull-xs-right
                     - var nextQuery = "?next=" + (next || "");
-                    a(class="nav-item btn btn-success btn-sm", href!="/login" + nextQuery) Einloggen
+                    a(class="nav-item btn btn-success btn-sm", href="/login" + nextQuery) Einloggen
 
       block content
         main.site-content#content
