@@ -1,6 +1,5 @@
 import React from 'react';
 import set from 'lodash/set';
-import screenfull from 'screenfull';
 
 import optionManager from '../../models/options';
 
@@ -99,12 +98,6 @@ export default class Menu extends React.Component {
     } else {
       // download as single file
       saveTextAsFile(files[0]);
-    }
-  }
-
-  onToggleFullscreen() {
-    if (screenfull.enabled) {
-      screenfull.toggle();
     }
   }
 
@@ -230,10 +223,6 @@ export default class Menu extends React.Component {
         </form>
 
         <DropdownDivider/>
-
-        <DropdownItem onClick={this.onToggleFullscreen.bind(this)} disabled={!screenfull.enabled}>
-          <Icon name="arrows-alt" fixedWidth/> Vollbildmodus
-        </DropdownItem>
 
         <DropdownItem onClick={this.onOptions.bind(this)}>
           <Icon name="gear" fixedWidth/> Einstellungen

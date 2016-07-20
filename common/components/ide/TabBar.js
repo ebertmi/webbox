@@ -1,5 +1,6 @@
 import React from 'react';
 
+import screenfull from 'screenfull';
 import Icon from '../Icon';
 import {Nav, NavItem} from '../bootstrap';
 
@@ -44,6 +45,12 @@ export default class TabBar extends React.Component {
     this.setState({
       tabs: this.props.project.getTabs()
     });
+  }
+
+  onToggleFullscreen() {
+    if (screenfull.enabled) {
+      screenfull.toggle();
+    }
   }
 
   onTabClick(index, e) {
@@ -141,6 +148,10 @@ export default class TabBar extends React.Component {
             <Icon name="save" />
           </NavItem>
           { shareWithTeacher }
+
+          <NavItem className="unselectable" onClick={this.onToggleFullscreen.bind(this)} disabled={!screenfull.enabled}>
+            <Icon name="arrows-alt" title="Vollbildmodus"/>
+          </NavItem>
           <Menu project={project}/>
         </Nav>
       </div>

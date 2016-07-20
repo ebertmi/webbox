@@ -14,6 +14,7 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var autoprefixer = require('autoprefixer');
 
 var VERSION = require('./package.json').version;
+console.info('Building with package version:', VERSION);
 
 module.exports = {
   context: path.resolve(__dirname, 'client'),

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, IndexRoute } from 'react-router';
+import { Route, IndexRoute, Redirect } from 'react-router';
 
 import AdminApp from '../containers/admin/AdminApp';
 import UserOverview from '../containers/admin/UserOverview';
@@ -19,5 +19,6 @@ export default (
     <Route path='/admin/course/:id' component={Course} />
     <Route path='/admin/embeds' component={EmbedOverview} />
     <Route path='/admin/authattempts' component={AuthAttemptOverview} />
+    <Redirect from="*" to="" />
   </Route>
 );
