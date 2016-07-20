@@ -13,7 +13,6 @@ $line-height: 1.5rem;
 @import "includes/_animations.scss";
 @import "includes/_paginate.scss";
 @import "includes/_tablesearchbar.scss";
-//@import "includes/_typer.scss";
 
 @import "ide/ide";
 @import "notebook/notebook";
@@ -49,7 +48,6 @@ form .btn,
     margin-right: 1em;
   }
 }
-
 
 .loader {
   box-sizing: border-box;

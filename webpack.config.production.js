@@ -13,10 +13,12 @@ var path = require('path');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var autoprefixer = require('autoprefixer');
 
+process.env.NODE_ENV = '"production"';
 var VERSION = require('./package.json').version;
 console.info('Building with package version:', VERSION);
 
 module.exports = {
+  target: 'web',
   context: path.resolve(__dirname, 'client'),
   entry: {
     dashboard: './js/dashboard.js',
@@ -66,6 +68,11 @@ module.exports = {
   },
   postcss: [ autoprefixer({ browsers: ['last 2 versions'] }) ],
   plugins: [
+    new webpack.DefinePlugin({
+      "process.env": {
+        NODE_ENV: JSON.stringify("production")
+      }
+    }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'react-commons',
       chunks: ['dashboard', 'embed', 'notebook', 'presentation']
@@ -73,11 +80,6 @@ module.exports = {
     new ExtractTextPlugin('../css/all.bundle.' + VERSION + '.css', {
       allChunks: true,
       disable: false
-    }),
-    new webpack.DefinePlugin({
-      "process.env": {
-        NODE_ENV: JSON.stringify("production")
-      }
     })
   ],
   node: {

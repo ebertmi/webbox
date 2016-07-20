@@ -8,7 +8,7 @@
     "start": "NODE_ENV=production node webbox.babel.js",
     "startwin": "set NODE_ENV=production&&node webbox.babel.js",
     "dev": "nodemon webbox.babel.js",
-    "build-web": "webpack --config=webpack.config.production.js --progress",
+    "build-web": "webpack --config webpack.config.production.js -p --progress",
     "watch-web": "webpack -d --watch"
   },
   "private": true,
