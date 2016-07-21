@@ -223,7 +223,9 @@ export default class Runner extends EventEmitter {
       },
       nonreadopen: true,
       python3: isPython3,
-      execLimit: RUN_DEFAULTS.execLimit
+      execLimit: RUN_DEFAULTS.execLimit,
+      killableWhile: true,
+      killableFor: true
     });
 
     this.stdoutTransform = new TerminalTransform();
