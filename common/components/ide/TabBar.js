@@ -138,9 +138,9 @@ export default class TabBar extends React.Component {
 
     return (
       <div className="control-bar">
-        <Nav className="tabs tabs-container" bsStyle="pills">
+        <nav className="tabs-container">
           {this.renderTabs()}
-        </Nav>
+        </nav>
         <span className="embed-title">{project.name}</span>
         <Nav className="controls" bsStyle="pills">
           {startStop}

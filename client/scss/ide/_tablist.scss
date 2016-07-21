@@ -1,19 +1,8 @@
 .tabs-container {
   display: flex;
+  flex: 1 1 0;
   height: 35px;
   font-size: 0.9rem;
-}
-
-.tabs-container > .tab::first-child {
-  border-left-color: transparent;
-}
-
-.tabs-container>.tab:not(.active) {
-  background-color: #ececec;
-}
-
-.tabs-container > .tab {
-  border-left-color: #ddd;
 }
 
 .tabs-container > .tab {
@@ -26,6 +15,18 @@
   box-sizing: border-box;
   border: 1px solid transparent;
   padding-left: 10px;
+}
+
+.tabs-container > .tab::first-child {
+  border-left-color: transparent;
+}
+
+.tabs-container > .tab:not(.active) {
+  background-color: #ececec;
+}
+
+.tabs-container > .tab {
+  border-left-color: #ddd;
 }
 
 .ide-editor-background {

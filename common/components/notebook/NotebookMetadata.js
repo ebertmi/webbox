@@ -70,7 +70,7 @@ class NotebookMetadata extends React.Component {
       const titleText = this.props.isAuthor ? 'Leseansicht' : 'Editieransicht';
       return (
       <span className="metadata-item">
-        <span className="metadata-sep">{'\u00a0//\u00a0'}</span>
+        <span className="metadata-sep">&nbsp;&middot;&nbsp;</span>
         <Icon className="icon-control" name={iconName} title={titleText} onClick={this.toggleViewMode} />
       </span>
       );
@@ -85,7 +85,7 @@ class NotebookMetadata extends React.Component {
     const editTitleText = this.props.editable ? 'Schließen' : 'Metadata bearbeiten';
     return (
       <span>
-        <span className="metadata-sep">{'\u00a0//\u00a0'}</span>
+        <span className="metadata-sep">&nbsp;&middot;&nbsp;</span>
         <span className="metadata-item  icon-control" onClick={this.toggleEditClicked} >
           <Icon name={editIconName} title={editTitleText} />
         </span>
@@ -194,11 +194,11 @@ class NotebookMetadata extends React.Component {
         <h1>{title}</h1>
         <div className="metadata">
           <span className="metadata-item">
-            <Icon name="user" />{'\u00a0' + author}
+            <Icon name="user" />&nbsp;{author}
           </span>
-          <span className="metadata-sep">{'\u00a0//\u00a0'}</span>
+          <span className="metadata-sep">&nbsp;&middot;&nbsp;</span>
           <span className="metadata-item">
-            <Icon name="clock-o" />{'\u00a0 Zuletzt aktualisiert '}<Time value={date} locale="de" relative={true} />
+            <Icon name="clock-o" />&nbsp;Zuletzt aktualisiert<Time value={date} locale="de" relative={true} />
           </span>
           { isAuthor ? this.renderButtons() : null }
           { this.renderViewMode() }
