@@ -1,11 +1,11 @@
 import React from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import classnames from 'classnames';
 
+import BaseCell from './BaseCell';
 import IFrame from './IFrame';
 import { EditButtonGroup } from './EditButtonGroup';
 import CellMetadata from './CellMetadata';
-import { editCell, deleteCell, stopEditCell, updateCell, moveCellUp, moveCellDown } from '../../actions/NotebookActions';
-import { sourceFromCell } from '../../util/nbUtil';
+import { updateCell } from '../../actions/NotebookActions';
 import { EmbedTypes } from '../../constants/Embed';
 import { API } from '../../services';
 import { Severity } from '../../models/severity';
@@ -13,26 +13,15 @@ import { Severity } from '../../models/severity';
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
  */
-export default class CodeEmbedCell extends React.Component {
+export default class CodeEmbedCell extends BaseCell {
   constructor(props) {
     super(props);
 
     // Bind callbacks to right context (this)
-    this.onEdit = this.onEdit.bind(this);
-    this.onDelete = this.onDelete.bind(this);
-    this.onStopEdit = this.onStopEdit.bind(this);
-    this.onUpdateCell = this.onUpdateCell.bind(this);
-    this.onCellUp = this.onCellUp.bind(this);
-    this.onCellDown = this.onCellDown.bind(this);
-
     this.onShowCreateEmbed = this.onShowCreateEmbed.bind(this);
     this.onCancelCreateEmbed = this.onCancelCreateEmbed.bind(this);
     this.onFormDataChange = this.onFormDataChange.bind(this);
     this.onCreateEmbed = this.onCreateEmbed.bind(this);
-    this.onKeyDown = this.onKeyDown.bind(this);
-
-    // Fast shouldComponentUpdate for immutable.js
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   /**
@@ -107,47 +96,10 @@ export default class CodeEmbedCell extends React.Component {
     });
   }
 
-  onCellUp() {
-    this.props.dispatch(moveCellUp(this.props.cellIndex));
-  }
-
-  onCellDown() {
-    this.props.dispatch(moveCellDown(this.props.cellIndex));
-  }
-
-  onEdit(e) {
-    e.preventDefault();
-    this.props.dispatch(editCell(this.props.cellIndex));
-  }
-
-  onDelete(e) {
-    e.preventDefault();
-    this.props.dispatch(deleteCell(this.props.cellIndex));
-  }
-
-  onStopEdit(e) {
-    if (e) {
-      e.preventDefault();
-    }
-
-    this.props.dispatch(stopEditCell());
-  }
-
   onUpdateCell(e) {
     e.preventDefault();
     const value = e.target.value || '';
     this.props.dispatch(updateCell(this.props.cell.get('id'), value));
-  }
-
-  /**
-   * Check for Ctrl+S and try to save the document if possible
-   */
-  onKeyDown(e) {
-    let key = e.which || e.keyCode;
-    if (key === 27) {
-      // Escape Key pressed
-      this.onStopEdit();
-    }
   }
 
   renderCreateEmbed() {
@@ -195,7 +147,7 @@ export default class CodeEmbedCell extends React.Component {
   }
 
   renderEditMode() {
-    let source = sourceFromCell(this.props.cell);
+    let source = this.getSourceFromCell();
 
     let createForm = this.state.showCreateEmbed ? this.renderCreateEmbed() : this.renderCreateEmbedButton();
 
@@ -222,8 +174,9 @@ export default class CodeEmbedCell extends React.Component {
     let content;
     let metadata = <CellMetadata className="col-xs-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
     let editingClass = editing ? ' editing' : '';
+    const isVisible = this.isVisible();
 
-    let source = sourceFromCell(this.props.cell);
+    let source = this.getSourceFromCell();
     let frame = source !== '' ? <IFrame lazy={true} className="col-xs-12" width={width} height={height} src={`/embed/${source}`} allowFullScreen={true} frameBorder="0" /> : <p>Keine ID angegeben.</p>;
 
 
@@ -233,9 +186,13 @@ export default class CodeEmbedCell extends React.Component {
       content = this.renderEditMode();
     }
 
+    const classes = classnames("codeembed-cell col-md-12 row", editingClass, {
+      'cell-not-visible': !isVisible
+    });
+
     return (
-      <div className={"codeembed-cell col-md-12 row" + editingClass}>
-        <EditButtonGroup isAuthor={isAuthor} editing={editing} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
+      <div className={classes}>
+        <EditButtonGroup isVisible={isVisible} isAuthor={isAuthor} editing={editing} onToggleVisibility={this.onToggleVisibility} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
         {metadata}
         {content}
         {frame}
@@ -254,8 +211,4 @@ CodeEmbedCell.propTypes = {
 
 CodeEmbedCell.defaultProps = {
   lazy: true
-};
-
-CodeEmbedCell.contextTypes = {
-  messageList: React.PropTypes.object
 };

@@ -1,4 +1,5 @@
 import React from 'react';
+import classnames from 'classnames';
 
 import MarkdownCell from './MarkdownCell';
 import CodeEmbedCell from './CodeEmbedCell';
@@ -13,7 +14,7 @@ import { Severity } from '../../models/severity';
 import { MessageList } from '../messageList/messageList';
 
 import { loadCellsFromIPYNB, stateToJS } from '../../util/nbUtil';
-import { addCellsFromJS, stopEditCell } from '../../actions/NotebookActions';
+import { addCellsFromJS } from '../../actions/NotebookActions';
 
 import { API } from '../../services';
 
@@ -253,20 +254,26 @@ export default class Notebook extends React.Component {
     const course = this.props.notebook.get('course');
     const embedType = this.props.notebook.get('embedType');
     const id = this.props.notebook.get('id');
+    const editable = this.props.notebook.get('notebookMetadataEditable');
+    const isAuthor = this.props.notebook.get('isAuthor');
+
+    const classes = classnames("notebook row", {
+      'view-mode': !isAuthor
+    });
 
     return (
-      <div data-drag={true} className="notebook row" onDragOver={this.onDragOver} onDrop={this.onDrop.bind(this) }>
+      <div data-drag={true} className={classes} onDragOver={this.onDragOver} onDrop={this.onDrop.bind(this) }>
         <div className="global-message-list">
           <MessageList messageList={this.messageList} />
         </div>
         <NotebookMetadata
         canToggleEditMode={this.props.notebook.get('canToggleEditMode')}
-        isAuthor={this.props.notebook.get('isAuthor')}
+        isAuthor={isAuthor}
         onSave={this.onSave}
         onDelete={this.onDelete}
         redoStackSize={redoStackSize}
         undoStackSize={undoStackSize}
-        editable={this.props.notebook.get('notebookMetadataEditable')}
+        editable={editable}
         slug={this.props.notebook.get('slug')}
         course={course}
         embedType={embedType}

@@ -1,4 +1,5 @@
 import React from 'react';
+import classnames from 'classnames';
 
 import { toBootstrapClass } from '../../models/severity';
 
@@ -42,7 +43,8 @@ export default class StatusBar extends React.Component {
   }
 
   render() {
-    const classes = "status-bar " + toBootstrapClass(this.state.status.severity);
+    const classes = classnames('status-bar', toBootstrapClass(this.state.status.severity), 'hidden-print')
+
     return (
       <div className={classes}>
         <span className="status-language-information"><span className="tag tag-success">{this.state.status.languageInformation}</span></span>

@@ -94,6 +94,10 @@ export default function notebook(state = initialState, action) {
       newState = updateCellMetadata(state, action.cellId, action.keyPath, action.value);
       return updateStateWithHistory(state, newState);
 
+    case Types.TOGGLE_CELL_VISIBILITY:
+      newState = toggleCellVisibility(state, action.cellId);
+      return updateStateWithHistory(state, newState);
+
     case Types.UPDATE_NOTEBOOK_META:
       newState = updateNotebookMetadata(state, action.name, action.value);
       return newState;
@@ -208,6 +212,29 @@ function updateCellSlidetype(state, cellId, slideType) {
   return state.set('cells',  cells.set(cellId, newCell));
 }
 
+function toggleCellVisibility(state, cellId) {
+  let cells = state.get('cells');
+  let cell = cells.get(cellId); // get the cell
+  let newCell;
+
+  if (!cell) {
+    console.warn('NotebookReducer.updateCellSlidetype could not find cell for id ', cellId);
+    return state;
+  }
+
+  // Now try to retriev current visibility
+  let isVisible = cell.getIn(['metadata', 'isVisible'], true);
+
+  if (isVisible === true) {
+    newCell = cell.setIn(['metadata', 'isVisible'], false);
+  } else {
+    // We just remove the key from the cell, if it is visible
+    newCell = cell.deleteIn(['metadata', 'isVisible']);
+  }
+
+  return state.set('cells', cells.set(cellId, newCell));
+}
+
 /**
  * Creates a new empty Cell for the given type. Format is translated into nbformatv4
  */
@@ -234,7 +261,7 @@ function createNewCellByType(cellType) {
       break;
     default:
       newCell.cell_type = 'raw';
-      newCell.metadata.format = 'text/plain'; /* output as text as default */
+      newCell.metadata.format = 'text/html'; /* output as text as default */
   }
 
   return Immutable.fromJS(newCell);

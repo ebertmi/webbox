@@ -6,6 +6,7 @@ import Ace from 'ace';
 export default class Editor extends React.Component {
   componentDidMount() {
     this.editor = Ace.edit(this.container);
+    this.editor.$blockScrolling = Infinity;
     this.updateProps(this.props);
   }
 

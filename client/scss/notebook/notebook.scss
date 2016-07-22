@@ -39,6 +39,19 @@
   & .control-outline .form-control {
     border: 1px dashed #999;
   }
+
+  &.cell-not-visible {
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAAChJREFUKFNjOH/+fAMDDgCSu3Dhwn9c8gwwBTgNGR4KQP4HhQOhsAIAZCBTkhtqePcAAAAASUVORK5CYII=");
+    -webkit-filter: opacity(85%);
+    -moz-filter: opacity(85%);
+    -o-filter: opacity(85%);
+    -ms-filter: opacity(85%);
+    filter: opacity(85%);
+  }
+}
+
+.view-mode .cell-not-visible {
+  display: none;
 }
 
 .markdown-cell p {

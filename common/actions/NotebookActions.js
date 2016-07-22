@@ -22,6 +22,17 @@ export function toggleViewMode() {
 }
 
 /**
+ * Action for toggling the visiblity of the given cell
+ *
+ */
+export function toggleCellVisibility(cellId) {
+  return {
+    type: Types.TOGGLE_CELL_VISIBILITY,
+    cellId: cellId
+  };
+}
+
+/**
  * Undo the last operation by getting the last state from the stack.
  */
 export function undo() {

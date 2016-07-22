@@ -57,7 +57,6 @@ export default class CellMetadata extends React.Component {
       return;
     }
 
-    console.log('onMetadataChange', name, newValue);
     this.props.dispatch(updateCellMetadata(this.props.cellId, name, newValue));
   }
 

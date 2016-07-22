@@ -1,59 +1,25 @@
 import React from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
 import { EditSession, UndoManager } from 'ace';
+import classnames from 'classnames';
 
+import BaseCell from './BaseCell';
 import CellMetadata from './CellMetadata';
 import Editor from '../Editor';
 import { EditButtonGroup } from './EditButtonGroup';
 
-import { editCell, deleteCell, stopEditCell, updateCell, moveCellUp, moveCellDown } from '../../actions/NotebookActions';
-import { sourceFromCell } from '../../util/nbUtil';
+import { updateCell } from '../../actions/NotebookActions';
 
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
  */
-export default class RawCell extends React.Component {
+export default class RawCell extends BaseCell {
   constructor(props) {
     super(props);
 
-    this.onEdit = this.onEdit.bind(this);
-    this.onDelete = this.onDelete.bind(this);
-    this.onStopEdit = this.onStopEdit.bind(this);
     this.onUpdateCell = this.onUpdateCell.bind(this);
-    this.onCellUp = this.onCellUp.bind(this);
-    this.onCellDown = this.onCellDown.bind(this);
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
-    this.onKeyDown = this.onKeyDown.bind(this);
   }
 
   componentDidMount() {
-  }
-
-  onCellUp() {
-    this.props.dispatch(moveCellUp(this.props.cellIndex));
-  }
-
-  onCellDown() {
-    this.props.dispatch(moveCellDown(this.props.cellIndex));
-  }
-
-  onEdit(e) {
-    e.preventDefault();
-    this.props.dispatch(editCell(this.props.cellIndex));
-  }
-
-  onDelete(e) {
-    e.preventDefault();
-    this.props.dispatch(deleteCell(this.props.cellIndex));
-  }
-
-  onStopEdit(e) {
-    if (e) {
-      e.preventDefault();
-    }
-
-    this.props.dispatch(stopEditCell());
-    this.onUpdateCell();
   }
 
   /**
@@ -65,17 +31,6 @@ export default class RawCell extends React.Component {
       this.props.dispatch(updateCell(this.props.cell.get('id'), content));
     } else {
       console.warn('RawCell.onSaveCellSource called with invalid session', this.session);
-    }
-  }
-
-  /**
-   * Check for Ctrl+S and try to save the document if possible
-   */
-  onKeyDown(e) {
-    let key = e.which || e.keyCode;
-    if (key === 27) {
-      // Escape Key pressed
-      this.onStopEdit();
     }
   }
 
@@ -92,7 +47,7 @@ export default class RawCell extends React.Component {
 
   renderEditMode() {
     let minHeight = this.getWrapperHeightOrMin();
-    let source = sourceFromCell(this.props.cell);
+    let source = this.getSourceFromCell();
 
     if (source == null) {
       source = '';
@@ -110,6 +65,9 @@ export default class RawCell extends React.Component {
 
     return (
       <div className="col-xs-12" onKeyDown={this.onKeyDown}>
+        <p className="text-muted">
+          Es werden folgende Formate unterstützt: <code>text/plain</code>, <code>text/html</code>, <code>image/(jpeg|png|gif)</code>.
+        </p>
         <strong>Raw</strong>
         <Editor fontSize="13px" minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />
       </div>
@@ -119,7 +77,7 @@ export default class RawCell extends React.Component {
   renderViewMode() {
     // ToDo: maybe limit the size of the cell?
     let format = this.props.cell.getIn(['metadata', 'format']);
-    let source = sourceFromCell(this.props.cell);
+    let source = this.getSourceFromCell();
 
     switch(format) {
       case 'text/plain':
@@ -140,6 +98,7 @@ export default class RawCell extends React.Component {
     let content;
     let metadata = <CellMetadata className="col-xs-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
     let editingClass = editing ? ' editing' : '';
+    const isVisible = this.isVisible();
 
     if (!(isAuthor && editing)) {
       content = this.renderViewMode();
@@ -147,9 +106,13 @@ export default class RawCell extends React.Component {
       content = this.renderEditMode();
     }
 
+    const classes = classnames("raw-cell col-md-12 row", editingClass, {
+      'cell-not-visible': !isVisible
+    });
+
     return (
-      <div className={"raw-cell col-md-12 row " + editingClass}>
-        <EditButtonGroup  isAuthor={isAuthor} editing={editing} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
+      <div className={classes}>
+        <EditButtonGroup isVisible={isVisible} isAuthor={isAuthor} editing={editing} onToggleVisibility={this.onToggleVisibility} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
         {metadata}
         {content}
       </div>

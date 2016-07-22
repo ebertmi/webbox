@@ -1,36 +1,28 @@
 import React from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
 import { EditSession, UndoManager } from 'ace';
+import classnames from 'classnames';
 
+import BaseCell from './BaseCell';
 import Editor from '../Editor';
 import Icon from '../Icon';
 import CellMetadata from './CellMetadata';
 import { EditButtonGroup } from './EditButtonGroup';
 
 
-import { editCell, deleteCell, stopEditCell, updateCell, moveCellUp, moveCellDown } from '../../actions/NotebookActions';
+import { updateCell } from '../../actions/NotebookActions';
 
 import { EmbedTypes, RunModeDefaults } from '../../constants/Embed';
 import Markdown from '../../util/markdown';
-import { sourceFromCell } from '../../util/nbUtil';
 
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
  */
-export default class CodeCell extends React.Component {
+export default class CodeCell extends BaseCell {
   constructor(props) {
     super(props);
 
-    this.onEdit = this.onEdit.bind(this);
-    this.onDelete = this.onDelete.bind(this);
-    this.onStopEdit = this.onStopEdit.bind(this);
-    this.onUpdateCell = this.onUpdateCell.bind(this);
     this.onRef = this.onRef.bind(this);
-    this.onCellUp = this.onCellUp.bind(this);
-    this.onCellDown = this.onCellDown.bind(this);
     this.onRun = this.onRun.bind(this);
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
-    this.onKeyDown = this.onKeyDown.bind(this);
   }
 
   componentWillMount() {
@@ -40,7 +32,7 @@ export default class CodeCell extends React.Component {
   }
 
   componentDidMount() {
-    this.renderMarkdown(sourceFromCell(this.props.cell));
+    this.renderMarkdown(this.getSourceFromCell());
   }
 
   /**
@@ -56,7 +48,7 @@ export default class CodeCell extends React.Component {
      *  - Current course/chapter (for statistics)
      */
 
-    const code = sourceFromCell(this.props.cell);
+    const code = this.getSourceFromCell();
     const language = 'python3';
     let notebookEmbedType = this.props.embedType || EmbedTypes.Sourcebox;
     const embedType = this.props.cell.getIn(['metadata', 'embedType'], notebookEmbedType);
@@ -87,33 +79,6 @@ export default class CodeCell extends React.Component {
     });
   }
 
-  onCellUp() {
-    this.props.dispatch(moveCellUp(this.props.cellIndex));
-  }
-
-  onCellDown() {
-    this.props.dispatch(moveCellDown(this.props.cellIndex));
-  }
-
-  onEdit(e) {
-    e.preventDefault();
-    this.props.dispatch(editCell(this.props.cellIndex));
-  }
-
-  onDelete(e) {
-    e.preventDefault();
-    this.props.dispatch(deleteCell(this.props.cellIndex));
-  }
-
-  onStopEdit(e) {
-    if (e) {
-      e.preventDefault();
-    }
-
-    this.props.dispatch(stopEditCell());
-    this.onUpdateCell();
-  }
-
   /**
    * Saves the "source" property of a cell.
    */
@@ -134,17 +99,6 @@ export default class CodeCell extends React.Component {
   }
 
   /**
-   * Check for Ctrl+S and try to save the document if possible
-   */
-  onKeyDown(e) {
-    let key = e.which || e.keyCode;
-    if (key === 27) {
-      // Escape Key pressed
-      this.onStopEdit();
-    }
-  }
-
-  /**
    * Helper to determine the height of the rendered markdown to set the ace editor size accordingly
    */
   getWrapperHeightOrMin() {
@@ -157,7 +111,7 @@ export default class CodeCell extends React.Component {
 
   renderEditMode() {
     let minHeight = this.getWrapperHeightOrMin();
-    let source = sourceFromCell(this.props.cell);
+    let source = this.getSourceFromCell();
 
     // Get default language from notebook if mode is not available
     let language = this.props.notebookLanguage || 'python';
@@ -189,6 +143,7 @@ export default class CodeCell extends React.Component {
     let content;
     let metadata = <CellMetadata className="col-xs-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
     let editingClass = editing ? ' editing' : '';
+    const isVisible = this.isVisible();
 
     if (!(isAuthor && editing)) {
       content = this.renderViewMode();
@@ -196,9 +151,13 @@ export default class CodeCell extends React.Component {
       content = this.renderEditMode();
     }
 
+    const classes = classnames("markdown-cell col-md-12 row", editingClass, {
+      'cell-not-visible': !isVisible
+    });
+
     return (
-      <div className={"code-cell col-md-12 row " + editingClass}>
-        <EditButtonGroup isAuthor={isAuthor} editing={editing} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
+      <div className={classes}>
+        <EditButtonGroup isVisible={isVisible} isAuthor={isAuthor} editing={editing} onToggleVisibility={this.onToggleVisibility} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
         {metadata}
         <Icon name="play-circle-o" className="icon-control" onClick={this.onRun} title="Code Ausführen" />
         {content}

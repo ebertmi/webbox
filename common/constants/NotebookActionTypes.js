@@ -16,6 +16,7 @@ export const UPDATE_CELL = 'UPDATE_CELL';
 export const EDIT_CELL = 'EDIT_CELL';
 export const UPDATE_CELL_META = 'UPDATE_CELL_META';
 export const TOGGLE_CELL_META = 'TOGGLE_CELL_META';
+export const TOGGLE_CELL_VISIBILITY = 'TOGGLE_CELL_VISIBILITY';
 export const ADD_CELL = 'ADD_CELL';
 export const ADD_CELLS_FROM_JS = 'ADD_CELLS_FROM_JS';
 export const DELETE_CELL = 'DELETE_CELL';

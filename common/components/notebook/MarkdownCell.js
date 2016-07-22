@@ -1,38 +1,28 @@
 import React from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
 import { EditSession, UndoManager } from 'ace';
+import classnames from 'classnames';
 
+import BaseCell from './BaseCell';
 import Icon from '../Icon';
 import Editor from '../Editor';
 import ImageGallery from './ImageGallery';
 import CellMetadata from './CellMetadata';
 import { EditButtonGroup } from './EditButtonGroup';
 
-import { editCell, deleteCell, stopEditCell, updateCell, moveCellUp, moveCellDown } from '../../actions/NotebookActions';
+import { updateCell } from '../../actions/NotebookActions';
 
 import Markdown from '../../util/markdown';
-import { sourceFromCell } from '../../util/nbUtil';
-
-const MAX_EDITOR_HEIGHT = 400;
 
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
  */
-export default class MarkdownCell extends React.Component {
+export default class MarkdownCell extends BaseCell {
   constructor(props) {
     super(props);
 
-    this.onEdit = this.onEdit.bind(this);
-    this.onDelete = this.onDelete.bind(this);
-    this.onStopEdit = this.onStopEdit.bind(this);
-    this.onUpdateCell = this.onUpdateCell.bind(this);
     this.onRef = this.onRef.bind(this);
-    this.onCellUp = this.onCellUp.bind(this);
-    this.onCellDown = this.onCellDown.bind(this);
     this.toggleImageUpload= this.toggleImageUpload.bind(this);
     this.toggleImageGallery= this.toggleImageGallery.bind(this);
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
-    this.onKeyDown = this.onKeyDown.bind(this);
 
     // Markdown Commands
     this.onInsertImage = this.onInsertImage.bind(this);
@@ -47,7 +37,7 @@ export default class MarkdownCell extends React.Component {
   }
 
   componentDidMount() {
-    let source = sourceFromCell(this.props.cell);
+    let source = this.getSourceFromCell();
     this.renderMarkdown(source);
   }
 
@@ -61,33 +51,6 @@ export default class MarkdownCell extends React.Component {
         rendered: rendered
       });
     });
-  }
-
-  onCellUp() {
-    this.props.dispatch(moveCellUp(this.props.cellIndex));
-  }
-
-  onCellDown() {
-    this.props.dispatch(moveCellDown(this.props.cellIndex));
-  }
-
-  onEdit(e) {
-    e.preventDefault();
-    this.props.dispatch(editCell(this.props.cellIndex));
-  }
-
-  onDelete(e) {
-    e.preventDefault();
-    this.props.dispatch(deleteCell(this.props.cellIndex));
-  }
-
-  onStopEdit(e) {
-    if (e) {
-      e.preventDefault();
-    }
-
-    this.props.dispatch(stopEditCell());
-    this.onUpdateCell();
   }
 
   /**
@@ -105,18 +68,7 @@ export default class MarkdownCell extends React.Component {
 
   onRef(node) {
     if (node) {
-      this.renderedHeight = Math.min(Math.max(node.offsetHeight, node.scrollHeight, node.clientHeight, this.props.minHeight), MAX_EDITOR_HEIGHT);
-    }
-  }
-
-  /**
-   * Check for Ctrl+S and try to save the document if possible
-   */
-  onKeyDown(e) {
-    let key = e.which || e.keyCode;
-    if (key === 27) {
-      // Escape Key pressed
-      this.onStopEdit();
+      this.renderedHeight = Math.min(Math.max(node.offsetHeight, node.scrollHeight, node.clientHeight, this.props.minHeight), BaseCell.MAX_EDITOR_HEIGHT);
     }
   }
 
@@ -158,7 +110,7 @@ export default class MarkdownCell extends React.Component {
 
   renderEditMode() {
     let minHeight = this.renderedHeight ? this.renderedHeight : this.props.minHeight;
-    let source = sourceFromCell(this.props.cell);
+    let source = this.getSourceFromCell();
     if (this.session) {
       this.session.setValue(source);
     } else {
@@ -184,16 +136,21 @@ export default class MarkdownCell extends React.Component {
     let content;
     let metadata = <CellMetadata className="col-xs-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
     let editingClass = editing ? ' editing' : '';
+    const isVisible = this.isVisible();
 
     if (!(isAuthor && editing)) {
-      content = this.renderViewMode();
+      content = this.renderViewMode(isVisible);
     } else {
       content = this.renderEditMode();
     }
 
+    const classes = classnames("markdown-cell col-md-12 row", editingClass, {
+      'cell-not-visible': !isVisible
+    });
+
     return (
-      <div className={"markdown-cell col-md-12 row " + editingClass}>
-        <EditButtonGroup isAuthor={isAuthor} editing={editing} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
+      <div className={classes}>
+        <EditButtonGroup isVisible={isVisible} isAuthor={isAuthor} editing={editing} onToggleVisibility={this.onToggleVisibility} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
         {metadata}
         {content}
       </div>
