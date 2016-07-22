@@ -87,6 +87,10 @@ body.ide,
       font-weight: 400;
     }
 
+    & .status-navigation:last-child {
+      margin-left: 0rem;
+    }
+
     &.danger {
       color: $state-danger-text;
       background-color: $state-danger-bg;

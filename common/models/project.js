@@ -485,6 +485,14 @@ export default class Project extends EventEmitter {
     return `${protocol}//${host}/embed/${idOrSlug}${viewDocument}`;
   }
 
+  getOriginalLink() {
+    const host = window.location.host;
+    const protocol = window.location.protocol;
+    const idOrSlug = this.data.slug || this.data.id;
+
+    return `${protocol}//${host}/embed/${idOrSlug}?showOriginal=true`;
+  }
+
   /**
    * Sends the current document to the teacher. The teacher only receives this message if
    * he has activated the sharing.
@@ -560,15 +568,19 @@ export default class Project extends EventEmitter {
   /**
    * Init the project from the given data object
    */
-  fromInitialData(data) {
+  fromInitialData(data, ignoreDocument=false) {
     let code;
 
     // Check if there is already a document on the data and try to load from there
-    if (data._document && data._document.code) {
+    if (!ignoreDocument && data._document && data._document.code) {
       code = data._document.code;
     } else {
       code = data.code;
     }
+
+    // Clear previous tabs
+    this.tabs = [];
+    this.emitChange();
 
     for (let file in code) {
       let fileData = code[file];
@@ -759,7 +771,12 @@ export default class Project extends EventEmitter {
     return code;
   }
 
-  //resetProject() {
-    // ToDo: resets the project to the initial state from the server
-  //}
+  /**
+   * Resets the project ot the original data loaded from the server.
+   */
+  reset() {
+    // All changes are not saved to the internal embed.code, rather they are stored in the this.tabs->element.item
+    // So we can savely replace the current code with the embed.code
+    this.fromInitialData(this.data, true);
+  }
 }

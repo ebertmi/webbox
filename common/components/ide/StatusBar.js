@@ -26,7 +26,8 @@ export default class StatusBar extends React.Component {
 
   onChange() {
     this.setState({
-      status: this.props.project.status.getStatusData()
+      status: this.props.project.status.getStatusData(),
+      originalLink: this.props.project.getOriginalLink()
     });
   }
 
@@ -44,10 +45,11 @@ export default class StatusBar extends React.Component {
     const classes = "status-bar " + toBootstrapClass(this.state.status.severity);
     return (
       <div className={classes}>
-        <span className="status-language-information">{this.state.status.languageInformation}</span>
+        <span className="status-language-information"><span className="tag tag-success">{this.state.status.languageInformation}</span></span>
         {this.renderUsername()}
         <span className="status-message">{this.state.status.message}</span>
-        <span className="status-navigation pull-xs-right"><a href="/" title="Startseite">Startseite</a></span>
+        <span className="status-navigation pull-xs-right"><a className="tag tag-primary" href={this.state.originalLink} target="_blank" title="Original Anzeigen">Zum Original</a></span>
+        <span className="status-navigation pull-xs-right"><a className="tag tag-info" href="/" title="Startseite">Startseite</a></span>
       </div>
     );
   }

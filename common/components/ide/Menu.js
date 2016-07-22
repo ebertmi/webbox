@@ -28,6 +28,12 @@ export default class Menu extends React.Component {
     return false;
   }
 
+  onResetProject(e) {
+    e.preventDefault();
+
+    this.props.project.reset();
+  }
+
   /**
    * Handler for creating new files. Delegates the file creation to the project model associated
    * with this Menu.
@@ -172,7 +178,7 @@ export default class Menu extends React.Component {
 
     if (project.reset) {
       resetProject = (
-        <DropdownItem>
+        <DropdownItem onClick={this.onResetProject.bind(this)}>
           <Icon name="refresh" fixedWidth/> Zurücksetzen
         </DropdownItem>
       );
@@ -195,9 +201,9 @@ export default class Menu extends React.Component {
         { this.renderStatisticsItem() }
         { this.renderEmbedAttributes() }
 
-        {resetProject}
-
         <DropdownDivider/>
+
+        {resetProject}
 
         <DropdownItem onClick={this.input.click.bind(this.input)}>
           <Icon name="upload" fixedWidth/> Importieren
