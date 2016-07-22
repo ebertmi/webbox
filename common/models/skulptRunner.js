@@ -9,8 +9,15 @@ import split from 'split2';
 import { EventLog } from './socketConnection';
 import { TerminalTransform } from '../util/streamUtils';
 
+// Disable warnings in production
+let BLUEBIRD_WARNINGS = true;
+if (process.env.NODE_ENV === 'production') {
+  BLUEBIRD_WARNINGS = false;
+}
+
 Bluebird.config({
-  cancellation: true
+  cancellation: true,
+  warnings: BLUEBIRD_WARNINGS
 });
 
 class SkulptInputTransform extends Transform{
@@ -187,6 +194,11 @@ export default class Runner extends EventEmitter {
     this.config = this.project.config;
     this.files = this.project.getFiles();
 
+    // Reset annotations
+    this.files.forEach((file) => {
+      file.setAnnotations([]);
+    });
+
     let emitChange = () => {
       process.nextTick(() => {
         this.project.emitChange();
@@ -223,7 +235,7 @@ export default class Runner extends EventEmitter {
       },
       nonreadopen: true,
       python3: isPython3,
-      execLimit: RUN_DEFAULTS.execLimit,
+      execLimit: null,/*RUN_DEFAULTS.execLimit,*/
       killableWhile: true,
       killableFor: true
     });

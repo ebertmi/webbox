@@ -13,7 +13,7 @@ const DEFAULT_OPTIONS = {
     audibleBell: true
   },
   ace: {
-    theme: 'ace/theme/clouds',
+    theme: 'ace/theme/xcode',
     showInvisibles: false,
     highlightActiveLine: true,
     highlightSelectedWord: true,

@@ -20,5 +20,10 @@ html(lang="de")
     script(src="https://cdn.jsdelivr.net/ace/1.2.3/min/ext-modelist.js")
     script(src="/public/skulpt/skulpt.min.js")
     script(src="/public/skulpt/skulpt-stdlib.js")
-    script(src="/public/js/react-commons.bundle.js")
-    script(src="/public/js/embed.bundle.js")
+
+    if isProd
+      script(src="/public/js/react-commons.bundle.#{webboxVersion}.js")
+      script(src="/public/js/embed.bundle.#{webboxVersion}.js")
+    else
+      script(src="/public/js/react-commons.bundle.js")
+      script(src="/public/js/embed.bundle.js")

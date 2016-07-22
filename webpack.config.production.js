@@ -28,7 +28,7 @@ module.exports = {
     presentation: './js/presentation.js'
   },
   output: {
-    filename: '[name].bundle.js',
+    filename: '[name].bundle.' + VERSION + '.js',
     chunkFilename: '[id].bundle.js',
     path: __dirname + '/public/js'
   },

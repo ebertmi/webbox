@@ -52,7 +52,7 @@ export default class Project extends EventEmitter {
     this.pendingSave = false;
 
     // Handle throttling and debouncing
-    this.saveEmbed = throttle(this._saveEmbed, 800);
+    this.saveEmbed = throttle(this.saveEmbed, 800);
   }
 
   /**
@@ -472,26 +472,6 @@ export default class Project extends EventEmitter {
   }
 
   /**
-   * Return true if the current user can save the embed
-   */
-  canUserSave() {
-    if (!this._userData) {
-      return false;
-    }
-
-    switch(this._userData.mode) {
-      case MODES.RunMode:
-      case MODES.Readonly:
-      case MODES.NoSave:
-      case MODES.Unknown:
-        return false;
-      default:
-        return true;
-    }
-  }
-
-
-  /**
    * Creates a url for sharing this embed
    *
    * @return {String} Absolute URL for this embed for this user
@@ -652,7 +632,7 @@ export default class Project extends EventEmitter {
 
     let userData = this.getUserData();
     if (userData.isAnonymous === true) {
-      this.showMessage(Severity.Warning, 'Sie können dieses Beispiel nicht speichern, da sie nicht angemeldet sind.');
+      this.showMessage(Severity.Warning, 'Sie können dieses Beispiel nicht speichern, da Sie nicht angemeldet sind.');
       return false;
     }
 

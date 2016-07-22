@@ -23,6 +23,7 @@ export default class RawCell extends React.Component {
     this.onCellUp = this.onCellUp.bind(this);
     this.onCellDown = this.onCellDown.bind(this);
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
   }
 
   componentDidMount() {
@@ -47,7 +48,10 @@ export default class RawCell extends React.Component {
   }
 
   onStopEdit(e) {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
+
     this.props.dispatch(stopEditCell());
     this.onUpdateCell();
   }
@@ -65,6 +69,17 @@ export default class RawCell extends React.Component {
   }
 
   /**
+   * Check for Ctrl+S and try to save the document if possible
+   */
+  onKeyDown(e) {
+    let key = e.which || e.keyCode;
+    if (key === 27) {
+      // Escape Key pressed
+      this.onStopEdit();
+    }
+  }
+
+  /**
    * Helper to determine the height of the rendered raw content to set the ace editor size accordingly
    */
   getWrapperHeightOrMin() {
@@ -78,20 +93,25 @@ export default class RawCell extends React.Component {
   renderEditMode() {
     let minHeight = this.getWrapperHeightOrMin();
     let source = sourceFromCell(this.props.cell);
-    let mode = this.cell.getIn(['metadata', 'mode'], 'ace/mode/markdown');
+
+    if (source == null) {
+      source = '';
+    }
+
+    let mode = this.props.cell.getIn(['metadata', 'mode'], 'ace/mode/html');
 
     if (this.session) {
       this.session.setValue(source);
       this.session.setMode(mode);
     } else {
-      this.session = new EditSession(source, mode || 'ace/mode/markdown');
+      this.session = new EditSession(source, mode);
       this.session.setUndoManager(new UndoManager);
     }
 
     return (
-      <div>
+      <div className="col-xs-12" onKeyDown={this.onKeyDown}>
         <strong>Raw</strong>
-        <Editor minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />
+        <Editor fontSize="13px" minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />
       </div>
     );
   }

@@ -63,4 +63,7 @@ html(lang="de")
                 img.m-l-1(src="/public/img/sourcebox.svg", height="30", alt="Sourcebox Logo")
 
       block scripts
-        script(src="/public/js/index.bundle.js", defer="true")
+        if isProd
+          script(src="/public/js/index.bundle.#{webboxVersion}.js", defer="true")
+        else
+          script(src="/public/js/index.bundle.js", defer="true")

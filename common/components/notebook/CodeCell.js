@@ -175,7 +175,7 @@ export default class CodeCell extends React.Component {
       <div className="col-xs-12" onKeyDown={this.onKeyDown}>
         <strong>Code</strong>
         <p className="text-muted">Sie können über die Schlüssel <code>embedType</code> (<em>sourcebox</em> oder <em>skulpt</em>) und <code>mode</code> (Sprache) die Ausführungsumgebung für eine Zelle einzeln definieren. Ansonsten werden die Werte aus den Notebook-Metadaten übernommen.</p>
-        <Editor minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />
+        <Editor fontSize="14px" minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />
       </div>
     );
   }

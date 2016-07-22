@@ -12,11 +12,18 @@ import { Turtle } from '../turtle/turtle';
 import { EventLog } from './socketConnection';
 import { TerminalTransform, MatplotLibTransfrom, TerminalRedColorTransform } from '../util/streamUtils';
 
+// Disable warnings in production
+let BLUEBIRD_WARNINGS = true;
+if (process.env.NODE_ENV === 'production') {
+  BLUEBIRD_WARNINGS = false;
+}
+
 /**
  * Allows to cancel promises (bluebird specific)
  */
 Promise.config({
-  cancellation: true
+  cancellation: true,
+  warnings: BLUEBIRD_WARNINGS
 });
 
 function processPromise(process, cleanExit) {

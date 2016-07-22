@@ -10,6 +10,23 @@ import { MessageListModel } from '../../common/models/messages';
 import { usageConsole } from '../../common/util/usageLogger';
 import { EmbedTypes } from '../../common/constants/Embed';
 
+// DOMNode closest polyfill
+if (!Element.prototype.matches) {
+  Element.prototype.matches = Element.prototype.msMatchesSelector;
+}
+
+if (!Element.prototype.closest) {
+  Element.prototype.closest = function (selector) {
+    var el = this;
+    while (el) {
+      if (el.matches(selector)) {
+        return el;
+      }
+      el = el.parentElement;
+    }
+  };
+}
+
 // depending on the way we serve the embeds we can either just get the initial data from
 // window.INITIAL_DATA and then initialize the embed or some ajax request mechanism
 let project;
