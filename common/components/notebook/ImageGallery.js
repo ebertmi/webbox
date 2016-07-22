@@ -41,9 +41,9 @@ export default class ImageGallery extends React.Component {
     }
 
     if (this.state.images == null) {
-      // ToDo: Handle undefined course
-      let course = this.props.course != null && this.props.course != '' ? this.props.course : 'no-course';
-      API.media.getImages({ course: course })
+      //let course = this.props.course != null && this.props.course != '' ? this.props.course : 'no-course';
+      let document = this.props.document != null && this.props.document != '' ? this.props.document : 'base';
+      API.media.getImages({ document: document })
       .then(data => {
         let imageArray = JSON.parse(data.files);
         let images = [];
@@ -76,7 +76,7 @@ export default class ImageGallery extends React.Component {
       <div>
         <p className="text-muted">Klicken Sie auf ein Bild, um dieses in das Dokument einzufügen. Klicken auf den angezeigten Link, um das Bild in einem neuen Tab zu öffnen.</p>
         <div className="card-columns">
-          <ImageUpload onInsertImage={this.props.onInsertImage} course={this.props.course} />
+          <ImageUpload onInsertImage={this.props.onInsertImage} document={this.props.document} />
           { images.map(img => {
             return <ImagePreview width={MAX_WIDTH} key={img.path} src={img.path} filename={img.filename} onClick={this.onImageClick} />;
           })}
@@ -88,7 +88,8 @@ export default class ImageGallery extends React.Component {
 
 ImageGallery.propTypes = {
   onInsertImage: React.PropTypes.func.isRequired,
-  course: React.PropTypes.string
+  course: React.PropTypes.string,
+  document: React.PropTypes.string
 };
 
 ImageGallery.defaultProps = {

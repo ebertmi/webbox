@@ -80,7 +80,6 @@ export default class Notebook extends React.Component {
     if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 83) {
       // Pressed Ctrl-S for saving
 
-      // ToDo: debounce or throttle the calls?
       this.onSave();
       e.preventDefault();
     }
@@ -201,6 +200,7 @@ export default class Notebook extends React.Component {
     const isAuthor = this.props.notebook.get('isAuthor');
     const cells = this.props.notebook.get('cells');
     const cellOrder = this.props.notebook.get('cellOrder');
+    const notebookId = this.props.notebook.get('id');
     const course = this.props.notebook.get('course');
     const embedType = this.props.notebook.get('embedType');
     const notebookLanguage = this.props.notebook.getIn(['metadata', 'language_info', 'name'], 'plain');
@@ -222,7 +222,7 @@ export default class Notebook extends React.Component {
       // push actual cell
       switch (cell.get('cell_type')) {
         case 'markdown':
-          blocks.push(<MarkdownCell course={course} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor} editing={index === activeBlock}/>);
+          blocks.push(<MarkdownCell document={notebookId} course={course} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor} editing={index === activeBlock}/>);
           break;
         case 'code':
           blocks.push(<CodeCell  embedType={embedType} course={course} notebookLanguage={notebookLanguage} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor} editing={index === activeBlock}/>);
@@ -254,7 +254,11 @@ export default class Notebook extends React.Component {
     const course = this.props.notebook.get('course');
     const embedType = this.props.notebook.get('embedType');
     const id = this.props.notebook.get('id');
+
+    // Is the Notebook Metadata editable?
     const editable = this.props.notebook.get('notebookMetadataEditable');
+
+    // Is Author, renders the edit buttons or the view mode
     const isAuthor = this.props.notebook.get('isAuthor');
 
     const classes = classnames("notebook row", {

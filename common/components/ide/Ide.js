@@ -20,7 +20,6 @@ export default class Ide extends React.Component {
     let files = e.dataTransfer.files;
     let project = this.props.project;
 
-    // TODO move this into project
     for (let i = 0; i < files.length; i++) {
       let file = files[i];
       let reader = new FileReader();
@@ -40,7 +39,7 @@ export default class Ide extends React.Component {
     let key = e.which || e.keyCode;
     if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 83) {
 
-      // ToDo: debounce or throttle the calls?
+      // SaveEmbed is debounced
       this.props.project.saveEmbed();
       e.preventDefault();
     }

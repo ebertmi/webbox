@@ -104,8 +104,16 @@ export function addCellsFromJS(cells, language, withHistory, callback) {
   };
 }
 
+/**
+ * Adds a new cell at the given index with the given type. Where type is
+ * either: code, raw, codeembed, markdown
+ *
+ * @export
+ * @param {any} index
+ * @param {any} cellType
+ * @returns
+ */
 export function addCell(index, cellType) {
-  // ToDo: maybe some additional checks here?
   return {
     type: Types.ADD_CELL,
     index: index,

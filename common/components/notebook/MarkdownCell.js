@@ -101,7 +101,7 @@ export default class MarkdownCell extends BaseCell {
   renderImageGallery() {
     if (this.state.showImageGallery === true) {
       return (
-        <ImageGallery onInsertImage={this.onInsertImage} course={this.props.course} />
+        <ImageGallery onInsertImage={this.onInsertImage} document={this.props.document} course={this.props.course} />
       );
     }
 
@@ -144,7 +144,7 @@ export default class MarkdownCell extends BaseCell {
       content = this.renderEditMode();
     }
 
-    const classes = classnames("markdown-cell col-md-12 row", editingClass, {
+    const classes = classnames("markdown-cell col-xs-12 row", editingClass, {
       'cell-not-visible': !isVisible
     });
 
@@ -164,7 +164,8 @@ MarkdownCell.propTypes = {
   isAuthor: React.PropTypes.bool.isRequired,
   editing: React.PropTypes.bool.isRequired,
   cellIndex: React.PropTypes.number.isRequired,
-  course: React.PropTypes.string
+  course: React.PropTypes.string,
+  document: React.PropTypes.string
 };
 
 MarkdownCell.defaultProps = {

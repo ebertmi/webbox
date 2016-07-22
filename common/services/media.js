@@ -4,12 +4,12 @@
 import { commonErrorHandler, checkStatus, getDefaultHeaders, parseJSON } from './utils';
 
 const MEDIA_UPLIOD_FROMDATA_FILE = 'imageFile';
-const MEDIA_UPLIOD_FROMDATA_COURSE = 'course';
+const MEDIA_UPLIOD_FROMDATA_DOCUMENT = 'document';
 const MEDIA_UPLOAD_METHOD = 'POST';
 
 export const MediaAPI = {
   getImages(params) {
-    return fetch(`/images/${params.course}`, {
+    return fetch(`/images/${params.document}`, {
       method: 'GET',
       credentials: 'same-origin',
       headers: getDefaultHeaders(),
@@ -21,7 +21,7 @@ export const MediaAPI = {
     })
     .catch(commonErrorHandler);
   },
-  ImageUploader(files=[], course, onError, onProgress, onDone) {
+  ImageUploader(files=[], document, onError, onProgress, onDone) {
     if (files.length === 0) {
       onError.call(null, 'Keine Dateien zum Hochladen');
       return;
@@ -84,7 +84,7 @@ export const MediaAPI = {
       formData.append(MEDIA_UPLIOD_FROMDATA_FILE, files[i], files[i].name);
     }
 
-    formData.append(MEDIA_UPLIOD_FROMDATA_COURSE, course);
+    formData.append(MEDIA_UPLIOD_FROMDATA_DOCUMENT, document);
     formData.append('crumb', headers['X-CSRF-Token']); // make our authentication happy
 
     this.xhr.send(formData);

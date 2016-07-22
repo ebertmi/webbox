@@ -19,9 +19,6 @@ export default class RawCell extends BaseCell {
     this.onUpdateCell = this.onUpdateCell.bind(this);
   }
 
-  componentDidMount() {
-  }
-
   /**
    * Saves the "source" property of a cell.
    */
@@ -75,7 +72,6 @@ export default class RawCell extends BaseCell {
   }
 
   renderViewMode() {
-    // ToDo: maybe limit the size of the cell?
     let format = this.props.cell.getIn(['metadata', 'format']);
     let source = this.getSourceFromCell();
 
@@ -106,7 +102,7 @@ export default class RawCell extends BaseCell {
       content = this.renderEditMode();
     }
 
-    const classes = classnames("raw-cell col-md-12 row", editingClass, {
+    const classes = classnames("raw-cell col-xs-12 row", editingClass, {
       'cell-not-visible': !isVisible
     });
 

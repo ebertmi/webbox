@@ -151,7 +151,7 @@ export default class CodeCell extends BaseCell {
       content = this.renderEditMode();
     }
 
-    const classes = classnames("markdown-cell col-md-12 row", editingClass, {
+    const classes = classnames("code-cell col-xs-12 row", editingClass, {
       'cell-not-visible': !isVisible
     });
 
@@ -159,7 +159,7 @@ export default class CodeCell extends BaseCell {
       <div className={classes}>
         <EditButtonGroup isVisible={isVisible} isAuthor={isAuthor} editing={editing} onToggleVisibility={this.onToggleVisibility} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
         {metadata}
-        <Icon name="play-circle-o" className="icon-control" onClick={this.onRun} title="Code Ausführen" />
+        <Icon name="play-circle-o" className="icon-control code-cell-run-btn" onClick={this.onRun} title="Code Ausführen" />
         {content}
       </div>
     );

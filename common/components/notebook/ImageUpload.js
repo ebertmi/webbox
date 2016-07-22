@@ -37,8 +37,9 @@ export default class ImageUpload extends React.Component {
   }
 
   onDrop(files) {
-    let course = this.props.course != null && this.props.course != '' ? this.props.course : 'no-course';
-    new API.media.ImageUploader(files, course, this.onError, this.onProgress, this.onDone);
+    //let course = this.props.course != null && this.props.course != '' ? this.props.course : 'no-course';
+    let document = this.props.document != null && this.props.document != '' ? this.props.document : 'base';
+    new API.media.ImageUploader(files, document, this.onError, this.onProgress, this.onDone);
     this.setState({
       isUploading: true
     });

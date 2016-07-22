@@ -38,7 +38,7 @@ export default class AddControls extends Component {
       return null;
     }
     return (
-      <div className="add-controls col-md-12">
+      <div className="add-controls col-xs-12">
         <Icon name="file-text-o" className="icon-control" onClick={this.addMarkdownCell} title="Neuer Textabschnitt" />
         <Icon name="file-code-o" className="icon-control" onClick={this.addCodeEmbedCell} title="Neues Code-Beispiel (IDE)" />
         <Icon name="terminal" className="icon-control" onClick={this.addCodeCell} title="Neuer Code-Block" />

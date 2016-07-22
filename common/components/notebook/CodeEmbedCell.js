@@ -186,7 +186,7 @@ export default class CodeEmbedCell extends BaseCell {
       content = this.renderEditMode();
     }
 
-    const classes = classnames("codeembed-cell col-md-12 row", editingClass, {
+    const classes = classnames("codeembed-cell col-xs-12 row", editingClass, {
       'cell-not-visible': !isVisible
     });
 

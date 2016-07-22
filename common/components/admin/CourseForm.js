@@ -44,7 +44,7 @@ export class CourseForm extends Component {
    */
   handleSave (event) {
     event.preventDefault();
-    // ToDo: validate before saving
+    // Validating
     let course = this.props.course;
     const requiredFields = ['slug', 'published', 'document', 'title'];
     let isValid = true;

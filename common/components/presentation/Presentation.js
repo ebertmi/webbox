@@ -33,7 +33,7 @@ export default class Presentation extends React.Component {
   /**
    * Renders a cell depending on its "cell_type". Any unknown types will be rendered as empty text (no content!).
    */
-  renderCell(cell, index) {
+  renderCell(cell, index, notebook) {
     const id = cell.get('id');
     const activeBlock = -1;
     const isAuthor = false;
@@ -50,10 +50,9 @@ export default class Presentation extends React.Component {
         return toMarkdownComponent({source: source});
       case 'code':
         lang = cell.getIn(['metadata', 'mode'], '');
-        embedType = cell.getIn(['metadata', 'embedType']);
+        embedType = cell.getIn(['metadata', 'embedType'], notebook.getIn(['metadata', 'embedType']));
         runId = cell.getIn(['metadata', 'runid']);
         return <Highlight showRunButton={true} embedType={embedType} runId={runId} source={source} lang={lang}></Highlight>;
-        //return <CodePane source={source} lang={lang}></CodePane>;
       case 'codeembed':
         return (
           <LazyLoad height={cell.getIn(['metadata', 'height'], 350)} once>
@@ -89,18 +88,18 @@ export default class Presentation extends React.Component {
       slideType = cell.getIn(['metadata', 'slideshow', 'slide_type'], 'slide');
       // start new slide
       if (isInSlide === false && slideType === 'slide') {
-        children.push(this.renderCell(cell, i)); //Render current cell and add to children
+        children.push(this.renderCell(cell, i, this.props.notebook)); //Render current cell and add to children
         isInSlide = true;
       } else if (isInSlide === true && slideType === 'slide') {
         // End current slide and start new one
         slideCounter += 1;
         slides.push(<Slide key={`slide-${slideCounter}`} children={children}></Slide>);
         children = []; // reset children
-        children.push(this.renderCell(cell, i)); // add first new child
+        children.push(this.renderCell(cell, i, this.props.notebook)); // add first new child
       } else {
         // Add all cells execept skip (and slide, which is handled above)
         if (slideType !== 'skip') {
-          renderResult = this.renderCell(cell, i);
+          renderResult = this.renderCell(cell, i, this.props.notebook);
 
           // Fragments are wrapped with the Appear Tag
           if (slideType === 'fragment') {
