@@ -30,6 +30,10 @@ export default class TabBar extends React.Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
+    this.onStartStop = this.onStartStop.bind(this);
+    this.onShareWithTeacher = this.onShareWithTeacher.bind(this);
+    this.onSave = this.onSave.bind(this);
+    this.onToggleFullscreen = this.onToggleFullscreen.bind(this);
   }
 
   componentWillMount() {
@@ -122,7 +126,7 @@ export default class TabBar extends React.Component {
 
     if (project.run) {
       startStop = (
-        <NavItem className="unselectable" onClick={this.onStartStop.bind(this)} useHref={false}>
+        <NavItem className="unselectable" onClick={this.onStartStop} useHref={false}>
           {project.isRunning() ? <Icon name="stop" className="danger"/> : <Icon name="play" className="success"/>}
         </NavItem>
       );
@@ -130,7 +134,7 @@ export default class TabBar extends React.Component {
 
     if (this.props.project.mode === MODES.Default) {
       shareWithTeacher = (
-          <NavItem className="unselectable" onClick={this.onShareWithTeacher.bind(this)} useHref={false} title="An Dozenten schicken" >
+          <NavItem className="unselectable" onClick={this.onShareWithTeacher} useHref={false} title="An Dozenten schicken" >
             <Icon className="unselectable" name="paper-plane" title="An Dozenten schicken" />
           </NavItem>
       );
@@ -144,12 +148,12 @@ export default class TabBar extends React.Component {
         <span className="embed-title">{project.name}</span>
         <Nav className="controls" bsStyle="pills">
           {startStop}
-          <NavItem className="unselectable" onClick={this.onSave.bind(this)} useHref={false} title="Speichern">
+          <NavItem className="unselectable" onClick={this.onSave} useHref={false} title="Speichern">
             <Icon name="save" />
           </NavItem>
           { shareWithTeacher }
 
-          <NavItem className="unselectable" onClick={this.onToggleFullscreen.bind(this)} disabled={!screenfull.enabled}>
+          <NavItem className="unselectable" onClick={this.onToggleFullscreen} disabled={!screenfull.enabled}>
             <Icon name="arrows-alt" title="Vollbildmodus"/>
           </NavItem>
           <Menu project={project}/>

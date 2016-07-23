@@ -22,7 +22,11 @@ export default class RawCell extends BaseCell {
   /**
    * Saves the "source" property of a cell.
    */
-  onUpdateCell() {
+  onUpdateCell(e) {
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
+
     if (this.session) {
       let content = this.session.getValue();
       this.props.dispatch(updateCell(this.props.cell.get('id'), content));

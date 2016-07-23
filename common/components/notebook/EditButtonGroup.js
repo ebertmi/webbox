@@ -2,12 +2,17 @@ import React from 'react';
 
 import Icon from '../Icon';
 
+const IS_VISIBLE_ICON_NAME = 'circle';
+const IS_INVISIBLE_ICON_NAME = 'circle-o';
+const IS_VISIBLE_TITLE = 'Verstecken';
+const IS_INVISIBLE_TITLE = 'Anzeigen';
+
 export function EditButtonGroup (props) {
   const editIcon = <Icon className="icon-control" onClick={props.onEdit} name="pencil" title="Inhalt bearbeiten" />;
   const stopEditIcon = <Icon className="icon-control" onClick={props.onStopEdit} name="eye" title="Zur normalen Ansicht zurück" />;
   const iconBtn = props.editing ? stopEditIcon : editIcon;
-  const isVisibleIcon = props.isVisible ? 'circle' : 'circle-o';
-  const isVisibleTitle = props.isVisible ? 'Verstecken' : 'Anzeigen';
+  const isVisibleIcon = props.isVisible ? IS_VISIBLE_ICON_NAME : IS_INVISIBLE_ICON_NAME;
+  const isVisibleTitle = props.isVisible ? IS_VISIBLE_TITLE : IS_INVISIBLE_TITLE;
 
   if (props.isAuthor === false) {
     return null;

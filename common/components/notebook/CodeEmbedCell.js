@@ -22,13 +22,8 @@ export default class CodeEmbedCell extends BaseCell {
     this.onCancelCreateEmbed = this.onCancelCreateEmbed.bind(this);
     this.onFormDataChange = this.onFormDataChange.bind(this);
     this.onCreateEmbed = this.onCreateEmbed.bind(this);
-  }
 
-  /**
-   * Set initial state
-   */
-  componentWillMount() {
-    this.setState({
+    this.state = {
       showCreateEmbed: false,
       formData: {
         language: 'python3',
@@ -36,7 +31,7 @@ export default class CodeEmbedCell extends BaseCell {
         name: ''
       },
       message: ''
-    });
+    };
   }
 
   /**
@@ -97,7 +92,9 @@ export default class CodeEmbedCell extends BaseCell {
   }
 
   onUpdateCell(e) {
-    e.preventDefault();
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
     const value = e.target.value || '';
     this.props.dispatch(updateCell(this.props.cell.get('id'), value));
   }

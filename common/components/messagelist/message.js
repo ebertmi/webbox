@@ -2,6 +2,7 @@
  * https://github.com/Microsoft/vscode/tree/master/src/vs/base/browser/ui/messagelist
  */
 import React from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import { toSeverityAppClass, toTextLabel } from '../../models/severity';
 import { Action } from '../../models/actions';
 
@@ -10,6 +11,7 @@ export class Message extends React.Component {
     super(props);
 
     this.onActionChanged = this.onActionChanged.bind(this);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   componentDidMount() {

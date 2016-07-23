@@ -23,12 +23,8 @@ export default class CodeCell extends BaseCell {
 
     this.onRef = this.onRef.bind(this);
     this.onRun = this.onRun.bind(this);
-  }
 
-  componentWillMount() {
-    this.setState({
-      rendered: ''
-    });
+    this.state = { rendered: '' };
   }
 
   componentDidMount() {

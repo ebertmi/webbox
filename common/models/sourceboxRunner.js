@@ -113,7 +113,10 @@ export default class Runner extends EventEmitter {
         this._status('Ausführung Beendet', true);
       })
       .catch((err) => {
-        console.trace(err);
+        if (process.env.NODE_ENV !== 'production') {
+          console.trace(err);
+        }
+
         this._status(err.message);
       })
       .finally(() => {

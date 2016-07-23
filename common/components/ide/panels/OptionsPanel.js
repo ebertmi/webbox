@@ -1,10 +1,8 @@
 import React from 'react';
 import Ace from 'ace';
-
 import set from 'lodash/set';
 
 import {Button, Input} from '../../bootstrap';
-
 import optionManager from '../../../models/options';
 
 const themeList = Ace.require('ace/ext/themelist');

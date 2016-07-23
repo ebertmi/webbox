@@ -11,6 +11,8 @@ export class UserForm extends Component {
     super(props);
 
     this.addRole = this.addRole.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleRoleChange = this.handleRoleChange.bind(this);
   }
 
   componentWillMount () {
@@ -170,16 +172,16 @@ export class UserForm extends Component {
           <p className="form-control-static"><strong>{this.props.user.id}</strong></p>
           <small className="text-muted">Eindeutige interne ID des Benutzers. Diese wird für die interne Datenhaltung verwendet.</small>
         </div>
-        <Input onChange={this.handleChange.bind(this)} name="email" type="text" label="E-Mail-Adresse" muted="Vorsicht: Benutzer werden anhand ihrer E-Mail-Adresse identifiziert. Diese muss eindeutig sein." value={this.props.user.email} />
-        <Input onChange={this.handleChange.bind(this)} name="username" type="text" label="Benutzername" muted="Dieser wird aus der E-Mail-Adresse automatisch generiert." value={this.props.user.username} />
-        <Input onChange={this.handleChange.bind(this)} name="isActive" type="checkbox" label="Aktiviert: Hiermit könnten Benutzer aktiviert und deaktiviert werden."  checked={this.props.user.isActive} />
-        <Input onChange={this.handleChange.bind(this)} name="semester" type="text" label="Semester" muted="Semester in dem sich der Benutzer registriert hat." value={this.props.user.semester} />
-        <Input onChange={this.handleChange.bind(this)} name="createdAt" type="text" label="Erstellt am" readOnly="readonly" value={this.props.user.createdAt} />
-        <Input onChange={this.handleChange.bind(this)} name="verification.isCompleted" type="checkbox" label="Registrierung abgeschlossen" checked={this.props.user.verification.isCompleted} />
-        <Input onChange={this.handleChange.bind(this)} name="verification.token" muted="Mit diesem Token kann der Benutzer den Account aktivieren." disabled type="text" label="Aktivierungs-Token" value={this.props.user.verification.token || null} />
+        <Input onChange={this.handleChange} name="email" type="text" label="E-Mail-Adresse" muted="Vorsicht: Benutzer werden anhand ihrer E-Mail-Adresse identifiziert. Diese muss eindeutig sein." value={this.props.user.email} />
+        <Input onChange={this.handleChange} name="username" type="text" label="Benutzername" muted="Dieser wird aus der E-Mail-Adresse automatisch generiert." value={this.props.user.username} />
+        <Input onChange={this.handleChange} name="isActive" type="checkbox" label="Aktiviert: Hiermit könnten Benutzer aktiviert und deaktiviert werden."  checked={this.props.user.isActive} />
+        <Input onChange={this.handleChange} name="semester" type="text" label="Semester" muted="Semester in dem sich der Benutzer registriert hat." value={this.props.user.semester} />
+        <Input onChange={this.handleChange} name="createdAt" type="text" label="Erstellt am" readOnly="readonly" value={this.props.user.createdAt} />
+        <Input onChange={this.handleChange} name="verification.isCompleted" type="checkbox" label="Registrierung abgeschlossen" checked={this.props.user.verification.isCompleted} />
+        <Input onChange={this.handleChange} name="verification.token" muted="Mit diesem Token kann der Benutzer den Account aktivieren." disabled type="text" label="Aktivierungs-Token" value={this.props.user.verification.token || null} />
         <div className="form-group">
           <label>Rollen</label>
-          <TaggedInput onAddTag={this.handleRoleChange.bind(this)} onRemoveTag={this.handleRoleChange.bind(this)} name="roles" placeholder="Benutzerrollen" tags={this.props.user.roles} />
+          <TaggedInput onAddTag={this.handleRoleChange} onRemoveTag={this.handleRoleChange} name="roles" placeholder="Benutzerrollen" tags={this.props.user.roles} />
           <small className="text-muted">Hier können die Benutzerrollen verändert werden. Diese entscheiden über die Zugriffsrechte auf der Seite.</small>
         </div>
         <div className="form-group">

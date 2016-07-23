@@ -9,6 +9,10 @@ export default class ProcessPanel extends React.Component {
   constructor(props) {
     super(props);
     this.onChangeOption = this.onChangeOption.bind(this);
+
+    this.onBell = this.onBell.bind(this);
+    this.onResize = this.onResize.bind(this);
+    this.onTitle = this.onTitle.bind(this);
   }
 
   componentWillMount() {
@@ -58,9 +62,9 @@ export default class ProcessPanel extends React.Component {
         stdin={process.stdin}
         stdout={process.stdout}
         stderr={process.stderr}
-        onBell={this.onBell.bind(this)}
-        onResize={this.onResize.bind(this)}
-        onTitle={this.onTitle.bind(this)}
+        onBell={this.onBell}
+        onResize={this.onResize}
+        onTitle={this.onTitle}
         hidden={!this.props.active}
       />
     );

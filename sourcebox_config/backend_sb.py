@@ -52,8 +52,8 @@ def show():
             fd.write(b'ENDIMAGE')
             fd.flush()
             fd.close()
-        except e:
-            print('An error occured while sending the image to your browser.')
+        except Exception as e:
+            print('An error occured while sending the image to your browser.', e)
 
 
 ########################################################################

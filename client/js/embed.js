@@ -10,6 +10,8 @@ import { MessageListModel } from '../../common/models/messages';
 import { usageConsole } from '../../common/util/usageLogger';
 import { EmbedTypes } from '../../common/constants/Embed';
 
+import 'expose?Perf!react-addons-perf';
+
 // DOMNode closest polyfill
 if (!Element.prototype.matches) {
   Element.prototype.matches = Element.prototype.msMatchesSelector;

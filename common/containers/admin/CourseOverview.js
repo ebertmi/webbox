@@ -30,11 +30,6 @@ class CourseOverview extends Component {
         </table>);
   }
 
-  onAddClick (event) {
-    event.preventDefault();
-    //this.props.searchClickHandler(this.state.q);
-  }
-
   renderNewCourseButton() {
     return (
       <div className="row table-search-bar">

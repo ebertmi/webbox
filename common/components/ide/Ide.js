@@ -7,6 +7,8 @@ import PanelArea from './PanelArea';
 export default class Ide extends React.Component {
   constructor(props) {
     super(props);
+
+    this.onDrop = this.onDrop.bind(this);
   }
 
   componentDidMount() {
@@ -52,7 +54,7 @@ export default class Ide extends React.Component {
 
   render() {
     return (
-      <div className="ide" onDragOver={this.onDragOver} onDrop={this.onDrop.bind(this)} ref={div => this.container = div}>
+      <div className="ide" onDragOver={this.onDragOver} onDrop={this.onDrop} ref={div => this.container = div}>
         <TabBar project={this.props.project}/>
         <PanelArea project={this.props.project} messageList={this.props.messageList} />
         <StatusBar project={this.props.project}/>

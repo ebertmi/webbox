@@ -2,12 +2,14 @@
  * https://github.com/Microsoft/vscode/tree/master/src/vs/base/browser/ui/messagelist
  */
 import React from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import { Message } from './message';
 
 export class MessageList extends React.Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   componentWillMount() {

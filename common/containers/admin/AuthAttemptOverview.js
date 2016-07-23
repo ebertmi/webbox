@@ -7,42 +7,40 @@ import { LoadingContainer } from '../LoadingContainer';
 import { AuthAttemptTableRow } from '../../components/admin/AuthAttemptTableRow';
 import * as AdminActions from '../../actions/AdminActions';
 
-class AuthAttemptOverview extends Component {
-  renderTable () {
-    return (
-      <table className="table table-sm tabl-striped">
-        <thead className="thead-inverse">
-          <tr>
-            <th>Benutzer</th>
-            <th>IP</th>
-            <th>Zeitpunkt</th>
-            <th>ID</th>
-          </tr>
-        </thead>
-        <tbody>
-          {this.props.authAttemptOverview.attempts.map((attempt, index) => {
-            return <AuthAttemptTableRow key={index} data={attempt}/>;
-          })}
-        </tbody>
-      </table>);
-  }
+function renderTable (props) {
+  return (
+    <table className="table table-sm tabl-striped">
+      <thead className="thead-inverse">
+        <tr>
+          <th>Benutzer</th>
+          <th>IP</th>
+          <th>Zeitpunkt</th>
+          <th>ID</th>
+        </tr>
+      </thead>
+      <tbody>
+        {props.authAttemptOverview.attempts.map((attempt, index) => {
+          return <AuthAttemptTableRow key={index} data={attempt}/>;
+        })}
+      </tbody>
+    </table>);
+}
 
-  render () {
-    const content = this.renderTable();
-    return (
-      <PaginationContainer
-          changePage={this.props.changeAuthAttemptsPage}
-          requestPage={this.props.requestAuthAttemptsPage}
-          pages={this.props.authAttemptOverview.pages}
-          pagesQuery={this.props.authAttemptOverview.pagesQuery}
-          location={this.props.location}>
-        <h2>Auffällige Loginversuche</h2>
-        <LoadingContainer isLoading={this.props.authAttemptOverview.isFetching}>
-          {content}
-        </LoadingContainer>
-      </PaginationContainer>
-    );
-  }
+function AuthAttemptOverview(props) {
+  const content = renderTable(props);
+  return (
+    <PaginationContainer
+        changePage={props.changeAuthAttemptsPage}
+        requestPage={props.requestAuthAttemptsPage}
+        pages={props.authAttemptOverview.pages}
+        pagesQuery={props.authAttemptOverview.pagesQuery}
+        location={props.location}>
+      <h2>Auffällige Loginversuche</h2>
+      <LoadingContainer isLoading={props.authAttemptOverview.isFetching}>
+        {content}
+      </LoadingContainer>
+    </PaginationContainer>
+  );
 }
 
 export default connect(state => ({

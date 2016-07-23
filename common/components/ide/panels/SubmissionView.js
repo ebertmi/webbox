@@ -1,5 +1,5 @@
 import React from 'react';
-
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import { Time } from '../../Time';
 import Icon from '../../Icon';
 
@@ -13,6 +13,7 @@ export default class SubmissionView extends React.Component {
 
     this.onChange = this.onChange.bind(this);
     this.onToggleSubmissions = this.onToggleSubmissions.bind(this);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   componentWillMount() {

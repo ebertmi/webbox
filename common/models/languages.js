@@ -52,7 +52,7 @@ export default {
     },
     displayName: 'Python 3',
     env: {
-      PYTHONPATH: '/home/user/PythonTest',
+      PYTHONPATH: '/usr/local/lib/sourcebox/',
       MPLBACKEND: 'module://backend_sb'
     },
     streams: 3,

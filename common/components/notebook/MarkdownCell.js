@@ -26,14 +26,12 @@ export default class MarkdownCell extends BaseCell {
 
     // Markdown Commands
     this.onInsertImage = this.onInsertImage.bind(this);
-  }
 
-  componentWillMount() {
-    this.setState({
+    this.state = {
       rendered: '',
       showImageUpload: false,
       showImageGallery: false
-    });
+    };
   }
 
   componentDidMount() {

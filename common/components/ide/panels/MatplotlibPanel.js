@@ -5,13 +5,6 @@ export default class MatplotlibPanel extends React.Component {
     super(props);
   }
 
-  componentWillMount() {
-
-  }
-
-  componentWillUnmount() {
-  }
-
   onRef(ref) {
     if (ref) {
       ref.appendChild(this.props.item);

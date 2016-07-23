@@ -10,6 +10,11 @@ export default class FileTab extends React.Component {
     this.onChangeName = this.onChangeName.bind(this);
     this.onChangeAnnotation = this.onChangeAnnotation.bind(this);
     this.onChangeNameEditable = this.onChangeNameEditable.bind(this);
+
+    this.handleRename = this.handleRename.bind(this);
+    this.onRename = this.onRename.bind(this);
+    this.onRenameBlur = this.onRenameBlur.bind(this);
+    this.onEnterRename = this.onEnterRename.bind(this);
   }
 
   componentWillMount() {
@@ -114,7 +119,7 @@ export default class FileTab extends React.Component {
     if (this.state.isNameEditable) {
       return (
         <div className="file-rename-wrapper">
-          <InputBox type="text" autoSelect={true} onBlur={this.onRenameBlur.bind(this)} onKeyPress={this.onEnterRename.bind(this)} onChange={this.onRename.bind(this)} value={this.state.name} />
+          <InputBox type="text" autoSelect={true} onBlur={this.onRenameBlur} onKeyPress={this.onEnterRename} onChange={this.onRename} value={this.state.name} />
         </div>
       );
     } else {
@@ -125,7 +130,7 @@ export default class FileTab extends React.Component {
   render() {
     return (
       <Tab {...this.props} icon="file" draggable={false}>
-        <span onDoubleClick={this.handleRename.bind(this)}>{this.renderNameOrInput()}</span> {this.renderAnnotations()}
+        <span onDoubleClick={this.handleRename}>{this.renderNameOrInput()}</span> {this.renderAnnotations()}
       </Tab>
     );
   }

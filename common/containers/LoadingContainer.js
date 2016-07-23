@@ -1,25 +1,19 @@
-import React, {Component} from 'react';
+import React from 'react';
 
 import { Loader } from '../components/Loader';
 
 /**
  * Renders loader or content.
  */
-export class LoadingContainer extends Component {
-  renderLoader() {
+function LoadingContainer(props) {
+  if (props.isLoading) {
     return <Loader type="line-scale" />;
-  }
-
-  renderContent() {
+  } else {
     return (
       <div>
-        {this.props.children}
+        {props.children}
       </div>
     );
-  }
-
-  render() {
-    return this.props.isLoading ? this.renderLoader() : this.renderContent();
   }
 }
 

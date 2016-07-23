@@ -5,39 +5,37 @@
 import moment from 'moment';
 import React, {PropTypes} from 'react';
 
-export class Time extends React.Component {
-  render() {
-    // ToDo: Refactor to using rest param
-    let {value, locale, invalidDateString, relative, format, valueFormat, titleFormat, Component, ...rest} = this.props;
+const ISO8601FORMAT = 'DD-MM-YYYYTHH:mm:ssZ';
 
-    if (!value || value === null) {
-      const invalidDateText = invalidDateString ? invalidDateString : 'Invalid Date';
-      return <span>{invalidDateText}</span>;
-    }
+export function Time(props) {
+  let {value, locale, invalidDateString, relative, format, valueFormat, titleFormat, Component, ...rest} = props;
 
-    if (!moment.isMoment(value)) {
-      value = moment(value, valueFormat, true);
-    }
+  if (!value || value === null) {
+    return <span>{invalidDateString}</span>;
+  }
 
-    if (locale) {
-      value = value.locale(locale);
-    }
+  if (!moment.isMoment(value)) {
+    value = moment(value, valueFormat, true);
+  }
 
-    let machineReadable = value.format('DD-MM-YYYYTHH:mm:ssZ');
+  if (locale) {
+    value = value.locale(locale);
+  }
 
-    if (relative || format) {
-      let humanReadable = relative ? value.fromNow() : value.format(format);
-      return (
-        <Component
-          {...rest}
-          dateTime={machineReadable}
-          title={relative ? value.format(titleFormat) : null}>
-          {humanReadable}
-        </Component>
-      );
-    } else {
-      return <time {...rest}>{machineReadable}</time>;
-    }
+  let machineReadable = value.format(ISO8601FORMAT);
+
+  if (relative || format) {
+    let humanReadable = relative ? value.fromNow() : value.format(format);
+    return (
+      <Component
+        {...rest}
+        dateTime={machineReadable}
+        title={relative ? value.format(titleFormat) : null}>
+        {humanReadable}
+      </Component>
+    );
+  } else {
+    return <time {...rest}>{machineReadable}</time>;
   }
 }
 
@@ -93,5 +91,6 @@ Time.propTypes = {
 Time.defaultProps = {
   value: null,
   titleFormat: 'YYYY-MM-DD HH:mm',
-  Component: 'time'
+  Component: 'time',
+  invalidDateString: 'Invalid Date'
 };

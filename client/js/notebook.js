@@ -7,22 +7,19 @@ import 'exports?fetch!whatwg-fetch/fetch';
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
-//import { Router, browserHistory } from 'react-router';
 
 // own modules
 import notebookStore from '../../common/store/notebookStore';
-//import notebookRoutes from '../../common/route/NotebookRoutes';
 
 import NotebookApp from '../../common/containers/notebook/NotebookApp';
 import { documentToState, copyText } from '../../common/util/nbUtil';
 
-// ToDo: later we render from the passed state from the template engine
+require('expose?Perf!react-addons-perf');
+
 const notebookState = documentToState(window.__INITIAL_STATE__);
 const storeInit = { notebook: notebookState };
 const store = notebookStore(storeInit);
 const rootElement = document.getElementById('notebook-container');
-
-
 
 // Add document handler for all copy buttons
 document.addEventListener('click', function (event) {

@@ -32,6 +32,11 @@ export default class Notebook extends React.Component {
     this.onDragOver = this.onDragOver.bind(this);
     this.onSave = this.onSave.bind(this);
     this.onDelete = this.onDelete.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
+
+    this.state = {
+      isDragging: false
+    };
   }
 
   replaceIdWithSlug() {
@@ -58,15 +63,9 @@ export default class Notebook extends React.Component {
     };
   }
 
-  componentWillMount() {
-    this.setState({
-      isDragging: false
-    });
-  }
-
   componentDidMount() {
     // handle Ctrl+S on the whole document even when nothing is focused
-    document.addEventListener('keydown', this.onKeyDown.bind(this));
+    document.addEventListener('keydown', this.onKeyDown);
 
     // Try to update url
     this.replaceIdWithSlug();
@@ -266,7 +265,7 @@ export default class Notebook extends React.Component {
     });
 
     return (
-      <div data-drag={true} className={classes} onDragOver={this.onDragOver} onDrop={this.onDrop.bind(this) }>
+      <div data-drag={true} className={classes} onDragOver={this.onDragOver} onDrop={this.onDrop}>
         <div className="global-message-list">
           <MessageList messageList={this.messageList} />
         </div>

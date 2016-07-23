@@ -5,8 +5,6 @@
 var webpack = require('webpack');
 var path = require('path');
 
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
-
 module.exports = {
   context: path.resolve(__dirname, 'client'),
   entry: {
@@ -30,7 +28,7 @@ module.exports = {
     'highlight.js': 'hljs',
     'markdown-it': 'markdownit',
     'katex': 'katex',
-    /*'socket.io-client': true*/
+    'd3': true
   },
   module: {
     loaders: [
@@ -60,7 +58,7 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': JSON.stringify('production')
+        'NODE_ENV': JSON.stringify('development')
       }
     })
   ],

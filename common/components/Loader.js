@@ -3,30 +3,27 @@
  * Modiefied and removed unused code.
  */
 
-import React, { Component } from 'react';
+import React from 'react';
 import classnames from 'classnames';
 
-export class Loader extends Component {
-  renderDiv(n) {
-    return <div key={n} />;
-  }
+function renderDiv(n) {
+  return <div key={n} />;
+}
 
-  render() {
-    const nDivs = range(Types[this.props.type]);
-    const classes = classnames({
-      loader: true,
-      ['loader-' + this.props.size]: this.props.size !== 'md',
-      'loader-active': this.props.active,
-      'loader-hidden': !this.props.active
-    }, this.props.className);
+export function Loader(props) {
+  const nDivs = range(Types[props.type]);
+  const classes = classnames({
+    loader: true,
+    ['loader-' + props.size]: props.size !== 'md',
+    'loader-active': props.active,
+    'loader-hidden': !props.active
+  }, props.className);
 
-    return (<div className={classes}>
-      <div className={`loader-inner ${this.props.type}`}>
-        { nDivs.map(this.renderDiv) }
-      </div>
-    </div>);
-  }
-
+  return (<div className={classes}>
+    <div className={`loader-inner ${props.type}`}>
+      { nDivs.map(renderDiv) }
+    </div>
+  </div>);
 }
 
 function range(x) {

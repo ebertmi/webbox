@@ -5,22 +5,18 @@ var KEY_CODES = {
   BACKSPACE: 8
 };
 
-var DefaultTagComponent = React.createClass({
-  render: function () {
-    var self = this, p = self.props;
-    var className = 'tag' + (p.classes ? (' ' + p.classes) : '');
+function DefaultTagComponent(props) {
+  var className = 'tag' + (props.classes ? (' ' + props.classes) : '');
 
-    return (
-      <div className={className}>
-        <div className="tag-text" onClick={p.onEdit}>{p.item}</div>
-        <div className="remove" onClick={p.onRemove}>
-          {p.removeTagLabel}
-        </div>
+  return (
+    <div className={className}>
+      <div className="tag-text" onClick={props.onEdit}>{props.item}</div>
+      <div className="remove" onClick={props.onRemove}>
+        {props.removeTagLabel}
       </div>
-    );
-  }
-
-});
+    </div>
+  );
+}
 
 export default React.createClass({
   displayName: 'TaggedInput',

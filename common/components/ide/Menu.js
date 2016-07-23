@@ -8,11 +8,28 @@ import { NavDropdown, DropdownItem, DropdownDivider, Button } from '../bootstrap
 import { generateZip, saveZipAsFile, saveTextAsFile } from '../../util/saveUtil';
 
 export default class Menu extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.onInsights = this.onInsights.bind(this);
+    this.onImport = this.onImport.bind(this);
+    this.onExport = this.onExport.bind(this);
+    this.onOpenInNewWindow = this.onOpenInNewWindow.bind(this);
+    this.onAttributes = this.onAttributes.bind(this);
+    this.onOptions = this.onOptions.bind(this);
+    this.onNewTerminal = this.onNewTerminal.bind(this);
+    this.onResetProject = this.onResetProject.bind(this);
+    this.onNewFile = this.onNewFile.bind(this);
+    this.onShowShareableLink = this.onShowShareableLink.bind(this);
+    this.onBiggerFontsize = this.onBiggerFontsize.bind(this);
+    this.onSmallerFontsize = this.onSmallerFontsize.bind(this);
+  }
+
   componentWillMount() {
     let input = document.createElement('input');
     input.type = 'file';
     input.multiple = true;
-    input.addEventListener('change', this.onImport.bind(this));
+    input.addEventListener('change', this.onImport);
 
     this.input = input;
   }
@@ -143,7 +160,7 @@ export default class Menu extends React.Component {
     }
 
     return (
-      <DropdownItem onClick={this.onInsights.bind(this)}>
+      <DropdownItem onClick={this.onInsights}>
         <Icon name="bar-chart" fixedWidth/> Statistiken
       </DropdownItem>
     );
@@ -156,7 +173,7 @@ export default class Menu extends React.Component {
     }
 
     return (
-      <DropdownItem onClick={this.onAttributes.bind(this)}>
+      <DropdownItem onClick={this.onAttributes}>
         <Icon name="info" fixedWidth/> Eigenschaften
       </DropdownItem>
     );
@@ -170,7 +187,7 @@ export default class Menu extends React.Component {
 
     if (project.exec) {
       newTerminal = (
-            <DropdownItem onClick={this.onNewTerminal.bind(this)}>
+            <DropdownItem onClick={this.onNewTerminal}>
               <Icon name="terminal" fixedWidth/> Neues Terminal
             </DropdownItem>
       );
@@ -178,7 +195,7 @@ export default class Menu extends React.Component {
 
     if (project.reset) {
       resetProject = (
-        <DropdownItem onClick={this.onResetProject.bind(this)}>
+        <DropdownItem onClick={this.onResetProject}>
           <Icon name="refresh" fixedWidth/> Zurücksetzen
         </DropdownItem>
       );
@@ -186,7 +203,7 @@ export default class Menu extends React.Component {
 
     return (
       <NavDropdown className="unselectable" title={<Icon name="bars"/>} right>
-        <DropdownItem onClick={this.onNewFile.bind(this)}>
+        <DropdownItem onClick={this.onNewFile}>
           <Icon name="file" fixedWidth/> Neue Datei
         </DropdownItem>
 
@@ -194,7 +211,7 @@ export default class Menu extends React.Component {
 
         <DropdownDivider/>
 
-        <DropdownItem onClick={this.onShowShareableLink.bind(this)}>
+        <DropdownItem onClick={this.onShowShareableLink}>
           <Icon name="share" fixedWidth/> Teilen (Link)
         </DropdownItem>
 
@@ -209,28 +226,28 @@ export default class Menu extends React.Component {
           <Icon name="upload" fixedWidth/> Importieren
         </DropdownItem>
 
-        <DropdownItem onClick={this.onExport.bind(this)}>
+        <DropdownItem onClick={this.onExport}>
           <Icon name="download" fixedWidth title="Beispiel herunterladen" /> Exportieren
         </DropdownItem>
 
-        <DropdownItem onClick={this.onOpenInNewWindow.bind(this)}>
+        <DropdownItem onClick={this.onOpenInNewWindow}>
           <Icon name="link" fixedWidth/> In neuem Fenster öffnen
         </DropdownItem>
         <DropdownDivider/>
 
         <form className="form-inline" onSubmit={e => e.preventDefault()}>
-          <Button name="fontSizeSmaller" className="btn-sm fontSizeMenuBtn" onClick={this.onSmallerFontsize.bind(this)}>
+          <Button name="fontSizeSmaller" className="btn-sm fontSizeMenuBtn" onClick={this.onSmallerFontsize}>
             <Icon name="minus" fixedWidth />
           </Button>
           Schriftgröße
-          <Button name="fontSizeBigger" className="btn-sm fontSizeMenuBtn" onClick={this.onBiggerFontsize.bind(this)}>
+          <Button name="fontSizeBigger" className="btn-sm fontSizeMenuBtn" onClick={this.onBiggerFontsize}>
             <Icon name="plus" fixedWidth/>
           </Button>
         </form>
 
         <DropdownDivider/>
 
-        <DropdownItem onClick={this.onOptions.bind(this)}>
+        <DropdownItem onClick={this.onOptions}>
           <Icon name="gear" fixedWidth/> Einstellungen
         </DropdownItem>
 

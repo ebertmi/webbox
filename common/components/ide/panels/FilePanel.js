@@ -32,10 +32,6 @@ export default class FilePanel extends React.Component {
     });
   }
 
-  renderStatusBar() {
-
-  }
-
   render() {
     let file = this.props.item;
     let {font, fontSize, ace: aceOptions} = this.state.options;

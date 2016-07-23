@@ -34,6 +34,12 @@ export class TurtleMessageConsumer extends Writable {
   }
 }
 
+const ANCHOR_LUT = {
+  'sw': 'left',
+  's': 'center',
+  'se': 'right'
+};
+
 /**
  * Turtle Class for rendering and communicating with the canvas
  */
@@ -48,6 +54,8 @@ export class Turtle {
     //this.toTurtleStream.setEncoding('utf8');
     this.fromTurtleStream = fromTurtleStream;
     this.fromTurtleStream.pipe(new TurtleMessageConsumer(this), {end: true});
+
+    this.debugChars = [];
 
     /*
     var dx, dy, xpos, ypos;
@@ -110,6 +118,8 @@ export class Turtle {
         break;
       case 'debug':
         // ignore (ToDo)
+        //this.debugChars.push(msg.char);
+        //console.info(this.debugChars.join(''));
         break;
       default:
         console.info('Received unhandled turtle msg', msg.cmd);
@@ -184,6 +194,14 @@ export class Turtle {
         case 'image':
           // ToDo: Support images here
           break;
+        case 'write':
+          // ctx write text
+          ctx.fillStyle = item.fill;
+          ctx.font = `${item.font[2]} ${item.font[1]}px ${item.font[0]}`;
+          ctx.textAlign = ANCHOR_LUT[item.anchor];
+          ctx.textBaseline = 'middle';
+          ctx.fillText(item.text, item.x+dx, item.y+dy);
+          break;
       }
     }
   }
@@ -202,6 +220,12 @@ export class Turtle {
     } else {
       delete this.items[item];
     }
+  }
+
+  create_text (item) {
+    console.info(arguments);
+    this.items.push(item);
+    return this.items.length - 1;
   }
 
   create_image (image) {
