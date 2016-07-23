@@ -1,19 +1,11 @@
-import { createStore, applyMiddleware } from 'redux';
-import createSagaMiddleware from 'redux-saga';
+import { createStore } from 'redux';
 import rootReducer from '../reducers/notebook';
-import notebookSaga from '../sagas/notebook';
-
-// create Saga Middleware for generator support
-const sagaMiddleware = createSagaMiddleware();
 
 export default function configureStore(initialState) {
   const store = createStore(
     rootReducer,
-    initialState,
-    applyMiddleware(sagaMiddleware)
+    initialState
   );
-
-  sagaMiddleware.run(notebookSaga);
 
   return store;
 }

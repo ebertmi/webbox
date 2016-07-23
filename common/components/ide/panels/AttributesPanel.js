@@ -1,12 +1,10 @@
 import React from 'react';
-import Slug from 'slug';
+import Slug from 'speakingurl';
 import clone from 'lodash/clone';
 import set from 'lodash/set';
 
 import {Button, Input} from '../../bootstrap';
 import { EmbedTypes } from '../../../constants/Embed';
-
-Slug.defaults.mode = 'rfc3986';
 
 /**
  * Displays and allows to change embed attributes.
