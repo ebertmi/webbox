@@ -5,7 +5,7 @@ import { Loader } from '../components/Loader';
 /**
  * Renders loader or content.
  */
-function LoadingContainer(props) {
+export function LoadingContainer(props) {
   if (props.isLoading) {
     return <Loader type="line-scale" />;
   } else {

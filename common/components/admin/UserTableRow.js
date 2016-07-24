@@ -13,7 +13,7 @@ function renderIsActive (props) {
 }
 
 export function UserTableRow(props) {
-  const userDetailPath = `/admin/user/${this.props.data.id}`;
+  const userDetailPath = `/admin/user/${props.data.id}`;
 
   return (
     <tr key={props.data.id}>

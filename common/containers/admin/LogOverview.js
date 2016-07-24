@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import { PaginationContainer } from '../PaginationContainer';
 import { LoadingContainer } from '../LoadingContainer';
-import {LogTableRow } from '../../components/admin/LogTableRow';
+import { LogTableRow } from '../../components/admin/LogTableRow';
 import * as AdminActions from '../../actions/AdminActions';
 
 class LogOverview extends Component {
