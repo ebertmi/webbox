@@ -47,7 +47,7 @@ export default class Tab extends React.Component {
           {this.props.children}
         </div>
         <div className="tab-close">
-          <div className="ide-action-bar animated">
+          <div className="webbox-action-bar animated">
             <ul className="actions-container">
               <li className="action-item">
                 {this.renderCloseButton()}

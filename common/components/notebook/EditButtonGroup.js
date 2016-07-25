@@ -1,16 +1,28 @@
 import React from 'react';
 
 import Icon from '../Icon';
+import { Toolbar, ActionItem } from '../Toolbar';
 
 const IS_VISIBLE_ICON_NAME = 'circle';
 const IS_INVISIBLE_ICON_NAME = 'circle-o';
 const IS_VISIBLE_TITLE = 'Verstecken';
 const IS_INVISIBLE_TITLE = 'Anzeigen';
 
+function renderToggleEditButton (props) {
+  if (props.editing) {
+    return (
+      <ActionItem onClick={props.onStopEdit} title="Zur normalen Ansicht zurück">
+        <Icon className="icon-control" name="eye" />
+      </ActionItem>);
+  } else {
+    return (
+      <ActionItem onClick={props.onEdit} title="Inhalt bearbeiten">
+      <Icon className="icon-control" name="pencil" />
+    </ActionItem>);
+  }
+}
+
 export function EditButtonGroup (props) {
-  const editIcon = <Icon className="icon-control" onClick={props.onEdit} name="pencil" title="Inhalt bearbeiten" />;
-  const stopEditIcon = <Icon className="icon-control" onClick={props.onStopEdit} name="eye" title="Zur normalen Ansicht zurück" />;
-  const iconBtn = props.editing ? stopEditIcon : editIcon;
   const isVisibleIcon = props.isVisible ? IS_VISIBLE_ICON_NAME : IS_INVISIBLE_ICON_NAME;
   const isVisibleTitle = props.isVisible ? IS_VISIBLE_TITLE : IS_INVISIBLE_TITLE;
 
@@ -22,11 +34,21 @@ export function EditButtonGroup (props) {
   return (
     <div className="col-xs-12">
       <div className="editor-btns">
-        {iconBtn}
-        <Icon className="icon-control" onClick={props.onToggleVisibility} name={isVisibleIcon} title={isVisibleTitle} />
-        <Icon className="icon-control" onClick={props.onCellUp} name="arrow-circle-o-up" title="Nach oben verschieben" />
-        <Icon className="icon-control" onClick={props.onCellDown} name="arrow-circle-o-down" title="Nach unten verschieben" />
-        <Icon className="icon-control" onClick={props.onDelete} name="times-circle-o" title="Löschen" />
+        <Toolbar>
+          {renderToggleEditButton(props)}
+          <ActionItem onClick={props.onToggleVisibility} title="Nach oben verschieben" >
+            <Icon className="icon-control" name={isVisibleIcon} title={isVisibleTitle} />
+          </ActionItem>
+          <ActionItem onClick={props.onCellUp} title="Nach oben verschieben" >
+            <Icon className="icon-control" name="arrow-circle-o-up" />
+          </ActionItem>
+          <ActionItem onClick={props.onCellDown} title="Nach unten verschieben" >
+            <Icon className="icon-control" name="arrow-circle-o-down" />
+          </ActionItem>
+          <ActionItem onClick={props.onDelete} title="Löschen" >
+            <Icon className="icon-control" name="times-circle-o" />
+          </ActionItem>
+        </Toolbar>
       </div>
     </div>
   );

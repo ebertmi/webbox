@@ -59,33 +59,6 @@
   width: 100%;
 }
 
-.ide-action-bar {
-  text-align: right;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.ide-action-bar .actions-container {
-  display: flex;
-  margin: 0 auto;
-  padding: 0;
-  width: 100%;
-  justify-content: flex-end;
-}
-
-.ide-action-bar .action-item {
-  cursor: pointer;
-  display: inline-block;
-  -webkit-transition: -webkit-transform .1s ease;
-  transition: transform .1s ease;
-  position: relative;
-}
-
-.ide-action-bar.animated .action-item:active {
-  -webkit-transform: translateY(-3px);
-  transform: translateY(-3px);
-}
-
 .tabs-container > .tab > .tab-close .action-label {
   opacity: 0;
   margin-right: 0.5em;

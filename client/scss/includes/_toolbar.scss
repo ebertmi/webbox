@@ -1,0 +1,47 @@
+.webbox-action-bar {
+  text-align: right;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.webbox-action-bar .actions-container {
+  display: flex;
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.webbox-action-bar .action-item {
+  cursor: pointer;
+  display: inline-block;
+  -webkit-transition: -webkit-transform .1s ease;
+  transition: transform .1s ease;
+  position: relative;
+}
+
+.webbox-action-bar.animated .action-item:active {
+  -webkit-transform: translateY(-3px);
+  transform: translateY(-3px);
+}
+
+.webbox-action-bar .action-item .icon {
+    display: inline-block;
+}
+
+.webbox-action-bar .action-label {
+    font-size: 12px;
+    margin-right: .3em;
+}
+
+.action-label {
+  margin-right: .2em;
+  background-repeat: no-repeat;
+}
+
+.action-label:focus,
+.action-label:active,
+a.action-label:focus,
+a.action-label:active {
+  outline: none;
+}

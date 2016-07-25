@@ -113,3 +113,22 @@
 .image-upload-wrapper {
   display: inline-block;
 }
+
+/* Notebook Toolbar */
+.notebook-toolbar {
+  display: inline-flex;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+
+  & .action-label {
+    color: #000000;
+    font-size: 1rem;
+    text-decoration: none;
+  }
+}
+
+.editor-btns .action-label {
+  color: #000000;
+  font-size: 0.9rem;
+  text-decoration: none;
+}

@@ -6,6 +6,8 @@ import Icon from '../Icon';
 import * as NotebookActions from '../../actions/NotebookActions';
 import { EmbedTypes } from '../../constants/Embed';
 
+import { Toolbar, ActionItem } from '../Toolbar';
+
 /**
  * Displays the Notebook-Metadata with:
  *  - title
@@ -68,37 +70,43 @@ class NotebookMetadata extends React.Component {
     if (this.props.canToggleEditMode) {
       const iconName = this.props.isAuthor ? 'toggle-off' : 'toggle-on';
       const titleText = this.props.isAuthor ? 'Leseansicht' : 'Editieransicht';
+
+      const linkToPresentation = `/p/${this.props.id}`;
+
       return (
-      <span className="metadata-item">
-        <span className="metadata-sep">&nbsp;&middot;&nbsp;</span>
-        <Icon className="icon-control" name={iconName} title={titleText} onClick={this.toggleViewMode} />
-      </span>
+        <Toolbar className="notebook-toolbar" animated={false}>
+          <ActionItem isIcon={true} title={titleText} onClick={this.toggleViewMode}>
+            <Icon name={iconName} />
+          </ActionItem>
+          <ActionItem isIcon={true} title={titleText} href={linkToPresentation} target="_blank" >
+            <Icon name="television" />
+          </ActionItem>
+        </Toolbar>
       );
     }
 
     return null;
-
   }
 
   renderButtons() {
     const editIconName = this.props.editable ? '' : 'edit';
     const editTitleText = this.props.editable ? 'Schließen' : 'Metadata bearbeiten';
+
     return (
-      <span>
-        <span className="metadata-sep">&nbsp;&middot;&nbsp;</span>
-        <span className="metadata-item  icon-control" onClick={this.toggleEditClicked} >
-          <Icon name={editIconName} title={editTitleText} />
-        </span>
-        <span className="metadata-item icon-control" onClick={this.onUndo} >
-          <Icon name="undo" title="Rückgängig" /> <sup>{this.props.undoStackSize}</sup>
-        </span>
-        {/*<span className="metadata-item icon-control" onClick={this.onRedo} >
-          <Icon name="repeat" title="Wiederholen" /> <sup>{this.props.redoStackSize}</sup>
-        </span>*/}
-        <span className="metadata-item icon-control" onClick={this.props.onSave} >
-          <Icon name="floppy-o" title="Speichern" />
-        </span>
-      </span>
+      <Toolbar className="notebook-toolbar">
+        <ActionItem isIcon={true} title={editTitleText} onClick={this.toggleEditClicked}>
+          <Icon name={editIconName} />
+        </ActionItem>
+        <ActionItem isIcon={true} title="Rückgängig" onClick={this.onUndo}>
+          <Icon name="undo" /> <sup>{this.props.undoStackSize}</sup>
+        </ActionItem>
+        {/*<ActionItem isIcon={true} title="Wiederholen" onClick={this.onRedo}>
+          <Icon name="repeat" />
+        </ActionItem>*/}
+        <ActionItem isIcon={true} title="Speichern" onClick={this.props.onSave}>
+          <Icon name="floppy-o" />
+        </ActionItem>
+      </Toolbar>
     );
   }
 
@@ -200,6 +208,7 @@ class NotebookMetadata extends React.Component {
           <span className="metadata-item">
             <Icon name="clock-o" />&nbsp;Zuletzt aktualisiert&nbsp;<Time value={date} locale="de" relative={true} />
           </span>
+          <span className="metadata-sep">&nbsp;&middot;&nbsp;</span>
           { isAuthor ? this.renderButtons() : null }
           { this.renderViewMode() }
         </div>

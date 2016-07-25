@@ -94,9 +94,9 @@ export default class CodeEmbedCell extends BaseCell {
   onUpdateCell(e) {
     if (e && e.preventDefault) {
       e.preventDefault();
+      const value = e.target.value || '';
+      this.props.dispatch(updateCell(this.props.cell.get('id'), value));
     }
-    const value = e.target.value || '';
-    this.props.dispatch(updateCell(this.props.cell.get('id'), value));
   }
 
   renderCreateEmbed() {

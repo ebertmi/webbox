@@ -38,11 +38,17 @@ export default class Presentation extends React.Component {
     const activeBlock = -1;
     const isAuthor = false;
     const dispatch = this.props.dispatch;
+    const isVisible = cell.getIn(['metadata', 'isVisible'], true);
 
     let lang;
     let embedType;
     let runId;
     let source = sourceFromCell(cell);
+
+    // Do not render the cell, if it is hidden!
+    if (isVisible === false) {
+      return null;
+    }
 
     // Push cell
     switch (cell.get('cell_type')) {
@@ -71,6 +77,7 @@ export default class Presentation extends React.Component {
    * Renders the cells to slides depending on the given "slide_type" in the metadata.
    */
   renderSlides() {
+    console.info(this.props.notebook);
     let i;
     let cell;
     let children = [];
@@ -132,7 +139,7 @@ export default class Presentation extends React.Component {
         </Spectacle>
       );
     } else {
-      return <p>Loading...</p>;
+      return <p>Keine Folien vorhanden. Sie müssen ggf. die Metadaten der ersten Zelle bearbeiten.</p>;
     }
   }
 }
