@@ -280,8 +280,11 @@ export default class Runner extends EventEmitter {
     }
 
     // turtle streams
-    if (this.process.stdio[4] && this.process.stdio[5]) {
-      new Turtle(this.process.stdio[4], this.process.stdio[5], this.project);
+    if (this.process.stdio[4]) {
+      new Turtle({
+        turtle: this.process.stdio[4],
+        stdout: this.stdout
+      }, this.project);
     }
 
     return Promise.join(processPromise(this.process, false).reflect(), streamPromise(this.process.stdout), processPromise => {

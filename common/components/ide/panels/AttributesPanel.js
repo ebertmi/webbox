@@ -70,7 +70,11 @@ export default class AttributePanel extends React.Component {
 
     // Special slug handling
     if (name === 'slug') {
-      value = Slug(value);
+      if (value.endsWith('-')) {
+        value = Slug(value) + '-';
+      } else {
+        value = Slug(value);
+      }
     }
 
     // Set new value on the path

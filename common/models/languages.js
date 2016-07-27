@@ -55,8 +55,8 @@ export default {
       PYTHONPATH: '/usr/local/lib/sourcebox/',
       MPLBACKEND: 'module://backend_sb'
     },
-    streams: 3,
-    streamsObjectMode: [false, false, false] /* set the mode for the additional streams */,
+    streams: 2,
+    streamsObjectMode: [false, false] /* set the mode for the additional streams */,
     errorParser: new PythonErrorParser()
   },
 

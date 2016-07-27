@@ -9,26 +9,65 @@ export class TurtleMessageConsumer extends Writable {
     super(options);
 
     this.turtle = turtle;
+    this.previousChunks = [];
+    this.incompleteMsg = '';
+  }
+
+  /**
+   * Transforms a chunk of json msgs to json and applies the it
+   * on the turtle canvas. Takes care of incomplete messages at
+   * the end of a chunk.
+   *
+   * @param {any} str
+   */
+  transformChunk (str) {
+    var newStr = str;
+
+    // Append the incompleteMsgs from last the last chunk to the new one
+    if (this.incompleteMsg !== '') {
+      newStr = this.incompleteMsg.concat(str);
+      this.incompleteMsg = ''; // Reset incompleteMsgs
+    }
+
+    // Now split the msgs by \n\r see turtle.py sendPickle
+    let msgs = newStr.split('\n\r');
+    var length = msgs.length;
+
+    // Check if chunk contains an incomplete message at the end
+    if (str.endsWith('\n\r') === false) {
+      this.incompleteMsg = msgs[length - 1];
+      length = length - 1; // Ignore last incomplete message in processing
+    }
+
+    // Iterate over all msgs and try to parse and apply them
+    for (let i = 0; i < length; i++) {
+      if (msgs[i].length === 0 || (msgs[i].length === 1 && msgs[i].charCodeAt(0) === 13)) {
+        // Skip those empty lines
+      } else {
+        try {
+          let chunkJson = JSON.parse(msgs[i]);
+          this.turtle.onStreamMessage(chunkJson);
+        } catch (e) {
+          if (e instanceof SyntaxError) {
+            // We might recover from those
+            console.warn(`Invalid json message:`);
+          } else {
+            // Those can lead to some serious problems.
+            // How can we access the std.out to output our error here
+            // ToDo: add stdout access and print error
+            //console.error(e);
+            this.emit('error', e);
+          }
+        }
+      }
+    }
   }
 
   _write (chunk, encoding, callback) {
     let chunkStr = chunk.toString();
-    // split chunkStr, as it may contain multiple messages
-    let msgs = chunkStr.split('\n');
-    for (let i = 0; i < msgs.length; i++) {
-      // ignore empty lines
-      if ((msgs[i].length === 1 && msgs[i].charCodeAt(0) === 13) || msgs[i].length === 0 || msgs[i] === "" || msgs[i] === ' ' || msgs[i] === '\n') {
-        // ToDo: nothing todo here, right?
-      } else {
-        try {
-          let chunkJson = JSON.parse(msgs[i]);
 
-          this.turtle.onStreamMessage(chunkJson);
-        } catch (e) {
-          console.log(`Invalid json message: "${msgs[i]}"`, e);
-        }
-      }
-    }
+    // Pass Chunk to our transform method
+    this.transformChunk(chunkStr);
 
     callback();
   }
@@ -44,16 +83,24 @@ const ANCHOR_LUT = {
  * Turtle Class for rendering and communicating with the canvas
  */
 export class Turtle {
-  constructor(fromTurtleStream, toTurtleStream, project) {
+  constructor(streams, project) {
     this.project = project;
     this.canvas; // jQuery object
     this.items = [];
 
-    //this.toTurtleStream = toTurtleStream;
-    this.toTurtleStream = fromTurtleStream;
-    //this.toTurtleStream.setEncoding('utf8');
-    this.fromTurtleStream = fromTurtleStream;
-    this.fromTurtleStream.pipe(new TurtleMessageConsumer(this), {end: true});
+    this.turtleStream = streams.turtle;
+
+    // The MessageConsumer parses the JSON messages and applies them
+    const turtleMessageConsumer = new TurtleMessageConsumer(this);
+    turtleMessageConsumer.on('error', e => {
+      console.warn('TurtleMessageConsumer:', e);
+      if (streams.stdout) {
+        streams.stdout.write('Unser Server ist etwas aus dem Tritt gekommen. Bitte starte das Beispiel erneut.');
+      }
+    });
+
+    // Now pipe the incoming messages to our consumer/transformer
+    this.turtleStream.pipe(turtleMessageConsumer, { end: true });
 
     this.debugChars = [];
 
@@ -77,13 +124,13 @@ export class Turtle {
         ypos = e.offsetY;
       }
 
-      this.toTurtleStream.write(JSON.stringify({
+      this.turtleStream.write(JSON.stringify({
         'cmd': 'canvasevent',
         'type': '<Button-1>',
         'x': xpos - dx,
         'y': ypos - dy
       }));
-      this.toTurtleStream.write('\n');
+      this.turtleStream.write('\n');
     });
     */
   }
@@ -98,8 +145,8 @@ export class Turtle {
   getOrCreateCanvas () {
     if (this.canvas == null) {
       this.canvas = document.createElement('canvas');
-      this.canvas.width = 400;
-      this.canvas.height = 400;
+      this.canvas.width = 800;
+      this.canvas.height = 600;
 
       // add a new tab with the turtle canvas
       this.project.addTab('turtle', {item: this.canvas});
@@ -129,9 +176,9 @@ export class Turtle {
   handleTurtleCommand (msg) {
     if (msg.action in this) {
       let result = this[msg.action].apply(this, msg.args);
-      this.toTurtleStream.write(JSON.stringify({cmd: 'result', 'result': result}) + '\n');
+      this.turtleStream.write(JSON.stringify({cmd: 'result', 'result': result}) + '\n');
     } else {
-      this.toTurtleStream.write(JSON.stringify({cmd: 'exception', exception: 'AttributeError', message: msg.action}) + '\n');
+      this.turtleStream.write(JSON.stringify({cmd: 'exception', exception: 'AttributeError', message: msg.action}) + '\n');
     }
 
   }

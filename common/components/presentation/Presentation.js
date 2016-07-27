@@ -77,7 +77,6 @@ export default class Presentation extends React.Component {
    * Renders the cells to slides depending on the given "slide_type" in the metadata.
    */
   renderSlides() {
-    console.info(this.props.notebook);
     let i;
     let cell;
     let children = [];
