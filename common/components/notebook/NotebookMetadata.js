@@ -208,7 +208,7 @@ class NotebookMetadata extends React.Component {
           <span className="metadata-item">
             <Icon name="clock-o" />&nbsp;Zuletzt aktualisiert&nbsp;<Time value={date} locale="de" relative={true} />
           </span>
-          <span className="metadata-sep">&nbsp;&middot;&nbsp;</span>
+          <span className="metadata-sep">&nbsp;</span>
           { isAuthor ? this.renderButtons() : null }
           { this.renderViewMode() }
         </div>
