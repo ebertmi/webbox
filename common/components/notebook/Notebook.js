@@ -145,7 +145,7 @@ export default class Notebook extends React.Component {
 
       // notebook format
       if (file.name && file.name.endsWith('.ipynb')) {
-        this.messageList.showMessage(Severity.Info, `Importiere ${file.name}... Dies kann einen Moment dauern.`);
+        this.messageList.showMessage(Severity.Ignore, `Importiere ${file.name}... Dies kann einen Moment dauern.`);
         let reader = new FileReader();
 
         reader.onload = () => {
@@ -160,7 +160,7 @@ export default class Notebook extends React.Component {
           let {cells, language} = result;
 
           this.props.dispatch(addCellsFromJS(cells, language, false, () => {
-            this.messageList.showMessage(Severity.Info, 'Daten wurden importiert.');
+            this.messageList.showMessage(Severity.Ignore, 'Daten wurden importiert.');
           }));
 
         };

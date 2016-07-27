@@ -292,4 +292,4 @@ export class MessageListModel extends EventEmitter {
 // defaults
 MessageListModel.DEFAULT_MESSAGE_PURGER_INTERVAL = 10000;
 MessageListModel.DEFAULT_MAX_MESSAGES = 5;
-MessageListModel.DEFAULT_TIMEOUT_INTERVAL = 1000 * 5;
+MessageListModel.DEFAULT_TIMEOUT_INTERVAL = 1000 * 3;

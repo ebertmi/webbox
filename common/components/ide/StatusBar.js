@@ -4,6 +4,15 @@ import classnames from 'classnames';
 import { toBootstrapClass } from '../../models/severity';
 
 /**
+ * Try to detect, if we are in an iFrame
+ *
+ * @returns true if loaded inside an iframe, otherwise false
+ */
+function loadedInIFrame () {
+  return window.frameElement && window.frameElement.nodeName == "IFRAME";
+}
+
+/**
  * The StatusBar displays information in the bottom of the screen:
  *  - Language and Project information
  *  - Username
@@ -14,6 +23,7 @@ export default class StatusBar extends React.Component {
     super(props);
 
     this.onChange = this.onChange.bind(this);
+    this.isInIFrame = loadedInIFrame();
   }
 
   componentWillMount() {
@@ -43,15 +53,16 @@ export default class StatusBar extends React.Component {
   }
 
   render() {
-    const classes = classnames('status-bar', toBootstrapClass(this.state.status.severity), 'hidden-print')
+    const classes = classnames('status-bar', toBootstrapClass(this.state.status.severity), 'hidden-print');
+    const linkToStart = this.isInIFrame ? null :  <span className="status-navigation"><a className="tag tag-info" href="/" target="_blank" title="Startseite">Startseite</a></span>;
 
     return (
       <div className={classes}>
         <span className="status-language-information"><span className="tag tag-success">{this.state.status.languageInformation}</span></span>
         {this.renderUsername()}
         <span className="status-message">{this.state.status.message}</span>
-        <span className="status-navigation pull-xs-right"><a className="tag tag-primary" href={this.state.originalLink} target="_blank" title="Original Anzeigen">Zum Original</a></span>
-        <span className="status-navigation pull-xs-right"><a className="tag tag-info" href="/" title="Startseite">Startseite</a></span>
+        <span className="status-navigation first-child"><a className="tag tag-primary" href={this.state.originalLink} target="_blank" title="Original Anzeigen">Zum Original</a></span>
+        {linkToStart}
       </div>
     );
   }

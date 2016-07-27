@@ -88,10 +88,18 @@ export default class Presentation extends React.Component {
     let slideType;
     let isInSlide = false;
     let slideCounter = 0;
+    let isVisible;
 
     // Dynamically create slides, depending on the slide_type in the metadata
     for (i = 0; i < cellOrder.size; i++) {
       cell = cells.get(cellOrder.get(i)); // Get current cell
+      isVisible = cell.getIn(['metadata', 'isVisible'], true);
+
+      // Skip invisible cells from rendering an empty slide
+      if (isVisible === false) {
+        continue;
+      }
+
       slideType = cell.getIn(['metadata', 'slideshow', 'slide_type'], 'slide');
       // start new slide
       if (isInSlide === false && slideType === 'slide') {
@@ -133,7 +141,7 @@ export default class Presentation extends React.Component {
     if (slides.length > 0) {
       return (
         <Spectacle theme={theme} onRef={s => this.spectacle = s}>
-          <Deck progress="bar" transition={[]} transitionDuration={200}>
+          <Deck progress="number" transition={[]} transitionDuration={200}>
             { slides }
           </Deck>
         </Spectacle>

@@ -80,15 +80,20 @@ body.ide,
 
     & .status-navigation {
       align-self: center;
-      margin-left: auto;
+      /*margin-left: auto;*/
+      margin-left: 0rem;
       padding-right: 1em;
       padding-left: 1em;
       border-left: #ddd solid 1px;
       font-weight: 400;
-    }
 
-    & .status-navigation:last-child {
-      margin-left: 0rem;
+      &.first-child {
+        margin-left: auto;
+      }
+
+      /*&:nth-last-child(2) {
+        margin-left: auto;
+      }*/
     }
 
     &.danger {
