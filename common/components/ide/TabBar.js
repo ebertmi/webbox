@@ -51,9 +51,15 @@ export default class TabBar extends React.Component {
     });
   }
 
+  /**
+   * Toggles between fullscreen and normal, if supported
+   */
   onToggleFullscreen() {
     if (screenfull.enabled) {
       screenfull.toggle();
+
+      // Force rerendering, otherwise the icon does not change
+      this.forceUpdate();
     }
   }
 
@@ -124,6 +130,8 @@ export default class TabBar extends React.Component {
     let startStop;
     let shareWithTeacher;
 
+    const fullScreenIcon = screenfull.isFullscreen ? 'compress' : 'expand';
+
     if (project.run) {
       startStop = (
         <NavItem className="unselectable" onClick={this.onStartStop} useHref={false}>
@@ -154,7 +162,7 @@ export default class TabBar extends React.Component {
           { shareWithTeacher }
 
           <NavItem className="unselectable" onClick={this.onToggleFullscreen} disabled={!screenfull.enabled}>
-            <Icon name="arrows-alt" title="Vollbildmodus"/>
+            <Icon name={fullScreenIcon} title="Vollbildmodus"/>
           </NavItem>
           <Menu project={project}/>
         </Nav>
