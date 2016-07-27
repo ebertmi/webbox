@@ -68,3 +68,16 @@
 .label {
   border-radius: 20rem;
 }
+
+
+@media (max-width: 544px) {
+  .ide .embed-title {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .control-bar .controls .nav-item.nav-link {
+    padding: 0.25em 0.5em;
+  }
+}

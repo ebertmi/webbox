@@ -38,7 +38,7 @@ export default class Tab extends React.Component {
       pinned: this.props.pinned
     });
 
-    let icon = this.props.icon ? <span className={"tab-icon fa fa-" + this.props.icon}></span> : null;
+    let icon = this.props.icon ? <span className={"tab-icon hidden-xs-down fa fa-" + this.props.icon}></span> : null;
 
     return (
       <div title={this.props.title} onClick={this.onClick} className={classes}>

@@ -198,8 +198,8 @@ class NotebookMetadata extends React.Component {
       );
     }
     return (
-      <div className="col-md-12">
-        <h1>{title}</h1>
+      <div className="col-xs-12">
+        <h1 className="notebook-title">{title}</h1>
         <div className="metadata">
           <span className="metadata-item">
             <Icon name="user" />&nbsp;{author}

@@ -24,8 +24,8 @@ block content
           und Übungen können direkt im Browser ausprobiert und verändert werden.
       .row
         if courses != null && courses.length
-          h4 Kurse
           .col-xs-12
+            h4 Kurse
             p Hier finden Sie alle Kurse, zum Ausführen der Beispiele müssen Sie jedoch angemeldet sein.
           .col-xs-12
             div.card-columns
@@ -38,16 +38,17 @@ block content
                     - var url = course.slug ? course.slug : course.id
                     a.btn.btn-primary(href="/course/" + url) Zum Kurs
         else
-          h4 Kurse
           .col-xs-12
+            h4 Kurse
             p Es wurden bisher keine Kurse angelegt bzw. veröffentlicht.
 
       if !user.isAnonymous
         .row
-          h4 Ihre Übersicht
-          p.
-            Willkommen zurück <strong>!{user.username}</strong>. Wir haben hier ihre letzten Beispiele und Dokumente für Sie aufgelistet.
-            Alternativ können Sie auch einen bestimmten Kurs auswählen.
+          .col-xs-12
+            h4 Ihre Übersicht
+            p.
+              Willkommen zurück <strong>!{user.username}</strong>. Wir haben hier ihre letzten Beispiele und Dokumente für Sie aufgelistet.
+              Alternativ können Sie auch einen bestimmten Kurs auswählen.
 
           if documents && (documents.length > 0 || isAuthor)
             .col-xs-12
@@ -56,8 +57,8 @@ block content
                   span Ihre Dokumente
                   =' '
                   span.pull-right-flex
-                    small Die letzten 10 Dokumente
-                    small !{" | "}
+                    small.hidden-xs-down Die letzten 10 Dokumente
+                    small.hidden-xs-down !{" | "}
                     small
                       a(href="/documents", title="Alle Anzeigen") Alle
                     small
@@ -71,7 +72,7 @@ block content
                       - var urlPart = doc.slug != null && doc.slug != '' ? doc.slug : doc.id;
                       a(href="/d/" + urlPart) !{doc.metadata.title}
                       span.pull-xs-right
-                        small Letzte Änderung !{doc.metadata.lastUpdate}
+                        small.hidden-xs-down Letzte Änderung !{doc.metadata.lastUpdate}
 
           if embeds && (embeds.length > 0 || isAuthor)
             .col-xs-12
@@ -80,8 +81,8 @@ block content
                   span Ihre erstellten Beispiele
                   =' '
                   span.pull-right-flex
-                    small Die letzten 10
-                    small !{" | "}
+                    small.hidden-xs-down Die letzten 10
+                    small.hidden-xs-down !{" | "}
                     small
                       a(href="/embeds", title="Alle Anzeigen") Alle
                     small
@@ -97,7 +98,7 @@ block content
                       - var urlPart = embed.slug != null && embed.slug != '' ? embed.slug : embed.id;
                       a(href="/embed/" + urlPart, ) !{embed.meta.name}
                       span.pull-xs-right
-                        small Letzte Änderung !{embed.lastUpdate}
+                        small.hidden-xs-down Letzte Änderung !{embed.lastUpdate}
 
           if codeDocuments && codeDocuments.length > 0
             .col-xs-12
@@ -106,8 +107,8 @@ block content
                   span Ihre gespeicherten Beispiele
                   =' '
                   span.pull-right-flex
-                    small Die letzten 10
-                    small !{" | "}
+                    small.hidden-xs-down Die letzten 10
+                    small.hidden-xs-down !{" | "}
                     small
                       a(href="/codedocuments", title="Alle Anzeigen") Alle
                 ul.list-group.list-group-flush
@@ -115,7 +116,7 @@ block content
                     li.list-group-item
                       a(href="/embed/" + doc.codeEmbedId + "?showDocument=" + doc.id ) !{doc.embed.name}
                       span.pull-xs-right
-                        small Letzte Änderung !{doc.lastUpdate}
+                        small.hidden-xs-down Letzte Änderung !{doc.lastUpdate}
 
           if recentlyViewedDocuments && recentlyViewedDocuments.length > 0
             .col-xs-12
