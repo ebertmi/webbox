@@ -149,7 +149,9 @@ export default class CodeEmbedCell extends BaseCell {
     let createForm = this.state.showCreateEmbed ? this.renderCreateEmbed() : this.renderCreateEmbedButton();
 
     return (
-      <div className="col-xs-12" onKeyDown={this.onKeyDown}>
+      // onKeyDown={this.onKeyDown}
+      // ToDo: handle onUpdateCell differently, as this does not work for ESC to stop editing
+      <div className="col-xs-12">
         <strong>Codebeispiel-Einstellungen</strong>
         <p className="text-muted">Sie können die Größe (Höhe und Breite) über die Metadaten auch selbst steuern. Nutzen Sie dazu die Schlüssel <code>height</code> bzw. <code>width</code> und einen numerischen Wert (z.B. <code>500</code>) ohne Einheit.</p>
         <div className="form-group">

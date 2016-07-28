@@ -81,7 +81,16 @@ export default class Notebook extends React.Component {
 
       this.onSave();
       e.preventDefault();
+    } else if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 77) {
+      // Pressed Ctrl+M to open the presentation
+      this.onPresentationMode();
     }
+  }
+
+  onPresentationMode() {
+    const linkToPresentation = `/p/${this.props.notebook.get('id')}`;
+
+    window.open(linkToPresentation);
   }
 
   onSave() {
