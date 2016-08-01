@@ -4,6 +4,7 @@
 @import "_anchor.scss";
 @import "_kbd.scss";
 @import "../includes/_messagelist.scss";
+@import "../includes/_display.scss";
 
 // Fonts
 @import url(https://fonts.googleapis.com/css?family=PT+Sans);
@@ -84,15 +85,6 @@
   letter-spacing: 0.095rem;
   //font-size: 26px;
   //line-height: 30px;
-}
-
-/**
- * Apply this class in order to center images
- */
-.markdown-cell img.centered {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 /*

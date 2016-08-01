@@ -70,6 +70,10 @@ export const mdOptions = {
     let displayMode;
     let source;
 
+    if (props.class != null) {
+      props.className = props.class;
+    }
+
     switch (tag) {
       case 'a':
         return <Link href={props.href} target="_blank" {...props}>{children}</Link>;
