@@ -14,6 +14,7 @@ export default function dashboard(state = INITIAL_DASHBOARD_STATE, action) {
     case adminTypes.GET_USER_FAILURE:
     case adminTypes.GET_USERS_FAILURE:
     case adminTypes.GET_EMBEDS_FAILURE:
+    case adminTypes.GET_DOCUMENTS_FAILURE:
     case adminTypes.GET_COURSES_FAILURE:
     case adminTypes.GET_AUTHATTEMPTS_FAILURE:
     case adminTypes.DELETE_COURSE_FAILURE:

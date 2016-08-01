@@ -143,6 +143,18 @@ export const AdminAPI = {
     })
     .catch(commonErrorHandler);
   },
+  getDocuments(query) {
+    return fetch(`/api/documents?page=${query.page}&limit=${query.limit}`, {
+      credentials: 'same-origin',
+      headers: getDefaultHeaders()
+    })
+    .then(checkStatus)
+    .then(parseJSON)
+    .then(data => {
+      return data;
+    })
+    .catch(commonErrorHandler);
+  },
   getLogs(query) {
     return fetch(`/api/logs?page=${query.page}&limit=${query.limit}`, {
       credentials: 'same-origin',

@@ -28,6 +28,7 @@ server {
 server {
 	listen 1443;
 	listen [::]:1443 default_server ipv6only=on;
+  client_max_body_size 5M;
 
 
 	# Make site accessible from http://localhost/

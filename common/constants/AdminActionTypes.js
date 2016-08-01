@@ -30,13 +30,22 @@ export const CHANGE_USERS_LIMIT = 'CHANGE_USERS_LIMIT';
 export const CHANGE_USERS_SEARCH = 'CHANGE_USERS_SEARCH';
 
 /**
- * Admin/embed action types
+ * Admin/embeds action types
  */
 export const GET_EMBEDS_REQUEST = 'GET_EMBEDS_REQUEST';
 export const GET_EMBEDS_SUCCESS = 'GET_EMBEDS_SUCCESS';
 export const GET_EMBEDS_FAILURE = 'GET_EMBEDS_FAILURE';
 export const CHANGE_EMBEDS_PAGE = 'CHANGE_EMBEDS_PAGE';
 export const CHANGE_EMBEDS_LIMIT = 'CHANGE_EMBEDS_LIMIT';
+
+/**
+ * Admin/documents action types
+ */
+export const GET_DOCUMENTS_REQUEST = 'GET_DOCUMENTS_REQUEST';
+export const GET_DOCUMENTS_SUCCESS = 'GET_DOCUMENTS_SUCCESS';
+export const GET_DOCUMENTS_FAILURE = 'GET_DOCUMENTS_FAILURE';
+export const CHANGE_DOCUMENTS_PAGE = 'CHANGE_DOCUMENTS_PAGE';
+export const CHANGE_DOCUMENTS_LIMIT = 'CHANGE_DOCUMENTS_LIMIT';
 
 /**
  * Admin/course action types

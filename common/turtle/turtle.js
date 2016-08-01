@@ -55,7 +55,7 @@ export class TurtleMessageConsumer extends Writable {
             // Those can lead to some serious problems.
             // How can we access the std.out to output our error here
             // ToDo: add stdout access and print error
-            //console.error(e);
+            console.error(e);
             this.emit('error', e);
           }
         }
@@ -270,7 +270,6 @@ export class Turtle {
   }
 
   create_text (item) {
-    console.info(arguments);
     this.items.push(item);
     return this.items.length - 1;
   }

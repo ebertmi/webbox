@@ -200,6 +200,26 @@ function* fetchEmbeds (action) {
 }
 
 /**
+ * Documents fetching...
+ */
+function* fetchDocuments (action) {
+  try {
+    // reset notification message
+    yield put({ type: adminTypes.RESET_MESSAGE });
+
+    const data = yield call(API.admin.getDocuments, action.query);
+
+    if (data.error) {
+      yield put({type: adminTypes.GET_DOCUMENTS_FAILURE, message: data.error.message});
+    } else {
+      yield put({type: adminTypes.GET_DOCUMENTS_SUCCESS, documents: data.documents, pages: data.pages});
+    }
+  } catch (e) {
+    yield put({type: adminTypes.GET_DOCUMENTS_FAILURE, message: e.message});
+  }
+}
+
+/**
  * Log fetching...
  */
 function* fetchLogs (action) {
@@ -249,6 +269,7 @@ export default function* adminSaga () {
     fork(takeLatest, adminTypes.UNBLOCK_USER_REQUEST, unblockUser),
     fork(takeLatest, adminTypes.RESEND_USER_CONFIRMATION_EMAIL_REQUEST, resendConfirmationEmail),
     fork(takeLatest, adminTypes.GET_EMBEDS_REQUEST, fetchEmbeds),
+    fork(takeLatest, adminTypes.GET_DOCUMENTS_REQUEST, fetchDocuments),
     fork(takeLatest, adminTypes.GET_COURSES_REQUEST, fetchCourses),
     fork(takeLatest, adminTypes.GET_COURSE_REQUEST, fetchCourse),
     fork(takeLatest, adminTypes.SAVE_COURSE_REQUEST, saveCourse),

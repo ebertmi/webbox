@@ -5,6 +5,10 @@
 @import "_kbd.scss";
 @import "../includes/_messagelist.scss";
 
+// Fonts
+@import url(https://fonts.googleapis.com/css?family=PT+Sans);
+@import url(https://fonts.googleapis.com/css?family=Oswald);
+
 
 .icon-control {
   padding-right: 0.5rem;
@@ -53,6 +57,45 @@
   display: none;
 }
 
+/*
+  font-family: "PT Sans",Tahoma,Verdana,sans-serif
+  font-size: 18px;
+  line-height: 29px;
+
+  https://www.google.com/fonts/specimen/PT+Serif
+  https://www.google.com/fonts/specimen/PT+Sans#pairings
+*/
+
+.markdown-cell p {
+  font-size: 1.2rem;
+  font-family: "PT Sans",Tahoma,Verdana,sans-serif;
+  font-style: normal;
+  line-height: 1.6rem;
+  color: #000000;
+}
+
+.markdown-cell h1,
+.markdown-cell h2,
+.markdown-cell h3,
+.markdown-cell h4,
+.markdown-cell h5 {
+  font-family: "Open Sans Condensed", serif;
+  font-weight: 600;
+  letter-spacing: 0.095rem;
+  //font-size: 26px;
+  //line-height: 30px;
+}
+
+/**
+ * Apply this class in order to center images
+ */
+.markdown-cell img.centered {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/*
 .markdown-cell p {
   font-size: 1.3rem;
   font-family: Georgia,Cambria,"Times New Roman",Times,serif;
@@ -60,7 +103,9 @@
   font-style: normal;
   line-height: 1.55;
 }
+*/
 
+/*
 .markdown-cell h1 {
   font-family: "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Arial,sans-serif;
   font-weight: 300;
@@ -68,6 +113,7 @@
   font-size: 28px;
   line-height: 1.22;
 }
+*/
 
 .top-sep {
   border-top: 1px dashed #444;

@@ -192,7 +192,7 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
       },
       heading: {
         h1: {
-          color: colors.tertiary,
+          color: "rgb(32, 32, 32)",
           fontSize: "3rem",
           fontFamily: fonts.primary,
           lineHeight: 1,
@@ -211,7 +211,7 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         h3: {
           color: "black",
           fontSize: "1.8rem",
-          fontFamily: fonts.secondary,
+          fontFamily: fonts.primary,
           lineHeight: 1,
           fontWeight: "bold",
           margin: "0.5rem auto"

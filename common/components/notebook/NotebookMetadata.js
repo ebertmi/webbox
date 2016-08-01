@@ -67,25 +67,23 @@ class NotebookMetadata extends React.Component {
   }
 
   renderViewMode() {
-    if (this.props.canToggleEditMode) {
-      const iconName = this.props.isAuthor ? 'toggle-off' : 'toggle-on';
-      const titleText = this.props.isAuthor ? 'Leseansicht' : 'Editieransicht';
+    const iconName = this.props.isAuthor ? 'toggle-off' : 'toggle-on';
+    const titleText = this.props.isAuthor ? 'Leseansicht' : 'Editieransicht';
 
-      const linkToPresentation = `/p/${this.props.id}`;
+    const linkToPresentation = `/p/${this.props.id}`;
 
-      return (
-        <Toolbar className="notebook-toolbar" animated={false}>
-          <ActionItem isIcon={true} title={titleText} onClick={this.toggleViewMode}>
-            <Icon name={iconName} />
-          </ActionItem>
-          <ActionItem isIcon={true} title="Präsentationsmodus" href={linkToPresentation} target="_blank" >
-            <Icon name="television" />
-          </ActionItem>
-        </Toolbar>
-      );
-    }
+    let toggleViewModeButton = this.props.canToggleEditMode === false ? null : (<ActionItem isIcon={true} title={titleText} onClick={this.toggleViewMode}>
+          <Icon name={iconName} />
+        </ActionItem>);
 
-    return null;
+    return (
+      <Toolbar className="notebook-toolbar" animated={true}>
+        {toggleViewModeButton}
+        <ActionItem isIcon={true} title="Präsentationsmodus" href={linkToPresentation} target="_blank" >
+          <Icon name="television" />
+        </ActionItem>
+      </Toolbar>
+    );
   }
 
   renderButtons() {

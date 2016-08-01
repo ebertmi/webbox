@@ -29,6 +29,9 @@ function AdminApp(props) {
               <Link to="/admin/courses" className="nav-link" activeClassName="active">Kurse</Link>
             </li>
             <li className="nav-item">
+              <Link to="/admin/documents" className="nav-link" activeClassName="active">Dokumente</Link>
+            </li>
+            <li className="nav-item">
               <Link to="/admin/users" className="nav-link" activeClassName="active">Benutzer</Link>
             </li>
             <li className="nav-item">

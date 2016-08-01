@@ -14,7 +14,7 @@ export function Toolbar (props) {
     <div className={classes} {...rest}>
       <ul className="actions-container">
         {React.Children.map(children, (action, index) => {
-          return <li key={index} className="action-item">{action}</li>;
+          return action != null ? <li key={index} className="action-item">{action}</li> : null;
         })}
       </ul>
     </div>

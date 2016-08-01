@@ -14,8 +14,8 @@ function renderTable (props) {
         <tr>
           <th>Benutzer</th>
           <th>IP</th>
-          <th>Zeitpunkt</th>
           <th>ID</th>
+          <th>Zeitpunkt</th>
         </tr>
       </thead>
       <tbody>

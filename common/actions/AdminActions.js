@@ -168,6 +168,24 @@ export function changeEmbedsPage(page) {
   };
 }
 
+
+/**
+ * Admin/Documents
+ */
+export function requestDocumentsPage(query) {
+  return {
+    type: types.GET_DOCUMENTS_REQUEST,
+    query: query
+  };
+}
+
+export function changeDocumentsPage(page) {
+  return {
+    type: types.CHANGE_DOCUMENTS_PAGE,
+    page: page
+  };
+}
+
 /**
  * Admin/Log
  */

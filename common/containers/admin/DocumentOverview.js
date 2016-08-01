@@ -4,10 +4,11 @@ import { bindActionCreators } from 'redux';
 
 import { PaginationContainer } from '../PaginationContainer';
 import { LoadingContainer } from '../LoadingContainer';
-import { EmbedTableRow } from '../../components/admin/EmbedTableRow';
+import { DocumentTableRow } from '../../components/admin/DocumentTableRow';
 import * as AdminActions from '../../actions/AdminActions';
 
-class EmbedOverview extends Component {
+
+class DocumentOverview extends Component {
 
   renderTable() {
     return (<table className="table table-sm tabl-striped">
@@ -24,8 +25,8 @@ class EmbedOverview extends Component {
         </tr>
       </thead>
       <tbody>
-        {this.props.embedOverview.embeds.map((embed, index) => {
-          return <EmbedTableRow key={index} data={embed}/>;
+        {this.props.documentOverview.documents.map((document, index) => {
+          return <DocumentTableRow key={index} data={document}/>;
         })}
       </tbody>
     </table>);
@@ -35,13 +36,13 @@ class EmbedOverview extends Component {
     const content = this.renderTable();
     return (
       <PaginationContainer
-          changePage={this.props.changeEmbedsPage}
-          requestPage={this.props.requestEmbedsPage}
-          pages={this.props.embedOverview.pages}
-          pagesQuery={this.props.embedOverview.pagesQuery}
+          changePage={this.props.changeDocumentsPage}
+          requestPage={this.props.requestDocumentsPage}
+          pages={this.props.documentOverview.pages}
+          pagesQuery={this.props.documentOverview.pagesQuery}
           location={this.props.location}>
-        <h2>Codebeispiele</h2>
-        <LoadingContainer isLoading={this.props.embedOverview.isFetching}>
+        <h2>Dokumente</h2>
+        <LoadingContainer isLoading={this.props.documentOverview.isFetching}>
           {content}
         </LoadingContainer>
       </PaginationContainer>
@@ -50,7 +51,7 @@ class EmbedOverview extends Component {
 }
 
 export default connect(state => ({
-  embedOverview: state.embedOverview
+  documentOverview: state.documentOverview
 }),
   dispatch => bindActionCreators(AdminActions, dispatch)
-)(EmbedOverview);
+)(DocumentOverview);
