@@ -593,7 +593,7 @@ export default class Project extends EventEmitter {
     }
 
     let index = 0;
-    let mainFile = data.meta.mainFile || 'main.py'; // ToDo: change this
+    let mainFile = data.meta.mainFile; // ToDo: change this
     // switch to specified mainFile
     if (mainFile) {
       index = this.getIndexForFilename(mainFile);
@@ -603,7 +603,13 @@ export default class Project extends EventEmitter {
 
     // switch to first tab
     if (this.tabs.length > 1) {
-      this.switchTab(index);
+      let oldTab = this.tabs[index];
+      // Switch files inside the tabs array
+      this.tabs.splice(index, 1); // Remove tab from tabs
+      this.tabs.unshift(oldTab);
+
+      // Switch to first tab
+      this.switchTab(0);
     }
 
     // Update title
