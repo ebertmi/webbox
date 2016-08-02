@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import assert from '../util/assert';
 
+import { ErrorFilter } from './insights/errorFilter';
 import { Submissions } from './submissions';
 import { Action, SocketEvents } from './socketConnection';
 
@@ -86,6 +87,7 @@ export class Insights extends EventEmitter {
     super();
     this._project = project;
     this._connection = socketConnection;
+    this.errorFilter = new ErrorFilter();
 
     this.errors = [];
     this.events = [];
@@ -327,46 +329,23 @@ export class Insights extends EventEmitter {
     }
   }
 
-  // ToDo: Maybe improve the filtering by maintaing the last result and see if a
-  // new event just needs to be filtered and appended to the last result
-  // This would prevent us from iterating everytime!
   /**
    *
    *
-   * @param {any} n number of errors for the subset, if n = 'all', return every error
+   * @param {any} subsetSize number of errors for the subset, if n = 'all', return every error
    * @param {any} [filter={}]
    * @returns
    */
-  filterErrors(n, filter={}) {
+  filterErrors(subsetSize, filters={}) {
     if (this.errors.length > 600) {
       console.warn('High amount of errors to filter. Please contact admin.');
     }
 
-    return new Promise((resolve, reject) => {
-      let subset = this.errors;
+    this.errorFilter.setFilters(filters);
+    this.errorFilter.setSubsetSize(subsetSize);
+    this.errorFilter.setErrors(this.errors);
 
-      // ToDo: make this more generic
-      // Maybe we should iterate over all filter elements and check each
-      if (filter.isActive === true) {
-        subset = subset.filter(error => {
-          if (filter.filterType != null && filter.filterType !== '' && error.type.toLowerCase() !== filter.filterType.toLowerCase()) {
-            return false;
-          }
-
-          if (filter.filterUsername != null && filter.filterUsername !== '' && error.username.toLowerCase() !== filter.filterUsername.toLowerCase()) {
-            return false;
-          }
-
-          return true;
-        });
-      }
-
-      if (n !== 'all') {
-        resolve(subset.slice(-n).reverse());
-      }
-
-      resolve(subset.reverse());
-    });
+    return this.errorFilter.filter();
   }
 
   getEvents() {
