@@ -1,3 +1,10 @@
+/**
+ * The Markdown Renderer uses the underlying MDReactComponent class to render markdown.
+ * We use special options and functions to turn the Markdown AST Nodes into React components.
+ * In our case we turn them into Spectacle Presentation Framework Components. Additionally,
+ * we've added the support for inline HTML nodes and classes.
+ */
+
 import React from 'react';
 import katex from 'katex';
 import mkitm from 'markdown-it-math';
@@ -31,7 +38,7 @@ function makeChildren(children, props) {
    *  -> now every child is pushed to htmlContent until we find an closing tag
    *  -> if there are multiple opening tags, we wait until we found the last closing one
    *
-   * WARNING: This will fail if somebody injects errornous HTML code, which causes to not render the node at all.
+   * WARNING: This will fail if somebody injects errornous HTML code, which prevents to render the node at all.
    */
   for (let child of children) {
     if (child.type && child.type === 'htmlinline') {
@@ -63,8 +70,15 @@ function makeChildren(children, props) {
   return result;
 }
 
+/**
+ * Markdown Options that are passed to MDReactComponent and then to markdown-it
+ */
 export const mdOptions = {
   onIterate: function onIterate(tag, props, children) {
+    /**
+     * The onIterate function is doing the actual work. It transforms the Mardown Nodes
+     * to React Nodes and passes in the props and children.
+     */
     let lang;
     let content;
     let displayMode;

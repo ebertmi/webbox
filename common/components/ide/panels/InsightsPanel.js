@@ -12,6 +12,13 @@ export default class InsightsPanel extends React.Component {
 
     this.onChange = this.onChange.bind(this);
     this.onDateClusterSettingsChange = throttle(this.onDateClusterSettingsChange.bind(this), 1000);
+
+    // Initial state
+    this.state = {
+      dateClusters: [],
+      events: this.props.item.events,
+      errors: this.props.item.errors
+    };
   }
 
   onChange() {
@@ -30,12 +37,6 @@ export default class InsightsPanel extends React.Component {
     this.props.item.subscribeOnEvents();
 
     this.props.item.on('change', this.onChange);
-
-    this.setState({
-      dateClusters: [],
-      events: this.props.item.events,
-      errors: this.props.item.errors
-    });
   }
 
   componentWillUnmount() {

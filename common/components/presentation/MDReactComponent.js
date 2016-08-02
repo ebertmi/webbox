@@ -17,6 +17,9 @@ const DEFAULT_TAGS = {
   'html': 'span'
 };
 
+/**
+ * Markdown Node Rules to create a Markdown AST
+ */
 const DEFAULT_RULES = {
   image(token, attrs, children) {
     if (children.length) {
@@ -92,6 +95,14 @@ const DEFAULT_RULES = {
   }
 };
 
+/**
+ * Recursiv Markdown Tree converting function using the above rules and options.
+ *
+ * @param {any} tokens
+ * @param {any} convertRules
+ * @param {any} options
+ * @returns
+ */
 function convertTree(tokens, convertRules, options) {
   function convertBranch(tkns, nested) {
     let branch = [];
@@ -134,6 +145,7 @@ function mdReactFactory(options={}) {
     ...rootElementProps
   } = options;
 
+  // Create Markdown-it renderer with our custom options
   let md = markdown(markdownOptions || presetName)
     .enable(enableRules)
     .disable(disableRules);
@@ -147,6 +159,12 @@ function mdReactFactory(options={}) {
     ), md
   );
 
+  /**
+   * Simple function to determine if we need to render children or not.
+   *
+   * @param {any} tag
+   * @returns
+   */
   function renderChildren(tag) {
     return ['img', 'hr', 'br'].indexOf(tag) < 0;
   }
@@ -196,6 +214,9 @@ function mdReactFactory(options={}) {
   };
 }
 
+/**
+ * MarkdownReact Component, that does the rendering
+ */
 const MDReactComponent = props => {
   const { text, ...propsWithoutText } = props;
   return mdReactFactory(propsWithoutText)(text);

@@ -9,6 +9,8 @@ class ErrorClusters extends EventEmitter {
     super();
 
     this._errorClusters = new Map();
+    this.isDirty = false;
+    this.barData = [];
   }
 
   clusterErrorOnType(error){
@@ -35,6 +37,7 @@ class ErrorClusters extends EventEmitter {
     }
 
     if (hasChanged) {
+      this.isDirty = true;
       this.emit('change');
     }
   }
@@ -50,7 +53,11 @@ class ErrorClusters extends EventEmitter {
   }
 
   toSeries(name="Fehlertypen") {
-    let barData = [];
+    if (this.isDirty === false) {
+      return this.barData;
+    }
+
+    this.barData = [];
 
     let series = {
       name: name,
@@ -64,9 +71,10 @@ class ErrorClusters extends EventEmitter {
       });
     }
 
-    barData.push(series);
+    this.barData.push(series);
+    this.isDirty = false;
 
-    return barData;
+    return this.barData;
   }
 }
 
@@ -97,6 +105,13 @@ export class Insights extends EventEmitter {
     this.submissions = new Submissions(this._connection);
   }
 
+  reset() {
+    this.dateMaps = this.getInitialDateClusterMaps();
+    this.errorClusters.reset();
+    this.errors = [];
+    this.events = [];
+  }
+
   /**
    * Create an object holding Maps for mapping events to dates
    *
@@ -110,8 +125,6 @@ export class Insights extends EventEmitter {
       rest: new Map()
     };
   }
-
-
 
   subscribeOnEvents() {
     if (this.isSubscribed) {
@@ -140,8 +153,13 @@ export class Insights extends EventEmitter {
     this._project.sendAction(subscribeAction, true);
   }
 
-  onEvents(events) {
+  onEvents(events, reset=false) {
     assert(Array.isArray(events), 'Insights.onEvents expected array of events');
+
+    // Reset the date maps
+    if (reset === true) {
+      this.reset();
+    }
 
     let hasNewErrors = false;
 
@@ -312,6 +330,13 @@ export class Insights extends EventEmitter {
   // ToDo: Maybe improve the filtering by maintaing the last result and see if a
   // new event just needs to be filtered and appended to the last result
   // This would prevent us from iterating everytime!
+  /**
+   *
+   *
+   * @param {any} n number of errors for the subset, if n = 'all', return every error
+   * @param {any} [filter={}]
+   * @returns
+   */
   filterErrors(n, filter={}) {
     if (this.errors.length > 600) {
       console.warn('High amount of errors to filter. Please contact admin.');
@@ -351,8 +376,7 @@ export class Insights extends EventEmitter {
       if (res.error) {
         console.error(res.error);
       } else {
-        this.errorClusters.reset();
-        this.onEvents(res.events);
+        this.onEvents(res.events, true);
       }
     });
 
