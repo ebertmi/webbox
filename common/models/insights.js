@@ -160,8 +160,6 @@ export class Insights extends EventEmitter {
     this.dateMaps[eventKey].set(dateStr, this.dateMaps[eventKey].get(dateStr) + 1);
   }
 
-
-
   /**
    * Clusters all given events to the current date clusters.
    *
@@ -258,7 +256,6 @@ export class Insights extends EventEmitter {
 
   /**
    *
-   *
    * @param {any} subsetSize number of errors for the subset, if n = 'all', return every error
    * @param {any} [filter={}]
    * @returns
@@ -275,6 +272,9 @@ export class Insights extends EventEmitter {
     return this.errorFilter.filter();
   }
 
+  /**
+   * Get events from database
+   */
   getEvents() {
     let action = new Action('get-events', this._project.getUserData(), {
       startDate: this.eventStartDate
