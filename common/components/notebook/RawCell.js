@@ -96,7 +96,7 @@ export default class RawCell extends BaseCell {
   render() {
     const { cell, isAuthor, editing, dispatch } = this.props;
     let content;
-    let metadata = <CellMetadata className="col-xs-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
+    let metadata = <CellMetadata beforeChange={this.onUpdateCell} className="col-xs-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
     let editingClass = editing ? ' editing' : '';
     const isVisible = this.isVisible();
 
@@ -121,8 +121,13 @@ export default class RawCell extends BaseCell {
 }
 
 RawCell.propTypes = {
+  minHeight: React.PropTypes.number,
   cell: React.PropTypes.object.isRequired,
   isAuthor: React.PropTypes.bool.isRequired,
   editing: React.PropTypes.bool.isRequired,
   cellIndex: React.PropTypes.number.isRequired
+};
+
+RawCell.defaultProps = {
+  minHeight: 200
 };

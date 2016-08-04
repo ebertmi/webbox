@@ -32,18 +32,28 @@ export default class Tab extends React.Component {
     }
   }
 
+  renderIcon() {
+    if (this.props.icon) {
+      if (this.props.useImage) {
+        return <span className="tab-icon hidden-xs-down"><img className="fa" src={"/public/img/" + this.props.icon} alt={this.props.icon} /></span>;
+      } else {
+        return <span className={"tab-icon hidden-xs-down fa fa-" + this.props.icon}></span>;
+      }
+    } else {
+      return null;
+    }
+  }
+
   render() {
     let classes = classNames('tab ide-editor-background', {
       active: this.props.active,
       pinned: this.props.pinned
     });
 
-    let icon = this.props.icon ? <span className={"tab-icon hidden-xs-down fa fa-" + this.props.icon}></span> : null;
-
     return (
       <div title={this.props.title} onClick={this.onClick} className={classes}>
         <div className="tab-label">
-          {icon}
+          {this.renderIcon()}
           {this.props.children}
         </div>
         <div className="tab-close">

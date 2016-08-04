@@ -23,12 +23,20 @@ export default class CodeCell extends BaseCell {
 
     this.onRef = this.onRef.bind(this);
     this.onRun = this.onRun.bind(this);
+    this.saveCurrentSessionToState = this.saveCurrentSessionToState.bind(this);
 
     this.state = { rendered: '' };
   }
 
   componentDidMount() {
     this.renderMarkdown(this.getSourceFromCell());
+  }
+
+  saveCurrentSessionToState() {
+    if (this.session) {
+      let content = this.session.getValue();
+      this.props.dispatch(updateCell(this.props.cell.get('id'), content));
+    }
   }
 
   /**
@@ -137,7 +145,7 @@ export default class CodeCell extends BaseCell {
   render() {
     const { cell, isAuthor, editing, dispatch } = this.props;
     let content;
-    let metadata = <CellMetadata className="col-xs-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
+    let metadata = <CellMetadata beforeChange={this.saveCurrentSessionToState} className="col-xs-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
     let editingClass = editing ? ' editing' : '';
     const isVisible = this.isVisible();
 

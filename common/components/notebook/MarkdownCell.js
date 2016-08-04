@@ -9,9 +9,11 @@ import ImageGallery from './ImageGallery';
 import CellMetadata from './CellMetadata';
 import { EditButtonGroup } from './EditButtonGroup';
 
+import { Toolbar, ActionItem } from '../Toolbar';
 import { updateCell } from '../../actions/NotebookActions';
 
 import Markdown from '../../util/markdown';
+import { insert, BoldItem, ItalicsItem, UlItem, OlItem, LinkItem, BlockquoteItem, InlineCodeItem, CodeBlockItem } from '../../util/aceUtil';
 
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
@@ -21,11 +23,21 @@ export default class MarkdownCell extends BaseCell {
     super(props);
 
     this.onRef = this.onRef.bind(this);
-    this.toggleImageUpload= this.toggleImageUpload.bind(this);
     this.toggleImageGallery= this.toggleImageGallery.bind(this);
 
     // Markdown Commands
     this.onInsertImage = this.onInsertImage.bind(this);
+
+    this.onBoldInsert = this.onEditorInsert.bind(this, BoldItem);
+    this.onItalicsInsert = this.onEditorInsert.bind(this, ItalicsItem);
+    this.onOrderedListInsert = this.onEditorInsert.bind(this, OlItem);
+    this.onUnorderedListInsert = this.onEditorInsert.bind(this, UlItem);
+    this.onLinkInsert = this.onEditorInsert.bind(this, LinkItem);
+    this.onBlockquoteInsert = this.onEditorInsert.bind(this, BlockquoteItem);
+    this.onInlineCodeInsert = this.onEditorInsert.bind(this, InlineCodeItem);
+    this.onCodeBlockInsert = this.onEditorInsert.bind(this, CodeBlockItem);
+
+    this.saveCurrentSessionToState = this.saveCurrentSessionToState.bind(this);
 
     this.state = {
       rendered: '',
@@ -49,6 +61,13 @@ export default class MarkdownCell extends BaseCell {
         rendered: rendered
       });
     });
+  }
+
+  saveCurrentSessionToState() {
+    if (this.session) {
+      let content = this.session.getValue();
+      this.props.dispatch(updateCell(this.props.cell.get('id'), content));
+    }
   }
 
   /**
@@ -82,15 +101,12 @@ export default class MarkdownCell extends BaseCell {
     }
   }
 
-  toggleImageUpload() {
-    let newState = this.state.showImageUpload ? false : true;
-    this.setState({
-      showImageUpload: newState
-    });
-  }
-
   toggleImageGallery() {
     let newState = this.state.showImageGallery ? false : true;
+
+    // Save the current session, otherwise it will be overridden
+    this.onUpdateCell();
+
     this.setState({
       showImageGallery: newState
     });
@@ -106,6 +122,66 @@ export default class MarkdownCell extends BaseCell {
     return null;
   }
 
+  /**
+   * Insert Markdown-Format-Items in the editor. Uses the current selection if possible.
+   *
+   * @param {any} item
+   */
+  onEditorInsert(item) {
+    if (this.session) {
+      insert(item, this.session);
+    }
+
+    // Focus editor
+    if (this.editor) {
+      this.editor.focus();
+    }
+  }
+
+  renderListToolbar() {
+    return (<Toolbar className="notebook-toolbar" animated={true}>
+        <ActionItem onClick={this.onUnorderedListInsert} isIcon={true} title="Liste">
+          <Icon name="list-ul" />
+        </ActionItem>
+        <ActionItem onClick={this.onOrderedListInsert} isIcon={true} title="Nummerierte Liste">
+          <Icon name="list-ol" />
+        </ActionItem>
+      </Toolbar>);
+  }
+
+  renderVariousToolbar() {
+    return (<Toolbar className="notebook-toolbar" animated={true}>
+      <ActionItem onClick={this.onBlockquoteInsert} isIcon={true} title="Zitat">
+        <Icon name="quote-right" />
+      </ActionItem>
+      <ActionItem onClick={this.onInlineCodeInsert} isIcon={true} title="Code (Inline)">
+        <Icon name="code" />
+      </ActionItem>
+      <ActionItem onClick={this.onCodeBlockInsert} isIcon={true} title="Code (Block)">
+        <Icon name="file-code-o" />
+      </ActionItem>
+      <ActionItem onClick={this.onLinkInsert} isIcon={true} title="Link">
+        <Icon name="link" />
+      </ActionItem>
+      </Toolbar>);
+  }
+
+  renderTextToolbar() {
+    return (<Toolbar className="notebook-toolbar" animated={true}>
+      <ActionItem onClick={this.onBoldInsert} isIcon={true} title="Fett (Starke Hervorhebung)">
+        <Icon name="bold" />
+      </ActionItem>
+      <ActionItem onClick={this.onItalicsInsert} isIcon={true} title="Kursiv (Hervorhebung)">
+        <Icon name="italic" />
+      </ActionItem>
+    </Toolbar>);
+  }
+
+  /**
+   * Render the Editor for Markdown Editing
+   *
+   * @returns
+   */
   renderEditMode() {
     let minHeight = this.renderedHeight ? this.renderedHeight : this.props.minHeight;
     let source = this.getSourceFromCell();
@@ -116,15 +192,25 @@ export default class MarkdownCell extends BaseCell {
       this.session.setUndoManager(new UndoManager);
     }
 
+    // ToDo: Render ToolBar, that inserts Markdown Code
+
     return (
       <div className="col-xs-12" onKeyDown={this.onKeyDown}>
         <strong>Markdown</strong>  <Icon className="icon-control" onClick={this.toggleImageGallery} title="Verfügbare Bilder anzeigen" name="picture-o"/>
         { this.renderImageGallery() }
+        { this.renderTextToolbar() }
+        { this.renderVariousToolbar() }
+        { this.renderListToolbar() }
         <Editor fontSize="1.3rem" minHeight={minHeight} maxLines={100} session={this.session} showGutter={false} ref={editor => this.editor = editor} />
       </div>
     );
   }
 
+  /**
+   * Renders the view mode of the markdown cell. Basically, this is rendering the markdown as HTML.
+   *
+   * @returns
+   */
   renderViewMode() {
     return <div className="col-xs-12 view-mode" data-viewnode={true} ref={this.onRef} dangerouslySetInnerHTML={{__html: this.state.rendered}}/>;
   }
@@ -132,7 +218,7 @@ export default class MarkdownCell extends BaseCell {
   render() {
     const { cell, isAuthor, editing, dispatch } = this.props;
     let content;
-    let metadata = <CellMetadata className="col-xs-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
+    let metadata = <CellMetadata beforeChange={this.saveCurrentSessionToState} className="col-xs-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
     let editingClass = editing ? ' editing' : '';
     const isVisible = this.isVisible();
 

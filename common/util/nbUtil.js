@@ -2,6 +2,22 @@ import Immutable from 'immutable';
 import UUID from 'uuid';
 import { addCellWithIndex, initialState } from '../reducers/notebook/notebookReducer';
 
+export function replaceIdWithSlug(notebook) {
+  let url = window.location.href;
+  const id = notebook.get('id');
+  const slug = notebook.get('slug');
+
+  if (slug == null || slug == '' || slug.length <= 3) {
+    return;
+  }
+
+  // Check if we need to update
+  if (url.includes(id)) {
+    url = url.replace(id, slug);
+    location.replace(url);
+  }
+}
+
 /**
  * Returns the source of a cell as one string
  */
@@ -172,152 +188,3 @@ export function copyText (fromElement, text){
 
   return succeeded;
 }
-
-/**
- *http://about.asika.tw/fongshen-editor/
-	Class.prototype.insert = function(button)
-	{
-		var self = this;
-
-		var selection = this.editor.getSelection(),
-			string;
-
-		try
-		{
-			// callbacks before insertion
-			this.trigger(self.options.beforeInsert, button);
-			this.trigger(button.beforeInsert, button);
-
-			var openBlockWith = this.trigger(button.openBlockWith, button);
-			var closeBlockWith = this.trigger(button.closeBlockWith, button);
-
-			// callbacks after insertion
-			if (button.multiline === true)
-			{
-				this.trigger(button.beforeMultiInsert, button);
-			}
-
-			self.line = 1;
-
-			if (button.multiline === true && selection)
-			{
-				var lines = selection.split(/\r?\n/);
-
-				for (var l = 0; l < lines.length; l++)
-				{
-					self.line = l + 1;
-
-					lines[l] = this.buildBlock(lines[l], button).block;
-				}
-
-				selection = lines.join("\n");
-
-				button.openWith = null;
-				button.closeWith = null;
-			}
-
-			string = this.buildBlock(selection, button);
-
-			string.block = openBlockWith + string.block + closeBlockWith;
-			string.openBlockWith = openBlockWith;
-			string.closeBlockWith = closeBlockWith;
-
-			this.doInsert(string);
-
-			// callbacks after insertion
-			if (button.multiline === true)
-			{
-				this.trigger(button.afterMultiInsert, button);
-			}
-
-			this.trigger(button.afterInsert, button);
-			this.trigger(self.options.afterInsert, button);
-		}
-		catch (err)
-		{
-			console.log(err);
-		}
-
-		// refresh preview if opened
-		if (self.options.previewContainer)
-		{
-			self.refreshPreview();
-		}
-	};
-
-
-	Class.prototype.doInsert = function(string)
-	{
-		var self = this;
-
-		var selection = this.editor.getSelection();
-
-		if (selection)
-		{
-			this.editor.insert(string.block);
-		}
-		else
-		{
-			this.editor.insert(string.block);
-
-			var backOffset = string.closeWith.length;
-
-			this.editor.moveCursor(0, -backOffset);
-		}
-	};
-
-prototype.buildBlock = function(string, button)
-	{
-		var self = this;
-
-		var openWith = this.trigger(button.openWith, button);
-		var placeHolder = this.trigger(button.placeHolder, button);
-		var replaceWith = this.trigger(button.replaceWith, button);
-		var closeWith = this.trigger(button.closeWith, button);
-		var multiline = button.multiline;
-		var block;
-
-		if (replaceWith !== "")
-		{
-			block = openWith + replaceWith + closeWith;
-		}
-		else if (string === '' && placeHolder !== '')
-		{
-			block = openWith + placeHolder + closeWith;
-		}
-		else
-		{
-			var lines = [string], blocks = [];
-
-			if (multiline === true)
-			{
-				lines = string.split(/\r?\n/);
-			}
-
-			for (var l = 0; l < lines.length; l++)
-			{
-				var line = lines[l];
-				var trailingSpaces;
-
-				if (trailingSpaces = line.match(/ *$/))
-				{
-					blocks.push(openWith + line.replace(/ *$/g, '') + closeWith + trailingSpaces);
-				}
-				else
-				{
-					blocks.push(openWith + line + closeWith);
-				}
-			}
-
-			block = blocks.join("\n");
-		}
-
-		return {
-			block: block,
-			openWith: openWith,
-			replaceWith: replaceWith,
-			placeHolder: placeHolder,
-			closeWith: closeWith
-		};
-	};
- */

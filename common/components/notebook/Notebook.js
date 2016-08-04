@@ -13,7 +13,7 @@ import { Action } from '../../models/actions';
 import { Severity } from '../../models/severity';
 import { MessageList } from '../messageList/messageList';
 
-import { loadCellsFromIPYNB, stateToJS } from '../../util/nbUtil';
+import { loadCellsFromIPYNB, stateToJS, replaceIdWithSlug } from '../../util/nbUtil';
 import { addCellsFromJS } from '../../actions/NotebookActions';
 
 import { API } from '../../services';
@@ -39,23 +39,6 @@ export default class Notebook extends React.Component {
     };
   }
 
-  replaceIdWithSlug() {
-    let url = window.location.href;
-    const id = this.props.notebook.get('id');
-    const slug = this.props.notebook.get('slug');
-
-
-    if (slug == null || slug == '' || slug.length <= 3) {
-      return;
-    }
-
-    // Check if we need to update
-    if (url.includes(id)) {
-      url = url.replace(id, slug);
-      location.replace(url);
-    }
-  }
-
   // Make messageList available in the tree
   getChildContext() {
     return {
@@ -68,7 +51,7 @@ export default class Notebook extends React.Component {
     document.addEventListener('keydown', this.onKeyDown);
 
     // Try to update url
-    this.replaceIdWithSlug();
+    replaceIdWithSlug(this.props.notebook);
   }
 
   /**

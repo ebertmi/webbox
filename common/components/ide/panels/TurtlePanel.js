@@ -18,7 +18,7 @@ export default class TurtlePanel extends React.Component {
   onRef(ref) {
     if (ref) {
       this.turtleContainer = ref;
-      ref.appendChild(this.props.item);
+      ref.appendChild(this.props.item.canvas);
     }
   }
 

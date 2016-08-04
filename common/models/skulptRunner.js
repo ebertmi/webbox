@@ -149,7 +149,7 @@ export default class Runner extends EventEmitter {
 
   showTurtleTab() {
     // add a new tab with the turtle canvas
-    this.project.addTab('turtle', {item: this.canvas});
+    this.project.addTab('turtle', {item: {canvas: this.canvas}});
   }
 
 

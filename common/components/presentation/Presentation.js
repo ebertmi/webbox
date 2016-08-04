@@ -16,7 +16,7 @@ import 'spectacle/lib/themes/default/index';
 import Highlight from './Highlight';
 import { toMarkdownComponent } from './markdownRenderer';
 import createTheme from "./theme";
-import { sourceFromCell } from '../../util/nbUtil';
+import { sourceFromCell, replaceIdWithSlug } from '../../util/nbUtil';
 import RawCell from '../notebook/RawCell';
 
 // Create the Theme from our custom theme
@@ -28,6 +28,17 @@ const theme = createTheme();
 export default class Presentation extends React.Component {
   constructor(props) {
     super(props);
+  }
+
+  componentWillMount() {
+    // Try to update the title
+    if (this.props.notebook) {
+      replaceIdWithSlug(this.props.notebook);
+
+      const title = this.props.notebook.getIn(['metadata', 'title'], 'Ohne Titel');
+
+      document.title = `${title} - trycoding.io`;
+    }
   }
 
   /**

@@ -1,4 +1,5 @@
 import { Writable } from 'stream';
+import { EventEmitter } from 'events';
 
 /**
  * Consumes turtle stream messages and converts the bytestream to a string and then parses the json.
@@ -82,8 +83,9 @@ const ANCHOR_LUT = {
 /**
  * Turtle Class for rendering and communicating with the canvas
  */
-export class Turtle {
+export class Turtle extends EventEmitter {
   constructor(streams, project) {
+    super();
     this.project = project;
     this.canvas; // jQuery object
     this.items = [];
@@ -104,39 +106,93 @@ export class Turtle {
 
     this.debugChars = [];
 
-    /*
-    var dx, dy, xpos, ypos;
-    this.canvas.off('click');
-    this.canvas.click(function (e) {
-      if (e.eventPhase !== 2) {
-        return;
-      }
-      e.stopPropagation();
-      dx = this.width / 2;
-      dy = this.height / 2;
-      if (e.offsetX == undefined) {
-        var offset = canvas.offset();
-        xpos = e.pageX - offset.left;
-        ypos = e.pageY - offset.top;
-      }
-      else {
-        xpos = e.offsetX;
-        ypos = e.offsetY;
-      }
-
-      this.turtleStream.write(JSON.stringify({
-        'cmd': 'canvasevent',
-        'type': '<Button-1>',
-        'x': xpos - dx,
-        'y': ypos - dy
-      }));
-      this.turtleStream.write('\n');
-    });
-    */
+    this.canvasClickHandler = this.canvasClickHandler.bind(this);
+    this.canvasReleaseHandler = this.canvasReleaseHandler.bind(this);
   }
 
+  // ToDo: handle different events, may require changes in turtle.py
+  // https://docs.python.org/3.1/library/turtle.html#turtle.onclick
+  // https://docs.python.org/3.1/library/turtle.html#turtle.onkey
+
+  getMouseEventData(e) {
+    let dx;
+    let dy;
+    let xpos;
+    let ypos;
+    let eventX;
+    let eventY;
+
+    if (e.eventPhase !== 2) {
+      return;
+    }
+
+    e.stopPropagation();
+    dx = this.canvas.width / 2;
+    dy = this.canvas.height / 2;
+
+    if (e.offsetX == undefined) {
+      xpos = e.pageX - this.canvas.offsetLeft;
+      ypos = e.pageY - this.canvas.offsetTop;
+    } else {
+      xpos = e.offsetX;
+      ypos = e.offsetY;
+    }
+
+    eventX = xpos - dx;
+    eventY = ypos - dy;
+
+    // Turtle uses Left, Middle, Right => 1, 2, 3
+    // Browsers use 0, 1, 2, 3, 4...
+    let button = e.button != null ? e.button : 0;
+    button += 1; // Add 1 to match turtle num
+
+    return {
+      eventX,
+      eventY,
+      button
+    };
+  }
+
+  canvasReleaseHandler(e) {
+    let eventData = this.getMouseEventData(e);
+
+    this.turtleStream.write(JSON.stringify({
+      'cmd': 'canvasevent',
+      'type': `<Button${eventData.button}-ButtonRelease>`,
+      'x': eventData.eventX,
+      'y': eventData.eventY
+    }));
+    this.turtleStream.write('\n');
+  }
+
+  canvasClickHandler(e) {
+    let eventData = this.getMouseEventData(e);
+
+    this.turtleStream.write(JSON.stringify({
+      'cmd': 'canvasevent',
+      'type': `<Button-${eventData.button}>`,
+      'x': eventData.eventX,
+      'y': eventData.eventY
+    }));
+    this.turtleStream.write('\n');
+  }
+
+  canvasDragHandler(e) {
+    // ToDo:
+    // Add handler in mouseclick
+
+    // Remove handler in mouserelease
+
+    // always remove in addCanvasClickHandler
+  }
+
+  // ToDo: add click, release and key handlers
   addCanvasClickHandler() {
-    // Todo
+    this.canvas.removeEventListener('mousedown', this.canvasClickHandler);
+    this.canvas.addEventListener('mousedown', this.canvasClickHandler);
+
+    this.canvas.removeEventListener('mouseup', this.canvasReleaseHandler);
+    this.canvas.addEventListener('mouseup', this.canvasReleaseHandler);
   }
 
   /**
@@ -149,7 +205,9 @@ export class Turtle {
       this.canvas.height = 600;
 
       // add a new tab with the turtle canvas
-      this.project.addTab('turtle', {item: this.canvas});
+      let index = this.project.addTab('turtle', {item: this});
+      this.tab = this.project.tabs[index]; // Get Tab Reference
+      this.addCanvasClickHandler();
     }
 
     return this.canvas;
@@ -316,5 +374,9 @@ export class Turtle {
       let canvas = this.getOrCreateCanvas();
       canvas.style[key] = value; // tuples of values
     }
+  }
+
+  title(title) {
+    this.emit('title', title);
   }
 }

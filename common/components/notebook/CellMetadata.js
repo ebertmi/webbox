@@ -39,10 +39,18 @@ export default class CellMetadata extends React.Component {
     });
   }
 
+  callBeforeChange() {
+    if (this.props.beforeChange) {
+      this.props.beforeChange();
+    }
+  }
+
   onSlideTypeChange(e) {
     e.preventDefault();
 
     let newValue = e.target.value;
+
+    this.callBeforeChange();
     this.props.dispatch(updateCellSlideType(this.props.cellId, newValue));
   }
 
@@ -57,6 +65,7 @@ export default class CellMetadata extends React.Component {
       return;
     }
 
+    this.callBeforeChange();
     this.props.dispatch(updateCellMetadata(this.props.cellId, name, newValue));
   }
 
@@ -104,6 +113,7 @@ export default class CellMetadata extends React.Component {
       return;
     }
 
+    this.callBeforeChange();
     this.props.dispatch(updateCellMetadata(this.props.cellId, this.state.newKey, this.state.newValue));
 
     // clear state
@@ -121,6 +131,7 @@ export default class CellMetadata extends React.Component {
       return;
     }
 
+    this.callBeforeChange();
     this.props.dispatch(updateCellMetadata(this.props.cellId, metadataKey, null));
   }
 

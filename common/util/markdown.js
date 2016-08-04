@@ -8,6 +8,7 @@ import katex from 'katex';
 import hljs from 'highlight.js';
 import Decorate from 'markdown-it-decorate';
 import MarkdownMath from 'markdown-it-math';
+import Anchor from './markdown-it-anchor';
 
 
 const COPY_BUTTON = `<div class="course-clipboard">
@@ -66,6 +67,7 @@ const FENCE = function (tokens, idx, options, env, slf) {
 
 // add plugins
 markdownit.use(Decorate);
+markdownit.use(Anchor);
 
 // render math with katex
 markdownit.use(MarkdownMath, {

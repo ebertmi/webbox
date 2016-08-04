@@ -75,6 +75,31 @@
   color: #000000;
 }
 
+.markdown-cell ol,
+.markdown-cell ul,
+.markdown-cell dl {
+  font-size: 1.1rem;
+  font-family: "PT Sans",Tahoma,Verdana,sans-serif;
+  font-style: normal;
+  line-height: 1.5rem;
+  color: #000000;
+}
+
+.markdown-cell blockquote {
+  border-left: 2px solid #217dbb;
+  padding-left: 1rem;
+}
+
+.markdown-cell .card-blockquote {
+  border: none;
+  padding: 0;
+  color: #FFFFFF;
+
+  & p {
+    color: #FFFFFF;
+  }
+}
+
 .markdown-cell h1,
 .markdown-cell h2,
 .markdown-cell h3,
