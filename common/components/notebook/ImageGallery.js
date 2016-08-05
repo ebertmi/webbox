@@ -73,13 +73,20 @@ export default class ImageGallery extends React.Component {
   render() {
     const images = this.state.images || [];
     return (
-      <div>
+      <div className="">
         <p className="text-muted">Klicken Sie auf ein Bild, um dieses in das Dokument einzufügen. Klicken auf den angezeigten Link, um das Bild in einem neuen Tab zu öffnen.</p>
-        <div className="card-columns">
-          <ImageUpload onInsertImage={this.props.onInsertImage} document={this.props.document} />
-          { images.map(img => {
-            return <ImagePreview width={MAX_WIDTH} key={img.path} src={img.path} filename={img.filename} onClick={this.onImageClick} />;
-          })}
+        <div className="image-gallery">
+          <ul className="list-unstyled row">
+            <li className="">
+              <ImageUpload onInsertImage={this.props.onInsertImage} document={this.props.document} />
+            </li>
+              { images.map(img => {
+                return (<li className="">
+                  <ImagePreview width={MAX_WIDTH} key={img.path} src={img.path} filename={img.filename} onClick={this.onImageClick} />
+                </li>);
+              })}
+
+          </ul>
         </div>
       </div>
     );

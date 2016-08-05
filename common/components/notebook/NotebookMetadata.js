@@ -124,7 +124,7 @@ class NotebookMetadata extends React.Component {
     if (editable) {
       return (
         <div className="col-md-12">
-          <h1>{title}</h1>
+          <h1 className="notebook-title">{title}</h1>
           <h3>Metadaten:</h3>
           <div className="form-group row">
             <label className={"col-sm-2 form-control-label"} >Titel</label>
@@ -132,7 +132,7 @@ class NotebookMetadata extends React.Component {
               <input className={"form-control title-field"} onChange={this.onUpdate} placeholder="Titel" type="text" defaultValue={title} name="title" ref="titleField" onBlur={e => {}} title="Notebook Titel" />
             </div>
           </div>
-          <div className="metadata">
+          <div className="notebook-metadata">
             <div className="form-group row">
               <label className={"col-sm-2 form-control-label"} ><Icon name="language" /> Sprache</label>
               <div className={"col-sm-10"}>
@@ -198,7 +198,7 @@ class NotebookMetadata extends React.Component {
     return (
       <div className="col-xs-12">
         <h1 className="notebook-title">{title}</h1>
-        <div className="metadata">
+        <div className="notebook-metadata">
           <span className="metadata-item">
             <Icon name="user" />&nbsp;{author}
           </span>

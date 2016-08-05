@@ -10,6 +10,15 @@
 @import url(https://fonts.googleapis.com/css?family=PT+Sans);
 @import url(https://fonts.googleapis.com/css?family=Oswald);
 
+h1.notebook-title {
+  display: inline-block;
+  padding-right: 1rem;
+  font-size: 1.2rem;
+}
+
+.notebook-metadata {
+  display: inline-block;
+}
 
 .icon-control {
   padding-right: 0.5rem;
@@ -159,6 +168,10 @@
   z-index: 1000;
 }
 
+.notebook {
+  margin-top: 1rem;
+}
+
 .notebook.dragging {
   border: 5px solid dodgerblue;
 }
@@ -198,3 +211,5 @@
   font-size: 0.9rem;
   text-decoration: none;
 }
+
+@import "_gallery.scss";

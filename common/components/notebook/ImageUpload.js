@@ -92,17 +92,12 @@ export default class ImageUpload extends React.Component {
     const dropzoneText = this.state.isUploading ? `Lade hoch ... (${this.state.progress}%)` : 'Lege hier Bilder ab, um sie hochzuladen.';
     return (
       <div className="image-upload-wrapper" data-name="image-upload">
-          <div data-name="image-upload" className="card card-block card-inverse card-primary text-xs-center" style={{ maxWidth: MAX_WIDTH }}>
+          <div data-name="image-upload" className="image-upload card-primary text-xs-center" style={{ maxWidth: MAX_WIDTH }}>
             <Dropzone accept="image/*" multiple={false} onDrop={this.onDrop} className="image-dropzone" data-name="image-upload">
-                <blockquote className="card-blockquote" data-name="image-upload">
+                <div data-name="image-upload">
                   <p data-name="image-upload">{dropzoneText}</p>
-                  <p data-name="image-upload">Klicke auf ein Bild, um es einzufügen.</p>
-                  <footer data-name="image-upload">
-                    <small data-name="image-upload">
-                      Maximal 5MB
-                    </small>
-                  </footer>
-                </blockquote>
+                  <p data-name="image-upload">Klicke auf ein Bild, um es einzufügen.<br /><small data-name="image-upload">Maximal 5MB</small></p>
+                </div>
             </Dropzone>
           </div>
           { images.map(img => {

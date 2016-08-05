@@ -113,6 +113,7 @@ export class Turtle extends EventEmitter {
   // ToDo: handle different events, may require changes in turtle.py
   // https://docs.python.org/3.1/library/turtle.html#turtle.onclick
   // https://docs.python.org/3.1/library/turtle.html#turtle.onkey
+  // http://openbookproject.net/thinkcs/python/english3e/events.html
 
   getMouseEventData(e) {
     let dx;

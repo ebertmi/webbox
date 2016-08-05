@@ -9,6 +9,7 @@ export default class IFrame extends React.Component {
     super(props);
     this.iframe = null;
     this.onRef = this.onRef.bind(this);
+    this.onFocus = this.onFocus.bind(this);
     this.initIFrame = this.initIFrame.bind(this);
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
@@ -29,8 +30,16 @@ export default class IFrame extends React.Component {
     this.iframe = ref;
   }
 
+  onFocus() {
+    if (this.props.noFocus) {
+      if (this.iframe && this.iframe.parent) {
+        this.iframe.parent.focus();
+      }
+    }
+  }
+
   renderIFrame() {
-    return <iframe className={this.props.className} ref={this.onRef} onLoad={this.initIFrame} width={this.props.width} height={this.props.height} src={this.props.src} seamless={true} allowFullScreen={true} frameBorder="0" />;
+    return <iframe className={this.props.className} onFocus={this.onFocus} ref={this.onRef} onLoad={this.initIFrame} width={this.props.width} height={this.props.height} src={this.props.src} seamless={true} allowFullScreen={true} frameBorder="0" />;
   }
 
   render() {
@@ -60,7 +69,8 @@ IFrame.propTypes = {
   height: React.PropTypes.oneOfType([React.PropTypes.number, React.PropTypes.string]),
   resizable: React.PropTypes.bool,
   frameBorder: React.PropTypes.string,
-  lazy: React.PropTypes.bool
+  lazy: React.PropTypes.bool,
+  noFocus: React.PropTypes.bool
 };
 
 IFrame.defaultProps = {
@@ -68,5 +78,6 @@ IFrame.defaultProps = {
   height: 500,
   resizable: true,
   frameBorder: "0",
-  lazy: false
+  lazy: false,
+  noFocus: false
 };

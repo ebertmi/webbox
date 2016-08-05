@@ -26,12 +26,14 @@
 }
 
 .webbox-action-bar .action-item .icon {
-    display: inline-block;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
 }
 
 .webbox-action-bar .action-label {
-    font-size: 12px;
-    margin-right: .5em;
+  font-size: 12px;
+  margin-right: .5em;
 }
 
 .action-label {

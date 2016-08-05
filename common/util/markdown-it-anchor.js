@@ -76,7 +76,7 @@ const anchor = (md, opts) => {
 anchor.defaults = {
   level: 1,
   slugify,
-  permalink: false,
+  permalink: true,
   renderPermalink,
   permalinkClass: 'header-anchor',
   permalinkSymbol: '¶',

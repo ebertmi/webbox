@@ -1,20 +1,21 @@
-.anchorjs-link {
+.header-anchor {
   color: inherit;
+  opacity: 0;
 }
 
 @media (max-width: 480px) {
-  .anchorjs-link {
+  .header-anchor {
     display: none;
   }
 }
 
-*:hover > .anchorjs-link {
-  opacity: .75;
+*:hover > .header-anchor {
+  opacity: .6;
   transition: color .16s linear;
 }
 
-*:hover > .anchorjs-link:hover,
-.anchorjs-link:focus {
+*:hover > .header-anchor:hover,
+.header-anchor:focus {
   text-decoration: none;
-  opacity: 1;
+  opacity: 0.9;
 }

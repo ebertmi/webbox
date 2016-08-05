@@ -22,6 +22,10 @@ import RawCell from '../notebook/RawCell';
 // Create the Theme from our custom theme
 const theme = createTheme();
 
+// ToDo: Maybe allow to override in document
+const maxHeight = 800;
+const maxWidth = 1200;
+
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
  */
@@ -71,6 +75,7 @@ export default class Presentation extends React.Component {
         runId = cell.getIn(['metadata', 'runid']);
         return <Highlight showRunButton={true} embedType={embedType} runId={runId} source={source} lang={lang}></Highlight>;
       case 'codeembed':
+        // ToDo: use IFrame.js //noFocus={true}
         return (
           <LazyLoad height={cell.getIn(['metadata', 'height'], 350)} once>
             <iframe className={this.props.className} width={cell.getIn(['metadata', 'width'], 800)} height={cell.getIn(['metadata', 'height'], 400)} src={`/embed/${source}`} seamless={true} allowFullScreen={true} frameBorder="0" />
@@ -118,7 +123,7 @@ export default class Presentation extends React.Component {
       } else if (isInSlide === true && slideType === 'slide') {
         // End current slide and start new one
         slideCounter += 1;
-        slides.push(<Slide key={`slide-${slideCounter}`} children={children}></Slide>);
+        slides.push(<Slide maxHeight={maxHeight} maxWidth={maxWidth} key={`slide-${slideCounter}`} children={children}></Slide>);
         children = []; // reset children
         children.push(this.renderCell(cell, i, this.props.notebook)); // add first new child
       } else {
@@ -139,7 +144,7 @@ export default class Presentation extends React.Component {
     // Final Slide
     if (isInSlide === true) {
       slideCounter += 1;
-      slides.push(<Slide key={`slide-${slideCounter}`} children={children}></Slide>);
+      slides.push(<Slide maxHeight={maxHeight} maxWidth={maxWidth} key={`slide-${slideCounter}`} children={children}></Slide>);
     }
 
     return slides;
