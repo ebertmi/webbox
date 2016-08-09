@@ -26,7 +26,7 @@ export function DocumentTableRow (props) {
       <td><span className="tag tag-success">{languageString}</span></td>
       <td><Link target="_blank" to={userDetailPath}>{props.data.creator.username} ({props.data.creator.email})</Link></td>
       <td><Time value={props.data.createdAt} locale="de" relative={true} invalidDateString="nicht angegeben" /></td>
-      <td><Time value={props.data.metadata.lastUpdated} locale="de" relative={true} invalidDateString="noch nie" /></td>
+      <td><Time value={props.data.metadata.lastUpdate} locale="de" relative={true} invalidDateString="noch nie" /></td>
       <td><span className="tag tag-default">{props.data.embedType}</span></td>
       <td>{props.data.slug}</td>
     </tr>
