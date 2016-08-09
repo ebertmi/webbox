@@ -145,7 +145,9 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         textAlign: "left",
         position: "relative",
         display: "inline-block",
-        margin: 20
+        margin: 20,
+        borderLeft: "2px solid #217dbb",
+        paddingLeft: "1rem",
       },
       quote: {
         borderLeft: `1px solid ${colors.primary}`,
@@ -169,7 +171,7 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
       },
       codePane: {
         pre: {
-          margin: "auto",
+          margin: "0.5rem auto",
           fontSize: "1.2rem",
           fontWeight: "normal",
           fontFamily: fonts.tertiary,
@@ -183,7 +185,7 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
       },
       code: {
         /*color: "black",*/
-        fontSize: "2rem",
+        fontSize: "1.8rem",
         fontFamily: fonts.tertiary,
         margin: "0.25rem auto",
         backgroundColor: "transparent"/*"rgba(0,0,0,0.15)"*/,
@@ -249,16 +251,16 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         textDecoration: "none"
       },
       listItem: {
-        fontSize: "2rem"
+        fontSize: "1.8rem"
       },
       list: {
         textAlign: "left",
-        listStylePosition: "inside",
+        /*listStylePosition: "inside",*/
         padding: 0
       },
       orderedList: {
         textAlign: "left",
-        listStylePosition: "inside",
+        /*listStylePosition: "inside",*/
         padding: 0
       },
       s: {
@@ -269,16 +271,16 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         fontWeight: "bold"
       },
       tableItem: {
-        fontSize: "2rem"
+        fontSize: "1.8rem"
       },
       table: {
         width: "100%"
       },
       text: {
         color: "black",
-        fontSize: "2rem",
+        fontSize: "1.8rem",
         fontFamily: fonts.primary,
-        margin: "0.25rem auto",
+        margin: "1.5rem auto",
         textAlign: "left"
       }
     }

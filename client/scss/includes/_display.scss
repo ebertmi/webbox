@@ -1,8 +1,27 @@
 /**
+ * Flexbox centering of child elements, e.g. img > divs
+ */
+div.centered,
+section.centered,
+main.centered {
+  display: flex !important;;
+  justify-content: center !important;;
+  align-items: center !important;;
+}
+
+.pull-right {
+  align-items: flex-end !important;;
+}
+
+p.centered {
+  text-align: center !important;;
+}
+
+/**
  * Apply this class in order to center images
  */
-.centered {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+img.centered {
+  display: block !important;;
+  margin-left: auto !important;;
+  margin-right: auto !important;;
 }

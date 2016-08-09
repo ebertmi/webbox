@@ -14,7 +14,7 @@ import { Severity } from '../../models/severity';
 import { MessageList } from '../messageList/messageList';
 
 import { loadCellsFromIPYNB, stateToJS, replaceIdWithSlug } from '../../util/nbUtil';
-import { addCellsFromJS } from '../../actions/NotebookActions';
+import { addCellsFromJS, toggleViewMode } from '../../actions/NotebookActions';
 
 import { API } from '../../services';
 
@@ -33,6 +33,7 @@ export default class Notebook extends React.Component {
     this.onSave = this.onSave.bind(this);
     this.onDelete = this.onDelete.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
+    this.onToggleViewMode = this.onToggleViewMode.bind(this);
 
     this.state = {
       isDragging: false
@@ -67,7 +68,14 @@ export default class Notebook extends React.Component {
     } else if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 77) {
       // Pressed Ctrl+M to open the presentation
       this.onPresentationMode();
+    } else if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 81) {
+      // Pressed Ctrl-Q to toggle view mode
+      this.onToggleViewMode();
     }
+  }
+
+  onToggleViewMode() {
+    this.props.dispatch(toggleViewMode());
   }
 
   onPresentationMode() {

@@ -81,8 +81,8 @@ export default class ImageGallery extends React.Component {
               <ImageUpload onInsertImage={this.props.onInsertImage} document={this.props.document} />
             </li>
               { images.map(img => {
-                return (<li className="">
-                  <ImagePreview width={MAX_WIDTH} key={img.path} src={img.path} filename={img.filename} onClick={this.onImageClick} />
+                return (<li className="" key={img.path}>
+                  <ImagePreview width={MAX_WIDTH} src={img.path} filename={img.filename} onClick={this.onImageClick} />
                 </li>);
               })}
 

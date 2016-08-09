@@ -1,5 +1,15 @@
 import cloneDeep from 'lodash/cloneDeep';
 
+export const ImageItem = {
+  openWith: '![](',
+  closeWith: ')',
+  multiline: false,
+  placeHolder: 'Bild-URL',
+  replaceWith: '',
+  openBlockWith: '',
+  closeBlockWith: ''
+};
+
 export const ItalicsItem = {
   openWith: '*',
   closeWith: '*',
@@ -21,7 +31,7 @@ export const BoldItem = {
 };
 
 export const UlItem = {
-  openWith: '*',
+  openWith: '* ',
   closeWith: '',
   multiline: true,
   placeHolder: '',

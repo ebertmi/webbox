@@ -1,6 +1,7 @@
 import React from 'react';
 import { EditSession, UndoManager } from 'ace';
 import classnames from 'classnames';
+import cloneDeep from 'lodash/cloneDeep';
 
 import BaseCell from './BaseCell';
 import Icon from '../Icon';
@@ -13,7 +14,7 @@ import { Toolbar, ActionItem } from '../Toolbar';
 import { updateCell } from '../../actions/NotebookActions';
 
 import Markdown from '../../util/markdown';
-import { insert, BoldItem, ItalicsItem, UlItem, OlItem, LinkItem, BlockquoteItem, InlineCodeItem, CodeBlockItem } from '../../util/aceUtil';
+import { insert, BoldItem, ItalicsItem, UlItem, OlItem, LinkItem, BlockquoteItem, InlineCodeItem, CodeBlockItem, ImageItem } from '../../util/aceUtil';
 
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
@@ -93,12 +94,9 @@ export default class MarkdownCell extends BaseCell {
    * Insert a new markdown image tag
    */
   onInsertImage (src) {
-    if (this.session) {
-      this.session.insert({
-        row: this.session.getLength(),
-        column: 0
-      }, "\n" + `![](${src})`);
-    }
+    let customImageItem = cloneDeep(ImageItem);
+    customImageItem.placeHolder = src;
+    this.onEditorInsert(customImageItem);
   }
 
   toggleImageGallery() {
