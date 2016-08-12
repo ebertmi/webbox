@@ -14,6 +14,15 @@ export default class Ide extends React.Component {
   componentDidMount() {
     // handle Ctrl+S on the whole document even when nothing is focused
     document.addEventListener('keydown', this.onKeyDown.bind(this));
+
+    window.addEventListener("beforeunload", function(e){
+      // Do something
+      /* ToDo:
+       *  - check if user can save
+       *  - Ask if we should save
+       *  - Save and close
+       */
+    }, false);
   }
 
   onDrop(e) {

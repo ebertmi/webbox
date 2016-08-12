@@ -5,12 +5,12 @@
   "main": "webbox.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=production node webbox.babel.js",
-    "startwin": "set NODE_ENV=production&&node webbox.babel.js",
-    "dev": "nodemon webbox.babel.js",
-    "build-web": "webpack --config webpack.config.production.js -p --progress",
-    "build-web-json": "webpack --config webpack.config.production.js -p --progress --json",
-    "watch-web": "webpack -d --watch --display-modules"
+    "start:prod": "NODE_ENV=production node webbox.babel.js",
+    "start:prod-win": "set NODE_ENV=production&&node webbox.babel.js",
+    "start:dev": "nodemon webbox.babel.js",
+    "web:build": "webpack --config webpack.config.production.js -p --progress",
+    "web:build-json:": "webpack --config webpack.config.production.js -p --progress --json",
+    "web:watch": "webpack -d --watch --display-modules"
   },
   "private": true,
   "engine": ">= node 6.2.0",

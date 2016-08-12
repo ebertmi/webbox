@@ -129,12 +129,13 @@ body.ide,
     -ms-user-select: none;
     user-select: none;
   }
-
+  @import "~xterm/src/xterm.css";
+  @import "_terminal";
   @import "_tabbar";
   @import "_tablist";
   @import "../includes/_toolbar";
   @import "_panelarea";
-  @import "_terminal";
+
   @import "../includes/_messagelist";
   @import "_filename_widget";
   @import "_inputbox";

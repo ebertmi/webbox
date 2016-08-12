@@ -37,9 +37,9 @@ document.addEventListener('click', function (event) {
         let previousText = event.target.textContent || event.target.innerText;
         if (succeeded) {
           // ToDo: change button text and show copied for 5s then change back
-          message = 'Copied';
+          message = 'Kopiert';
         } else {
-          message = 'Not supported';
+          message = 'Nicht unterstützt';
           // ToDo: change button text and show failed for 5s then change back
         }
 

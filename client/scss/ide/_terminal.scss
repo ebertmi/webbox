@@ -17,7 +17,27 @@
   padding-left: 0.25em;
 }
 
-.terminal-cursor {
+.terminal:not(:focus) .terminal-cursor {
   color: #000;
   background: #777;
+}
+
+.terminal .terminal-cursor {
+  color: #000;
+  background: #777;
+}
+
+.terminal:focus .terminal-cursor.blinking {
+    animation: blink-cursor 1.2s infinite step-end;
+}
+
+@keyframes blink-cursor {
+  0% {
+    color: #000;
+    background: #777;
+  }
+  50% {
+    background-color: transparent;
+    color: transparent;
+  }
 }

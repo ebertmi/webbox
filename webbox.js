@@ -175,7 +175,10 @@ server.ext('onPreResponse', function (request, reply) {
     let errorMessage = isString(request.response) ? request.repsonse : 'Server Error 500';
     Log.createLog('Server.Error', errorMessage, {
       path: request.path,
-      user: request.pre.user || {}
+      user: request.pre.user || {},
+      data: {
+        message: request.response.toString()
+      }
     }, 'Error');
     console.error(`Repsonse is Error`, request.response.stack);
   } else {

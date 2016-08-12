@@ -59,13 +59,11 @@ export default class ProcessPanel extends React.Component {
       <Terminal
         fontFamily={`${font}, monospace`}
         fontSize={`${fontSize}pt`}
-        stdin={process.stdin}
-        stdout={process.stdout}
-        stderr={process.stderr}
         onBell={this.onBell}
         onResize={this.onResize}
         onTitle={this.onTitle}
         hidden={!this.props.active}
+        process={process}
       />
     );
   }

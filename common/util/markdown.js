@@ -12,7 +12,7 @@ import Anchor from './markdown-it-anchor';
 
 
 const COPY_BUTTON = `<div class="course-clipboard">
-<span class="btn-clipboard" data-event="code.copy" title data-original-title="Copy to clipboard">Copy</span>
+<span class="btn-clipboard" data-event="code.copy" title data-original-title="In die Zwischenablage legen.">Kopieren</span>
 </div>`;
 
 const LAUNCH_SOURCEBOX_BUTTON = '';/*`<div class="course-sourcebox">

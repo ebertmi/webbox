@@ -31,6 +31,7 @@ export default class TabBar extends React.Component {
     super(props);
     this.onChange = this.onChange.bind(this);
     this.onStartStop = this.onStartStop.bind(this);
+    this.onTest= this.onTest.bind(this);
     this.onShareWithTeacher = this.onShareWithTeacher.bind(this);
     this.onSave = this.onSave.bind(this);
     this.onToggleFullscreen = this.onToggleFullscreen.bind(this);
@@ -94,6 +95,18 @@ export default class TabBar extends React.Component {
     }
   }
 
+  onTest(e) {
+    e.preventDefault();
+
+    let project = this.props.project;
+
+    if (project.isRunning()) {
+      project.stop();
+    } else {
+      project.test();
+    }
+  }
+
   onSave(e) {
     e.preventDefault();
 
@@ -128,6 +141,7 @@ export default class TabBar extends React.Component {
   render() {
     let project = this.props.project;
     let startStop;
+    let tester;
     let shareWithTeacher;
 
     const fullScreenIcon = screenfull.isFullscreen ? 'compress' : 'expand';
@@ -136,6 +150,14 @@ export default class TabBar extends React.Component {
       startStop = (
         <NavItem className="unselectable" onClick={this.onStartStop} useHref={false}>
           {project.isRunning() ? <Icon name="stop" className="danger"/> : <Icon name="play" className="success"/>}
+        </NavItem>
+      );
+    }
+
+    if (project.test) {
+      tester = (
+        <NavItem className="unselectable" onClick={this.onTest} useHref={false}>
+          <Icon name="check-square-o" />
         </NavItem>
       );
     }
@@ -156,6 +178,7 @@ export default class TabBar extends React.Component {
         <span className="embed-title">{project.name}</span>
         <Nav className="controls" bsStyle="pills">
           {startStop}
+          {tester}
           <NavItem className="unselectable" onClick={this.onSave} useHref={false} title="Speichern">
             <Icon name="save" />
           </NavItem>

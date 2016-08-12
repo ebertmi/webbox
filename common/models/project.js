@@ -39,7 +39,6 @@ export default class Project extends EventEmitter {
 
     this.unnamedTabCounter = 0;
     this.tabs = [];
-    this.running = false;
 
     // load from data
     this.fromInitialData(this.data);

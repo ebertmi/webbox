@@ -46,6 +46,7 @@ def show():
             fd = os.fdopen(3, 'wb')
             fd.write(b'STARTIMGAGE')
             fd.flush()
+            os.fsync(fd)
             #canvas.print_png(fd, transparent=True)
             canvas.print_jpg(fd, quality=95)
             fd.flush()

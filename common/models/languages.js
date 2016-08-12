@@ -50,6 +50,10 @@ export default {
     exec(files, mainFile='./main.py') {
       return ['python3', mainFile];
     },
+    test(fileNames, mainFile, projectName) {
+      //return ['python3', '/usr/local/lib/sourcebox/tester.py', projectPath];
+      return ['python3', 'tester.py', `/home/user/${projectName}`];
+    },
     displayName: 'Python 3',
     env: {
       PYTHONPATH: '/usr/local/lib/sourcebox/',

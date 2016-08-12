@@ -110,6 +110,40 @@ export default class SourceboxProject extends Project {
     }
   }
 
+  test() {
+    if (this.getConsistency() === false) {
+      this.showMessage(Severity.Error, 'Das Projekt kann derzeit nicht ausgeführt werden. Haben Sie noch weitere Meldungen offen?');
+      return;
+    }
+
+    if (this.isRunning()) {
+      return;
+    }
+
+    // check if there is already our terminal for running the program
+    if (!this.runner) {
+      this.runner = new Runner(this);
+
+      this.addTab('process', {
+        item: this.runner,
+        active: false,
+        callback: () => {
+          this.runner.stop();
+          delete this.runner;
+        }
+      });
+    }
+
+    let index = this.tabs.findIndex(tab => tab.item === this.runner);
+
+    // open terminal as split view
+    if (!this.tabs[index].active) {
+      this.toggleTab(index);
+    }
+
+    this.runner.test();
+  }
+
   removeTab(tab, index) {
     super.removeTab(tab, index);
 
