@@ -84,6 +84,10 @@ h1.notebook-title {
   color: #000000;
 }
 
+.markdown-cell img {
+  max-width: 100%;
+}
+
 .markdown-cell ol,
 .markdown-cell ul,
 .markdown-cell dl {
