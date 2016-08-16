@@ -4,6 +4,10 @@ import { Transform } from 'stream';
  * Replaces newlines (\n) with \r\n (for term.js)
  */
 export class TerminalTransform extends Transform {
+  constructor(options) {
+    super(options);
+  }
+
   _transform(chunk, encoding, callback) {
     let str = chunk.toString();
     this.push(str.replace(/\n/g, '\r\n'));

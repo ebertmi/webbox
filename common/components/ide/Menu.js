@@ -16,6 +16,7 @@ export default class Menu extends React.Component {
     this.onExport = this.onExport.bind(this);
     this.onOpenInNewWindow = this.onOpenInNewWindow.bind(this);
     this.onAttributes = this.onAttributes.bind(this);
+    this.onTests = this.onTests.bind(this);
     this.onOptions = this.onOptions.bind(this);
     this.onNewTerminal = this.onNewTerminal.bind(this);
     this.onResetProject = this.onResetProject.bind(this);
@@ -66,7 +67,7 @@ export default class Menu extends React.Component {
   onOptions(e) {
     e.preventDefault();
 
-    this.props.project.addTab('options');
+    this.props.project.tabManager.addTab('options');
   }
 
   onInsights(e) {
@@ -78,7 +79,13 @@ export default class Menu extends React.Component {
   onAttributes(e) {
     e.preventDefault();
 
-    this.props.project.addTab('attributes', {item: this.props.project});
+    this.props.project.tabManager.addTab('attributes', { item: this.props.project });
+  }
+
+  onTests(e) {
+    e.preventDefault();
+
+    this.props.project.tabManager.addTab('tests', { item: this.props.project });
   }
 
   onNewTerminal(e) {
@@ -179,6 +186,19 @@ export default class Menu extends React.Component {
     );
   }
 
+  renderTests() {
+    const userData = this.props.project.getUserData();
+    if (userData.anonymous === true || userData.isAuthor === false) {
+      return null;
+    }
+
+    return (
+      <DropdownItem onClick={this.onTests}>
+        <Icon name="check-square-o" fixedWidth/> Tests
+      </DropdownItem>
+    );
+  }
+
   render() {
     let project = this.props.project;
 
@@ -217,6 +237,7 @@ export default class Menu extends React.Component {
 
         { this.renderStatisticsItem() }
         { this.renderEmbedAttributes() }
+        { this.renderTests() }
 
         <DropdownDivider/>
 

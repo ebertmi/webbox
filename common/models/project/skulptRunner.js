@@ -2,12 +2,8 @@ import { EventEmitter } from 'events';
 import { PassThrough, Transform } from 'stream';
 
 import Bluebird from 'bluebird';
-import uniq from 'lodash/uniq';
-import isString from 'lodash/isString';
-import isFunction from 'lodash/isFunction';
-import split from 'split2';
-import { EventLog } from './socketConnection';
-import { TerminalTransform } from '../util/streamUtils';
+import { EventLog } from '../insights/socketConnection';
+import { TerminalTransform } from '../../util/streamUtils';
 
 // Disable warnings in production
 let BLUEBIRD_WARNINGS = true;
@@ -38,10 +34,6 @@ class SkulptInputTransform extends Transform{
   }
 }
 
-const RUN_DEFAULTS = {
-  execLimit: 30000
-};
-
 let CANVAS_ID_COUNTER = 0;
 
 // this class pretends to be a "Process", so it can be "displayed" by
@@ -54,7 +46,10 @@ export default class Runner extends EventEmitter {
     this.sourcebox = project.sourcebox;
 
     this.stdin = new PassThrough();
-    this.stdout = new PassThrough();
+    this.stdout = new PassThrough({
+      decodeStrings: false,
+      objectMode: true,
+    });
     this.stderr = this.stdout;
 
     this.stdio = [this.stdin, this.stdout, this.stderr];
@@ -123,7 +118,7 @@ export default class Runner extends EventEmitter {
   }
 
   getMainFile() {
-    let name = this.project.data.meta.mainFile;
+    let name = this.project.projectData.embed.meta.mainFile;
     let fileObject = this.project.getFileForName(name); // ToDo:
     let code = '';
 
@@ -208,7 +203,7 @@ export default class Runner extends EventEmitter {
     emitChange();
 
     // Check for python2/python3
-    let isPython3 = this.project.data.meta.language === 'python3';
+    let isPython3 = this.project.projectData.embed.meta.language === 'python3';
 
     // Create a new canvas
     this.canvas = this.getOrCreateCanvasContainer();
@@ -240,7 +235,11 @@ export default class Runner extends EventEmitter {
       killableFor: true
     });
 
-    this.stdoutTransform = new TerminalTransform();
+    this.stdoutTransform = new TerminalTransform({
+      decodeStrings: false,
+      objectMode: true
+    });
+    //this.stdoutTransform = this.stdout;
     this.stdoutTransform.pipe(this.stdout, {end: false});
 
     // Wrap Skulpt native Promise with Bluebird
@@ -273,7 +272,7 @@ export default class Runner extends EventEmitter {
     this._error(errObj.raw);
 
     let tabIndex = this.project.getIndexForFilename(errObj.file.replace('./', ''));
-    let fileContent = tabIndex > -1 ? this.project.getTabs()[tabIndex].item.getValue() : '';
+    let fileContent = tabIndex > -1 ? this.project.tabManager.getTabs()[tabIndex].item.getValue() : '';
 
     let errorEvent = new EventLog(EventLog.NAME_ERROR, Object.assign({}, errObj, { fileContent: fileContent }));
 

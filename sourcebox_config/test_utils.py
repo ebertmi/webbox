@@ -10,6 +10,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 """
 
 """
+Changed a couple of functions and the JSON representation for our internal test format
 Auto-Grading Utils for Python used on trycoding.io
     - Added hint(str) decorator to display an error hint if a specific test fails
     - Added a default score of 1.0 for every test function

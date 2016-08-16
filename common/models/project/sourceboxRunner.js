@@ -8,9 +8,9 @@ import isString from 'lodash/isString';
 import isFunction from 'lodash/isFunction';
 import split from 'split2';
 
-import { Turtle } from '../turtle/turtle';
-import { EventLog } from './socketConnection';
-import { TerminalTransform, MatplotLibTransfrom } from '../util/streamUtils';
+import { Turtle } from '../../turtle/turtle';
+import { EventLog } from '../insights/socketConnection';
+import { TerminalTransform, MatplotLibTransfrom } from '../../util/streamUtils';
 
 // Disable warnings in production
 let BLUEBIRD_WARNINGS = true;
@@ -94,6 +94,10 @@ export default class Runner extends EventEmitter {
     this.path = this.project.name || '.';
     this.config = this.project.config;
 
+    // Now get the tests file and add it to our files array;
+    let testFile = this.project.getTestCode();
+    this.files.push(testFile);
+
     let command = this._commandArray(this.project.config.test);
     //let runEvent = new EventLog(EventLog.NAME_RUN, { execCommand: command });
     //this.project.sendEvent(runEvent);
@@ -123,6 +127,8 @@ export default class Runner extends EventEmitter {
         this._status(err.message);
       })
       .finally(() => {
+        // Try to delete the test file
+        this.project.deleteFile(testFile.getName());
         emitChange();
       });
   }
@@ -353,7 +359,7 @@ export default class Runner extends EventEmitter {
         // Try to get file content
         let tabIndex = this.project.getIndexForFilename(errObj.file.replace('./', ''));
 
-        let fileContent = tabIndex > -1 ? this.project.getTabs()[tabIndex].item.getValue() : '';
+        let fileContent = tabIndex > -1 ? this.project.tabManager.getTabs()[tabIndex].item.getValue() : '';
 
         let errorEvent = new EventLog(EventLog.NAME_ERROR, Object.assign({}, errObj, { fileContent: fileContent }));
         this.project.sendEvent(errorEvent);
@@ -450,7 +456,7 @@ export default class Runner extends EventEmitter {
         // Try to get file content
         let tabIndex = this.project.getIndexForFilename(errObj.file.replace('./', ''));
 
-        let fileContent = tabIndex > -1 ? this.project.getTabs()[tabIndex].item.getValue() : '';
+        let fileContent = tabIndex > -1 ? this.project.tabManager.getTabs()[tabIndex].item.getValue() : '';
 
         let errorEvent = new EventLog(EventLog.NAME_ERROR, Object.assign({}, errObj, { fileContent: fileContent }));
         this.project.sendEvent(errorEvent);

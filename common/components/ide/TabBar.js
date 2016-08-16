@@ -14,6 +14,7 @@ import InsightsTab from './tabs/InsightsTab';
 import AttributesTab from './tabs/AttributesTab';
 import MatplotlibTab from './tabs/MatplotlibTab';
 import TurtleTab from './tabs/TurtleTab';
+import TestsTab from './tabs/TestsTab';
 import { MODES } from '../../constants/Embed';
 
 const TAB_TYPES = {
@@ -23,7 +24,8 @@ const TAB_TYPES = {
   insights: InsightsTab,
   attributes: AttributesTab,
   matplotlib: MatplotlibTab,
-  turtle: TurtleTab
+  turtle: TurtleTab,
+  tests: TestsTab
 };
 
 export default class TabBar extends React.Component {
@@ -39,16 +41,18 @@ export default class TabBar extends React.Component {
 
   componentWillMount() {
     this.props.project.on('change', this.onChange);
+    this.props.project.tabManager.on('change', this.onChange);
     this.onChange();
   }
 
   componentWillUnmount() {
     this.props.project.removeListener('change', this.onChange);
+    this.props.project.tabManager.removeListener('change', this.onChange);
   }
 
   onChange() {
     this.setState({
-      tabs: this.props.project.getTabs()
+      tabs: this.props.project.tabManager.getTabs()
     });
   }
 
@@ -68,19 +72,19 @@ export default class TabBar extends React.Component {
     e.preventDefault();
 
     if (e.button === 1) {
-      this.props.project.closeTab(index);
+      this.props.project.tabManager.closeTab(index);
     } else if (e.ctrlKey || e.shiftKey) {
       // toggle tab should display it on a split view
-      this.props.project.toggleTab(index);
+      this.props.project.tabManager.toggleTab(index);
     } else {
-      this.props.project.switchTab(index);
+      this.props.project.tabManager.switchTab(index);
     }
   }
 
   onTabClose(index, e) {
     e.preventDefault();
 
-    this.props.project.closeTab(index);
+    this.props.project.tabManager.closeTab(index);
   }
 
   onStartStop(e) {
@@ -122,7 +126,7 @@ export default class TabBar extends React.Component {
   renderTabs() {
     let project = this.props.project;
 
-    return project.getTabs().map(({active, item, type, uniqueId}, index) => {
+    return project.tabManager.getTabs().map(({active, item, type, uniqueId}, index) => {
       let TabType = TAB_TYPES[type] || Tab;
 
       return (
@@ -154,7 +158,7 @@ export default class TabBar extends React.Component {
       );
     }
 
-    if (project.test) {
+    if (project.test && project.hasTestCode()) {
       tester = (
         <NavItem className="unselectable" onClick={this.onTest} useHref={false}>
           <Icon name="check-square-o" />

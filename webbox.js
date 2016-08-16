@@ -12,6 +12,7 @@ import HapiRateLimit from 'hapi-rate-limit';
 import CatboxMemory from 'catbox-memory';
 import CatboxRedis from 'catbox-redis';
 import Log from './lib/models/log';
+import HapiPM2 from './lib/util/hapi-pm2';
 
 import isString from 'lodash/isString';
 
@@ -62,6 +63,15 @@ server.connection({
 server.register({
   register: HapiRateLimit,
   options: config.ratelimit.cacheOptions
+});
+
+
+// Add PM2 shutdown integration for graceful reloads and shutdowns
+server.register({
+  register: HapiPM2,
+  options: {
+    timeout: 4000
+  }
 });
 
 // add the good process monitor/logging plugin

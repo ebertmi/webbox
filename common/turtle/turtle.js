@@ -206,8 +206,8 @@ export class Turtle extends EventEmitter {
       this.canvas.height = 600;
 
       // add a new tab with the turtle canvas
-      let index = this.project.addTab('turtle', {item: this});
-      this.tab = this.project.tabs[index]; // Get Tab Reference
+      let index = this.project.tabManager.addTab('turtle', {item: this});
+      this.tab = this.project.tabManager.getTabs()[index]; // Get Tab Reference
       this.addCanvasClickHandler();
     }
 
@@ -297,6 +297,12 @@ export class Turtle extends EventEmitter {
           }
           ctx.stroke();
           break;
+        case 'dot':
+          ctx.beginPath();
+          ctx.arc(c[0] + dx, c[1] + dy, item.radius, 0, 2 * Math.PI);
+          ctx.fillStyle = item.fill;
+          ctx.fill();
+          break;
         case 'image':
           // ToDo: Support images here
           break;
@@ -320,6 +326,14 @@ export class Turtle extends EventEmitter {
     return this.getOrCreateCanvas().height;
   }
 
+  winfo_width() {
+    return this.get_width();
+  }
+
+  winfo_height() {
+    return this.get_height();
+  }
+
   delete (item) {
     if (item == 'all') {
       this.items = [];
@@ -335,6 +349,11 @@ export class Turtle extends EventEmitter {
 
   create_image (image) {
     this.items.push({ type: 'image', image: image });
+    return this.items.length - 1;
+  }
+
+  create_dot(item) {
+    this.items.push({type: 'dot', coords: item.pos, fill: item.color, radius: item.size / 2});
     return this.items.length - 1;
   }
 

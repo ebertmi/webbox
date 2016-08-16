@@ -1,25 +1,25 @@
 import isString from 'lodash/isString';
 import capitalize from 'lodash/capitalize';
-import { Severity  } from './severity';
+import { Severity  } from './../severity';
 
 import Project from './project';
 import Runner from './skulptRunner';
 import languages from './languages';
-import { EventLog } from './socketConnection';
+import { EventLog } from '../insights/socketConnection';
 
 
 
 export default class SkulptProject extends Project {
-  constructor(data) {
-    super(data);
+  constructor(projectData) {
+    super(projectData);
 
-    if (isString(data.meta.language)) {
-      this.config = languages[data.meta.language];
+    if (isString(projectData.embed.meta.language)) {
+      this.config = languages[projectData.embed.meta.language];
     } else {
-      this.config = data.meta.language;
+      this.config = projectData.embed.meta.language;
     }
 
-    this.status.setLanguageInformation(`${this.config.displayName} (${capitalize(this.data.meta.embedType)})`);
+    this.status.setLanguageInformation(`${this.config.displayName} (${capitalize(this.projectData.embed.meta.embedType)})`);
   }
 
   /**
@@ -43,7 +43,7 @@ export default class SkulptProject extends Project {
     if (!this.runner) {
       this.runner = new Runner(this);
 
-      this.addTab('process', {
+      this.tabManager.addTab('process', {
         item: this.runner,
         active: false,
         callback: () => {
@@ -53,11 +53,11 @@ export default class SkulptProject extends Project {
       });
     }
 
-    let index = this.tabs.findIndex(tab => tab.item === this.runner);
+    let index = this.tabManager.getTabs().findIndex(tab => tab.item === this.runner);
 
     // open terminal as split view
-    if (!this.tabs[index].active) {
-      this.toggleTab(index);
+    if (!this.tabManager.getTabs()[index].active) {
+      this.tabManager.toggleTab(index);
     }
 
     this.runner.run();

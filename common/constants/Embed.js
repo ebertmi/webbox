@@ -22,3 +22,5 @@ export const EmbedTypes = {
 export const RunModeDefaults = {
   id: 'EXPERIMENTAL_RUN_MODE_WITH_ID'
 };
+
+export const TESTS_KEY = 'tests';

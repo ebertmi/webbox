@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import UUID from 'uuid';
 
-import assert from '../util/assert';
+import assert from '../../util/assert';
 import { SocketEvents } from './socketConnection';
 
 /**

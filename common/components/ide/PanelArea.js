@@ -8,6 +8,7 @@ import TurtlePanel from './panels/TurtlePanel';
 import AttributesPanel from './panels/AttributesPanel';
 import { MessageList } from '../messageList/messageList';
 import MatplotlibPanel from './panels/MatplotlibPanel';
+import TestsPanel from './panels/TestsPanel';
 
 const PANEL_TYPES = {
   file: FilePanel,
@@ -16,7 +17,8 @@ const PANEL_TYPES = {
   insights: InsightsPanel,
   turtle: TurtlePanel,
   attributes: AttributesPanel,
-  matplotlib: MatplotlibPanel
+  matplotlib: MatplotlibPanel,
+  tests: TestsPanel
 };
 
 export default class PanelArea extends React.Component {
@@ -26,17 +28,19 @@ export default class PanelArea extends React.Component {
   }
 
   componentWillMount() {
-    this.props.project.on('change', this.onChange);
+    //this.props.project.on('change', this.onChange);
+    this.props.project.tabManager.on('change', this.onChange);
     this.onChange();
   }
 
   componentWillUnmount() {
-    this.props.project.removeListener('change', this.onChange);
+    //this.props.project.removeListener('change', this.onChange);
+    this.props.project.tabManager.removeListener('change', this.onChange);
   }
 
   onChange() {
     this.setState({
-      tabs: this.props.project.getTabs()
+      tabs: this.props.project.tabManager.getTabs()
     });
   }
 

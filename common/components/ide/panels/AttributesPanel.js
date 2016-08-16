@@ -3,7 +3,7 @@ import Slug from 'speakingurl';
 import clone from 'lodash/clone';
 import set from 'lodash/set';
 
-import {Button, Input} from '../../bootstrap';
+import { Button, Input } from '../../bootstrap';
 import { EmbedTypes } from '../../../constants/Embed';
 
 /**
@@ -32,7 +32,7 @@ export default class AttributePanel extends React.Component {
    * @returns cloned (shallow) embed object
    */
   cloneFromProps() {
-    return clone(this.props.item.data);
+    return clone(this.props.item.projectData.embed);
   }
 
   /**

@@ -1,20 +1,23 @@
 import { EventEmitter } from 'events';
 
-import isString from 'lodash/isString';
-import uniqueId from 'lodash/uniqueId';
 import throttle from 'lodash/throttle';
+import clone from 'lodash/clone';
 
-import assert from '../util/assert';
-import { copyText } from '../util/nbUtil';
-import { API } from '../services';
+import assert from '../../util/assert';
+import { copyText } from '../../util/nbUtil';
+import { getFileExtensionByLanguage } from '../../util/languageUtils';
+import { loadFromData } from './dataUtils';
+import { API } from '../../services';
 import { Status } from './status';
 import File from './file';
-import { MessageWithAction } from './messages';
-import { Severity  } from './severity';
-import { Action } from './actions';
-import { MODES } from '../constants/Embed';
-import { SocketConnection, Action as RemoteAction } from './socketConnection';
-import { Insights } from './insights';
+import Test from './test';
+import { MessageWithAction } from '../messages';
+import { Severity  } from './../severity';
+import { Action } from '../actions';
+import { MODES, TESTS_KEY } from '../../constants/Embed';
+import { SocketConnection, Action as RemoteAction } from '../insights/socketConnection';
+import { Insights } from '../insights/insights';
+import TabManager from '../tabManager';
 
 /**
  * User Rights limit the operations:
@@ -24,27 +27,36 @@ import { Insights } from './insights';
  *
  */
 export default class Project extends EventEmitter {
-  constructor(data) {
+  constructor(projectData) {
     super();
-    this.name = data.meta.name || '';
-    // save original data
-    this.data = data;
+    this.projectData = projectData;
+
+    this.name = this.projectData.embed.meta.name || '';
 
     // Insights instance, when required
     this.insights = undefined;
+
+    // WebSocket Communication for Logging and Interactions
     this.socketConnection = undefined;
+    this.initCommunication();
 
-    this.mode = data.mode || MODES.Default;
-    this._userData = undefined; // we store here user data later
+    // TestCode for auto grading
+    this.tests = undefined;
 
-    this.unnamedTabCounter = 0;
-    this.tabs = [];
+    this.mode = this.projectData.embed.mode || MODES.Default;
 
-    // load from data
-    this.fromInitialData(this.data);
+    // Setup the message list
+    this.messageList = this.projectData.messageList;
+
+    // TabManager instance
+    this.tabManager = new TabManager(this.messageList);
+
+    // Load the embed data
+    this.fromInitialData(this.projectData.embed);
 
     // switch tab to first one
     this.status = new Status();
+    this.updateUserData();
 
     // Project state variables
     this.isConsistent = true;
@@ -54,11 +66,12 @@ export default class Project extends EventEmitter {
     this.saveEmbed = throttle(this.saveEmbed, 800);
   }
 
-  /**
-   * Setup our project wide message system (notifications)
-   */
-  setMessageList(messageList) {
-    this.messageList = messageList;
+  getEmbedId() {
+    return this.projectData.embed.id;
+  }
+
+  getEmbedDocumentId() {
+    this.projectData.embed.document ? this.projectData.embed.document.id : undefined;
   }
 
   /**
@@ -79,125 +92,6 @@ export default class Project extends EventEmitter {
     }
   }
 
-  // callback is called when tab is closed
-  addTab(type, {item, active=true, callback}={}) {
-    let index = this.tabs.findIndex(tab => {
-      return tab.type === type && tab.item === item;
-    });
-
-    if (index < 0) {
-      index = this.tabs.push({
-        type,
-        item,
-        callback,
-        active: false,
-        uniqueId: uniqueId('tab-')
-      }) - 1;
-    }
-
-    if (active) {
-      this.switchTab(index);
-    } else {
-      this.emitChange();
-    }
-
-    return index;
-  }
-
-  /**
-   * Return all tabs of the project
-   */
-  getTabs() {
-    return this.tabs;
-  }
-
-  /**
-   * Closing a tab, basically removes currently the tab/file from the project
-   * Maybe we should prevent the closing of files until we have an file explorer
-   * or add an message with actions
-   */
-  closeTab(index) {
-    // get tab
-    // change this, because this deletes the tab from the list already
-    let tab = this.tabs[index];
-
-    if (!tab) {
-      return;
-    }
-
-    if (tab.type === 'file') {
-      // ask user what todo if he wants to close/delete a file tab
-      let messageObj;
-      let deleteAction = new Action('delete.message.action', 'Löschen', null, true, () => {
-        this.removeTab(tab, index);
-
-        // cleanup
-        tab.item.dispose();
-
-        this.hideMessage(messageObj); // hide message
-      });
-
-      let cancelAction = new Action('cancel.message.action', 'Abbrechen', null, true, () => {
-        this.hideMessage(messageObj);
-      });
-
-      messageObj = new MessageWithAction('Wollen Sie diese Datei wirklich löschen?',
-        [deleteAction, cancelAction]);
-
-      this.showMessage(Severity.Warning, messageObj);
-    } else {
-      // handle other tab types (e.g. stats that the user can reopen)
-      this.removeTab(tab, index);
-    }
-  }
-
-  /**
-   * Removes a tab from the internal tabs array. When deleted it's gone!
-   */
-  removeTab(tab, index) {
-    // try to remove from list
-    this.tabs.splice(index, 1);
-
-    if (!tab) {
-      return;
-    }
-
-    // handle other tab types (e.g. stats that the user can reopen)
-    if (tab.callback) {
-      tab.callback();
-    }
-
-    if (tab.active && this.tabs.length && !this.tabs.some(tab => tab.active)) {
-      this.switchTab(Math.min(this.tabs.length - 1, index));
-    } else {
-      this.emitChange();
-    }
-  }
-
-  /**
-   * ext install addDocComments
-   *
-   * @param {Number} index The index of the tab, that shuld be focused/activated
-   */
-  switchTab(index) {
-    let tab = this.tabs[index];
-
-    if (tab) {
-      this.tabs.forEach(tab => tab.active = false);
-      tab.active = true;
-      this.emitChange();
-    }
-  }
-
-  toggleTab(index) {
-    let tab = this.tabs[index];
-
-    if (tab) {
-      tab.active = !tab.active;
-      this.emitChange();
-    }
-  }
-
   showInsights() {
     // Check rights
     if (this.mode !== MODES.Default) {
@@ -212,7 +106,7 @@ export default class Project extends EventEmitter {
       this.insights = new Insights(this.socketConnection, this);
     }
 
-    this.addTab('insights', { item: this.insights, active: true });
+    this.tabManager.addTab('insights', { item: this.insights, active: true });
   }
 
   /**
@@ -246,10 +140,10 @@ export default class Project extends EventEmitter {
       this.setConsistency(false); // inconsisten project state
       // get the tab
       duplicateTab = this.getTabForFileOrNull(duplicates[0]);
-      let index = this.tabs.findIndex(tab => tab === duplicateTab);
+      let index = this.tabManager.getTabs().findIndex(tab => tab === duplicateTab);
       let replaceAction = new Action('replace.message.action', 'Ersetzen', null, true, () => {
         // remove old file & tab
-        this.removeTab(duplicateTab, index);
+        this.tabManager.removeTab(duplicateTab, index);
 
         this.setConsistency(true);
         this.hideMessage(messageObj); // hide message
@@ -278,7 +172,7 @@ export default class Project extends EventEmitter {
     let filename = name;
 
     if (name == null) {
-      filename = 'Unbenannt' + this.unnamedTabCounter++ + '.txt';
+      filename = 'Unbenannt' + this.tabManager.unnamedTabCounter++ + '.txt';
       file = new File(filename, text, mode);
       file.setNameEdtiable(true); // enable file renaming immediatelly
     } else {
@@ -288,7 +182,7 @@ export default class Project extends EventEmitter {
     // filename change handler
     file.on('changedName', this.onChangedFileName.bind(this));
 
-    this.addTab('file', { item: file, active: active});
+    this.tabManager.addTab('file', { item: file, active: active});
   }
 
   /**
@@ -296,7 +190,7 @@ export default class Project extends EventEmitter {
    */
   getTabForFileOrNull(file) {
     let tab = null;
-    let matchingTabs = this.tabs.filter(tab => tab.type === 'file').filter(tab => tab.item === file);
+    let matchingTabs = this.tabManager.getTabs().filter(tab => tab.type === 'file').filter(tab => tab.item === file);
     if (matchingTabs.length === 1) {
       // found a tab (there should be only one now)
       tab = matchingTabs[0];
@@ -313,7 +207,7 @@ export default class Project extends EventEmitter {
    */
   getTabForFilenameOrNull(name) {
     let tab = null;
-    let matchingTabs = this.tabs.filter(tab => tab.type === 'file').filter(tab => tab.item.getName() === name);
+    let matchingTabs = this.tabManager.getTabs().filter(tab => tab.type === 'file').filter(tab => tab.item.getName() === name);
     if (matchingTabs.length === 1) {
       // found a tab
       tab = matchingTabs[0];
@@ -333,7 +227,7 @@ export default class Project extends EventEmitter {
    * @return {Number|undefined} Returns the index of tab for the file name
    */
   getIndexForFilename(name) {
-    let index = this.tabs.findIndex(tab => {
+    let index = this.tabManager.getTabs().findIndex(tab => {
       return tab.type === 'file' && tab.item.getName() === name;
     });
 
@@ -348,7 +242,7 @@ export default class Project extends EventEmitter {
     }
 
     // Return item, that is the file
-    return this.getTabs()[index].item;
+    return this.tabManager.getTabs()[index].item;
   }
 
   /**
@@ -363,7 +257,7 @@ export default class Project extends EventEmitter {
    * Returns all files
    */
   getFiles() {
-    return this.tabs
+    return this.tabManager.getTabs()
       .filter(tab => tab.type === 'file')
       .map(tab => tab.item);
   }
@@ -374,8 +268,8 @@ export default class Project extends EventEmitter {
    * @returns
    */
   getMainFile() {
-    if (this.data.meta.mainFile && this.data.meta.mainFile !== '') {
-      return this.data.meta.mainFile;
+    if (this.projectData.embed.meta.mainFile && this.projectData.embed.meta.mainFile !== '') {
+      return this.projectData.embed.meta.mainFile;
     }
 
     return null;
@@ -394,8 +288,8 @@ export default class Project extends EventEmitter {
    * @param {String} jwt The jsonwebtoken required for authentification
    * @param {String} url The url for the websocket connection
    */
-  setCommunicationData(jwt, url) {
-    this.socketConnection = new SocketConnection(jwt, url);
+  initCommunication() {
+    this.socketConnection = new SocketConnection(this.projectData.communication.jwt, this.projectData.communication.url);
     this.socketConnection.on('reconnect_failed', this.onReconnectFailed.bind(this));
   }
 
@@ -440,9 +334,9 @@ export default class Project extends EventEmitter {
    */
   getContextData() {
     const embedName = this.name;
-    const embedId = this.data.id;
-    const embedDocument = this.data.document ? this.data.document.id : undefined;
-    const embedUser = this._userData && this._userData.email ? this._userData.email : 'anonymous';
+    const embedId = this.getEmbedId();
+    const embedDocument = this.getEmbedDocumentId();
+    const embedUser = this.projectData.user && this.projectData.user.email ? this.projectData.user.email : 'anonymous';
 
     return {
       embedName,
@@ -455,19 +349,70 @@ export default class Project extends EventEmitter {
   /**
    * Sets the user data associated with the trinket
    */
-  setUserData(data) {
-    this._userData = data;
-    this.status.setUsername(data.email || data.username); // display username or email if available
+  updateUserData() {
+    this.status.setUsername(this.projectData.user.email || this.projectData.user.username); // display username or email if available
   }
 
   getUserData() {
-    if (this._userData) {
-      return this._userData;
+    if (this.projectData.user) {
+      return this.projectData.user;
     }
 
     return {
       anonymous: true
     };
+  }
+
+  getAssets() {
+    return this.projectData.embed.assets != undefined ? this.projectData.embed.assets : [];
+  }
+
+  /**
+   * Returns true if the project has tests in the assets.
+   *
+   * @returns
+   */
+  hasTestCode() {
+    return this.tests !== undefined;
+  }
+
+  /**
+   * Return an instance of the Test model.
+   *
+   * @returns
+   */
+  getTestCodeFromData() {
+    let assets = this.getAssets();
+    let testEntries = assets.filter(elem => elem.type === TESTS_KEY);
+    let test;
+
+    if (testEntries.length > 0 && testEntries[0].data && testEntries[0].data !== '') {
+      test = new Test(testEntries[0].metadata, testEntries[0].data);
+      return test;
+    }
+
+    return undefined;
+  }
+
+  getTestCode() {
+    return this.tests;
+  }
+
+  createTestCode(metadata, data) {
+    if (metadata == null) {
+      metadata = {};
+    }
+
+    if (metadata.name == null) {
+      metadata.name = `${TESTS_KEY}.${getFileExtensionByLanguage(this.projectData.embed.meta.language)}`;
+    }
+
+    if (data == null) {
+      data = '';
+    }
+
+    this.tests = new Test(metadata, data);
+    return this.tests;
   }
 
   /**
@@ -478,8 +423,8 @@ export default class Project extends EventEmitter {
   getSharableLink() {
     const host = window.location.host;
     const protocol = window.location.protocol;
-    const viewDocument = this.data.document ? `?showDocument=${this.data.document.id}`: '';
-    const idOrSlug = this.data.slug || this.data.id;
+    const viewDocument = this.projectData.embed.document ? `?showDocument=${this.getEmbedDocumentId()}`: '';
+    const idOrSlug = this.projectData.embed.slug || this.getEmbedId();
 
     return `${protocol}//${host}/embed/${idOrSlug}${viewDocument}`;
   }
@@ -487,7 +432,7 @@ export default class Project extends EventEmitter {
   getOriginalLink() {
     const host = window.location.host;
     const protocol = window.location.protocol;
-    const idOrSlug = this.data.slug || this.data.id;
+    const idOrSlug = this.projectData.embed.slug || this.getEmbedId();
 
     return `${protocol}//${host}/embed/${idOrSlug}?showOriginal=true`;
   }
@@ -568,48 +513,10 @@ export default class Project extends EventEmitter {
    * Init the project from the given data object
    */
   fromInitialData(data, ignoreDocument=false) {
-    let code;
+    loadFromData(this, data, ignoreDocument);
 
-    // Check if there is already a document on the data and try to load from there
-    if (!ignoreDocument && data._document && data._document.code) {
-      code = data._document.code;
-    } else {
-      code = data.code;
-    }
-
-    // Clear previous tabs
-    this.tabs = [];
-    this.emitChange();
-
-    for (let file in code) {
-      let fileData = code[file];
-      if (isString(fileData)) {
-        this.addFile(file, fileData);
-      } else {
-        // handle complicated type
-        this.addFile(file, fileData.content);
-      }
-    }
-
-    let index = 0;
-    let mainFile = data.meta.mainFile; // ToDo: change this
-    // switch to specified mainFile
-    if (mainFile) {
-      index = this.getIndexForFilename(mainFile);
-
-      index = index > -1 ? index : 0;
-    }
-
-    // switch to first tab
-    if (this.tabs.length > 1) {
-      let oldTab = this.tabs[index];
-      // Switch files inside the tabs array
-      this.tabs.splice(index, 1); // Remove tab from tabs
-      this.tabs.unshift(oldTab);
-
-      // Switch to first tab
-      this.switchTab(0);
-    }
+    // Now check for tests
+    this.tests = this.getTestCodeFromData();
 
     // Update title
     this.setTitle();
@@ -620,8 +527,8 @@ export default class Project extends EventEmitter {
 
   setLocationToSlug() {
     let url = window.location.href;
-    const id = this.data.id;
-    const slug = this.data.slug;
+    const id = this.getEmbedId();
+    const slug = this.projectData.embed.slug;
 
     if (slug == null || slug == '' || slug.length <= 3) {
       return;
@@ -635,8 +542,8 @@ export default class Project extends EventEmitter {
   }
 
   setTitle() {
-    if (this.data.meta.name) {
-      document.title = `${this.data.meta.name} | ${document.title}`;
+    if (this.projectData.embed.meta.name) {
+      document.title = `${this.projectData.embed.meta.name} | ${document.title}`;
     }
   }
 
@@ -678,7 +585,7 @@ export default class Project extends EventEmitter {
     this.status.setStatusMessage('Speichere...', '', Severity.Ignore);
 
     const params = {
-      id: this.data.id
+      id: this.getEmbedId()
     };
 
     const payload = {
@@ -696,7 +603,7 @@ export default class Project extends EventEmitter {
         this.status.setStatusMessage('Gespeichert.', '', Severity.Info);
         // Update the document, if received any and not set
         if (res.document) {
-          this.data._document = document;
+          this.projectData.embed._document = document;
         }
 
         window.setTimeout(() => {
@@ -712,13 +619,48 @@ export default class Project extends EventEmitter {
   }
 
   /**
+   * Saves the tests in the assets. This removes all asset entries with the type TESTS_KEY.
+   *
+   * @returns
+   */
+  saveTests() {
+    // Get data from file
+    let file = this.getTestCode();
+    if (file == null) {
+      // FIXME: this should not happen
+      return;
+    }
+
+    let testAsset = {
+      type: TESTS_KEY,
+      data: file.getValue(),
+      metadata: file.getMetadata()
+    };
+
+    let assets = this.getAssets();
+    // Clear all previous test assets
+    let idx = assets.findIndex(elem => elem.type === TESTS_KEY);
+    while (idx != -1) {
+      assets.splice(idx, 1);
+      idx = assets.findIndex(elem => elem.type === TESTS_KEY);
+    }
+
+    assets.push(testAsset);
+
+    let embed = clone(this.projectData.embed);
+    embed.assets = assets;
+
+    this.updateEmbed(embed);
+  }
+
+  /**
    * Update the embed attributes. This does not save any file changes.
    *
    * @param {any} embed
    */
   updateEmbed(embed) {
     let params = {
-      id: this.data.id
+      id: this.getEmbedId()
     };
 
     let payload = {
@@ -729,7 +671,8 @@ export default class Project extends EventEmitter {
       if (res.error) {
         this.showMessage(Severity.Error, 'Beim Aktualisieren ist ein Fehler augetreten.');
       } else {
-        this.showMessage(Severity.Info, 'Die Eigenschaften wurden erfolgreich aktualisiert.');
+        // ToDo: Trigger auto reload here for the IDE
+        this.showMessage(Severity.Info, 'Erfolgreich aktualisiert.');
       }
     }).catch(err => {
       this.showMessage(Severity.Error, 'Aktualisieren fehlgeschlagen!');
@@ -738,7 +681,7 @@ export default class Project extends EventEmitter {
   }
 
   deleteEmbed() {
-    const id = this.data.id;
+    const id = this.getEmbedId();
     let messageObj;
     let deleteAction = new Action('delete.delete.action', 'Löschen', '', true, () => {
       API.embed.deleteEmbed({ id: id }).then(res => {
@@ -782,6 +725,6 @@ export default class Project extends EventEmitter {
   reset() {
     // All changes are not saved to the internal embed.code, rather they are stored in the this.tabs->element.item
     // So we can savely replace the current code with the embed.code
-    this.fromInitialData(this.data, true);
+    this.fromInitialData(this.projectData.embed, true);
   }
 }

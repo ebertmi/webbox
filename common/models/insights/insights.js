@@ -1,8 +1,8 @@
 import { EventEmitter } from 'events';
-import assert from '../util/assert';
+import assert from '../../util/assert';
 
-import { ErrorFilter } from './insights/errorFilter';
-import { ErrorClusters } from './insights/errorclusters';
+import { ErrorFilter } from './errorFilter';
+import { ErrorClusters } from './errorclusters';
 import { Submissions } from './submissions';
 import { Action, SocketEvents } from './socketConnection';
 
@@ -60,7 +60,7 @@ export class Insights extends EventEmitter {
       return;
     }
 
-    const embedId = this._project.data.id;
+    const embedId = this._project.getEmbedId();
     let subscribeAction = new Action('subscribe', this._project.getUserData(), {
       embedId: embedId
     }, res => {

@@ -13,7 +13,7 @@
 import io from 'socket.io-client';
 import { EventEmitter } from 'events';
 import isFunction from 'lodash/isFunction';
-import { getCookie } from '../services/utils';
+import { getCookie } from '../../services/utils';
 
 export const SocketEvents = {
   IdeEvent: 'ide-event',

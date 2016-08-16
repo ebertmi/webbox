@@ -2,12 +2,12 @@ import Sourcebox from '@sourcebox/web';
 import isString from 'lodash/isString';
 import capitalize from 'lodash/capitalize';
 import pathModule from 'path';
-import { Severity } from './severity';
+import { Severity } from './../severity';
 
 import Project from './project';
 import Runner from './sourceboxRunner';
 import languages from './languages';
-import { EventLog } from './socketConnection';
+import { EventLog } from '../insights/socketConnection';
 
 const PROCESS_DEFAULTS = {
   term: true
@@ -22,13 +22,13 @@ const PROCESS_DEFAULTS = {
  * @extends {Project}
  */
 export default class SourceboxProject extends Project {
-  constructor(data, serverConfig) {
-    super(data);
+  constructor(projectData, serverConfig) {
+    super(projectData);
 
-    if (isString(data.meta.language)) {
-      this.config = languages[data.meta.language];
+    if (isString(projectData.embed.meta.language)) {
+      this.config = languages[projectData.embed.meta.language];
     } else {
-      this.config = data.meta.language;
+      this.config = projectData.embed.meta.language;
     }
 
     let {server, ...sbConfig} = serverConfig;
@@ -37,7 +37,11 @@ export default class SourceboxProject extends Project {
     // register error handler
     this.sourcebox.on('error', this.onError.bind(this));
 
-    this.status.setLanguageInformation(`${this.config.displayName} (${capitalize(this.data.meta.embedType)})`);
+    // Register to special tab events
+    this.removeTab = this.removeTab.bind(this);
+    this.tabManager.on('tabremoved', this.removeTab);
+
+    this.status.setLanguageInformation(`${this.config.displayName} (${capitalize(this.projectData.embed.meta.embedType)})`);
   }
 
   /**
@@ -52,14 +56,14 @@ export default class SourceboxProject extends Project {
     let combinedOptions = Object.assign({}, {env: this.config.env}, options);
     let process = this.sourcebox.exec('bash', args, combinedOptions);
 
-    this.addTab('process', {
+    this.tabManager.addTab('process', {
       item: process,
       callback: function () {
         process.kill('SIGHUP');
       }
     });
 
-    let index = this.tabs.length - 1;
+    let index = this.tabManager.getTabs().length - 1;
 
     process.on('exit', () => {
       this.closeTab(index);
@@ -84,7 +88,7 @@ export default class SourceboxProject extends Project {
     if (!this.runner) {
       this.runner = new Runner(this);
 
-      this.addTab('process', {
+      this.tabManager.addTab('process', {
         item: this.runner,
         active: false,
         callback: () => {
@@ -94,11 +98,11 @@ export default class SourceboxProject extends Project {
       });
     }
 
-    let index = this.tabs.findIndex(tab => tab.item === this.runner);
+    let index = this.tabManager.getTabs().findIndex(tab => tab.item === this.runner);
 
     // open terminal as split view
-    if (!this.tabs[index].active) {
-      this.toggleTab(index);
+    if (!this.tabManager.getTabs()[index].active) {
+      this.tabManager.toggleTab(index);
     }
 
     this.runner.run();
@@ -124,7 +128,7 @@ export default class SourceboxProject extends Project {
     if (!this.runner) {
       this.runner = new Runner(this);
 
-      this.addTab('process', {
+      this.tabManager.addTab('process', {
         item: this.runner,
         active: false,
         callback: () => {
@@ -134,19 +138,17 @@ export default class SourceboxProject extends Project {
       });
     }
 
-    let index = this.tabs.findIndex(tab => tab.item === this.runner);
+    let index = this.tabManager.getTabs().findIndex(tab => tab.item === this.runner);
 
     // open terminal as split view
-    if (!this.tabs[index].active) {
-      this.toggleTab(index);
+    if (!this.tabManager.getTabs()[index].active) {
+      this.tabManager.toggleTab(index);
     }
 
     this.runner.test();
   }
 
-  removeTab(tab, index) {
-    super.removeTab(tab, index);
-
+  removeTab(tab) {
     // special file tab handling
     if (tab.type === 'file') {
       // delete file from disk to avoid using old files
@@ -156,6 +158,11 @@ export default class SourceboxProject extends Project {
   }
 
   deleteFile(filename) {
+    if (filename == null || !isString(filename)) {
+      console.warn('SourceboxProject.deleteFile called with invalid filename');
+      return;
+    }
+
     let path = this.name || '.';
     path = pathModule.join(path, filename);
 

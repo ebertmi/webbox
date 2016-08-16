@@ -6,9 +6,14 @@ if len(sys.argv) < 2:
     print("No project path supplied for the tester")
     sys.exit()
 
+# Get the project path
 path = sys.argv[1]
 
+# Change the working directory to the project path
 os.chdir(path)
+
+# Include the project path in the system path, so that the tester can find our tests.py
+sys.path.append(path)
 
 import unittest
 from test_utils import JSONTestRunner

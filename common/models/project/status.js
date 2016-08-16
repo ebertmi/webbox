@@ -3,7 +3,7 @@
  */
 
 import {EventEmitter} from 'events';
-import { Severity } from './severity';
+import { Severity } from './../severity';
 
 export class Status extends EventEmitter {
   constructor() {
