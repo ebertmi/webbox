@@ -1034,12 +1034,14 @@ class Event:
 # output limit 16MiB
 output_capacity = 16*1024*1024
 import io
+import os
 class WebCommunication:
     def __init__(self):
-      self.fd_out = io.FileIO(4, 'wb')
-      self.fd_in = io.FileIO(4, 'r')
+      #self.fd_out = io.FileIO(4, 'w')
+      self.fd_to_client = open(4, "w+b", buffering=0)
+      self.fd_to_client = io.TextIOWrapper(self.fd_to_client)
+      self.fd_from_client = self.fd_to_client
 
-      self.buf = b''
       self.canvas = []
       self.messages = []
       self.capacity = output_capacity
@@ -1058,14 +1060,8 @@ class WebCommunication:
 
     # internal
     def sendpickle(self, data):
-        data = json.dumps(data) + "\n\r"
-        self.capacity -= len(data)
-        if self.capacity < 0:
-            data = json.dumps({'cmd':'stop',
-                                 'timedout':True}, 2)
-            self.fd_out.write(bytes(data, "utf-8"))
-            raise SystemExit
-        self.fd_out.write(bytes(data, "utf-8"))
+        json.dump(data, self.fd_to_client)
+        self.fd_to_client.write('\n\r')
 
     def debug(self, message):
         self.sendpickle({
@@ -1077,10 +1073,10 @@ class WebCommunication:
     def _readline(self):
         buffer = []
         while True:
-            char = self.fd_in.read(1)
-            char = char.decode("utf-8")
+            char = self.fd_from_client.read(1)
+            print(char)
             buffer.append(char)
-            self.debug(char)
+            #self.debug(char)
             if char == '\n':
                 break
 
@@ -1137,16 +1133,6 @@ class WebCanvas:
         return y
 
     # batched
-    def create_dot(self, pos, size, color):
-        """Creates a dot on the canvas"""
-        dot_item = {'type': 'dot',
-                     'pos': pos,
-                     'size': size,
-                     'color': color
-                    }
-        self.addbatch('create_dot', dot_item)
-        return len(self.items)-1
-
     def create_image(self, w, h, image):
         self.items.append({'type':'image','image':image})
         self.addbatch('create_image', image)
@@ -1204,15 +1190,6 @@ class WebCanvas:
         self.addbatch('update')
         self.flushbatch()
 
-    def title(self, title):
-      """
-        Send the changed title to our client
-      """
-      self.flushbatch()
-      self.comm.sendpickle({'cmd':'turtle',
-                            'action': 'title',
-                            'args':[title]})
-
     # XXX TODO
     def tag_raise(self, item):
         pass
@@ -1231,11 +1208,8 @@ class WebCanvas:
         return call
 
     def getevent(self):
-        """
-        """
         msg = self.comm.receivecanvas()
         event = Event(msg)
-        print(msg)
         if event.type in self.bindings:
             self.bindings[event.type](event)
 
@@ -1246,13 +1220,6 @@ class TurtleScreenBase(object):
        To port turtle.py to some different graphics toolkit
        a corresponding TurtleScreenBase class has to be implemented.
     """
-
-    def title(self, title):
-      """
-        This is actually a cheap hack to allow users to set a title on our WebCanvas. We do not support roots or anything else.
-        The call of title is then send to the client.
-      """
-      self.cv.title(title)
 
     @staticmethod
     def _blankimage():
@@ -1381,11 +1348,8 @@ class TurtleScreenBase(object):
         self.cv.update()
         return item, x1-1
 
-    def _dot(self, pos, size, color):
-        """may be implemented for some other graphics toolkit"""
-        item = self.cv.create_dot(pos, size, color)
-        self.cv.update()
-        return item
+##    def _dot(self, pos, size, color):
+##        """may be implemented for some other graphics toolkit"""
 
     def _onclick(self, item, fun, num=1, add=None):
         """Bind fun to mouse-click event on turtle.

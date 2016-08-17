@@ -1,9 +1,8 @@
 import React from 'react';
-//import Term from 'term.js';
-import Term from 'xterm';
-import 'xterm/addons/fit/fit';
-import 'xterm/addons/attach/attach';
-import '../../util/xterm.pipe';
+
+import Term from 'xterm/src/xterm.js';
+import 'xterm/addons/fit';
+
 
 import capitalize from 'lodash/capitalize';
 import debounce from 'lodash/debounce';
@@ -12,6 +11,43 @@ const events = [
   'data', 'end', 'finish',
   'title', 'bell', 'destroy'
 ];
+
+export function pipeXterm(src, dest) {
+  var ondata;
+  var onerror;
+  var onend;
+
+  function unbind() {
+    src.removeListener('data', ondata);
+    src.removeListener('error', onerror);
+    src.removeListener('end', onend);
+    dest.removeListener('error', onerror);
+    dest.removeListener('close', unbind);
+  }
+
+  src.on('data', ondata = function(data) {
+    dest.write(data);
+  });
+
+  src.on('error', onerror = function(err) {
+    unbind();
+    if (!this.listeners('error').length) {
+      throw err;
+    }
+  });
+
+  src.on('end', onend = function() {
+    dest.end();
+    unbind();
+  });
+
+  dest.on('error', onerror);
+  dest.on('close', unbind);
+
+  dest.emit('pipe', src);
+
+  return dest;
+}
 
 export default class Terminal extends React.Component {
   constructor(props) {
@@ -80,7 +116,8 @@ export default class Terminal extends React.Component {
     this.terminal.refresh(0, this.terminal.rows - 1);
 
     if (process.stdin) {
-      this.terminal.pipe(process.stdin);
+      pipeXterm(this.terminal, process.stdin);
+      //this.terminal.pipe(process.stdin);
     }
 
     if (process.stdout) {

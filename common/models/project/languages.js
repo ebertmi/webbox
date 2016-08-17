@@ -51,16 +51,15 @@ export default {
       return ['python3', mainFile];
     },
     test(fileNames, mainFile, projectName) {
-      return ['python3', '/usr/local/lib/sourcebox/tester.py', `/home/user/${projectName}`];
-      //return ['python3', 'tester.py', `/home/user/${projectName}`];
+      return ['python3', /*'/usr/local/lib/sourcebox/*/'tester.py', `/home/user/${projectName}`];
     },
     displayName: 'Python 3',
     env: {
       PYTHONPATH: '/usr/local/lib/sourcebox/',
       MPLBACKEND: 'module://backend_sb'
     },
-    streams: 2,
-    streamsObjectMode: [false, false] /* set the mode for the additional streams */,
+    streams: 3,
+    streamsObjectMode: [false, true, false] /* set the mode for the additional streams */,
     errorParser: new PythonErrorParser()
   },
 

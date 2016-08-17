@@ -15,6 +15,19 @@ export class TerminalTransform extends Transform {
   }
 }
 
+export class ConsoleTransform extends Transform {
+  constructor(options) {
+    super(options);
+  }
+
+  _transform(chunk, encoding, callback) {
+    let str = chunk.toString();
+    console.info('ConsoleTransform:', str, JSON.parse(str));
+    this.push(chunk);
+    callback();
+  }
+}
+
 /**
  * Transforms a binary stream into an PNG-Image:
  * 1. STARTIMAGE first 11 Bytes

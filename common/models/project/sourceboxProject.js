@@ -65,8 +65,9 @@ export default class SourceboxProject extends Project {
 
     let index = this.tabManager.getTabs().length - 1;
 
+
     process.on('exit', () => {
-      this.closeTab(index);
+      this.tabManager.closeTab(index);
     });
 
     process.on('error', (error) => {
@@ -149,6 +150,16 @@ export default class SourceboxProject extends Project {
   }
 
   removeTab(tab) {
+    // special file tab handling
+    if (tab.type === 'file') {
+      // delete file from disk to avoid using old files
+      var filePath = tab.item.getName();
+      this.deleteFile(filePath);
+    }
+  }
+
+  // ToDo: renaming should also delete the file
+  renameFile(tab) {
     // special file tab handling
     if (tab.type === 'file') {
       // delete file from disk to avoid using old files

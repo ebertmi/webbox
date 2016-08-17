@@ -3,7 +3,7 @@
     /*
      * CommonJS environment
      */
-    module.exports = pipe(require('xterm'));
+    module.exports = pipe(require('xterm/src/xterm'));
   } else if (typeof define == 'function') {
     /*
      * Require.js is available

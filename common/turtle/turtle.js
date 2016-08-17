@@ -1,5 +1,8 @@
 import { Writable } from 'stream';
 import { EventEmitter } from 'events';
+import Debug from 'debug';
+
+const debug = Debug('webbox:turtle');
 
 /**
  * Consumes turtle stream messages and converts the bytestream to a string and then parses the json.
@@ -36,6 +39,7 @@ export class TurtleMessageConsumer extends Writable {
 
     // Check if chunk contains an incomplete message at the end
     if (str.endsWith('\n\r') === false) {
+      debug('Incomplete TurtleMessage - buffering now');
       this.incompleteMsg = msgs[length - 1];
       length = length - 1; // Ignore last incomplete message in processing
     }
@@ -66,8 +70,8 @@ export class TurtleMessageConsumer extends Writable {
 
   _write (chunk, encoding, callback) {
     let chunkStr = chunk.toString();
-
     // Pass Chunk to our transform method
+    debug('Received TurtleMessage:', chunkStr);
     this.transformChunk(chunkStr);
 
     callback();
@@ -89,11 +93,14 @@ export class Turtle extends EventEmitter {
     this.project = project;
     this.canvas; // jQuery object
     this.items = [];
+    this.streams = streams;
 
-    this.turtleStream = streams.turtle;
+    debug('Created Instance');
 
     // The MessageConsumer parses the JSON messages and applies them
-    const turtleMessageConsumer = new TurtleMessageConsumer(this);
+    const turtleMessageConsumer = new TurtleMessageConsumer(this, {
+      objectMode: true
+    });
     turtleMessageConsumer.on('error', e => {
       console.warn('TurtleMessageConsumer:', e);
       if (streams.stdout) {
@@ -102,7 +109,7 @@ export class Turtle extends EventEmitter {
     });
 
     // Now pipe the incoming messages to our consumer/transformer
-    this.turtleStream.pipe(turtleMessageConsumer, { end: true });
+    this.streams.fromServer.pipe(turtleMessageConsumer, { end: true });
 
     this.debugChars = [];
 
@@ -157,25 +164,25 @@ export class Turtle extends EventEmitter {
   canvasReleaseHandler(e) {
     let eventData = this.getMouseEventData(e);
 
-    this.turtleStream.write(JSON.stringify({
+    this.streams.toServer.write(JSON.stringify({
       'cmd': 'canvasevent',
       'type': `<Button${eventData.button}-ButtonRelease>`,
       'x': eventData.eventX,
       'y': eventData.eventY
     }));
-    this.turtleStream.write('\n');
+    this.streams.toServer.write('\n');
   }
 
   canvasClickHandler(e) {
     let eventData = this.getMouseEventData(e);
 
-    this.turtleStream.write(JSON.stringify({
+    this.streams.toServer.write(JSON.stringify({
       'cmd': 'canvasevent',
       'type': `<Button-${eventData.button}>`,
       'x': eventData.eventX,
       'y': eventData.eventY
     }));
-    this.turtleStream.write('\n');
+    this.streams.toServer.write('\n');
   }
 
   canvasDragHandler(e) {
@@ -224,20 +231,20 @@ export class Turtle extends EventEmitter {
         break;
       case 'debug':
         // ignore (ToDo)
-        //this.debugChars.push(msg.char);
-        //console.info(this.debugChars.join(''));
+        debug('Received debug message: %s', msg);
         break;
       default:
-        console.info('Received unhandled turtle msg', msg.cmd);
+        debug('Received unhandled turtle msg: %s', msg.cmd);
     }
   }
 
   handleTurtleCommand (msg) {
     if (msg.action in this) {
       let result = this[msg.action].apply(this, msg.args);
-      this.turtleStream.write(JSON.stringify({cmd: 'result', 'result': result}) + '\n');
+      console.info('handleTurtleCommand', msg, result);
+      this.streams.toServer.write(JSON.stringify({cmd: 'result', 'result': result}) + '\n');
     } else {
-      this.turtleStream.write(JSON.stringify({cmd: 'exception', exception: 'AttributeError', message: msg.action}) + '\n');
+      this.streams.toServer.write(JSON.stringify({cmd: 'exception', exception: 'AttributeError', message: msg.action}) + '\n');
     }
 
   }
@@ -348,6 +355,7 @@ export class Turtle extends EventEmitter {
   }
 
   create_image (image) {
+    debug('Received create_image message: %s', image.toString());
     this.items.push({ type: 'image', image: image });
     return this.items.length - 1;
   }

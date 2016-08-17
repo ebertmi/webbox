@@ -10,7 +10,7 @@ import split from 'split2';
 
 import { Turtle } from '../../turtle/turtle';
 import { EventLog } from '../insights/socketConnection';
-import { TerminalTransform, MatplotLibTransfrom } from '../../util/streamUtils';
+import { TerminalTransform, MatplotLibTransfrom, ConsoleTransform } from '../../util/streamUtils';
 
 // Disable warnings in production
 let BLUEBIRD_WARNINGS = true;
@@ -342,7 +342,8 @@ export default class Runner extends EventEmitter {
     // turtle streams
     if (this.process.stdio[4]) {
       new Turtle({
-        turtle: this.process.stdio[4],
+        fromServer: this.process.stdio[4],
+        toServer: this.process.stdio[4],
         stdout: this.stdout
       }, this.project);
     }
@@ -437,11 +438,18 @@ export default class Runner extends EventEmitter {
     }
 
     // turtle streams
-    if (this.process.stdio[4]) {
+    /*if (this.process.stdio[4]) {
       new Turtle({
         turtle: this.process.stdio[4],
         stdout: this.stdout
       }, this.project);
+    }*/
+
+    // after Streams hook
+    if (this.process.stdio[5]) {
+
+
+      this.process.stdio[5].pipe(new ConsoleTransform({ objectMode: true } ), { end: false });
     }
 
     return Promise.join(processPromise(this.process, false).reflect(), streamPromise(this.process.stdout), processPromise => {
