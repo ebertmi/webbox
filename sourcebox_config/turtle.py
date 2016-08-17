@@ -1074,7 +1074,6 @@ class WebCommunication:
         buffer = []
         while True:
             char = self.fd_from_client.read(1)
-            print(char)
             buffer.append(char)
             #self.debug(char)
             if char == '\n':

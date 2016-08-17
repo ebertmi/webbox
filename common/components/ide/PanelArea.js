@@ -9,6 +9,7 @@ import AttributesPanel from './panels/AttributesPanel';
 import { MessageList } from '../messageList/messageList';
 import MatplotlibPanel from './panels/MatplotlibPanel';
 import TestsPanel from './panels/TestsPanel';
+import TestResultPanel from './panels/TestResultPanel';
 
 const PANEL_TYPES = {
   file: FilePanel,
@@ -18,7 +19,8 @@ const PANEL_TYPES = {
   turtle: TurtlePanel,
   attributes: AttributesPanel,
   matplotlib: MatplotlibPanel,
-  tests: TestsPanel
+  tests: TestsPanel,
+  testresult: TestResultPanel
 };
 
 export default class PanelArea extends React.Component {

@@ -15,6 +15,35 @@ export class TerminalTransform extends Transform {
   }
 }
 
+/**
+ * Transforms a chunk into an JSON object.
+ *
+ * @export
+ * @class JsonTransform
+ * @extends {Transform}
+ */
+export class JsonTransform extends Transform {
+  constructor(callback, options) {
+    super(options);
+    this.callback = callback;
+  }
+
+  _transform(chunk, encoding, callback) {
+    let str = chunk.toString();
+    let json;
+
+    try {
+      json = JSON.parse(str);
+      this.callback(json);
+    } catch (e) {
+      console.error(e);
+    }
+
+    this.push(chunk);
+    callback();
+  }
+}
+
 export class ConsoleTransform extends Transform {
   constructor(options) {
     super(options);
@@ -22,7 +51,15 @@ export class ConsoleTransform extends Transform {
 
   _transform(chunk, encoding, callback) {
     let str = chunk.toString();
-    console.info('ConsoleTransform:', str, JSON.parse(str));
+    let json;
+
+    try {
+      json = JSON.parse(str);
+    } catch (e) {
+      console.error(e);
+    }
+
+    console.info('ConsoleTransform:', str, json);
     this.push(chunk);
     callback();
   }

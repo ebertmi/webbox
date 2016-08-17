@@ -15,6 +15,7 @@ import AttributesTab from './tabs/AttributesTab';
 import MatplotlibTab from './tabs/MatplotlibTab';
 import TurtleTab from './tabs/TurtleTab';
 import TestsTab from './tabs/TestsTab';
+import TestResultTab from './tabs/TestResultTab';
 import { MODES } from '../../constants/Embed';
 
 const TAB_TYPES = {
@@ -25,7 +26,8 @@ const TAB_TYPES = {
   attributes: AttributesTab,
   matplotlib: MatplotlibTab,
   turtle: TurtleTab,
-  tests: TestsTab
+  tests: TestsTab,
+  testresult: TestResultTab
 };
 
 export default class TabBar extends React.Component {

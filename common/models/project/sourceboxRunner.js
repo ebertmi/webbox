@@ -10,7 +10,8 @@ import split from 'split2';
 
 import { Turtle } from '../../turtle/turtle';
 import { EventLog } from '../insights/socketConnection';
-import { TerminalTransform, MatplotLibTransfrom, ConsoleTransform } from '../../util/streamUtils';
+import TestResult from '../testResult';
+import { TerminalTransform, MatplotLibTransfrom, JsonTransform } from '../../util/streamUtils';
 
 // Disable warnings in production
 let BLUEBIRD_WARNINGS = true;
@@ -432,10 +433,10 @@ export default class Runner extends EventEmitter {
 
     // ToDo: put this into languages.js as a hook
     // check for matplotlib stream
-    if (this.process.stdio[3]) {
-      var mplTransform = new MatplotLibTransfrom(this.project);
-      this.process.stdio[3].pipe(mplTransform, {end: false});
-    }
+    //if (this.process.stdio[3]) {
+    //  var mplTransform = new MatplotLibTransfrom(this.project);
+    //  this.process.stdio[3].pipe(mplTransform, {end: false});
+    //}
 
     // turtle streams
     /*if (this.process.stdio[4]) {
@@ -448,8 +449,10 @@ export default class Runner extends EventEmitter {
     // after Streams hook
     if (this.process.stdio[5]) {
 
-
-      this.process.stdio[5].pipe(new ConsoleTransform({ objectMode: true } ), { end: false });
+      this.process.stdio[5].pipe(new JsonTransform(result => {
+        let testResult = new TestResult(result);
+        this.project.tabManager.addTab('testresult', { item: testResult, active: true});
+      }, { objectMode: true } ), { end: false });
     }
 
     return Promise.join(processPromise(this.process, false).reflect(), streamPromise(this.process.stdout), processPromise => {

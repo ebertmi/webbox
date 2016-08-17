@@ -2,6 +2,7 @@ import { Writable } from 'stream';
 import { EventEmitter } from 'events';
 import Debug from 'debug';
 
+// Create namespaced debug function | see https://github.com/visionmedia/debug
 const debug = Debug('webbox:turtle');
 
 /**

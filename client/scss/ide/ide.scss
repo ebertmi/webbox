@@ -60,6 +60,8 @@ body.ide,
       padding: 0.25em 1em;
       font-weight: 300;
       border-right: #ddd solid 1px;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     & .status-username {
@@ -76,6 +78,8 @@ body.ide,
     & .status-message {
       align-self: center;
       padding: 0 1em;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     & .status-navigation {
@@ -86,6 +90,8 @@ body.ide,
       padding-left: 1em;
       border-left: #ddd solid 1px;
       font-weight: 400;
+      user-select: none;
+      -webkit-user-select: none;
 
       &.first-child {
         margin-left: auto;

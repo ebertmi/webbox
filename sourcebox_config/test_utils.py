@@ -10,7 +10,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 """
 
 """
-Changed a couple of functions and the JSON representation for our internal test format
 Auto-Grading Utils for Python used on trycoding.io
     - Added hint(str) decorator to display an error hint if a specific test fails
     - Added a default score of 1.0 for every test function
@@ -180,10 +179,14 @@ class JSONTestRunner(object):
         self.json_data["execution_time"] = format(timeTaken, "0.2f")
 
         total_score = 0
+        max_score = 0
         for test in self.json_data["tests"]:
             total_score += test["score"]
+            max_score += test["max_score"]
         self.json_data["score"] = total_score
+        self.json_data["max_score"] = max_score
 
-        json.dump(self.json_data, self.stream, indent=4)
+        data = json.dumps(self.json_data, indent=4)
+        self.stream.write(data)
         self.stream.write('\n')
         return result

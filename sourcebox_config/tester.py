@@ -1,22 +1,22 @@
 import os
 import sys
+import io
 
 # Set the current working dir to the project
 if len(sys.argv) < 2:
     print("No project path supplied for the tester")
     sys.exit()
 
-# Get the project path
 path = sys.argv[1]
 
-# Change the working directory to the project path
 os.chdir(path)
 
-# Include the project path in the system path, so that the tester can find our tests.py
-sys.path.append(path)
+# should we prepend?
+sys.path.insert(0, path)
+#sys.path.append(path)
 
 import unittest
-from test_utils import JSONTestRunner
+from test_utils_new import JSONTestRunner
 
 def testcases_in_module(module):
     md = module.__dict__
@@ -38,6 +38,7 @@ testcases = testcases_in_module(tests)
 if len(testcases) == 1:
     testcase = testcases[0]
     suite = unittest.TestLoader().loadTestsFromTestCase(testcase)
-    testResult = JSONTestRunner(verbosity=2).run(suite)
+    fd_out = open(5, 'w')
+    testResult = JSONTestRunner(stream=fd_out, verbosity=2).run(suite)
 else:
     print("Ungültige Tests")
