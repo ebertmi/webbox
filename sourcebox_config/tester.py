@@ -39,6 +39,6 @@ if len(testcases) == 1:
     testcase = testcases[0]
     suite = unittest.TestLoader().loadTestsFromTestCase(testcase)
     fd_out = open(5, 'w')
-    testResult = JSONTestRunner(stream=fd_out, verbosity=2).run(suite)
+    testResult = JSONTestRunner(stream=fd_out, verbosity=1).run(suite)
 else:
     print("Ungültige Tests")

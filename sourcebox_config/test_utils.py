@@ -19,9 +19,13 @@ Auto-Grading Utils for Python used on trycoding.io
 import sys
 import time
 import json
+import re
 
 from unittest import result
 from unittest.signals import registerResult
+
+DIFF_OUTPUT_PATTERN_STR = "(\n?Diff is \d+ characters long\. Set self\.maxDiff to None to see it\.)"
+DIFF_OUTPUT_PATTERN = re.compile(DIFF_OUTPUT_PATTERN_STR)
 
 class weight(object):
     """Simple decorator to add a __weight__ property to a function
@@ -96,6 +100,7 @@ class JSONTestResult(result.TestResult):
                 if not out.endswith('\n'):
                     out += '\n'
                 out += err
+
             return out
 
     def buildResult(self, test, err=None):
@@ -117,6 +122,7 @@ class JSONTestResult(result.TestResult):
         if err:
             if self.includeOutput(test):
                 output += "{0}\n".format(err[1])
+                output = re.sub(DIFF_OUTPUT_PATTERN, "", output)
 
         if output and len(output) > 0:
             result["output"] = output

@@ -56,8 +56,8 @@ export default class TestsPanel extends React.Component {
         <ul className="list-group list-group-flush">
           {this.props.item.getTests().map((test, index) => {
             let checkIcon = test.success === true ? <Icon className="text-success" name="check" title="Erfolgreich" /> : <Icon className="text-danger" name="times" title="Fehlgeschlagen" />;
-            let hint = test.hint != null ? <p><small>{test.hint}</small></p> : null;
-            let output = test.output != null ? <p>Ausgabe: <code>{ test.output }</code></p> : null;
+            let hint = test.hint != null ? <p><small><strong>Hinweis: </strong>{test.hint}</small></p> : null;
+            let output = test.output != null ? <div><p className="text-danger test-result-output-label">Ausgabe:</p><pre className="test-result-output"><code>{ test.output }</code></pre></div> : null;
             return (
               <li className="list-group-item" key={index}>
                 <p>

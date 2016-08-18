@@ -50,6 +50,16 @@
   & .total-score {
     font-size: 2rem;
   }
+
+  & pre.test-result-output {
+    background-color: #eee;
+    padding: 0.5rem;
+  }
+
+  & .test-result-output-label {
+    font-weight: bold;
+    font-size: 90%;
+  }
 }
 
 .scroll-decoration {

@@ -1,10 +1,14 @@
 import { EventEmitter } from 'events';
+import Debug from 'debug';
+
+const debug = Debug('TestResult');
 
 export default class TestResult extends EventEmitter {
   constructor(data) {
     super();
     this.data = data;
-    console.info(data);
+
+    debug('Created TestResult from ', this.data);
   }
 
   getScore() {
