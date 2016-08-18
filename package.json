@@ -109,11 +109,11 @@
     "speakingurl": "^9.0.0",
     "spectacle": "github:waywaaard/spectacle",
     "split2": "^2.1.0",
-    "term.js": "waywaaard/term.js",
     "thinky": "^2.3.4",
     "uuid": "^2.0.2",
     "vision": "^4.1.0",
-    "whatwg-fetch": "^1.0.0"
+    "whatwg-fetch": "^1.0.0",
+    "xterm": "github:sourcelair/xterm.js"
   },
   "devDependencies": {
     "babel-cli": "^6.11.1",

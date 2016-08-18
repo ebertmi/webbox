@@ -159,7 +159,7 @@ export default class Terminal extends React.Component {
       }
     }
 
-    //this.terminal.fit();
+    this.terminal.fit();
   }
 
   render() {
@@ -168,6 +168,6 @@ export default class Terminal extends React.Component {
       fontSize: this.props.fontSize
     };
 
-    return <div style={style} className="terminal-container" hidden={this.props.hidden} ref={div => this.container = div}/>;
+    return <div className="terminal-wrapper" hidden={this.props.hidden}><div style={style} className="terminal-container" hidden={this.props.hidden} ref={div => this.container = div}/></div>;
   }
 }
