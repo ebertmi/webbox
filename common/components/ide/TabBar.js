@@ -18,6 +18,8 @@ import TestsTab from './tabs/TestsTab';
 import TestResultTab from './tabs/TestResultTab';
 import { MODES } from '../../constants/Embed';
 
+import ScrollableElement from '../scrollable/ScrollableElement';
+
 const TAB_TYPES = {
   file: FileTab,
   options: OptionsTab,
@@ -178,9 +180,11 @@ export default class TabBar extends React.Component {
 
     return (
       <div className="control-bar">
-        <nav className="tabs-container">
-          {this.renderTabs()}
-        </nav>
+        <ScrollableElement scrollYToX={true} className="tabs-scroll-wrapper">
+          <nav className="tabs-container">
+            {this.renderTabs()}
+          </nav>
+        </ScrollableElement>
         <span className="embed-title">{project.name}</span>
         <Nav className="controls" bsStyle="pills">
           {startStop}

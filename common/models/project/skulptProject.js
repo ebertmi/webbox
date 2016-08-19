@@ -1,5 +1,4 @@
 import isString from 'lodash/isString';
-import capitalize from 'lodash/capitalize';
 import { Severity  } from './../severity';
 
 import Project from './project';
@@ -19,7 +18,8 @@ export default class SkulptProject extends Project {
       this.config = projectData.embed.meta.language;
     }
 
-    this.status.setLanguageInformation(`${this.config.displayName} (${capitalize(this.projectData.embed.meta.embedType)})`);
+    // `${this.config.displayName} (${capitalize(this.projectData.embed.meta.embedType)})`
+    this.status.setLanguageInformation(this.projectData.embed.meta.embedType, this.config.displayName);
   }
 
   /**

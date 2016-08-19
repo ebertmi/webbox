@@ -1,6 +1,5 @@
 import Sourcebox from '@sourcebox/web';
 import isString from 'lodash/isString';
-import capitalize from 'lodash/capitalize';
 import pathModule from 'path';
 import { Severity } from './../severity';
 
@@ -41,7 +40,8 @@ export default class SourceboxProject extends Project {
     this.removeTab = this.removeTab.bind(this);
     this.tabManager.on('tabremoved', this.removeTab);
 
-    this.status.setLanguageInformation(`${this.config.displayName} (${capitalize(this.projectData.embed.meta.embedType)})`);
+    // `${this.config.displayName} (${capitalize(this.projectData.embed.meta.embedType)})`
+    this.status.setLanguageInformation(this.projectData.embed.meta.embedType, this.config.displayName);
   }
 
   /**

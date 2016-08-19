@@ -9,7 +9,8 @@ export class Status extends EventEmitter {
   constructor() {
     super();
 
-    this.languageInformation = '';
+    this.embedType = '';
+    this.languageDisplayName = '';
     this.username = '';
 
     this.statusMessage = '';
@@ -27,8 +28,9 @@ export class Status extends EventEmitter {
     this.emitChange();
   }
 
-  setLanguageInformation(content) {
-    this.languageInformation = content;
+  setLanguageInformation(embedType, languageDisplayName) {
+    this.embedType = embedType;
+    this.languageDisplayName = languageDisplayName;
 
     this.emitChange();
   }
@@ -55,7 +57,8 @@ export class Status extends EventEmitter {
   }
 
   resetAll() {
-    this.languageInformation = '';
+    this.embedType = '';
+    this.languageDisplayName = '';
     this.resetStatusMessage();
   }
 
@@ -65,7 +68,8 @@ export class Status extends EventEmitter {
       title: this.statusTitle,
       onOkay: this.onOkay,
       onCancel: this.onCancel,
-      languageInformation: this.languageInformation,
+      embedType: this.embedType,
+      languageDisplayName: this.languageDisplayName,
       username: this.username,
       severity: this.severity
     };

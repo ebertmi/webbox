@@ -81,3 +81,12 @@
     padding: 0.25em 0.5em;
   }
 }
+
+/**
+ *  Styles the scrollable tabs container, works now on small view ports
+ */
+.tabs-scroll-wrapper {
+  display: flex;
+  flex: 1 1 0;
+  background-color: #ececec;
+}

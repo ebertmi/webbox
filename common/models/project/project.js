@@ -289,7 +289,7 @@ export default class Project extends EventEmitter {
    * @param {String} url The url for the websocket connection
    */
   initCommunication() {
-    this.socketConnection = new SocketConnection(this.projectData.communication.jwt, this.projectData.communication.url);
+    this.socketConnection = new SocketConnection(this.projectData.communication);
     this.socketConnection.on('reconnect_failed', this.onReconnectFailed.bind(this));
   }
 

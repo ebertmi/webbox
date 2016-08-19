@@ -16,3 +16,9 @@ export default function Icon(props) {
 
   return <span {...rest} className={classes}/>;
 }
+
+export function ImageIcon(props) {
+  let {className, icon, ...rest} = props;
+  let classes = classNames('tab-icon', className);
+  return <span className={classes} {...rest}><img className="fa" src={"/public/img/icons/" + icon} alt={icon} /></span>;
+}
