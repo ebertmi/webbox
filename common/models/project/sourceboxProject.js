@@ -5,7 +5,6 @@ import { Severity } from './../severity';
 
 import Project from './project';
 import Runner from './sourceboxRunner';
-import languages from './languages';
 import { EventLog } from '../insights/socketConnection';
 
 const PROCESS_DEFAULTS = {
@@ -24,12 +23,6 @@ export default class SourceboxProject extends Project {
   constructor(projectData, serverConfig) {
     super(projectData);
 
-    if (isString(projectData.embed.meta.language)) {
-      this.config = languages[projectData.embed.meta.language];
-    } else {
-      this.config = projectData.embed.meta.language;
-    }
-
     let {server, ...sbConfig} = serverConfig;
     this.sourcebox = new Sourcebox(server, sbConfig);
 
@@ -39,9 +32,6 @@ export default class SourceboxProject extends Project {
     // Register to special tab events
     this.removeTab = this.removeTab.bind(this);
     this.tabManager.on('tabremoved', this.removeTab);
-
-    // `${this.config.displayName} (${capitalize(this.projectData.embed.meta.embedType)})`
-    this.status.setLanguageInformation(this.projectData.embed.meta.embedType, this.config.displayName);
   }
 
   /**

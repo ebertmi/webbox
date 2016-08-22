@@ -1,9 +1,7 @@
-import isString from 'lodash/isString';
 import { Severity  } from './../severity';
 
 import Project from './project';
 import Runner from './skulptRunner';
-import languages from './languages';
 import { EventLog } from '../insights/socketConnection';
 
 
@@ -11,15 +9,6 @@ import { EventLog } from '../insights/socketConnection';
 export default class SkulptProject extends Project {
   constructor(projectData) {
     super(projectData);
-
-    if (isString(projectData.embed.meta.language)) {
-      this.config = languages[projectData.embed.meta.language];
-    } else {
-      this.config = projectData.embed.meta.language;
-    }
-
-    // `${this.config.displayName} (${capitalize(this.projectData.embed.meta.embedType)})`
-    this.status.setLanguageInformation(this.projectData.embed.meta.embedType, this.config.displayName);
   }
 
   /**

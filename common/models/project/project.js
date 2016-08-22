@@ -1,14 +1,17 @@
 import { EventEmitter } from 'events';
 
-import throttle from 'lodash/throttle';
 import clone from 'lodash/clone';
+import capitalize from 'lodash/capitalize';
+import isString from 'lodash/isString';
+import throttle from 'lodash/throttle';
 
 import assert from '../../util/assert';
+import languages from './languages';
 import { copyText } from '../../util/nbUtil';
 import { getFileExtensionByLanguage } from '../../util/languageUtils';
 import { loadFromData } from './dataUtils';
 import { API } from '../../services';
-import { Status } from './status';
+import { StatusBarRegistry, StatusBarAlignment, StatusBarItem, StatusBarColor, languageToIcon } from './status';
 import File from './file';
 import Test from './test';
 import { MessageWithAction } from '../messages';
@@ -31,6 +34,9 @@ export default class Project extends EventEmitter {
     super();
     this.projectData = projectData;
 
+    // Check the project/language configuration
+    this.checkProjectConfiguration();
+
     this.name = this.projectData.embed.meta.name || '';
 
     // Insights instance, when required
@@ -43,6 +49,7 @@ export default class Project extends EventEmitter {
     // TestCode for auto grading
     this.tests = undefined;
 
+    // Set the Project Mode. (E.g. Run Mode, ViewDocument, etc...)
     this.mode = this.projectData.embed.mode || MODES.Default;
 
     // Setup the message list
@@ -54,9 +61,16 @@ export default class Project extends EventEmitter {
     // Load the embed data
     this.fromInitialData(this.projectData.embed);
 
-    // switch tab to first one
-    this.status = new Status();
-    this.updateUserData();
+    // The StatusBarRegistry holds all items of the status bar
+    this.statusBarRegistry = new StatusBarRegistry();
+
+    // The Status object holds references to important status bar items, e.g. message
+    this.status = {
+      message: null
+    };
+
+    // Create the initial status bar items
+    this.createStatusBarItems();
 
     // Project state variables
     this.isConsistent = true;
@@ -64,6 +78,92 @@ export default class Project extends EventEmitter {
 
     // Handle throttling and debouncing
     this.saveEmbed = throttle(this.saveEmbed, 800);
+  }
+
+  checkProjectConfiguration() {
+    if (isString(this.projectData.embed.meta.language)) {
+      this.config = languages[this.projectData.embed.meta.language];
+    } else {
+      this.config = this.projectData.embed.meta.language;
+    }
+  }
+
+  setStatusMessage(msg, icon=null, color=StatusBarColor.Default, command=null) {
+    this.status.message.setLabel(msg);
+
+    if (icon != null) {
+      this.status.message.setIcon(icon);
+    }
+
+    if (color != null) {
+      this.status.message.setColor(color);
+    }
+
+    if (command != null) {
+      this.status.message.setCommand(command);
+    }
+  }
+
+  createStatusBarItems() {
+    // Clear previous entries, may be required if we reset a project
+    this.statusBarRegistry.clear();
+
+    // Left side:
+    // Language information
+    //const languageIconName = languageToIcon(this.config.displayName);
+    const sbrLangInfo = new StatusBarItem(this.config.displayName, null, 'Verwendete Sprachversion');
+    this.statusBarRegistry.registerStatusbarItem(sbrLangInfo, StatusBarAlignment.Left, 100);
+
+    // Embed Type
+    const sbrEmbedTypeInfo = new StatusBarItem(capitalize(this.projectData.embed.meta.embedType), 'terminal', 'Ausführmodus (Umgebung)');
+    this.statusBarRegistry.registerStatusbarItem(sbrEmbedTypeInfo, StatusBarAlignment.Left, 90);
+
+    // user name
+    const name = this.projectData.user.email || this.projectData.user.username;
+    const sbrUserInfo =  new StatusBarItem(name, 'user', 'Benutzername');
+    this.statusBarRegistry.registerStatusbarItem(sbrUserInfo, StatusBarAlignment.Left, 80);
+
+    // conditional log off or log on button
+    let logOnOffUrl;
+    let logOnOffLabel;
+    if (this.projectData.user.isAnonymous) {
+      let url = window.location.href;
+      logOnOffUrl = `/login?next=${encodeURI(url)}`;
+      logOnOffLabel = 'Anmelden';
+    } else {
+      logOnOffUrl = '/logout';
+      logOnOffLabel = 'Abmelden';
+    }
+
+    const sbrLogOnOff = new StatusBarItem(logOnOffLabel, null, 'An/Abmelden', null, null, logOnOffUrl);
+    this.statusBarRegistry.registerStatusbarItem(sbrLogOnOff, StatusBarAlignment.Left, 70);
+
+    // The message
+    const statusMessage = new StatusBarItem('', null, 'Aktueller Status');
+    this.status.message = statusMessage;
+    this.statusBarRegistry.registerStatusbarItem(statusMessage, StatusBarAlignment.Left, 0);
+
+    // Right side:
+    // Zum original
+    const sbrToOriginal =  new StatusBarItem('Zum Original', null, 'Zeigt das unveränderte Original an', null, (e) => {
+      if (e && e.preventDefault()) {
+        e.preventDefault();
+      }
+
+      const link = this.getOriginalLink();
+      window.open(link, '_blank');
+    }, '#');
+    this.statusBarRegistry.registerStatusbarItem(sbrToOriginal, StatusBarAlignment.Right, 100);
+
+    // Zur Startseite
+    const sbrToStart = new StatusBarItem('Startseite', null, 'Zur Startseite', null, (e) => {
+      if (e && e.preventDefault()) {
+        e.preventDefault();
+      }
+
+      window.open('/', '_blank');
+    }, '#');
+    this.statusBarRegistry.registerStatusbarItem(sbrToStart, StatusBarAlignment.Right, 0);
   }
 
   getEmbedId() {
@@ -346,13 +446,6 @@ export default class Project extends EventEmitter {
     };
   }
 
-  /**
-   * Sets the user data associated with the trinket
-   */
-  updateUserData() {
-    this.status.setUsername(this.projectData.user.email || this.projectData.user.username); // display username or email if available
-  }
-
   getUserData() {
     if (this.projectData.user) {
       return this.projectData.user;
@@ -582,7 +675,7 @@ export default class Project extends EventEmitter {
 
 
     this.pendingSave = true;
-    this.status.setStatusMessage('Speichere...', '', Severity.Ignore);
+    this.setStatusMessage('Speichere...', null, StatusBarColor.Default);
 
     const params = {
       id: this.getEmbedId()
@@ -598,20 +691,20 @@ export default class Project extends EventEmitter {
     // trigger save
     API.embed.saveEmbed(params, payload).then(res => {
       if (res.error) {
-        this.status.setStatusMessage('Beim Speichern ist ein Fehler augetreten.', Severity.Error);
+        this.setStatusMessage('Beim Speichern ist ein Fehler augetreten.', null, StatusBarColor.Danger);
       } else {
-        this.status.setStatusMessage('Gespeichert.', '', Severity.Info);
+        this.setStatusMessage('Gespeichert.', null, StatusBarColor.Success);
         // Update the document, if received any and not set
         if (res.document) {
           this.projectData.embed._document = document;
         }
 
         window.setTimeout(() => {
-          this.status.setStatusMessage('', '', Severity.Ignore);
-        }, 1500);
+          this.setStatusMessage('');
+        }, 2000);
       }
     }).catch(err => {
-      this.showMessage(Severity.Error, 'Speichern fehlgeschlagen!');
+      this.showMessage(Severity.Error, 'Speichern fehlgeschlagen!', null, StatusBarColor.Danger);
       console.error(err);
     }).then(() => {
       this.pendingSave = false;

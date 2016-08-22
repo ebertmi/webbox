@@ -49,82 +49,6 @@ body.ide,
     color: $brand-success;
   }
 
-  /* StatusBar specific styles */
-  .status-bar {
-    background-color: #FBFBFB;
-    display: flex;
-    flex-direction: row;
-    flex: 0 0 auto;
-    border-top: #ddd solid 1px;
-    font-size: 0.9em;
-
-    & .status-language-information {
-      padding: 0.25em 1em;
-      font-weight: 300;
-      border-right: #ddd solid 1px;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-
-    & .status-username {
-      padding: 0 1em;
-      align-self: center;
-      font-weight: 400;
-      border-right: #ddd solid 1px;
-
-      & .prefix {
-        font-weight: 300;
-      }
-    }
-
-    & .status-message {
-      align-self: center;
-      padding: 0 1em;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-
-    & .status-navigation {
-      align-self: center;
-      /*margin-left: auto;*/
-      margin-left: 0rem;
-      padding-right: 1em;
-      padding-left: 1em;
-      border-left: #ddd solid 1px;
-      font-weight: 400;
-      user-select: none;
-      -webkit-user-select: none;
-
-      &.first-child {
-        margin-left: auto;
-      }
-
-      /*&:nth-last-child(2) {
-        margin-left: auto;
-      }*/
-    }
-
-    &.danger {
-      color: $state-danger-text;
-      background-color: $state-danger-bg;
-    }
-
-    &.warning {
-      color: $state-warning-text;
-      background-color: $state-warning-bg;
-    }
-
-    &.info {
-      color: $state-info-text;
-      background-color: $state-info-bg;
-    }
-
-    &.success {
-      color: $state-success-text;
-      background-color: $state-success-bg;
-    }
-  }
-
   .unselectable {
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
@@ -149,4 +73,5 @@ body.ide,
   @import "_inputbox";
   @import "_filerename";
   @import "~react-datepicker/dist/react-datepicker.css";
+  @import "_statusbar";
 }

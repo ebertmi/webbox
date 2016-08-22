@@ -1,7 +1,7 @@
 import React from 'react';
 
 import TabBar from './TabBar';
-import StatusBar from './StatusBar';
+import { StatusBar } from './StatusBar';
 import PanelArea from './PanelArea';
 
 export default class Ide extends React.Component {
@@ -66,7 +66,7 @@ export default class Ide extends React.Component {
       <div className="ide" onDragOver={this.onDragOver} onDrop={this.onDrop} ref={div => this.container = div}>
         <TabBar project={this.props.project}/>
         <PanelArea project={this.props.project} messageList={this.props.messageList} />
-        <StatusBar project={this.props.project}/>
+        <StatusBar registry={this.props.project.statusBarRegistry}/>
       </div>
     );
   }
