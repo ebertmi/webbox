@@ -1,8 +1,14 @@
 import React from 'react';
 
-import { Button } from '../../bootstrap';
 import Icon from '../../Icon';
 
+/**
+ * Simple helper function that maps the ranges 0-25, 25-50, 50-75 and 75-100
+ * to bootstrap classes.
+ *
+ * @param {any} percentage
+ * @returns
+ */
 function percentageToBootstrapClass(percentage) {
   if (percentage < 25) {
     return "danger";
@@ -15,19 +21,20 @@ function percentageToBootstrapClass(percentage) {
   }
 }
 
+/**
+ * Display the test results for a user. This is the user facing panel.
+ *
+ * @export
+ * @class TestsPanel
+ * @extends {React.Component}
+ */
 export default class TestsPanel extends React.Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
-
-    // Initial state
-    this.state = {
-    };
   }
 
   onChange() {
-    this.setState({
-    });
   }
 
   componentDidMount() {
@@ -50,7 +57,11 @@ export default class TestsPanel extends React.Component {
         <h3>Dein Ergebnis</h3>
         <div>
           <p>Sie haben <strong className="total-score">{this.props.item.getScore()} / {this.props.item.getMaximumScore()}</strong> Punkten erreicht.</p>
-          <progress className={progressClass} value={progress} max="100"></progress>
+          <progress className={progressClass} max="100" value={progress} >
+            <div className="progress">
+              <span className="progress-bar" style={{width: progress+"%"}}></span>
+            </div>
+          </progress>
         </div>
         <hr />
         <ul className="list-group list-group-flush">

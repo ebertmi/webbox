@@ -8,7 +8,7 @@ import TurtlePanel from './panels/TurtlePanel';
 import AttributesPanel from './panels/AttributesPanel';
 import { MessageList } from '../messageList/messageList';
 import MatplotlibPanel from './panels/MatplotlibPanel';
-import TestsPanel from './panels/TestsPanel';
+import TestAuthoringPanel from './panels/TestAuthoringPanel';
 import TestResultPanel from './panels/TestResultPanel';
 
 const PANEL_TYPES = {
@@ -19,7 +19,7 @@ const PANEL_TYPES = {
   turtle: TurtlePanel,
   attributes: AttributesPanel,
   matplotlib: MatplotlibPanel,
-  tests: TestsPanel,
+  tests: TestAuthoringPanel,
   testresult: TestResultPanel
 };
 

@@ -17,7 +17,8 @@ import { getCookie } from '../../services/utils';
 
 export const SocketEvents = {
   IdeEvent: 'ide-event',
-  Submission: 'submission'
+  Submission: 'submission',
+  TestResult: 'user-testresult'
 };
 
 /**

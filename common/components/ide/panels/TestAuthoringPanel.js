@@ -8,7 +8,7 @@ const FIXED_OPTIONS = {
   showPrintMargin: false
 };
 
-export default class TestsPanel extends React.Component {
+export default class TestAuthoringPanel extends React.Component {
   constructor(props) {
     super(props);
     this.onChangeOption = this.onChangeOption.bind(this);

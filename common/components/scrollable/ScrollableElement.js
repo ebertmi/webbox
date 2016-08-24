@@ -27,11 +27,13 @@ import HorizontalScrollbar from './HorizontalScrollbar.js';
 
 import './_scrollable.scss';
 
+// ToDo: Fix the scrollbars, scrolling is possible with the new set scrollLeft and scrollTop on the wrapper. But maybe we need a different solution
+
 class ScrollableElement extends React.Component {
   constructor() {
     super();
     this.state = {
-      ready: false,
+      ready: true,
       top: 0,
       left: 0,
       scrollAreaHeight: null,
@@ -48,46 +50,43 @@ class ScrollableElement extends React.Component {
 
   render(){
     return(
-      <div
-        onClick={ this.calculateSize.bind(this) }
-        className={ "react-scrollbar__wrapper" + ( this.props.className ? " " + this.props.className : "" ) }
-        ref="scrollWrapper"
-        style={this.props.style}
-          >
         <div
-          className={ "react-scrollbar__area" + ( this.state.dragging ? ' ' : ' react-scrollbar-transition') }
-          ref="scrollArea"
-          onWheel={ this.scroll.bind(this) }
-          onTouchStart={ this.startDrag.bind(this) }
-          onTouchMove={ this.onDrag.bind(this) }
-          onTouchEnd={ this.stopDrag.bind(this) }
-          style={{ marginTop: this.state.top * -1 +'px', marginLeft: this.state.left * -1 +'px' }} >
+          onClick={ this.calculateSize.bind(this) }
+          className={ "react-scrollbar__wrapper" + ( this.props.className ? " " + this.props.className : "" ) }
+          ref="scrollWrapper"
+          style={this.props.style}>
+            <div
+              className={ "react-scrollbar__area" + ( this.state.dragging ? ' ' : ' react-scrollbar-transition') }
+              ref="scrollArea"
+              onWheel={ this.scroll.bind(this) }
+              onTouchStart={ this.startDrag.bind(this) }
+              onTouchMove={ this.onDrag.bind(this) }
+              onTouchEnd={ this.stopDrag.bind(this) }>
+              { this.props.children }
+            </div>
+      { this.state.ready ?
+        <VerticalScrollbar
+          area={{ height: this.state.scrollAreaHeight }}
+          wrapper={{ height: this.state.scrollWrapperHeight }}
+          scrolling={ this.state.vMovement }
+          draggingFromParent={ this.state.dragging }
+          onChangePosition={ this.handleChangePosition.bind(this) }
+          onDragging={ this.handleScrollbarDragging.bind(this) }
+          onStopDrag={ this.handleScrollbarStopDrag.bind(this) } />
+      : null }
 
-          { this.props.children }
-
-          { this.state.ready ?
-            <VerticalScrollbar
-              area={{ height: this.state.scrollAreaHeight }}
-              wrapper={{ height: this.state.scrollWrapperHeight }}
-              scrolling={ this.state.vMovement }
-              draggingFromParent={ this.state.dragging }
-              onChangePosition={ this.handleChangePosition.bind(this) }
-              onDragging={ this.handleScrollbarDragging.bind(this) }
-              onStopDrag={ this.handleScrollbarStopDrag.bind(this) } />
-          : null }
-
-          { this.state.ready ?
-            <HorizontalScrollbar
-              area={{ width: this.state.scrollAreaWidth }}
-              wrapper={{ width: this.state.scrollWrapperWidth }}
-              scrolling={ this.state.hMovement }
-              draggingFromParent={ this.state.dragging }
-              onChangePosition={ this.handleChangePosition.bind(this) }
-              onDragging={ this.handleScrollbarDragging.bind(this) }
-              onStopDrag={ this.handleScrollbarStopDrag.bind(this) } />
-          : null }
+      { this.state.ready ?
+        <HorizontalScrollbar
+          ref="horizontalScrollbar"
+          area={{ width: this.state.scrollAreaWidth }}
+          wrapper={{ width: this.state.scrollWrapperWidth }}
+          scrolling={ this.state.hMovement }
+          draggingFromParent={ this.state.dragging }
+          onChangePosition={ this.handleChangePosition.bind(this) }
+          onDragging={ this.handleScrollbarDragging.bind(this) }
+          onStopDrag={ this.handleScrollbarStopDrag.bind(this) } />
+      : null }
         </div>
-      </div>
     );
   }
 
@@ -132,8 +131,21 @@ class ScrollableElement extends React.Component {
         this.setState({
           left: 0
         });
+        this.setHorizontalScroll(0);
       }
     });
+  }
+
+  setHorizontalScroll(offset) {
+    if (this.refs.scrollWrapper) {
+      this.refs.scrollWrapper.scrollLeft = offset;
+    }
+  }
+
+  setVerticalScroll(offset) {
+    if (this.refs.scrollWrapper) {
+      this.refs.scrollWrapper.scrolltop = offset;
+    }
   }
 
   // DRAG EVENT JUST FOR TOUCH DEVICE~
@@ -191,6 +203,8 @@ class ScrollableElement extends React.Component {
       next = 0;
     }
 
+    this.setVerticalScroll(next);
+
     // Update the Vertical Value
     this.setState({
       top: next,
@@ -209,6 +223,8 @@ class ScrollableElement extends React.Component {
       // Max Scroll Right
       next = 0;
     }
+
+    this.setHorizontalScroll(next);
 
     // Update the Horizontal Value
     this.setState({

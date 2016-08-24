@@ -51,7 +51,7 @@ export default {
       return ['python3', mainFile];
     },
     test(fileNames, mainFile, projectName) {
-      return ['python3', /*'/usr/local/lib/sourcebox/*/'tester.py', `/home/user/${projectName}`];
+      return ['python3', '/usr/local/lib/sourcebox/tester.py', `/home/user/${projectName}`];
     },
     displayName: 'Python 3',
     env: {

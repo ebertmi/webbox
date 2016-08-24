@@ -1,5 +1,8 @@
 .panel-area {
-  flex: 1 1 auto;
+  //flex: 1 1 auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: auto;
 
   background: url('/public/img/sourcebox-bg.svg') no-repeat center center/contain;
   display: flex;
@@ -7,7 +10,11 @@
   overflow: hidden;
   border-top: #ddd solid 1px;
   > * {
-    flex: 1 1 0;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0px;
+
+    //flex: 1 1 0;
     box-sizing: border-box;
 
     // breaks when there are invisible elements (e.g. inactive terminals)
@@ -43,7 +50,9 @@
   }
 
   & .ace_editor {
-    flex: 1;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0px;
     overflow: auto;
   }
 

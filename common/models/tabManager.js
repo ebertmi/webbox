@@ -97,6 +97,19 @@ export default class TabManager extends EventEmitter {
     this.messageList.showMessage(Severity.Warning, messageObj);
   }
 
+  closeTabByType(type) {
+    let tabs = this.tabs.filter(tab => tab.type === type);
+
+    tabs.forEach(tab => {
+      // Get index
+      let index = this.tabs.findIndex(t => {
+        return t.uniqueId === tab.uniqueId;
+      });
+
+      this.removeTab(tab, index);
+    });
+  }
+
   /**
    * Removes a tab from the internal tabs array. When deleted it's gone!
    */

@@ -50,7 +50,7 @@ export default class Project extends EventEmitter {
     this.tests = undefined;
 
     // Set the Project Mode. (E.g. Run Mode, ViewDocument, etc...)
-    this.mode = this.projectData.embed.mode || MODES.Default;
+    this.mode = this.projectData.embed._mode || MODES.Default;
 
     // Setup the message list
     this.messageList = this.projectData.messageList;
@@ -705,6 +705,7 @@ export default class Project extends EventEmitter {
       }
     }).catch(err => {
       this.showMessage(Severity.Error, 'Speichern fehlgeschlagen!', null, StatusBarColor.Danger);
+      this.setStatusMessage('', null, StatusBarColor.Default);
       console.error(err);
     }).then(() => {
       this.pendingSave = false;

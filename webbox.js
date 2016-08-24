@@ -93,7 +93,7 @@ server.register({
   register: Crumb,
   options: {
     cookieOptions: {
-      isSecure: false // ToDo: Change this when dealing with SSL/HTTPS
+      isSecure: config.crumb.isSecure // ToDo: Change this when dealing with SSL/HTTPS
     }
   }
 }, (err) => {

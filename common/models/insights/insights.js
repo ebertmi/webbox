@@ -4,6 +4,8 @@ import assert from '../../util/assert';
 import { ErrorFilter } from './errorFilter';
 import { ErrorClusters } from './errorclusters';
 import { Submissions } from './submissions';
+import { normalizeDate } from '../../util/dateUtils';
+import { TestResultsOverview } from './testResultsOverview';
 import { Action, SocketEvents } from './socketConnection';
 
 /**
@@ -32,6 +34,8 @@ export class Insights extends EventEmitter {
     // Submission model, submits its own change events, then we can hook this up components
     // that only need to update on submission changes
     this.submissions = new Submissions(this._connection);
+
+    this.testResultsOverview = new TestResultsOverview(this._connection, this._project);
   }
 
   reset() {
@@ -138,7 +142,7 @@ export class Insights extends EventEmitter {
     assert(event != null, 'Received invalid event');
 
     let eventKey;
-    let date = this.normalizeDate(event.timeStamp);
+    let date = normalizeDate(event.timeStamp, this.dateClusterResolution);
 
     // Check if date is outside the date bounds
     if (this.dateClusterStart && date < this.dateClusterStart) {
@@ -223,36 +227,7 @@ export class Insights extends EventEmitter {
     return lineData;
   }
 
-  /**
-   * Normalize a date depending on the current "dateClusterResolution"
-   * @param {any} str
-   * @returns
-  */
-  normalizeDate(str) {
-    let dt = new Date(str);
 
-    switch (this.dateClusterResolution) {
-      case 'month':
-        return new Date(
-          dt.getFullYear(),
-          dt.getMonth()
-        );
-      case 'hour':
-        return new Date(
-            dt.getFullYear(),
-            dt.getMonth(),
-            dt.getDate(),
-            dt.getHours()
-        );
-      case 'day':
-      default:
-        return new Date(
-            dt.getFullYear(),
-            dt.getMonth(),
-            dt.getDate()
-        );
-    }
-  }
 
   /**
    *

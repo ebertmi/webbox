@@ -4,6 +4,7 @@
 
 var webpack = require('webpack');
 var path = require('path');
+var autoprefixer = require('autoprefixer');
 
 module.exports = {
   context: path.resolve(__dirname, 'client'),
@@ -43,7 +44,7 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        loaders: ['style', 'css?-url', 'sass']
+        loaders: ['style', 'css?-url', 'postcss', 'sass']
       },
       {
         test: /\.json$/,
@@ -51,6 +52,7 @@ module.exports = {
       }
     ]
   },
+  postcss: [ autoprefixer({ browsers: ['last 2 versions'] }) ],
   plugins: [
     new webpack.optimize.CommonsChunkPlugin({
       name: 'react-commons',

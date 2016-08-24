@@ -2,12 +2,22 @@ import React from 'react';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import classNames from 'classnames';
 
+import { calculateTouchMovement, getTouchDataFromEvent, touchDeltaWithinThreshold, TOUCH_DURATION_THRESHOLD } from '../../../util/touchUtils';
+
 export default class Tab extends React.Component {
   constructor(props) {
     super(props);
 
     this.onClose = this.onClose.bind(this);
     this.onClick = this.onClick.bind(this);
+    this.onTouchStart = this.onTouchStart.bind(this);
+    this.onTouchEnd = this.onTouchEnd.bind(this);
+    this.onTouchCancel = this.onTouchCancel.bind(this);
+    this.onTouchMove = this.onTouchMove.bind(this);
+
+    this._initialTouch = null;
+    this._lastTouch = null;
+
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
@@ -24,6 +34,42 @@ export default class Tab extends React.Component {
     e.stopPropagation();
 
     this.props.onClose(e);
+  }
+
+  onTouchStart(e) {
+    // Check if we have a single touch event, else it could be pinch
+    this._initialTouch = getTouchDataFromEvent(e);
+  }
+
+  onTouchMove(e) {
+    if (this._initialTouch != null) {
+      this._lastTouch = getTouchDataFromEvent(e);
+    }
+  }
+
+  onTouchCancel(e) {
+    this._initialTouch = null;
+    this._lastTouch = null;
+  }
+
+  onTouchEnd(e) {
+    if (this._initialTouch != null) {
+      let timeDifference = Math.abs(this._initialTouch.timeStamp - Date.now());
+
+      // Check the time delta between the start and end event
+      if (this._lastTouch && timeDifference <= TOUCH_DURATION_THRESHOLD) {
+        const movement = calculateTouchMovement(this._initialTouch, this._lastTouch);
+        if (touchDeltaWithinThreshold(movement)) {
+          this.onClick(e); // handle click
+        }
+      } else if (timeDifference <= TOUCH_DURATION_THRESHOLD){
+        // Rare case, when there is not user movement at all
+        this.onClick(e);
+      }
+    }
+
+    this._initialTouch = null;
+    this._lastTouch = null;
   }
 
   renderCloseButton() {
@@ -51,7 +97,7 @@ export default class Tab extends React.Component {
     });
 
     return (
-      <div title={this.props.title} onClick={this.onClick} className={classes}>
+      <div title={this.props.title} onClick={this.onClick} onTouchMove={this.onTouchMove} onTouchStart={this.onTouchStart} onTouchCancel={this.onTouchCancel} onTouchEnd={this.onTouchEnd} className={classes}>
         <div className="tab-label">
           {this.renderIcon()}
           {this.props.children}

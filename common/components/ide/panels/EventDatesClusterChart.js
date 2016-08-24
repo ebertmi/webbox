@@ -123,12 +123,12 @@ export default class EventDatesClusterChart extends React.Component {
               </div>
               <div className="form-group">
                 <label htmlFor="dateClusterStartDate">Anfang</label>
-                <div styles={{display: "block"}}><DatePicker styles={{display: "block"}} className="form-control" selected={this.state.dateClusterStart} onChange={this.onStartDateChange} locale="de-DE" placeholderText="Kein Datum gewählt" /></div>
+                <div style={{display: "block"}}><DatePicker style={{display: "block"}} className="form-control" selected={this.state.dateClusterStart} onChange={this.onStartDateChange} locale="de-DE" placeholderText="Kein Datum gewählt" /></div>
                 <p className="text-muted">Anfangszeitpunkt ab dem die Daten geclustered werden sollen. Ältere Datenpunkte werden ignoriert.</p>
               </div>
               <div className="form-group">
                 <label htmlFor="dateClusterEndDate">Ende</label>
-                <div styles={{display: "block"}}><DatePicker className="form-control" selected={this.state.dateClusterEnd} onChange={this.onEndDateChange} locale="de-DE" placeholderText="Kein Datum gewählt" /></div>
+                <div style={{display: "block"}}><DatePicker className="form-control" selected={this.state.dateClusterEnd} onChange={this.onEndDateChange} locale="de-DE" placeholderText="Kein Datum gewählt" /></div>
                 <p className="text-muted">Endzeitpunkt bis zu dem die Daten geclustered werden sollen. Jüngere Datenpunkte werden ignoriert.</p>
               </div>
               <button className="btn btn-success btn-sm" onClick={this.onApply}>Anwenden</button>

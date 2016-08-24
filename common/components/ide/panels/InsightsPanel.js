@@ -5,6 +5,7 @@ import EventDatesClusterChart from './EventDatesClusterChart';
 import ErrorView from './ErrorView';
 import ErrorClusterView from './ErrorClusterView';
 import SubmissionView from './SubmissionView';
+import TestResultOverview from './TestResultOverview';
 
 export default class InsightsPanel extends React.Component {
   constructor(props) {
@@ -17,7 +18,8 @@ export default class InsightsPanel extends React.Component {
     this.state = {
       dateClusters: [],
       events: this.props.item.events,
-      errors: this.props.item.errors
+      errors: this.props.item.errors,
+      testResults: this.props.item.testResults
     };
   }
 
@@ -73,7 +75,7 @@ export default class InsightsPanel extends React.Component {
         <hr/>
 
         <h3>Daten</h3>
-
+        <TestResultOverview testResults={this.props.item.testResultsOverview} />
         <EventDatesClusterChart onSettingsChange={this.onDateClusterSettingsChange} lineData={this.state.dateClusters} dateClusterResolution={this.props.item.dateClusterResolution} />
         <ErrorClusterView errorClusters={this.props.item.errorClusters}/>
 

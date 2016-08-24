@@ -115,7 +115,7 @@ export class MatplotLibTransfrom extends Transform {
     var img = new Image();
     img.src = imgSrc;
     img.onload = () => {
-      this.project.addTab('matplotlib', {item: img, active: true});
+      this.project.tabManager.addTab('matplotlib', {item: img, active: true});
     };
   }
 }

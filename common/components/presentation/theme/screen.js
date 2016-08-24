@@ -176,7 +176,8 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
           fontWeight: "normal",
           fontFamily: fonts.tertiary,
           minWidth: "100%",
-          maxWidth: 800
+          maxWidth: 800,
+          textAlign: "center"
         },
         code: {
           textAlign: "left",
@@ -190,7 +191,8 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         margin: "0.25rem auto",
         backgroundColor: "transparent"/*"rgba(0,0,0,0.15)"*/,
         padding: "0 10px",
-        borderRadius: 3
+        borderRadius: 3,
+        textAlign: "left"
       },
       heading: {
         h1: {

@@ -462,6 +462,8 @@ export default class Runner extends EventEmitter {
         });
         this.project.sendAction(remoteAction);
 
+
+        this.project.tabManager.closeTabByType('testresult'); // Close all other test result windows
         this.project.tabManager.addTab('testresult', { item: testResult, active: true});
       }, { objectMode: true } ), { end: false });
     }

@@ -19,6 +19,26 @@ import Highlight from './Highlight';
 import OrderedList from './OrderedList';
 
 
+const EMPTY_HTML_ELEMENTS = {
+  'area': true,
+  'base': true,
+  'br': true,
+  'col': true,
+  'colgroup': false,
+  'command': true,
+  'embed': true,
+  'hr': true,
+  'img': true,
+  'input': true,
+  'keygen': true,
+  'link': true,
+  'meta': true,
+  'param': true,
+  'source': true,
+  'track': true,
+  'wbr': true
+};
+
 /**
  * Transforms any inline HTML from text to real HTML (react)
  */
@@ -40,12 +60,25 @@ function makeChildren(children, props) {
    *
    * WARNING: This will fail if somebody injects errornous HTML code, which prevents to render the node at all.
    */
+
+  // ToDo: Handle tags without children: https://github.com/component/domify/blob/master/index.js
+  // ToDo: Check if we something left on the stack and print an error message, that the user has input invalid HTML
+
   for (let child of children) {
     if (child.type && child.type === 'htmlinline') {
+      let groups = /<([\w:]+)/.exec(child.content);
+      let elementTag = groups && groups.length === 2 ? groups[1] : null;
+      let isEmptyElement = EMPTY_HTML_ELEMENTS[elementTag] === true;
+
       // 1. Is opening Tag?
-      if (child.content.indexOf('/') < 0) {
+      if (child.content.indexOf('/') < 0 && !isEmptyElement) {
         openTags += 1;
         htmlContent.push(child.content);
+      } else if (isEmptyElement) {
+        // when we deal with an empty element, just add this and proceed
+        let {key, ...rest} = props; // Extract key from props
+        keyCounter += 1;
+        result.push(<MarkdownHTMLElement key={`${key}-inlinehtml-${keyCounter}`} {...rest} displayMode={false} content={child.content} />);
       } else {
         // closing tag
         openTags -= 1;
@@ -90,7 +123,8 @@ export const mdOptions = {
 
     switch (tag) {
       case 'a':
-        return <Link href={props.href} target="_blank" {...props}>{children}</Link>;
+        content = makeChildren(children, props);
+        return <Link href={props.href} target="_blank" {...props}>{content}</Link>;
 
       case 'code':
         content = Array.isArray(children) ? children.join('') : children;
@@ -118,29 +152,39 @@ export const mdOptions = {
         return <Image src={props.src} {...props} />;
 
       case 'h1':
-        return <Heading size={1} {...props}>{children}</Heading>;
+        content = makeChildren(children, props);
+        return <Heading size={1} {...props}>{content}</Heading>;
       case 'h2':
-        return <Heading size={2} {...props}>{children}</Heading>;
+        content = makeChildren(children, props);
+        return <Heading size={2} {...props}>{content}</Heading>;
       case 'h3':
-        return <Heading size={3} {...props}>{children}</Heading>;
+        content = makeChildren(children, props);
+        return <Heading size={3} {...props}>{content}</Heading>;
       case 'h4':
-        return <Heading size={4} {...props}>{children}</Heading>;
+        content = makeChildren(children, props);
+        return <Heading size={4} {...props}>{content}</Heading>;
       case 'h5':
-        return <Heading size={5} {...props}>{children}</Heading>;
+        content = makeChildren(children, props);
+        return <Heading size={5} {...props}>{content}</Heading>;
       case 'h6':
-        return <Heading size={6} {...props}>{children}</Heading>;
+        content = makeChildren(children, props);
+        return <Heading size={6} {...props}>{content}</Heading>;
 
       case 'em':
-        return <S type='italic' {...props}>{children}</S>;
+        content = makeChildren(children, props);
+        return <S type='italic' {...props}>{content}</S>;
 
       case 'del':
-        return <S type='strikethrough' {...props}>{children}</S>;
+        content = makeChildren(children, props);
+        return <S type='strikethrough' {...props}>{content}</S>;
 
       case 'strong':
-        return <S type='bold' {...props}>{children}</S>;
+        content = makeChildren(children, props);
+        return <S type='bold' {...props}>{content}</S>;
 
       case 'blockquote':
-        return <BlockQuote><Quote>{children}</Quote></BlockQuote>;
+        content = makeChildren(children, props);
+        return <BlockQuote><Quote>{content}</Quote></BlockQuote>;
 
       case 'li':
         content = makeChildren(children, props);
@@ -167,6 +211,7 @@ export const mdOptions = {
        */
       case 'htmlinline':
         content = Array.isArray(children) ? children.join('') : children;
+        console.info(content);
         return {
           type: 'htmlinline',
           content

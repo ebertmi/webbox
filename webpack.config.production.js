@@ -66,7 +66,7 @@ module.exports = {
       /acorn\/dist\/acorn\.js$/
     ]
   },
-  postcss: [ autoprefixer({ browsers: ['last 2 versions'] }) ],
+  postcss: [ autoprefixer({ browsers: ['last 3 versions'] }) ],
   plugins: [
     new webpack.DefinePlugin({
       "process.env": {

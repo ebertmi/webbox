@@ -57,6 +57,9 @@
         "port": "6379",
         "password": "webbox_rediswebbox_rediswebbox_rediswebbox_rediswebbox_redis"
     },
+    "crumb": {
+      "isSecure": false
+    },
     "media": {
         "path": "./media",
         "maxBytes":  5242880
