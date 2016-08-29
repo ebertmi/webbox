@@ -258,12 +258,12 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
       list: {
         textAlign: "left",
         /*listStylePosition: "inside",*/
-        padding: 0
+        /*padding: 0*/
       },
       orderedList: {
         textAlign: "left",
         /*listStylePosition: "inside",*/
-        padding: 0
+        /*padding: 0*/
       },
       s: {
         strikethrough: {}

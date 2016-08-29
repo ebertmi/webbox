@@ -4,6 +4,11 @@ import Immutable from 'immutable';
 import { toLogarithmicDateIntervals, clusterDataPointsByDateIntervals } from '../../util/dateUtils';
 import { SocketEvents, Action as RemoteAction } from './socketConnection';
 
+import Debug from 'debug';
+
+// Create namespaced debug function | see https://github.com/visionmedia/debug
+const debug = Debug('webbox:testResultsOverview');
+
 const MAX_HISTORY_ITEMS = 20;
 
 /**
@@ -40,7 +45,7 @@ export class TestResultsOverview extends EventEmitter {
       uniqueUsers: 0
     };
 
-    this.updateMean(0);
+    //this.updateMean(0);
   }
 
   getHistory() {
@@ -175,7 +180,7 @@ export class TestResultsOverview extends EventEmitter {
     this.testResults = results;
     this.emit('change');
 
-    // Skip all of the computing, when we have not entries
+    // Skip all of the computing, when we have no entries
     if (this.testResults.length === 0) {
       return;
     }
@@ -192,7 +197,10 @@ export class TestResultsOverview extends EventEmitter {
     let timePoints = this.testResults.map(tr => new Date(tr.timeStamp)).sort();
 
     let intervals = toLogarithmicDateIntervals(timePoints);
+    debug('DateIntervals:', intervals, intervals.length);
+
     let clusters = clusterDataPointsByDateIntervals(this.testResults, dp=>new Date(dp.timeStamp), intervals);
+    debug('Clustered data points using the date intervals:', clusters);
 
     // Now aggregate the single cluster values
     let aggregatedClusters = clusters.map((cluster, index) => {
@@ -203,7 +211,7 @@ export class TestResultsOverview extends EventEmitter {
       let meanEntry = {
         result: 0,
         uniqueUsers: cluster.length,
-        time: intervals[index]
+        time: intervals[index].getTime()
       };
 
       for (let entry of cluster) {
@@ -215,9 +223,8 @@ export class TestResultsOverview extends EventEmitter {
       return meanEntry;
     }).filter(cluster => cluster != null);
 
-    console.info('DateIntervals:', intervals, intervals.length);
-    console.info('Clusters:', clusters);
-    console.info('AggregatedClusters: ', aggregatedClusters);
+
+    debug('Aggregated clusters: ', aggregatedClusters);
 
     this.meanHistory = this.meanHistory.unshift(...aggregatedClusters);
     this.emit('change');
@@ -246,7 +253,10 @@ export class TestResultsOverview extends EventEmitter {
    * @param {any} mean
    */
   updateMean(mean) {
-    this.meanHistory = this.meanHistory.push(Immutable.fromJS(this.mean));
+    if (this.mean && this.mean.time != null) {
+      this.meanHistory = this.meanHistory.push(Immutable.fromJS(this.mean));
+    }
+
     this.mean = {
       result: mean,
       uniqueUsers: this.getTestResultSize(),
@@ -267,7 +277,6 @@ export class TestResultsOverview extends EventEmitter {
 
   /**
    * Get the test results for this embed
-   * ToDo: should we add a time bound here?
    */
   getTestResults() {
     // Skip retrieval if we are already subscribed
@@ -281,7 +290,7 @@ export class TestResultsOverview extends EventEmitter {
       if (res.error) {
         console.error(res.error);
       } else {
-        console.info(res.testResults);
+        debug('Received initial test results from server: ', res.testResults);
         this.onTestResults(res.testResults);
       }
     });

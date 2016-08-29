@@ -1,6 +1,29 @@
 import head from 'lodash/head';
 import last from 'lodash/last';
 import { timeYear, timeMonth, timeWeek, timeDay } from 'd3-time';
+import Debug from 'debug';
+
+// Create namespaced debug function | see https://github.com/visionmedia/debug
+const debug = Debug('webbox:dateUtils');
+
+function sortByDateAscending(a, b) {
+  // Dates will be cast to numbers automagically:
+  return a.getTime() - b.getTime();
+}
+
+var date_sort_desc = function (a, b) {
+  // This is a comparison function that will result in dates being sorted in
+  // DESCENDING order.
+  return b - a;
+};
+
+export function sortedRange(start, stop) {
+  let range = [start, stop];
+  range.sort((a, b) => {
+    return a - b;
+  });
+  return range;
+}
 
 /**
  * Automatic point to logarithmic time interval bounds:
@@ -23,18 +46,22 @@ export function toLogarithmicDateIntervals(timePoints) {
 
   let intervalBounds = [];
 
+  timePoints.sort((a, b) => {
+    return a - b;
+  });
+
   // no interval bounds, when no entries
   if (timePoints.length === 0) {
     return [];
   }
 
-  years = timeYear.range(head(timePoints), last(timePoints));
+  years = timeYear.range(...sortedRange(head(timePoints), last(timePoints)));
 
   // Now get the latest to split into months
   if (years.length === 0) {
-    months = timeMonth.range(head(timePoints), last(timePoints));
+    months = timeMonth.range(...sortedRange(head(timePoints), last(timePoints)));
   } else {
-    months = timeMonth.range(last(years), last(timePoints));
+    months = timeMonth.range(...sortedRange(last(years), last(timePoints)));
 
     // Add every year, except last one to the interval bounds list
     intervalBounds.push(...years.slice(0, -1));
@@ -42,9 +69,9 @@ export function toLogarithmicDateIntervals(timePoints) {
 
   // Now split the months into weeks
   if (months.length === 0) {
-    weeks = timeWeek.range(head(timePoints), last(timePoints));
+    weeks = timeWeek.range(...sortedRange(head(timePoints), last(timePoints)));
   } else {
-    weeks = timeWeek.range(last(months), last(timePoints));
+    weeks = timeWeek.range(...sortedRange(last(months), last(timePoints)));
 
     // Add every week, except last one to the interval bounds list
     intervalBounds.push(...weeks.slice(0, -1));
@@ -52,9 +79,10 @@ export function toLogarithmicDateIntervals(timePoints) {
 
   // Now split the weeks into days
   if (weeks.length === 0) {
-    days = timeDay.range(head(timePoints), last(timePoints));
+    let range = sortedRange(head(timePoints), last(timePoints));
+    days = timeDay.range(...range);
   } else {
-    days = timeDay.range(last(weeks), last(timePoints));
+    days = timeDay.range(...sortedRange(last(weeks), last(timePoints)));
   }
 
   if (days.length === 0) {
@@ -65,6 +93,7 @@ export function toLogarithmicDateIntervals(timePoints) {
     intervalBounds.push(...days);
   }
 
+  debug('Finished logarithmic intervald bounds creation: ', years, months, weeks, days, intervalBounds);
 
   return intervalBounds;
 }
@@ -94,15 +123,19 @@ export function clusterDataPointsByDateIntervals(dataPoints, dateAccessor=(dp=>d
       // Special case i = 0
       if (i == 0) {
         isIn = time <= intervals[i];
-        console.info('clusterDataPointsByDateIntervals: special case', time, isIn);
-      } else if (i == clusterIterationLength - 1) {
+        debug('clusterDataPointsByDateIntervals: first special case', time, isIn);
+      }
+
+      if (isIn === false && i == clusterIterationLength) {
         // Special case i = clusterIterationLength - 2 // last interval
         isIn = time >= intervals[i];
-        console.info('clusterDataPointsByDateIntervals: last case', time, isIn);
-      } else {
+        debug('clusterDataPointsByDateIntervals: last special case', time, isIn);
+      }
+
+      if (isIn === false) {
         // Normal case, check upper and lower bounds, lower inclusive
         isIn = isDateWithinRange(time, intervals[i], intervals[i+1]);
-        console.info('clusterDataPointsByDateIntervals: normal case', time, isIn);
+        debug('clusterDataPointsByDateIntervals: normal case', time, isIn);
       }
 
       if (isIn === true) {
