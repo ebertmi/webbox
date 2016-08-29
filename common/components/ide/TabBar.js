@@ -47,6 +47,14 @@ export default class TabBar extends React.Component {
     this.props.project.on('change', this.onChange);
     this.props.project.tabManager.on('change', this.onChange);
     this.onChange();
+
+    // Add screenfull listener
+    if (screenfull.enabled) {
+      document.addEventListener(screenfull.raw.fullscreenchange, () => {
+        // Force rerendering, otherwise the icon does not change
+        this.forceUpdate();
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -66,9 +74,6 @@ export default class TabBar extends React.Component {
   onToggleFullscreen() {
     if (screenfull.enabled) {
       screenfull.toggle();
-
-      // Force rerendering, otherwise the icon does not change
-      this.forceUpdate();
     }
   }
 
