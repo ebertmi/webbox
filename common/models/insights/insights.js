@@ -175,6 +175,36 @@ export class Insights extends EventEmitter {
     }
   }
 
+  dateClustersToSingleSeries() {
+    let series = [];
+    let events = ['run', 'error', 'failure', 'rest'];
+    let maps = [this.dateMaps.run, this.dateMaps.error, this.dateMaps.failure, this.dateMaps.rest];
+    let values;
+
+    for (let i = 0; i < events.length; i += 1) {
+      values = [];
+
+      for (let dataPoint of maps[i]) {
+        values.push({
+          x: new Date(dataPoint[0]).getTime(),
+          [events[i]]: dataPoint[1]
+        });
+      }
+
+      // Add a dummy date to force displaying of lines
+      if (values.length === 1) {
+        values.push({
+          x: Date.now(),
+          [events[i]]: 0
+        });
+      }
+
+      series.push(...values);
+    }
+
+    return series;
+  }
+
   /**
    * Returns the date clusters as series date to be consumed by the visualization. The series data
    * is an array based representation.
@@ -185,6 +215,7 @@ export class Insights extends EventEmitter {
     let lineData = [];
 
     let names = ['Ausführungen', 'Fehler', 'Probleme', 'Sonstige'];
+    let events = ['run', 'error', 'failure', 'rest'];
     let maps = [this.dateMaps.run, this.dateMaps.error, this.dateMaps.failure, this.dateMaps.rest];
     let lineStyles = [{
       strokeWidth: 3,
@@ -200,7 +231,7 @@ export class Insights extends EventEmitter {
 
       for (let dataPoint of maps[i]) {
         values.push({
-          x: new Date(dataPoint[0]),
+          x: new Date(dataPoint[0]).getTime(),
           y: dataPoint[1]
         });
       }
@@ -208,13 +239,14 @@ export class Insights extends EventEmitter {
       // Add a dummy date to force displaying of lines
       if (values.length === 1) {
         values.push({
-          x: new Date(),
+          x: Date.now(),
           y: 0
         });
       }
 
       lineData.push({
         name: names[i],
+        event: events[i],
         values: values
       });
 

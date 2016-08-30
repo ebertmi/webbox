@@ -25,7 +25,7 @@ export default class InsightsPanel extends React.Component {
 
   onChange() {
     // Rerender
-    let dateClusters = this.props.item.dateClustersToSeries();
+    let dateClusters = this.props.item.dateClustersToSingleSeries();
 
     this.setState({
       dateClusters: dateClusters,

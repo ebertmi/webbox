@@ -1,8 +1,14 @@
 import React from 'react';
-import rd3 from 'rd3';
+import {BarChart, Bar, XAxis, YAxis, Tooltip} from 'recharts';
 
-const BarChart = rd3.BarChart;
-
+/**
+ * Displays a chart of the error clusters with the error name and the number of
+ * occurences.
+ *
+ * @export
+ * @class ErrorClusterView
+ * @extends {React.Component}
+ */
 export default class ErrorClusterView extends React.Component {
   constructor(props) {
     super(props);
@@ -24,8 +30,9 @@ export default class ErrorClusterView extends React.Component {
   }
 
   onChange() {
+    let data = this.props.errorClusters.toSeries();
     this.setState({
-      clusters: this.props.errorClusters.toSeries()
+      data: data
     });
   }
 
@@ -34,18 +41,13 @@ export default class ErrorClusterView extends React.Component {
         <div className="container-fluid">
           <div className="row">
             <div className="col-xs-12">
-              <BarChart
-                data={this.state.clusters}
-                valuesAccessor={d => {
-                  // This fixes the rendering with now series data!
-                  return d != null ? d.values : [];
-                }}
-                width={800}
-                height={300}
-                title="Fehlertypen"
-                xAxisLabel="Typ"
-                yAxisLabel="Anzahl"
-              />
+              <h4>Häufige Fehler</h4>
+              <BarChart data={this.state.data} width={800} height={300} margin={{top: 25, right: 30, left: 20, bottom: 5}}>
+                <XAxis label="Typ" dataKey="x" />
+                <YAxis allowDecimals={false} label="Anzahl" />
+                <Tooltip />
+                <Bar name="Anzahl" dataKey="y" fill="#fc2929" />
+              </BarChart>
             </div>
           </div>
         </div>

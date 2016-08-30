@@ -49,26 +49,20 @@ export class ErrorClusters extends EventEmitter {
     return this._errorClusters;
   }
 
-  toSeries(name="Fehlertypen") {
+  toSeries() {
     if (this.isDirty === false) {
       return this.barData;
     }
 
     this.barData = [];
 
-    let series = {
-      name: name,
-      values: []
-    };
-
     for (let cluster of this._errorClusters) {
-      series.values.push({
+      this.barData.push({
         x: cluster[0],
         y: cluster[1]
       });
     }
 
-    this.barData.push(series);
     this.isDirty = false;
 
     return this.barData;
