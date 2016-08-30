@@ -65,10 +65,9 @@ export default class TestResultOverview extends React.Component {
   }
 
   renderXAxisLabel(props) {
-    const { x, y, width, height } = props;
-    console.info(props);
+    const { x, y, width } = props;
     return (
-      <text x={x + width / 2} y={y + 30}>Zeitpunkt</text>
+      <text x={x + width / 2} y={y + 40}>Zeitpunkt</text>
     );
   }
 
@@ -105,7 +104,7 @@ export default class TestResultOverview extends React.Component {
             <p><small>Standardabweichung: <span>{this.state.stdDeviation}</span></small></p>
           </div>
           <div className="col-xs-12">
-            <LineChart width={600} height={150} data={this.state.history}>
+            <LineChart width={600} height={150} data={this.state.history} margin={{ top: 5, right: 5, bottom: 25, left: 5 }} >
               <CartesianGrid strokeDasharray="3 3"/>
               <Tooltip />
               <YAxis label="Durchschnitt" yAxisId="left" orientation="left" />

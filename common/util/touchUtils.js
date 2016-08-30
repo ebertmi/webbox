@@ -1,5 +1,8 @@
+
 export const TOUCH_MOVE_THRESHOLD = 100;
-export const TOUCH_DURATION_THRESHOLD = 750;
+export const TOUCH_DURATION_THRESHOLD = 250;
+
+export const TOUCH_PRESS_DURATION_THRESHOLD = 512;
 
 /**
  * Calculates the x, and y absolute difference from two touch

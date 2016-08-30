@@ -8,17 +8,28 @@ export default class Tab extends React.Component {
   constructor(props) {
     super(props);
 
+    this.clearTimer = this.clearTimer.bind(this);
+    this.onPress = this.onPress.bind(this);
     this.onClose = this.onClose.bind(this);
     this.onClick = this.onClick.bind(this);
     this.onTouchStart = this.onTouchStart.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
     this.onTouchCancel = this.onTouchCancel.bind(this);
     this.onTouchMove = this.onTouchMove.bind(this);
+    this.onPressTimer = null;
 
     this._initialTouch = null;
     this._lastTouch = null;
+    this._canPress = false;
 
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+  }
+
+  clearTimer() {
+    if (this.onPressTimer != null) {
+      window.clearTimeout(this.onPressTimer);
+      this.onPressTimer = null;
+    }
   }
 
   onClick(e) {
@@ -26,6 +37,12 @@ export default class Tab extends React.Component {
 
     if (this.props.onClick) {
       this.props.onClick(e);
+    }
+  }
+
+  onPress(e) {
+    if (this.props.onPress) {
+      this.props.onPress.apply(null, e);
     }
   }
 
@@ -39,17 +56,21 @@ export default class Tab extends React.Component {
   onTouchStart(e) {
     // Check if we have a single touch event, else it could be pinch
     this._initialTouch = getTouchDataFromEvent(e);
+    e.preventDefault();
   }
 
   onTouchMove(e) {
     if (this._initialTouch != null) {
       this._lastTouch = getTouchDataFromEvent(e);
+      e.preventDefault();
     }
   }
 
   onTouchCancel(e) {
     this._initialTouch = null;
     this._lastTouch = null;
+
+    e.preventDefault();
   }
 
   onTouchEnd(e) {
@@ -63,7 +84,7 @@ export default class Tab extends React.Component {
           this.onClick(e); // handle click
         }
       } else if (timeDifference <= TOUCH_DURATION_THRESHOLD){
-        // Rare case, when there is not user movement at all
+        // Rare case, when there is no user movement at all
         this.onClick(e);
       }
     }
