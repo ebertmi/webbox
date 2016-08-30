@@ -124,7 +124,8 @@
           "getFailed": "Beispiel konnte nicht gefunden werden.",
           "saveFailed": "Speicherung ist fehlgeschlagen. Bitte versuchen Sie es erneut."
         },
-        "notAuthenticated": "Sie sind nicht angemeldet."
+        "notAuthenticated": "Sie sind nicht angemeldet.",
+        "invalidRequest": "Ungültige Anfrage bzw. Anfrageparameter."
       },
       "websocket": {
         "subscribeNotAllowed": "Sie besitzen nicht die benötigten Rechte, um Live-Daten zu erhalten."

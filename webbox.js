@@ -204,7 +204,7 @@ server.ext('onPreResponse', function (request, reply) {
     errName = 'Fehler';
     statusCode = request.response.output.statusCode;
   } else {
-    err = "Internal Error - Wir kümmern ums darum.";
+    err = "Wir kümmern ums darum.";
     errName = 'Fehler';
     statusCode = request.response.output.statusCode;
   }

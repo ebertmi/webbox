@@ -2,26 +2,41 @@
  * Good Monitoring/Loggin Options
  * See https://github.com/hapijs/good for further informations about the configuration
  */
-const goodOptions = {
+const options = {
   ops: {
     interval: 1000
   },
   reporters: {
-    console: [{
+    myFileLogReporter: [{
       module: 'good-squeeze',
       name: 'Squeeze',
-      args: [{
-        log: '*',
-        response: '*'
-      }]
+      args: [{ log: '*', response: '*', request: '*', error: '*'}]
+    }, {
+      module: 'good-squeeze',
+      name: 'SafeJson'
+    }, {
+      module: 'good-file',
+      args: ['./logs/webbox.log']
+    }],
+    myConsoleReporter: [{
+      module: 'good-squeeze',
+      name: 'Squeeze',
+      args: [{ log: '*', response: '*', request: '*', error: '*' }]
     }, {
       module: 'good-console'
     }, 'stdout'],
-    file: [{
+    myFileOpsReporter: [{
+      module: 'good-squeeze',
+      name: 'Squeeze',
+      args: [{ ops: '*'}]
+    }, {
+      module: 'good-squeeze',
+      name: 'SafeJson'
+    }, {
       module: 'good-file',
-      args: ['./logs/good.log', {log: '*', error: '*', ops: 'error'}]
-    }]
+      args: ['./logs/webbox_ops.log']
+    }],
   }
 };
 
-module.exports = goodOptions;
+module.exports = options;
