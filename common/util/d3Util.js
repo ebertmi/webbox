@@ -1,6 +1,14 @@
-import d3 from 'd3';
+/**
+ * D3 utilities for charts.
+ */
+import { formatDefaultLocale } from 'd3-format';
+import { timeFormat, timeFormatDefaultLocale } from 'd3-time-format';
+import { timeYear, timeMonth, timeWeek, timeDay, timeHour, timeMinute, timeSecond } from 'd3-time';
 
-export const germanFormatters = d3.locale({
+/**
+ * German d3 locale information
+ */
+const GERMAN_LOCALE = {
   "decimal": ",",
   "thousands": ".",
   "grouping": [3],
@@ -13,15 +21,39 @@ export const germanFormatters = d3.locale({
   "shortDays": ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
   "months": ["Jänner", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
   "shortMonths": ["Jän", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Dez"]
-});
+};
 
-export const germanTimeFormat = germanFormatters.timeFormat.multi([
-	[".%L", d => d.getMilliseconds()],
-	[":%S", d => d.getSeconds()],
-	["%I:%M", d => d.getMinutes()],
-	["%Hh", d => d.getHours()],
-	["%a %d", d => d.getDay() && d.getDate() != 1],
-	["%b %d", d => d.getDate() != 1],
-	["%B", d => d.getMonth()],
-	["%Y", () => true]
-]);
+// Set the default locale here!
+timeFormatDefaultLocale(GERMAN_LOCALE);
+export const germanFormatters = formatDefaultLocale(GERMAN_LOCALE);
+
+/**
+ * Formats a date in german date and time format.
+ */
+export const normalDateFormatter = timeFormat('%x %H:%M');
+
+const formatMillisecond = timeFormat(".%L");
+const formatSecond = timeFormat(":%S");
+const formatMinute = timeFormat("%H:%M");
+const formatHour = timeFormat("%Hh");
+const formatDay = timeFormat("%a %d");
+const formatWeek = timeFormat("%b %d");
+const formatMonth = timeFormat("%B");
+const formatYear = timeFormat("%Y");
+
+/**
+ * Automatically formats a date to a small representation for scale ticks
+ *
+ * @export
+ * @param {any} date
+ * @returns
+ */
+export function multiTimeFormat(date) {
+  return (timeSecond(date) < date ? formatMillisecond
+      : timeMinute(date) < date ? formatSecond
+      : timeHour(date) < date ? formatMinute
+      : timeDay(date) < date ? formatHour
+      : timeMonth(date) < date ? (timeWeek(date) < date ? formatDay : formatWeek)
+      : timeYear(date) < date ? formatMonth
+      : formatYear)(date);
+}

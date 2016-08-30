@@ -1,16 +1,15 @@
 import React from 'react';
-//import rd3 from 'rd3';
+import {
+  XYPlot,
+  XAxis,
+  YAxis,
+  HorizontalGridLines,
+  Hint,
+  VerticalGridLines,
+  LineMarkSeries} from 'react-vis';
 
-import { scaleTime } from 'd3-scale';
-import { timeDay } from 'd3-time';
-
-import {LineChart, Line, ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
-
-import d3 from 'd3';
 import DatePicker from 'react-datepicker';
-
-import { germanTimeFormat } from '../../../util/d3Util';
-//const LineChart = rd3.LineChart;
+import { normalDateFormatter, multiTimeFormat } from '../../../util/d3Util';
 
 export default class EventDatesClusterChart extends React.Component {
   constructor(props) {
@@ -20,14 +19,17 @@ export default class EventDatesClusterChart extends React.Component {
     this.onStartDateChange = this.onStartDateChange.bind(this);
     this.onEndDateChange = this.onEndDateChange.bind(this);
     this.onApply = this.onApply.bind(this);
-    this.getTicks = this.getTicks.bind(this);
+    this.formatHint = this.formatHint.bind(this);
+    this._rememberHintValue = this._rememberHintValue.bind(this);
+    this._forgetHintValue = this._forgetHintValue.bind(this);
   }
 
   componentWillMount() {
     this.setState({
       dateClusterResolution: this.props.dateClusterResolution,
       dateClusterStart: this.props.dateClusterStart,
-      dateClusterEnd: this.props.dateClusterEnd
+      dateClusterEnd: this.props.dateClusterEnd,
+      hintValue: null
     });
   }
 
@@ -73,59 +75,46 @@ export default class EventDatesClusterChart extends React.Component {
     });
   }
 
-  getXAxisTickInterval() {
-    // This allows d3 to automatically pick a good scale
-    return undefined;
+  _rememberHintValue(val) {
+    this.setState({ hintValue: val });
   }
 
-  getXAxisScale() {
-    return d3.time.scale;
+  _forgetHintValue() {
+    this.setState({
+      hintValue: null
+    });
   }
 
-  formatXAxisTicks(value) {
-    let formattedTime = germanTimeFormat(new Date(value));
-    return formattedTime;
+  formatHint(value) {
+    let formattedValue = [];
+    formattedValue.push({
+      title: 'Zeitpunkt',
+      value: normalDateFormatter(new Date(value.x))
+    });
+    formattedValue.push({
+      title: 'Anzahl',
+      value: value.y
+    });
+
+    return formattedValue;
   }
 
-  getTicks() {
-    if (!this.props.lineData || !this.props.lineData.length ) {
-      return [];
-    }
-
-    let xValues = this.props.lineData;
-    xValues = xValues.map(point => point.x);
-    xValues = [].concat(...xValues).sort();
-
-    const domain = [xValues[0], xValues[xValues.length - 1]];
-    const scale = scaleTime().domain(domain).range([0, 1]);
-    const ticks = scale.ticks();
-    const tickVals = ticks.map(entry => +entry);
-
-    return tickVals;
+  formatXAxisTicks(date) {
+    return multiTimeFormat(new Date(date));
   }
 
-  getData() {
-    if (!this.props.lineData || !this.props.lineData.length ) {
-      return [];
+  formatYAxisTicks(data) {
+    if (data % 1 === 0) {
+      return data;
     } else {
-      return this.props.lineData;
+      return "";
     }
-  }
-
-  tooltipFormatter(val) {
-    console.info('tooltipFormatter:', val);
-
-    return val;
   }
 
   render() {
-    console.info(this.props.lineData);
     if (this.props.lineData.length === 0) {
       return null;
     }
-
-    const data = this.getData();
-    const ticks = this.getTicks();
 
     return (
       <div className="container-fluid">
@@ -134,16 +123,28 @@ export default class EventDatesClusterChart extends React.Component {
             <h4>Anzahl der Events</h4>
           </div>
           <div className="col-md-7 col-xs-12">
-            <LineChart width={800} height={400}
-                  margin={{top: 25, right: 35, left: 20, bottom: 5}} data={data}>
-              <XAxis name="Zeitpunkt" label="Zeit" type="category" dataKey="x" ticks={ticks} tickFormatter={this.formatXAxisTicks} />
-              <YAxis label="Anzahl" allowDecimals={false} />
-              <CartesianGrid strokeDasharray="3 3"/>
-              <Tooltip formatter={this.tooltipFormatter}/>
-              <Legend />
-              <Line connectNulls={true} strokeWidth={2} name="Ausführungen" type="monotone" dataKey="run" stroke="#8884d8"/>
-              <Line connectNulls={true} strokeWidth={3} name="Fehler" type="monotone" dataKey="error" stroke="#e74c3c" strokeDasharray="3 4 5 2"/>
-            </LineChart>
+          <XYPlot
+            xType="time"
+            yType="linear"
+            width={800}
+            height={300}>
+            <HorizontalGridLines />
+            <VerticalGridLines />
+            <XAxis title="Zeit" tickFormat={this.formatXAxisTicks} />
+            <YAxis title="Anzahl" tickFormat={this.formatYAxisTicks} />
+            <LineMarkSeries
+              data={this.props.lineData[0].values}
+              onValueMouseOver={this._rememberHintValue}
+              onValueMouseOut={this._forgetHintValue} />
+            <LineMarkSeries
+              data={this.props.lineData[1].values}
+              onValueMouseOver={this._rememberHintValue}
+              onValueMouseOut={this._forgetHintValue} />
+            {this.state.hintValue ?
+              <Hint value={this.state.hintValue} format={this.formatHint}/> :
+              null
+            }
+          </XYPlot>
           </div>
           <div className="col-md-4 col-xs-12">
             <form>

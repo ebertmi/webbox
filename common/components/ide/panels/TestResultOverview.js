@@ -1,8 +1,14 @@
 import React from 'react';
-import { LineChart, Line, CartesianGrid, YAxis, XAxis, Tooltip } from 'recharts/es6/index';
-import { scaleTime } from 'd3-scale';
-import { timeDay } from 'd3-time';
-import moment from 'moment';
+import { normalDateFormatter, multiTimeFormat } from '../../../util/d3Util';
+
+import {
+  XYPlot,
+  XAxis,
+  YAxis,
+  HorizontalGridLines,
+  Hint,
+  VerticalGridLines,
+  LineMarkSeries} from 'react-vis';
 
 import { Time } from '../../Time';
 
@@ -24,11 +30,15 @@ export default class TestResultOverview extends React.Component {
       meanTime: null,
       history: [],
       uniqueUsers: 0,
-      stdDeviation: 0
+      stdDeviation: 0,
+      hintValue: null,
+      hintValueObj: null
     };
 
     this.onChange = this.onChange.bind(this);
-    this.getTicks = this.getTicks.bind(this);
+    this.formatHint = this.formatHint.bind(this);
+    this._rememberHintValue = this._rememberHintValue.bind(this);
+    this._forgetHintValue = this._forgetHintValue.bind(this);
   }
 
   componentWillMount() {
@@ -54,16 +64,6 @@ export default class TestResultOverview extends React.Component {
     });
   }
 
-  getTicks() {
-    if (!this.state.history || !this.state.history.length ) {return [];}
-
-    const domain = [new Date(this.state.history[0].time), new Date(this.state.history[this.state.history.length - 1].time)];
-    const scale = scaleTime().domain(domain).range([0, 1]);
-    const ticks = scale.ticks(timeDay, 1);
-
-    return ticks.map(entry => +entry);
-  }
-
   renderXAxisLabel(props) {
     const { x, y, width } = props;
     return (
@@ -71,20 +71,33 @@ export default class TestResultOverview extends React.Component {
     );
   }
 
-  dateFormat(time) {
-    let value = time;
+  formatHint(val) {
+    let meanObj = this.state.history.find(item => item.time === val.x);
 
-    if (!moment.isMoment(value)) {
-      value = moment(value, null, true);
-    }
+    return [{
+      title: 'Zeitpunkt',
+      value: normalDateFormatter(new Date(val.x))
+    }, {
+      title: 'Durchschnitt',
+      value: meanObj.result
+    }, {
+      title: 'Personen',
+      value: meanObj.uniqueUsers
+    }];
+  }
 
-    value = value.locale(GERMAN_DATE_LOCALE);
+  formatXAxisTicks(date) {
+    return multiTimeFormat(new Date(date));
+  }
 
-    //return `${value.day()}.${value.month()}`;
+  _rememberHintValue(val) {
+    this.setState({ hintValue: val });
+  }
 
-    return value.format('DD.MM.YYYY');
-
-    //return value.fromNow();
+  _forgetHintValue() {
+    this.setState({
+      hintValue: null
+    });
   }
 
   render() {
@@ -92,6 +105,20 @@ export default class TestResultOverview extends React.Component {
     if (this.props.testResults.getTestResultSize() === 0) {
       return null;
     }
+
+    const uniqueUsersData = [];
+    const meanData = [];
+
+    this.state.history.map(entry => {
+      meanData.push({
+        x: entry.time,
+        y: entry.result
+      });
+      uniqueUsersData.push({
+        x: entry.time,
+        y: entry.uniqueUsers
+      });
+    });
 
     return (
       <div className="container-fluid">
@@ -104,15 +131,24 @@ export default class TestResultOverview extends React.Component {
             <p><small>Standardabweichung: <span>{this.state.stdDeviation}</span></small></p>
           </div>
           <div className="col-xs-12">
-            <LineChart width={600} height={150} data={this.state.history} margin={{ top: 5, right: 5, bottom: 25, left: 5 }} >
-              <CartesianGrid strokeDasharray="3 3"/>
-              <Tooltip />
-              <YAxis label="Durchschnitt" yAxisId="left" orientation="left" />
-              <YAxis label="Personen" yAxisId="right" orientation="right" />
-              <XAxis label={this.renderXAxisLabel} ticks={this.getTicks()} dataKey="time" tickFormatter={this.dateFormat}/>
-              <Line type="monotone" yAxisId="left" name="Durchschnitt" isAnimationActive={false} dataKey="result" stroke="#8884d8" strokeWidth={2} />
-              <Line type="monotone" yAxisId="right" name="Personen" dataKey="uniqueUsers" stroke="#82ca9d" strokeWidth={2} />
-            </LineChart>
+            <XYPlot
+              xType="time"
+              width={600}
+              height={150}
+              margin={{left: 40, right: 40, top: 20, bottom: 40}} >
+              <HorizontalGridLines />
+              <VerticalGridLines />
+              <XAxis title="Zeit" tickFormat={this.formatXAxisTicks} />
+              <YAxis title="Durchschnitt" />
+              <LineMarkSeries data={meanData} onValueMouseOver={this._rememberHintValue}
+              onValueMouseOut={this._forgetHintValue} />
+              <LineMarkSeries data={uniqueUsersData} onValueMouseOver={this._rememberHintValue}
+              onValueMouseOut={this._forgetHintValue}/>
+              {this.state.hintValue ?
+                <Hint value={this.state.hintValue} format={this.formatHint}/> :
+                null
+              }
+            </XYPlot>
             <p className="text-muted">Alle Ergebnisse werden automatisch auf Intervalle eingeteilt und aggregiert. Die Intervalleinteilung ist logarithmisch, sucht sich jedoch automatisch die passenden Abstände aus.</p>
           </div>
         </div>

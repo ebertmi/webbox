@@ -6,17 +6,6 @@ import Debug from 'debug';
 // Create namespaced debug function | see https://github.com/visionmedia/debug
 const debug = Debug('webbox:dateUtils');
 
-function sortByDateAscending(a, b) {
-  // Dates will be cast to numbers automagically:
-  return a.getTime() - b.getTime();
-}
-
-var date_sort_desc = function (a, b) {
-  // This is a comparison function that will result in dates being sorted in
-  // DESCENDING order.
-  return b - a;
-};
-
 export function sortedRange(start, stop) {
   let range = [start, stop];
   range.sort((a, b) => {

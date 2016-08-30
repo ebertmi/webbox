@@ -1,5 +1,12 @@
 import React from 'react';
-import {BarChart, Bar, XAxis, YAxis, Tooltip} from 'recharts';
+
+import {
+  XYPlot,
+  XAxis,
+  YAxis,
+  VerticalGridLines,
+  HorizontalGridLines,
+  VerticalBarSeries} from 'react-vis';
 
 /**
  * Displays a chart of the error clusters with the error name and the number of
@@ -36,18 +43,30 @@ export default class ErrorClusterView extends React.Component {
     });
   }
 
+  formatYAxisTicks(data) {
+    if (data % 1 === 0) {
+      return data;
+    } else {
+      return "";
+    }
+  }
+
   render() {
     return (
         <div className="container-fluid">
           <div className="row">
             <div className="col-xs-12">
               <h4>Häufige Fehler</h4>
-              <BarChart data={this.state.data} width={800} height={300} margin={{top: 25, right: 30, left: 20, bottom: 5}}>
-                <XAxis label="Typ" dataKey="x" />
-                <YAxis allowDecimals={false} label="Anzahl" />
-                <Tooltip />
-                <Bar name="Anzahl" dataKey="y" fill="#fc2929" />
-              </BarChart>
+              <XYPlot
+                xType="ordinal"
+                width={800}
+                height={300}>
+                <VerticalGridLines />
+                <HorizontalGridLines />
+                <XAxis title="Typ" />
+                <YAxis title="Anzahl" tickFormat={this.formatYAxisTicks} />
+                <VerticalBarSeries data={this.state.data}/>
+              </XYPlot>
             </div>
           </div>
         </div>
