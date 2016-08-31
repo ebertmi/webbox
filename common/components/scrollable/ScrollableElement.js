@@ -27,8 +27,14 @@ import HorizontalScrollbar from './HorizontalScrollbar.js';
 
 import './_scrollable.scss';
 
-// ToDo: Fix the scrollbars, scrolling is possible with the new set scrollLeft and scrollTop on the wrapper. But maybe we need a different solution
-
+/**
+ * Wraps a single child component with vertical and horizontal custom scrollbars.
+ * If a scroll, drag or scrollbar event occurs the new offset is fired in a event.
+ * The wrapped component must take care of the offset.
+ *
+ * @class ScrollableElement
+ * @extends {React.Component}
+ */
 class ScrollableElement extends React.Component {
   constructor() {
     super();
@@ -50,20 +56,19 @@ class ScrollableElement extends React.Component {
 
   render(){
     return(
-        <div
-          onClick={ this.calculateSize.bind(this) }
+        <div onClick={ this.calculateSize.bind(this) }
           className={ "react-scrollbar__wrapper" + ( this.props.className ? " " + this.props.className : "" ) }
           ref="scrollWrapper"
           style={this.props.style}>
-            <div
-              className={ "react-scrollbar__area" + ( this.state.dragging ? ' ' : ' react-scrollbar-transition') }
-              ref="scrollArea"
-              onWheel={ this.scroll.bind(this) }
-              onTouchStart={ this.startDrag.bind(this) }
-              onTouchMove={ this.onDrag.bind(this) }
-              onTouchEnd={ this.stopDrag.bind(this) }>
-              { this.props.children }
-            </div>
+          <div className={ "react-scrollbar__area" + ( this.state.dragging ? ' ' : ' react-scrollbar-transition') }
+            ref="scrollArea"
+            style={{width: "100%"}}
+            onWheel={ this.scroll.bind(this) }
+            onTouchStart={ this.startDrag.bind(this) }
+            onTouchMove={ this.onDrag.bind(this) }
+            onTouchEnd={ this.stopDrag.bind(this) }>
+            { this.props.children }
+          </div>
       { this.state.ready ?
         <VerticalScrollbar
           area={{ height: this.state.scrollAreaHeight }}
@@ -136,15 +141,29 @@ class ScrollableElement extends React.Component {
     });
   }
 
+  /**
+   * Fires a scroll left event to the wrapped component callback
+   *
+   * @param {any} offset
+   */
   setHorizontalScroll(offset) {
-    if (this.refs.scrollWrapper) {
-      this.refs.scrollWrapper.scrollLeft = offset;
+    if (this.props.onScroll) {
+      this.props.onScroll({
+        scrollLeft: offset
+      });
     }
   }
 
+  /**
+   * Fires a scroll top event to the wrapped component callback
+   *
+   * @param {any} offset
+   */
   setVerticalScroll(offset) {
-    if (this.refs.scrollWrapper) {
-      this.refs.scrollWrapper.scrolltop = offset;
+    if (this.props.onScroll) {
+      this.props.onScroll({
+        scrollTop: offset
+      });
     }
   }
 
@@ -258,14 +277,14 @@ class ScrollableElement extends React.Component {
 
   getSize(){
     // The Elements
-    let $scrollArea = this.refs.scrollArea;
     let $scrollWrapper = this.refs.scrollWrapper;
+    let $scrollArea = this.refs.scrollArea;
 
     // Get new Elements Size
     let elementSize = {
       // Scroll Area Height and Width
-      scrollAreaHeight: $scrollArea.children[0].clientHeight,
-      scrollAreaWidth: $scrollArea.children[0].clientWidth,
+      scrollAreaHeight: $scrollArea.children[0].scrollHeight,
+      scrollAreaWidth: $scrollArea.children[0].scrollWidth,
 
       // Scroll Wrapper Height and Width
       scrollWrapperHeight: $scrollWrapper.clientHeight,
@@ -346,7 +365,8 @@ ScrollableElement.propTypes = {
   speed: React.PropTypes.number,
   className: React.PropTypes.string,
   style: React.PropTypes.object,
-  scrollYToX: React.PropTypes.bool
+  scrollYToX: React.PropTypes.bool,
+  onScroll: React.PropTypes.func.isRequired
 };
 
 ScrollableElement.defaultProps = {

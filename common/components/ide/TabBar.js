@@ -41,6 +41,7 @@ export default class TabBar extends React.Component {
     this.onShareWithTeacher = this.onShareWithTeacher.bind(this);
     this.onSave = this.onSave.bind(this);
     this.onToggleFullscreen = this.onToggleFullscreen.bind(this);
+    this.onTabListScroll = this.onTabListScroll.bind(this);
   }
 
   componentWillMount() {
@@ -132,6 +133,14 @@ export default class TabBar extends React.Component {
   }
 
 
+  onTabListScroll(offset) {
+    if (this.tabList != null) {
+      if (offset.scrollLeft != null) {
+        this.tabList.scrollLeft = offset.scrollLeft;
+      }
+    }
+  }
+
   renderTabs() {
     let project = this.props.project;
 
@@ -185,8 +194,8 @@ export default class TabBar extends React.Component {
 
     return (
       <div className="control-bar">
-        <ScrollableElement scrollYToX={true} className="tabs-scroll-wrapper">
-          <nav className="tabs-container">
+        <ScrollableElement scrollYToX={true} className="tabs-scroll-wrapper" onScroll={this.onTabListScroll}>
+          <nav className="tabs-container" ref={ref => this.tabList = ref}>
             {this.renderTabs()}
           </nav>
         </ScrollableElement>
