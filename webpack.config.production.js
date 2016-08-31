@@ -9,7 +9,6 @@
 
 var webpack = require('webpack');
 var path = require('path');
-var BabiliPlugin = require("babili-webpack-plugin");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var autoprefixer = require('autoprefixer');
 
