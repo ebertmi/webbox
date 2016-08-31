@@ -3,6 +3,9 @@ import React from 'react';
 import TabBar from './TabBar';
 import { StatusBar } from './StatusBar';
 import PanelArea from './PanelArea';
+import Debug from 'debug';
+
+const debug = Debug('webbox:ide');
 
 export default class Ide extends React.Component {
   constructor(props) {
@@ -15,7 +18,14 @@ export default class Ide extends React.Component {
     // handle Ctrl+S on the whole document even when nothing is focused
     document.addEventListener('keydown', this.onKeyDown.bind(this));
 
-    window.addEventListener("beforeunload", function(e){
+    window.addEventListener("beforeunload", e => {
+      debug('beforeunload', e);
+
+      // Check if the user can save, if not we can close
+      if (this.props.project.canSave() === false) {
+        return;
+      }
+
       // Do something
       /* ToDo:
        *  - check if user can save

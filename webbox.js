@@ -102,27 +102,6 @@ server.register({
   }
 });
 
-// add authentification with cookie and basic username/password
-server.register({
-  register: require('./lib/auth/base.js')
-});
-
-
-// Add jwt auth plugin
-server.register(require('hapi-auth-jwt2'), (err) => {
-  if(err){
-    console.log(err);
-  }
-
-  server.auth.strategy('jwt', 'jwt', {
-    key: config.websocket.secret,
-    validateFunc: (decoded, request, callback) => {
-      console.info(decoded);
-      callback(null, true);
-    }
-  });
-});
-
 // add ratelimiting middleware
 // requires redis
 /*server.register({
@@ -153,13 +132,6 @@ server.register(Vision, (err) => {
       },
       context: defaultContext
     });
-  }
-});
-
-// serve static files, maybe only on dev
-server.register(Inert, (err) => {
-  if (err) {
-    console.log('inert', err);
   }
 });
 
@@ -249,8 +221,40 @@ server.register({
   }
 });
 
-// register routes
-server.route(require('./lib/routes'));
+
+// Do the routing and auth stuff here
+// add authentification with cookie and basic username/password
+server.register([Inert, require('./lib/auth/base.js'), require('hapi-auth-jwt2')], (err) => {
+  if (err) {
+    console.log(err);
+    return;
+  }
+
+  // Now register the jwt stuff too
+  server.auth.strategy('jwt', 'jwt', {
+    key: config.websocket.secret,
+    validateFunc: (decoded, request, callback) => {
+      console.info(decoded);
+      callback(null, true);
+    }
+  });
+
+  /**
+   * Set default strategy for every route
+   * Use route config to disable authentication
+   * with `auth: false`
+   * Additionally, each route is scoped only for admins,
+   * which can be also overriden.
+   */
+  server.auth.default({
+    strategy: 'session',
+    scope: ['admin']
+  });
+
+  // Finally hook up the routes
+  // register routes
+  server.route(require('./lib/routes'));
+});
 
 // blibb for server routes -> only for dev
 if (config.isDev) {
