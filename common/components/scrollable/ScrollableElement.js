@@ -169,9 +169,6 @@ class ScrollableElement extends React.Component {
 
   // DRAG EVENT JUST FOR TOUCH DEVICE~
   startDrag(e){
-    e.preventDefault();
-    e.stopPropagation();
-
     e = e.changedTouches ? e.changedTouches[0] : e;
 
     // Make sure the content height is not changed
@@ -186,7 +183,6 @@ class ScrollableElement extends React.Component {
 
   onDrag(e){
     if(this.state.dragging){
-      e.preventDefault();
       e = e.changedTouches ? e.changedTouches[0] : e;
 
       // Invers the Movement

@@ -56,7 +56,6 @@ export default class Tab extends React.Component {
   onTouchStart(e) {
     // Check if we have a single touch event, else it could be pinch
     this._initialTouch = getTouchDataFromEvent(e);
-    e.preventDefault();
   }
 
   onTouchMove(e) {

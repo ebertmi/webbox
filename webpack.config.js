@@ -62,8 +62,6 @@ module.exports = {
     ],
     noParse: [
       /acorn\/dist\/acorn\.js$/,
-      /.*xterm\/addons\/linkify\/index\.html$/,
-      /.*xterm\/addons\/attach\/index\.html$/
     ]
   },
   postcss: [ autoprefixer({ browsers: ['last 2 versions'] }) ],
