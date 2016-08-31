@@ -9,7 +9,7 @@
 
 var webpack = require('webpack');
 var path = require('path');
-
+var BabiliPlugin = require("babili-webpack-plugin");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var autoprefixer = require('autoprefixer');
 
@@ -46,10 +46,19 @@ module.exports = {
     loaders: [
       {
         test: /\.js$/,
-        exclude: /node_modules/,
+        include: [
+          // We explicitly include all directory, otherwise, this will break
+          // as 'exclude' has a higher priority than include
+          path.resolve(__dirname, 'common'),
+          path.resolve(__dirname, 'client'),
+
+          // Add all npm modules that need to be transpiled!
+          // Include xterm module
+          /\bxterm\b/,
+        ],
         loader: 'babel-loader',
         query: {
-          presets: ['es2015', 'react'],
+          presets: ["es2015", 'react'],
           plugins: ["transform-object-rest-spread"]
         }
       },
@@ -63,7 +72,10 @@ module.exports = {
       }
     ],
     noParse: [
-      /acorn\/dist\/acorn\.js$/
+      /acorn\/dist\/acorn\.js$/,
+      /.*xterm\/addons\/linkify\/index\.html$/,
+      /.*xterm\/addons\/attach\/index\.html$/,
+      /.*xterm\/addons\/fullscreen\/fullscreen\.css$/
     ]
   },
   postcss: [ autoprefixer({ browsers: ['last 3 versions'] }) ],
@@ -84,6 +96,6 @@ module.exports = {
   ],
   node: {
     Buffer: true,
-    fs: 'empty' // needed for term.js
+    fs: 'empty' // needed for xterm.js
   },
 };
