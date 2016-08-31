@@ -77,7 +77,9 @@ export default class FileTab extends React.Component {
    * Start file renaming
    */
   handleRename(e) {
-    e.preventDefault();
+    if (e  && e.preventDefault) {
+      e.preventDefault();
+    }
 
     this.props.item.setNameEdtiable.call(this.props.item, true);
   }
@@ -129,7 +131,7 @@ export default class FileTab extends React.Component {
 
   render() {
     return (
-      <Tab {...this.props} icon="file" draggable={false}>
+      <Tab {...this.props} icon="file" draggable={false} onPress={this.handleRename}>
         <span onDoubleClick={this.handleRename}>{this.renderNameOrInput()}</span> {this.renderAnnotations()}
       </Tab>
     );

@@ -2,7 +2,7 @@ import React from 'react';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import classNames from 'classnames';
 
-import { calculateTouchMovement, getTouchDataFromEvent, touchDeltaWithinThreshold, TOUCH_DURATION_THRESHOLD } from '../../../util/touchUtils';
+import { calculateTouchMovement, getTouchDataFromEvent, touchDeltaWithinThreshold, TOUCH_DURATION_THRESHOLD, TOUCH_PRESS_DURATION_THRESHOLD } from '../../../util/touchUtils';
 
 export default class Tab extends React.Component {
   constructor(props) {
@@ -16,6 +16,7 @@ export default class Tab extends React.Component {
     this.onTouchEnd = this.onTouchEnd.bind(this);
     this.onTouchCancel = this.onTouchCancel.bind(this);
     this.onTouchMove = this.onTouchMove.bind(this);
+    this.checkTouchPress = this.checkTouchPress.bind(this);
     this.onPressTimer = null;
 
     this._initialTouch = null;
@@ -29,6 +30,30 @@ export default class Tab extends React.Component {
     if (this.onPressTimer != null) {
       window.clearTimeout(this.onPressTimer);
       this.onPressTimer = null;
+    }
+  }
+
+  startPressTimer() {
+    this.clearTimer();
+
+    this.onPressTimer = setTimeout(this.checkTouchPress, TOUCH_PRESS_DURATION_THRESHOLD);
+  }
+
+  checkTouchPress() {
+    this.clearTimer(); // Reset to null
+
+    // Check if the initial touch event has not been canceled
+    if (this._initialTouch != null) {
+      // Check the time delta between the start and end event
+      if (this._lastTouch) {
+        const movement = calculateTouchMovement(this._initialTouch, this._lastTouch);
+        if (touchDeltaWithinThreshold(movement)) {
+          this.onPress(); // handle click
+        }
+      } else {
+        // Rare case, when there is no user movement at all
+        this.onPress(); // handle click
+      }
     }
   }
 
@@ -56,6 +81,7 @@ export default class Tab extends React.Component {
   onTouchStart(e) {
     // Check if we have a single touch event, else it could be pinch
     this._initialTouch = getTouchDataFromEvent(e);
+    this.startPressTimer();
   }
 
   onTouchMove(e) {
@@ -66,6 +92,7 @@ export default class Tab extends React.Component {
   }
 
   onTouchCancel(e) {
+    this.clearTimer(); // Cancel press detection
     this._initialTouch = null;
     this._lastTouch = null;
 
@@ -73,6 +100,8 @@ export default class Tab extends React.Component {
   }
 
   onTouchEnd(e) {
+    this.clearTimer(); // Cancel press detection
+
     if (this._initialTouch != null) {
       let timeDifference = Math.abs(this._initialTouch.timeStamp - Date.now());
 
