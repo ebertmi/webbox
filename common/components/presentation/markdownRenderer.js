@@ -6,6 +6,7 @@
  */
 
 import React from 'react';
+import Debug from 'debug';
 import katex from 'katex';
 import mkitm from 'markdown-it-math';
 import isString from 'lodash/isString';
@@ -18,6 +19,7 @@ import MarkdownHTMLElement from './MarkdownHTMLElement';
 import Highlight from './Highlight';
 import OrderedList from './OrderedList';
 
+const debug = Debug('webbox:presentation:markdownRenderer');
 
 const EMPTY_HTML_ELEMENTS = {
   'area': true,
@@ -38,6 +40,11 @@ const EMPTY_HTML_ELEMENTS = {
   'track': true,
   'wbr': true
 };
+
+function regexIndexOf (str, regex, startpos=0) {
+  const indexOf = str.substring(startpos).search(regex);
+  return (indexOf >= 0) ? (indexOf + (startpos)) : indexOf;
+}
 
 /**
  * Transforms any inline HTML from text to real HTML (react)
@@ -71,15 +78,18 @@ function makeChildren(children, props) {
       let isEmptyElement = EMPTY_HTML_ELEMENTS[elementTag] === true;
 
       // 1. Is opening Tag?
-      if (child.content.indexOf('/') < 0 && !isEmptyElement) {
+      if (regexIndexOf(child.content, /<\s*\/.*>/) < 0 && !isEmptyElement) {
+        //debug('makeChildren found opening tag: ', child.content);
         openTags += 1;
         htmlContent.push(child.content);
       } else if (isEmptyElement) {
+        //debug('makeChildren found empty element: ', child.content);
         // when we deal with an empty element, just add this and proceed
         let {key, ...rest} = props; // Extract key from props
         keyCounter += 1;
         result.push(<MarkdownHTMLElement key={`${key}-inlinehtml-${keyCounter}`} {...rest} displayMode={false} content={child.content} />);
       } else {
+        //debug('makeChildren found closing tag: ', child.content);
         // closing tag
         openTags -= 1;
         htmlContent.push(child.content);
@@ -94,8 +104,10 @@ function makeChildren(children, props) {
       }
     } else if (openTags > 0) {
       // add child to html
+      //debug('makeChildren: Adding child to HTML', htmlContent, child);
       htmlContent.push(child);
     } else {
+      //debug('makeChildren: Adding child to result array', result, child);
       result.push(child);
     }
   }
@@ -117,8 +129,24 @@ export const mdOptions = {
     let displayMode;
     let source;
 
+    //debug('Processing Tag: ', tag, props, children);
+
     if (props.class != null) {
       props.className = props.class;
+    }
+
+    // Maybe we need here a more generic solution with a simple mapping
+    if (props['max-width']) {
+      if (props.style == null) {
+        props.style = {};
+      }
+
+      props.style.maxWidth = props['max-width'];
+    }
+
+    // Remove propagated source prop
+    if (props.source) {
+      delete props.source;
     }
 
     switch (tag) {
@@ -211,7 +239,6 @@ export const mdOptions = {
        */
       case 'htmlinline':
         content = Array.isArray(children) ? children.join('') : children;
-        console.info(content);
         return {
           type: 'htmlinline',
           content

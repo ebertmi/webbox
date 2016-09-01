@@ -18,21 +18,15 @@ export default class Ide extends React.Component {
     // handle Ctrl+S on the whole document even when nothing is focused
     document.addEventListener('keydown', this.onKeyDown.bind(this));
 
-    window.addEventListener("beforeunload", e => {
-      debug('beforeunload', e);
-
-      // Check if the user can save, if not we can close
+    // ToDo: Add a check for unsaved changes!
+    addEventListener('beforeunload', event => {
       if (this.props.project.canSave() === false) {
-        return;
+        return false;
       }
 
-      // Do something
-      /* ToDo:
-       *  - check if user can save
-       *  - Ask if we should save
-       *  - Save and close
-       */
-    }, false);
+      event.returnValue = 'Bitte speichere ggf. noch deine Änderungen!';
+      return 'Bitte speichere ggf. noch deine Änderungen!';
+    });
   }
 
   onDrop(e) {
