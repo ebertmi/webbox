@@ -91,12 +91,14 @@ export const CodeBlockItem = {
   closeBlockWith: '\n```\n'
 };
 
+export const ExtendedFormat = ' <!-- {} -->';
+
 /**
  * Inserts the item in the Ace Editor Session.
  *
  * @export
- * @param {any} item
- * @param {any} session
+ * @param {Object} item
+ * @param {EditSession} session
  */
 export function insert(item, session) {
   let str;
@@ -133,16 +135,43 @@ export function insert(item, session) {
   doInsert(str, session);
 }
 
-function doInsert(str, session) {
+/**
+ * Append the given string at the end of the current line (cursor position)
+ *
+ * @export
+ * @param {String} str
+ * @param {EditSession} session
+ */
+export function appendAtEndOfLine(str, session) {
+  let cursor = session.selection.getCursor();
+  let currline = cursor.row;
+  let wholelinetext = session.getLine(currline);
+  let lineLength = wholelinetext != null ? wholelinetext.length : 0;
+
+  cursor.column += lineLength;
+  session.insert(cursor, str);
+  let position = session.selection.getCursor();
+
+  // Apply new position
+  session.selection.moveCursorToPosition(position);
+}
+
+/**
+ * Inserts the item in the edit session.
+ *
+ * @param {Object} strItem
+ * @param {EditSession} session
+ */
+function doInsert(strItem, session) {
   let selection = session.doc.getTextRange(session.selection.getRange());
 
   if (selection) {
-    session.replace(session.selection.getRange(), str.block);
+    session.replace(session.selection.getRange(), strItem.block);
   } else {
-    session.insert(session.selection.getCursor(), str.block);
+    session.insert(session.selection.getCursor(), strItem.block);
 
     let position = session.selection.getCursor();
-    let backOffset = str.closeWith.length;
+    let backOffset = strItem.closeWith.length;
 
     // Alter position
     position.column -= backOffset;

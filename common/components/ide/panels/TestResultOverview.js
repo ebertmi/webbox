@@ -120,6 +120,8 @@ export default class TestResultOverview extends React.Component {
       });
     });
 
+    // ToDo: Add a 2nd YAxis and custom domains on the series and YAxis
+
     return (
       <div className="container-fluid">
         <div className="row">
@@ -140,6 +142,7 @@ export default class TestResultOverview extends React.Component {
               <VerticalGridLines />
               <XAxis title="Zeit" tickFormat={this.formatXAxisTicks} />
               <YAxis title="Durchschnitt" />
+              <YAxis title="Personen" yDomain={[0, 2]}/>
               <LineMarkSeries data={meanData} onValueMouseOver={this._rememberHintValue}
               onValueMouseOut={this._forgetHintValue} />
               <LineMarkSeries data={uniqueUsersData} onValueMouseOver={this._rememberHintValue}

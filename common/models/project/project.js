@@ -599,7 +599,7 @@ export default class Project extends EventEmitter {
     messageObj = new MessageWithAction(`Ihr Link: ${link}`, [copyAction, closeAction]);
 
     // Show it
-    this.showMessage(Severity.Ignore, messageObj);
+    this.showMessage(Severity.Info, messageObj);
   }
 
   /**

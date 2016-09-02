@@ -6,10 +6,10 @@
 import md from 'markdown-it';
 import katex from 'katex';
 import hljs from 'highlight.js';
+
 import Decorate from 'markdown-it-decorate';
 import MarkdownMath from 'markdown-it-math';
 import Anchor from './markdown-it-anchor';
-
 
 const COPY_BUTTON = `<div class="course-clipboard">
 <span class="btn-clipboard" data-event="code.copy" title data-original-title="In die Zwischenablage legen.">Kopieren</span>

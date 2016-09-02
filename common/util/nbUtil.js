@@ -136,6 +136,14 @@ export function loadCellsFromIPYNB(ipynb) {
   return result;
 }
 
+/**
+ * Tries to copy the text or the text from the "fromElement" to the clipboard.
+ *
+ * @export
+ * @param {any} fromElement
+ * @param {any} text
+ * @returns
+ */
 export function copyText (fromElement, text){
   function selectElementText (element) {
     if (document.selection) {
@@ -172,8 +180,7 @@ export function copyText (fromElement, text){
 
   let succeeded = false;
   try {
-    document.execCommand('copy');
-    succeeded = true;
+    succeeded = document.execCommand('copy');
   } catch (e) {
     // unsupported -> Safari
     console.warn('Copy Text not supported in this browser.');

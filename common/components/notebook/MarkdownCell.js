@@ -14,7 +14,7 @@ import { Toolbar, ActionItem } from '../Toolbar';
 import { updateCell } from '../../actions/NotebookActions';
 
 import Markdown from '../../util/markdown';
-import { insert, BoldItem, ItalicsItem, UlItem, OlItem, LinkItem, BlockquoteItem, InlineCodeItem, CodeBlockItem, ImageItem } from '../../util/aceUtil';
+import { insert, appendAtEndOfLine, BoldItem, ItalicsItem, UlItem, OlItem, LinkItem, BlockquoteItem, InlineCodeItem, CodeBlockItem, ImageItem, ExtendedFormat } from '../../util/aceUtil';
 
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
@@ -37,6 +37,7 @@ export default class MarkdownCell extends BaseCell {
     this.onBlockquoteInsert = this.onEditorInsert.bind(this, BlockquoteItem);
     this.onInlineCodeInsert = this.onEditorInsert.bind(this, InlineCodeItem);
     this.onCodeBlockInsert = this.onEditorInsert.bind(this, CodeBlockItem);
+    this.onExtendedFormatInsert = this.onExtendedFormatInsert.bind(this);
 
     this.saveCurrentSessionToState = this.saveCurrentSessionToState.bind(this);
 
@@ -136,6 +137,17 @@ export default class MarkdownCell extends BaseCell {
     }
   }
 
+  onExtendedFormatInsert () {
+    if (this.session) {
+      appendAtEndOfLine(ExtendedFormat, this.session);
+    }
+
+    // Focus editor
+    if (this.editor) {
+      this.editor.focus();
+    }
+  }
+
   renderListToolbar() {
     return (<Toolbar className="notebook-toolbar" animated={true}>
         <ActionItem onClick={this.onUnorderedListInsert} isIcon={true} title="Liste">
@@ -143,6 +155,9 @@ export default class MarkdownCell extends BaseCell {
         </ActionItem>
         <ActionItem onClick={this.onOrderedListInsert} isIcon={true} title="Nummerierte Liste">
           <Icon name="list-ol" />
+        </ActionItem>
+        <ActionItem onClick={this.onExtendedFormatInsert} isIcon={true} title="Erweiterte Formatierung einfügen">
+          <Icon name="css3" />
         </ActionItem>
       </Toolbar>);
   }
