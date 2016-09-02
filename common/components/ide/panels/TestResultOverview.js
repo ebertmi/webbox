@@ -141,8 +141,8 @@ export default class TestResultOverview extends React.Component {
               <HorizontalGridLines />
               <VerticalGridLines />
               <XAxis title="Zeit" tickFormat={this.formatXAxisTicks} />
-              <YAxis title="Durchschnitt" />
-              <YAxis title="Personen" yDomain={[0, 2]}/>
+              <YAxis title="Durchschnitt" orientation="left" />
+
               <LineMarkSeries data={meanData} onValueMouseOver={this._rememberHintValue}
               onValueMouseOut={this._forgetHintValue} />
               <LineMarkSeries data={uniqueUsersData} onValueMouseOver={this._rememberHintValue}
