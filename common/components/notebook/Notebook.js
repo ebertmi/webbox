@@ -270,7 +270,7 @@ export default class Notebook extends React.Component {
         <div className="global-message-list">
           <MessageList messageList={this.messageList} />
         </div>
-
+        <AnalyticsDashboard notebook={this.props.notebook} />
         <NotebookMetadata
         canToggleEditMode={this.props.notebook.get('canToggleEditMode')}
         isAuthor={isAuthor}
