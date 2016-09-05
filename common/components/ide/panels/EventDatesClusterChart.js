@@ -3,6 +3,7 @@ import {
   XYPlot,
   XAxis,
   YAxis,
+  DiscreteColorLegend,
   HorizontalGridLines,
   Hint,
   VerticalGridLines,
@@ -10,6 +11,13 @@ import {
 
 import DatePicker from 'react-datepicker';
 import { normalDateFormatter, multiTimeFormat } from '../../../util/d3Util';
+
+const LEGEND_IN_CHART_STYLES = {
+  position: 'absolute',
+  textAlign: 'left',
+  right: 0,
+  fontWeight: 'bold'
+};
 
 export default class EventDatesClusterChart extends React.Component {
   constructor(props) {
@@ -123,6 +131,11 @@ export default class EventDatesClusterChart extends React.Component {
             <h4>Anzahl der Events</h4>
           </div>
           <div className="col-md-7 col-xs-12">
+          <div style={LEGEND_IN_CHART_STYLES}>
+            <DiscreteColorLegend
+              width={180}
+              items={this.props.lineData}/>
+          </div>
           <XYPlot
             xType="time"
             yType="linear"
@@ -132,14 +145,13 @@ export default class EventDatesClusterChart extends React.Component {
             <VerticalGridLines />
             <XAxis title="Zeit" tickFormat={this.formatXAxisTicks} />
             <YAxis title="Anzahl" tickFormat={this.formatYAxisTicks} />
-            <LineMarkSeries
-              data={this.props.lineData[0].values}
-              onValueMouseOver={this._rememberHintValue}
-              onValueMouseOut={this._forgetHintValue} />
-            <LineMarkSeries
-              data={this.props.lineData[1].values}
-              onValueMouseOver={this._rememberHintValue}
-              onValueMouseOut={this._forgetHintValue} />
+            {this.props.lineData.map(series => {
+              return <LineMarkSeries
+                key={series.title}
+                data={series.values}
+                onValueMouseOver={this._rememberHintValue}
+                onValueMouseOut={this._forgetHintValue} />;
+            })}
             {this.state.hintValue ?
               <Hint value={this.state.hintValue} format={this.formatHint}/> :
               null

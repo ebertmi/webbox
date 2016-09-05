@@ -5,14 +5,23 @@ import {
   XYPlot,
   XAxis,
   YAxis,
+  DiscreteColorLegend,
   HorizontalGridLines,
   Hint,
   VerticalGridLines,
+  makeWidthFlexible,
   LineMarkSeries} from 'react-vis';
+
+const FlexibleXYPlot = makeWidthFlexible(XYPlot);
 
 import { Time } from '../../Time';
 
-const GERMAN_DATE_LOCALE = 'DE';
+const LEGEND_IN_CHART_STYLES = {
+  position: 'absolute',
+  textAlign: 'left',
+  right: 0,
+  fontWeight: 'bold'
+};
 
 /**
  * Shows the Test Results
@@ -106,15 +115,20 @@ export default class TestResultOverview extends React.Component {
       return null;
     }
 
-    const uniqueUsersData = [];
-    const meanData = [];
+    const series = [{
+      title: 'Durchschnitt',
+      values: []
+    }, {
+      title: 'Personen',
+      values: []
+    }];
 
     this.state.history.map(entry => {
-      meanData.push({
+      series[0].values.push({
         x: entry.time,
         y: entry.result
       });
-      uniqueUsersData.push({
+      series[1].values.push({
         x: entry.time,
         y: entry.uniqueUsers
       });
@@ -133,25 +147,29 @@ export default class TestResultOverview extends React.Component {
             <p><small>Standardabweichung: <span>{this.state.stdDeviation}</span></small></p>
           </div>
           <div className="col-xs-12">
-            <XYPlot
+            <div style={LEGEND_IN_CHART_STYLES}>
+              <DiscreteColorLegend
+                width={180}
+                items={series}/>
+            </div>
+            <FlexibleXYPlot
               xType="time"
-              width={600}
+
               height={150}
               margin={{left: 40, right: 40, top: 20, bottom: 40}} >
               <HorizontalGridLines />
               <VerticalGridLines />
               <XAxis title="Zeit" tickFormat={this.formatXAxisTicks} />
               <YAxis title="Durchschnitt" orientation="left" />
-
-              <LineMarkSeries data={meanData} onValueMouseOver={this._rememberHintValue}
+              <LineMarkSeries data={series[0].values} onValueMouseOver={this._rememberHintValue}
               onValueMouseOut={this._forgetHintValue} />
-              <LineMarkSeries data={uniqueUsersData} onValueMouseOver={this._rememberHintValue}
+              <LineMarkSeries data={series[1].values} onValueMouseOver={this._rememberHintValue}
               onValueMouseOut={this._forgetHintValue}/>
               {this.state.hintValue ?
                 <Hint value={this.state.hintValue} format={this.formatHint}/> :
                 null
               }
-            </XYPlot>
+            </FlexibleXYPlot>
             <p className="text-muted">Alle Ergebnisse werden automatisch auf Intervalle eingeteilt und aggregiert. Die Intervalleinteilung ist logarithmisch, sucht sich jedoch automatisch die passenden Abstände aus.</p>
           </div>
         </div>

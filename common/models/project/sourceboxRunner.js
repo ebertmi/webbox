@@ -99,10 +99,6 @@ export default class Runner extends EventEmitter {
     let testFile = this.project.getTestCode();
     this.files.push(testFile);
 
-    let command = this._commandArray(this.project.config.test);
-    //let runEvent = new EventLog(EventLog.NAME_RUN, { execCommand: command });
-    //this.project.sendEvent(runEvent);
-
     let emitChange = () => {
       process.nextTick(() => {
         this.project.emitChange();
@@ -462,6 +458,9 @@ export default class Runner extends EventEmitter {
         });
         this.project.sendAction(remoteAction);
 
+        // Additonally, store the test result on the server with its data
+        let testEvent = new EventLog(EventLog.NAME_TEST, { data: result });
+        this.project.sendEvent(testEvent);
 
         this.project.tabManager.closeTabByType('testresult'); // Close all other test result windows
         this.project.tabManager.addTab('testresult', { item: testResult, active: true});

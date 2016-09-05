@@ -71,6 +71,8 @@ EventLog.NAME_RUN = 'run';
  */
 EventLog.NAME_FAILURE = 'failure';
 
+EventLog.NAME_TEST = 'test';
+
 /**
  * Encapsulates an action, that is triggered on the server side. E.g. sending in an example. Or starting/stopping a session.
  */

@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import assert from '../../util/assert';
+import Debug from 'debug';
 
 import { ErrorFilter } from './errorFilter';
 import { ErrorClusters } from './errorclusters';
@@ -7,6 +8,8 @@ import { Submissions } from './submissions';
 import { normalizeDate } from '../../util/dateUtils';
 import { TestResultsOverview } from './testResultsOverview';
 import { Action, SocketEvents } from './socketConnection';
+
+const debug = Debug('webbox:insights');
 
 /**
  * The Insights Module subscribes to all relevant events and stores the stat data
@@ -55,6 +58,7 @@ export class Insights extends EventEmitter {
       run: new Map(),
       failure: new Map(),
       error: new Map(),
+      test: new Map(),
       rest: new Map()
     };
   }
@@ -89,6 +93,8 @@ export class Insights extends EventEmitter {
   onEvents(events, reset=false) {
     assert(Array.isArray(events), 'Insights.onEvents expected array of events');
 
+    debug('Received ide-events: ', events, reset);
+
     // Reset the date maps
     if (reset === true) {
       this.reset();
@@ -97,6 +103,11 @@ export class Insights extends EventEmitter {
     let hasNewErrors = false;
 
     for (let event of events) {
+      // Skip events for other embeds
+      if (event.embedId !== this._project.getEmbedId()) {
+        continue;
+      }
+
       if (event && event.name === 'error') {
         this.errors.push(event);
         hasNewErrors = true;
@@ -177,8 +188,8 @@ export class Insights extends EventEmitter {
 
   dateClustersToSingleSeries() {
     let series = [];
-    let events = ['run', 'error', 'failure', 'rest'];
-    let maps = [this.dateMaps.run, this.dateMaps.error, this.dateMaps.failure, this.dateMaps.rest];
+    let events = ['run', 'error', 'failure', 'test', 'rest'];
+    let maps = [this.dateMaps.run, this.dateMaps.error, this.dateMaps.failure, this.dateMaps.test, this.dateMaps.rest];
     let values;
 
     for (let i = 0; i < events.length; i += 1) {
@@ -214,9 +225,9 @@ export class Insights extends EventEmitter {
   dateClustersToSeries() {
     let lineData = [];
 
-    let names = ['Ausführungen', 'Fehler', 'Probleme', 'Sonstige'];
-    let events = ['run', 'error', 'failure', 'rest'];
-    let maps = [this.dateMaps.run, this.dateMaps.error, this.dateMaps.failure, this.dateMaps.rest];
+    let names = ['Ausführungen', 'Fehler', 'Probleme', 'Testversuche', 'Sonstige'];
+    let events = ['run', 'error', 'failure', 'test', 'rest'];
+    let maps = [this.dateMaps.run, this.dateMaps.error, this.dateMaps.failure, this.dateMaps.test, this.dateMaps.rest];
     let lineStyles = [{
       strokeWidth: 3,
       strokeDashArray: "5,5"
@@ -246,6 +257,7 @@ export class Insights extends EventEmitter {
 
       lineData.push({
         name: names[i],
+        title: names[i],
         event: events[i],
         values: values
       });

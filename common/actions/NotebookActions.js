@@ -1,4 +1,5 @@
 import * as Types from '../constants/NotebookActionTypes';
+import { CellTypes } from '../constants/NotebookConstants';
 
 /**
  * Assigns ids to all cells, that do not have one
@@ -122,19 +123,19 @@ export function addCell(index, cellType) {
 }
 
 export function addCodeEmbedCell(index) {
-  return addCell(index, 'codeembed');
+  return addCell(index, CellTypes.CodeEmbed);
 }
 
 export function addMarkdownCell(index) {
-  return addCell(index, 'markdown');
+  return addCell(index, CellTypes.Markdown);
 }
 
 export function addRawCell(index) {
-  return addCell(index, 'raw');
+  return addCell(index, CellTypes.Raw);
 }
 
 export function addCodeCell(index) {
-  return addCell(index, 'code');
+  return addCell(index, CellTypes.Code);
 }
 
 export function moveCellUp(index) {

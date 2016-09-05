@@ -1,5 +1,8 @@
 import { EventEmitter } from 'events';
 import assert from '../../util/assert';
+import Debug from 'debug';
+
+const debug = Debug('webbox:errorClusters');
 
 export class ErrorClusters extends EventEmitter {
   constructor() {
@@ -37,6 +40,8 @@ export class ErrorClusters extends EventEmitter {
       this.isDirty = true;
       this.emit('change');
     }
+
+    debug('clustered events: ', events, hasChanged);
   }
 
   reset() {

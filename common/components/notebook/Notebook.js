@@ -7,6 +7,7 @@ import RawCell from './RawCell';
 import CodeCell from './CodeCell';
 import AddControls from './AddControls';
 import NotebookMetadata from './NotebookMetadata';
+import AnalyticsDashboard from './analytics/AnalyticsDashboard';
 
 import { MessageListModel, MessageWithAction } from '../../models/messages';
 import { Action } from '../../models/actions';
@@ -269,6 +270,7 @@ export default class Notebook extends React.Component {
         <div className="global-message-list">
           <MessageList messageList={this.messageList} />
         </div>
+
         <NotebookMetadata
         canToggleEditMode={this.props.notebook.get('canToggleEditMode')}
         isAuthor={isAuthor}

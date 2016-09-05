@@ -1,6 +1,14 @@
 import Immutable from 'immutable';
 import UUID from 'uuid';
 import { addCellWithIndex, initialState } from '../reducers/notebook/notebookReducer';
+import { CellTypes } from '../constants/NotebookConstants';
+
+export function getCodeEmbedsFromNotebook(notebookImmutable) {
+  let cells = notebookImmutable.get('cells');
+  let embeds = cells.filter(cell => cell.get('cell_type') === CellTypes.CodeEmbed);
+
+  return embeds;
+}
 
 export function replaceIdWithSlug(notebook) {
   let url = window.location.href;

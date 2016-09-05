@@ -1,4 +1,5 @@
 import React from 'react';
+import Debug from 'debug';
 
 import {
   XYPlot,
@@ -7,6 +8,8 @@ import {
   VerticalGridLines,
   HorizontalGridLines,
   VerticalBarSeries} from 'react-vis';
+
+const debug = Debug('webbox:ErrorClusterView');
 
 /**
  * Displays a chart of the error clusters with the error name and the number of
@@ -52,6 +55,7 @@ export default class ErrorClusterView extends React.Component {
   }
 
   render() {
+    debug('render with state:', this.state);
     return (
         <div className="container-fluid">
           <div className="row">

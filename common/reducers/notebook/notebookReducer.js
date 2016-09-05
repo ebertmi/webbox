@@ -8,6 +8,7 @@ import isFunction from 'lodash/isFunction';
 import capitalize from 'lodash/capitalize';
 
 import { EmbedTypes } from '../../constants/Embed';
+import { CellTypes } from '../../constants/NotebookConstants';
 import assert from '../../util/assert';
 
 export const initialState = Immutable.Map({
@@ -250,17 +251,17 @@ function createNewCellByType(cellType) {
   };
 
   switch (cellType) {
-    case 'code':
-      newCell.cell_type = 'code';
+    case CellTypes.Code:
+      newCell.cell_type = CellTypes.Code;
       break;
-    case 'markdown':
-      newCell.cell_type = 'markdown';
+    case CellTypes.Markdown:
+      newCell.cell_type = CellTypes.Markdown;
       break;
-    case 'codeembed':
-      newCell.cell_type = 'codeembed';
+    case CellTypes.CodeEmbed:
+      newCell.cell_type = CellTypes.CodeEmbed;
       break;
     default:
-      newCell.cell_type = 'raw';
+      newCell.cell_type = CellTypes.Raw;
       newCell.metadata.format = 'text/html'; /* output as text as default */
   }
 
@@ -444,7 +445,7 @@ export function updateAddCellsFromJS(state, cells, lang) {
       };
     }
 
-    if (cell.cell_type === 'code' && cell.metadata.mode === undefined) {
+    if (cell.cell_type === CellTypes.Code && cell.metadata.mode === undefined) {
       cell.metadata.mode = lang || 'plain';
     }
 
