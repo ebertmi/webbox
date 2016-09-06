@@ -30,6 +30,7 @@ class NotebookMetadata extends React.Component {
     this.onSave = this.onSave.bind(this);
     this.onUpdate = this.onUpdate.bind(this);
     this.toggleViewMode = this.toggleViewMode.bind(this);
+    this.toggleViewAnalytics = this.toggleViewAnalytics.bind(this);
   }
 
   onUpdate(e) {
@@ -49,6 +50,11 @@ class NotebookMetadata extends React.Component {
   toggleViewMode(e) {
     e.preventDefault();
     this.props.dispatch(NotebookActions.toggleViewMode());
+  }
+
+  toggleViewAnalytics(e) {
+    e.preventDefault();
+    this.props.dispatch(NotebookActions.toggleViewAnalytics());
   }
 
   onUndo(e) {
@@ -76,9 +82,15 @@ class NotebookMetadata extends React.Component {
           <Icon name={iconName} />
         </ActionItem>);
 
+    let toggleViewAnalyticsButton = this.props.canToggleEditMode === false ? null : (<ActionItem isIcon={true} title={'Diagramme Umschalten'} onClick={this.toggleViewAnalytics}>
+          <Icon name="line-chart" />
+        </ActionItem>);
+
+
     return (
       <Toolbar className="notebook-toolbar" animated={true}>
         {toggleViewModeButton}
+        {toggleViewAnalyticsButton}
         <ActionItem isIcon={true} title="Präsentationsmodus" href={linkToPresentation} target="_blank" >
           <Icon name="television" />
         </ActionItem>

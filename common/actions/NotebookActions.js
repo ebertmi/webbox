@@ -16,6 +16,13 @@ export function toggleNotebookMetadataEdit() {
   };
 }
 
+export function toggleViewAnalytics() {
+  return {
+    type: Types.TOGGLE_VIEW_ANALYTICS
+  };
+}
+
+
 export function toggleViewMode() {
   return {
     type: Types.TOGGLE_VIEW_MODE

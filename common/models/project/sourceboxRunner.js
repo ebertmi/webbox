@@ -9,7 +9,8 @@ import isFunction from 'lodash/isFunction';
 import split from 'split2';
 
 import { Turtle } from '../../turtle/turtle';
-import { EventLog, Action as RemoteAction } from '../insights/socketConnection';
+import { RemoteActions } from '../../constants/Embed';
+import { EventLog, Action as RemoteAction } from '../insights/remoteDispatcher';
 import TestResult from '../testResult';
 import { TerminalTransform, MatplotLibTransfrom, JsonTransform } from '../../util/streamUtils';
 
@@ -450,7 +451,7 @@ export default class Runner extends EventEmitter {
 
         // Try to send the results to the Server
 
-        let remoteAction = new RemoteAction('testresult', this.project.getUserData(), {
+        let remoteAction = new RemoteAction(RemoteActions.TestResult, this.project.getUserData(), {
           embedId: this.project.getEmbedId(),
           score: testResult.getScore(),
           scorePercentage: testResult.getScorePercentage(),

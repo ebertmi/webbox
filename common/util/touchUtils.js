@@ -1,7 +1,21 @@
+/**
+ * Touch input constants and helper methods for calculating distances and
+ * extracting coordinates from events.
+ */
 
+/**
+ * Maximum distance between two touch events.
+ */
 export const TOUCH_MOVE_THRESHOLD = 100;
+
+/**
+ * Maximum touch duration threshold
+ */
 export const TOUCH_DURATION_THRESHOLD = 250;
 
+/**
+ * Minimum touch press duration threshold
+ */
 export const TOUCH_PRESS_DURATION_THRESHOLD = 512;
 
 /**
@@ -41,6 +55,14 @@ export function getTouchDataFromEvent(event) {
   return null;
 }
 
+/**
+ * Check if both x and y delta components are within the threshold (inclusive check)
+ *
+ * @export
+ * @param {Object} delta
+ * @param {Number} [threshold=TOUCH_MOVE_THRESHOLD]
+ * @returns
+ */
 export function touchDeltaWithinThreshold(delta, threshold=TOUCH_MOVE_THRESHOLD) {
   return delta.x <= threshold && delta.y <= threshold;
 }

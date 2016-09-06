@@ -2,14 +2,12 @@ import { EventEmitter } from 'events';
 import Immutable from 'immutable';
 
 import { toLogarithmicDateIntervals, clusterDataPointsByDateIntervals } from '../../util/dateUtils';
-import { SocketEvents, Action as RemoteAction } from './socketConnection';
+import { RemoteEventTypes, Action as RemoteAction } from './remoteDispatcher';
 
 import Debug from 'debug';
 
 // Create namespaced debug function | see https://github.com/visionmedia/debug
 const debug = Debug('webbox:testResultsOverview');
-
-const MAX_HISTORY_ITEMS = 20;
 
 /**
  * Handles the receiving and storing of test results
@@ -118,7 +116,7 @@ export class TestResultsOverview extends EventEmitter {
       return;
     }
 
-    this._connection.addSocketEventListener(SocketEvents.TestResult, this.onTestResult);
+    this._connection.addSocketEventListener(RemoteEventTypes.TestResult, this.onTestResult);
 
     this.allowTestResults();
   }
@@ -133,7 +131,7 @@ export class TestResultsOverview extends EventEmitter {
       return;
     }
 
-    this._connection.removeSocketEventListener(SocketEvents.TestResult, this.onSubmission);
+    this._connection.removeSocketEventListener(RemoteEventTypes.TestResult, this.onSubmission);
 
     this.disallowTestResults();
   }
@@ -191,7 +189,7 @@ export class TestResultsOverview extends EventEmitter {
 
     this.sum = sum;
 
-    this.calculateMean();
+    this.calculateMean(true);
     this.calculateSquareSum();
 
     let timePoints = this.testResults.map(tr => new Date(tr.timeStamp)).sort();
@@ -227,6 +225,7 @@ export class TestResultsOverview extends EventEmitter {
     debug('Aggregated clusters: ', aggregatedClusters);
 
     this.meanHistory = this.meanHistory.unshift(...aggregatedClusters);
+
     this.emit('change');
   }
 
@@ -241,10 +240,10 @@ export class TestResultsOverview extends EventEmitter {
     this.emit('change');
   }
 
-  calculateMean() {
+  calculateMean(addNewMeanToHistory=false) {
     let mean = this.getTestResultSize() === 0 ? 0 : this.sum / this.getTestResultSize();
 
-    this.updateMean(mean);
+    this.updateMean(mean, addNewMeanToHistory);
   }
 
   /**
@@ -252,10 +251,8 @@ export class TestResultsOverview extends EventEmitter {
    *
    * @param {any} mean
    */
-  updateMean(mean) {
-    if (this.mean && this.mean.time != null) {
-      this.meanHistory = this.meanHistory.push(Immutable.fromJS(this.mean));
-    }
+  updateMean(mean, addNewMeanToHistory=false) {
+    this.addToHistory(this.mean);
 
     this.mean = {
       result: mean,
@@ -263,7 +260,18 @@ export class TestResultsOverview extends EventEmitter {
       time: Date.now()
     };
 
+    // Force push the new mean on the history stack
+    if (addNewMeanToHistory === true) {
+      this.addToHistory(this.mean);
+    }
+
     this.emit('change');
+  }
+
+  addToHistory(meanObj) {
+    if (meanObj && meanObj.time != null) {
+      this.meanHistory = this.meanHistory.push(Immutable.fromJS(meanObj));
+    }
   }
 
   /**

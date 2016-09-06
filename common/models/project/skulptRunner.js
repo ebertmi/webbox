@@ -2,7 +2,7 @@ import { EventEmitter } from 'events';
 import { PassThrough, Transform } from 'stream';
 
 import Bluebird from 'bluebird';
-import { EventLog } from '../insights/socketConnection';
+import { EventLog } from '../insights/remoteDispatcher';
 import { TerminalTransform } from '../../util/streamUtils';
 
 // Disable warnings in production

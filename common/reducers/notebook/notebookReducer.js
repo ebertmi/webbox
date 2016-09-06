@@ -32,6 +32,7 @@ export const initialState = Immutable.Map({
   activeBlock: -1, /* current block in editing mode */
   isAuthor: false, /* should be canEdit, as only authors or admins can edit pages */
   canToggleEditMode: false,
+  showAnalytics: false,
   authors: new Immutable.List(),
   nbformat: 4, /* required by nbformat */
   nbformat_minor: 0,
@@ -50,6 +51,10 @@ export default function notebook(state = initialState, action) {
 
     case Types.TOGGLE_VIEW_MODE:
       newState = toggleViewMode(state);
+      return newState;
+
+    case Types.TOGGLE_VIEW_ANALYTICS:
+      newState = toggleViewAnalytics(state);
       return newState;
 
     case Types.UNDO:
@@ -375,6 +380,14 @@ function toggleViewMode(state) {
     return state.set('isAuthor', false).set('activeBlock', -1);
   } else {
     return state.set('isAuthor', true);
+  }
+}
+
+function toggleViewAnalytics(state) {
+  if (state.get('showAnalytics')) {
+    return state.set('showAnalytics', false);
+  } else {
+    return state.set('showAnalytics', true);
   }
 }
 

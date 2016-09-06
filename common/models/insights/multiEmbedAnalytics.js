@@ -1,52 +1,50 @@
 import { EventEmitter } from 'events';
 import assert from '../../util/assert';
 import Debug from 'debug';
+const debug = Debug('webbox:MultiEmbedAnalytics');
 
-import { RemoteActions } from '../../constants/Embed';
 import { ErrorFilter } from './errorFilter';
 import { ErrorClusters } from './errorclusters';
-import { Submissions } from './submissions';
-import { normalizeDate } from '../../util/dateUtils';
 import { TestResultsOverview } from './testResultsOverview';
-import { Action, RemoteEventTypes } from './remoteDispatcher';
 
-const debug = Debug('webbox:insights');
+import { normalizeDate } from '../../util/dateUtils';
+import { RemoteDispatcher, Action as RemoteAction, RemoteEventTypes } from './remoteDispatcher';
+import { RemoteActions } from '../../constants/Embed';
 
-/**
- * The Insights Module subscribes to all relevant events and stores the stat data
- */
-export class Insights extends EventEmitter {
-  constructor(remoteDispatcher, project) {
+export class EmbedAnalytics extends EventEmitter {
+  constructor(embedId, remoteDispatcher) {
     super();
-    this._project = project;
-    this._connection = remoteDispatcher;
-    this.errorFilter = new ErrorFilter();
 
+    this.remoteDispatcher = remoteDispatcher;
+    this.id = embedId;
+
+    this.errorFilter = new ErrorFilter();
     this.errors = [];
     this.events = [];
     this.dateMaps = this.getInitialDateClusterMaps();
+    this.errorClusters = new ErrorClusters();
+
     this.dateClusterResolution = 'day';
     this.dateClusterStart = null;
     this.dateClusterEnd = null;
-
-    this.errorClusters = new ErrorClusters();
 
     this.eventStartDate = null; // display only events older than this date
 
     this.isSubscribed = false;
 
-    // Submission model, submits its own change events, then we can hook this up components
-    // that only need to update on submission changes
-    this.submissions = new Submissions(this._connection);
+    //this.testResultsOverview = new TestResultsOverview(this._connection, this._project);
 
-    this.testResultsOverview = new TestResultsOverview(this._connection, this._project);
+    // Context binding
+    this.subscribeToEvents = this.subscribeToEvents.bind(this);
+    this.getEvents = this.getEvents.bind(this);
   }
 
-  reset() {
-    this.dateMaps = this.getInitialDateClusterMaps();
-    this.errorClusters.reset();
-    this.errors = [];
-    this.events = [];
+  getId() {
+    return this.id;
+  }
+
+  getDispatcher() {
+    return this.remoteDispatcher;
   }
 
   /**
@@ -64,31 +62,50 @@ export class Insights extends EventEmitter {
     };
   }
 
-  subscribeOnEvents() {
+  reset() {
+    this.dateMaps = this.getInitialDateClusterMaps();
+    this.errorClusters.reset();
+    this.errors = {};
+    this.events = {};
+  }
+
+  getEvents() {
+    let remoteAction = new RemoteAction(RemoteActions.GetEvents, {}, {}, result => {
+      debug('getEvents->remoteAction result:', result);
+      this.onEvents(result.events);
+    });
+
+    // Set the context for the current embed
+    remoteAction.setContext({
+      embedId: this.getId()
+    });
+    this.getDispatcher().sendAction(remoteAction, true);
+  }
+
+  subscribeToEvents() {
     if (this.isSubscribed) {
       return;
     }
 
-    const embedId = this._project.getEmbedId();
-    let subscribeAction = new Action(RemoteActions.SubscribeToEvents, this._project.getUserData(), {
-      embedId: embedId
-    }, res => {
-      if (res.error) {
-        console.error(res.error);
+    let remoteAction = new RemoteAction(RemoteActions.SubscribeToEvents, {}, {}, result => {
+      debug('subscribeToEvents->remoteAction result:', result);
+      if (result.error) {
+        debug('Error while subscribing to events', result.error);
         this.isSubscribed = false;
-      } else {
-
-        this.isSubscribed = true;
-        this._connection.addSocketEventListener(RemoteEventTypes.IdeEvent, msg => {
-          if (!Array.isArray()) {
-            msg = [msg];
-          }
-          this.onEvents(msg);
-        });
+        return;
       }
-    });
 
-    this._project.sendAction(subscribeAction, true);
+      this.isSubscribed = true;
+    });
+    // Set the context for the current embed
+    remoteAction.setContext({
+      embedId: this.getId()
+    });
+    this.getDispatcher().sendAction(remoteAction, true);
+
+    this.getDispatcher().addSocketEventListener(RemoteEventTypes.IdeEvent, event => {
+      debug('Received event(s)', event);
+    });
   }
 
   onEvents(events, reset=false) {
@@ -104,8 +121,8 @@ export class Insights extends EventEmitter {
     let hasNewErrors = false;
 
     for (let event of events) {
-      // Skip events for other embeds
-      if (event.embedId !== this._project.getEmbedId()) {
+      // Add only events for this embed!
+      if (event.embedId !== this.getId()) {
         continue;
       }
 
@@ -187,36 +204,6 @@ export class Insights extends EventEmitter {
     }
   }
 
-  dateClustersToSingleSeries() {
-    let series = [];
-    let events = ['run', 'error', 'failure', 'test', 'rest'];
-    let maps = [this.dateMaps.run, this.dateMaps.error, this.dateMaps.failure, this.dateMaps.test, this.dateMaps.rest];
-    let values;
-
-    for (let i = 0; i < events.length; i += 1) {
-      values = [];
-
-      for (let dataPoint of maps[i]) {
-        values.push({
-          x: new Date(dataPoint[0]).getTime(),
-          [events[i]]: dataPoint[1]
-        });
-      }
-
-      // Add a dummy date to force displaying of lines
-      if (values.length === 1) {
-        values.push({
-          x: Date.now(),
-          [events[i]]: 0
-        });
-      }
-
-      series.push(...values);
-    }
-
-    return series;
-  }
-
   /**
    * Returns the date clusters as series date to be consumed by the visualization. The series data
    * is an array based representation.
@@ -272,40 +259,70 @@ export class Insights extends EventEmitter {
     return lineData;
   }
 
+  dispose() {
+    // ToDo: should we unsubscribe here?
+  }
+}
 
+export class MultiEmbedAnalytics extends EventEmitter {
+  constructor(embedCellsArray) {
+    super();
+    debug('AnalyticsDashboard constructor: ', embedCellsArray, window.__WEBSOCKET__);
 
-  /**
-   *
-   * @param {any} subsetSize number of errors for the subset, if n = 'all', return every error
-   * @param {any} [filter={}]
-   * @returns
-   */
-  filterErrors(subsetSize, filters={}) {
-    if (this.errors.length > 600) {
-      console.warn('High amount of errors to filter. Please contact admin.');
+    this._embeds = embedCellsArray; // ImmutableJS Object
+
+    this.remoteDispatcher = new RemoteDispatcher({
+      jwt: window.__WEBSOCKET__.authToken,
+      url: window.__WEBSOCKET__.server
+    });
+
+    this.remoteDispatcher.connect();
+
+    this.embedAnalytics = new Map();
+
+    // Bindings
+    this.onChange = this.onChange.bind(this);
+  }
+
+  init() {
+    for (let embedCell of this._embeds) {
+      let embedId = embedCell.get('source');
+      let embedAnalytics = new EmbedAnalytics(embedId, this.getDispatcher());
+      embedAnalytics.on('change', this.onChange);
+      this.embedAnalytics.set(embedId, embedAnalytics);
+
+      embedAnalytics.getEvents();
+      embedAnalytics.subscribeToEvents();
+
     }
+  }
 
-    this.errorFilter.setFilters(filters);
-    this.errorFilter.setSubsetSize(subsetSize);
-    this.errorFilter.setErrors(this.errors);
-
-    return this.errorFilter.filter();
+  onChange() {
+    debug('onChange');
+    this.emit('change');
   }
 
   /**
-   * Get events from database
+   * Returns a map of embedId->EmbedAnalytics entries
+   *
+   * @returns {Map}
    */
-  getEvents() {
-    let action = new Action(RemoteActions.GetEvents, this._project.getUserData(), {
-      startDate: this.eventStartDate
-    }, res => {
-      if (res.error) {
-        console.error(res.error);
-      } else {
-        this.onEvents(res.events, true);
-      }
-    });
+  getEntries() {
+    return this.embedAnalytics;
+  }
 
-    this._project.sendAction(action, true);
+  /**
+   * ToDo: use this for lazy init
+   *
+   * @returns
+   */
+  getDispatcher() {
+    return this.remoteDispatcher;
+  }
+
+  dispose() {
+    this.embedAnalytics.forEach(value => {
+      value.dispose();
+    });
   }
 }

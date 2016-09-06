@@ -102,7 +102,7 @@ export function documentToState(document) {
   for (let cell of document.cells) {
     // Check for missing id
     if (!cell.id) {
-      cell.id = UUID.v4()
+      cell.id = UUID.v4();
     }
 
     let res = addCellWithIndex(newState, null, Immutable.fromJS(cell));

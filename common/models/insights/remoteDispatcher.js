@@ -13,9 +13,13 @@
 import io from 'socket.io-client';
 import { EventEmitter } from 'events';
 import isFunction from 'lodash/isFunction';
+import Debug from 'debug';
+
 import { getCookie } from '../../services/utils';
 
-export const SocketEvents = {
+const debug = Debug('webbox:RemoteDispatcher');
+
+export const RemoteEventTypes = {
   IdeEvent: 'ide-event',
   Submission: 'submission',
   TestResult: 'user-testresult'
@@ -108,6 +112,7 @@ export class Action {
 
   /**
    * Calls the callback function, if any
+   * This is called for server responses
    */
   run(res) {
     if (isFunction(this._callback)) {
@@ -121,6 +126,11 @@ export class Action {
 }
 
 /**
+ * Better name for Action, as it is a remotely called action
+ */
+export const RemoteAction = Action;
+
+/**
  * Establishes a websocket connection to the server on demand and allows to send events and actions.
  * The SocketCommunication instance emits multiple events:
  *  - "connect" when the connection to the server is established
@@ -128,7 +138,7 @@ export class Action {
  *  - "reconnect" when the socket reconnected successfully
  *  - "reconnect_failed" when the socket could not reconnect after the specified reconnect_attempts
  */
-export class SocketConnection extends EventEmitter {
+export class RemoteDispatcher extends EventEmitter {
   constructor(connection={jwt:'', url:'', port:80}) {
     super();
     this._queue = [];
@@ -136,6 +146,8 @@ export class SocketConnection extends EventEmitter {
     this._jwt = connection.jwt;
     this._url = connection.url;
     this._port = connection.port;
+
+    debug('Constructor with connection: ', connection);
   }
 
   /**
@@ -157,11 +169,15 @@ export class SocketConnection extends EventEmitter {
     this._socket.on('disconnect', this.onDisconnect.bind(this));
     this._socket.on('reconnect', this.onReconnect.bind(this));
     this._socket.on('reconnect_failed', this.onReconnectFailed.bind(this));
+
+    debug('connect() with socket', this._socket);
   }
 
   onConnect() {
     this.emit('connect');
     this.purgeQueue();
+
+    debug('onConnect()');
   }
 
   onReconnect() {
@@ -179,6 +195,7 @@ export class SocketConnection extends EventEmitter {
 
   onError(err) {
     this.emit('error', err);
+    debug('onError', err);
   }
 
   /**
@@ -196,7 +213,7 @@ export class SocketConnection extends EventEmitter {
         } else if (elm instanceof EventLog) {
           this.sendEvent(elm);
         } else {
-          throw new Error('SocketCommunication.purgeQueue queue contains invalid item.');
+          throw new Error('RemoteDispatcher.purgeQueue queue contains invalid item.');
         }
       }
     }
@@ -209,7 +226,7 @@ export class SocketConnection extends EventEmitter {
    */
   sendAction(action, useQueue=false) {
     if (!(action instanceof Action)) {
-      throw new Error(`SocketCommunication.sendAction requires an instance of Action. Got ${typeof action}`);
+      throw new Error(`RemoteDispatcher.sendAction requires an instance of Action. Got ${typeof action}`);
     }
 
     // We need to establish an connection
@@ -227,7 +244,9 @@ export class SocketConnection extends EventEmitter {
         action.run({ error: 'Keine Verbindung zum Server. Ihre Aktion kann nicht ausgeführt werden.' });
       }
     } else {
-      this._socket.emit('embed-action',action.asObject(), res => {
+      let actionAsObject = action.asObject();
+      debug('sending action: ', actionAsObject);
+      this._socket.emit('embed-action', actionAsObject, res => {
         action.run(res);
       });
     }
@@ -238,7 +257,7 @@ export class SocketConnection extends EventEmitter {
    */
   sendEvent(eventLog) {
     if (!(eventLog instanceof EventLog)) {
-      throw new Error(`SocketCommunication.sendEvent requires an instance of EventLog. Got ${typeof eventLog}`);
+      throw new Error(`RemoteDispatcher.sendEvent requires an instance of EventLog. Got ${typeof eventLog}`);
     }
 
     if (!this._socket) {

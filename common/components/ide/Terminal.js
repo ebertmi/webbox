@@ -117,7 +117,6 @@ export default class Terminal extends React.Component {
 
     if (process.stdin) {
       pipeXterm(this.terminal, process.stdin);
-      //this.terminal.pipe(process.stdin);
     }
 
     if (process.stdout) {

@@ -11,8 +11,7 @@ export function loadFromData(project, data, ignoreDocument=false) {
   }
 
   // Clear previous tabs
-  project.tabs = [];
-  project.emitChange();
+  project.tabManager.clear();
 
   for (let file in code) {
     let fileData = code[file];
@@ -25,7 +24,8 @@ export function loadFromData(project, data, ignoreDocument=false) {
   }
 
   let index = 0;
-  let mainFile = data.meta.mainFile; // ToDo: change this
+  let mainFile = data.meta.mainFile;
+
   // switch to specified mainFile
   if (mainFile) {
     index = project.getIndexForFilename(mainFile);
@@ -34,17 +34,24 @@ export function loadFromData(project, data, ignoreDocument=false) {
   }
 
   // switch to first tab
-  if (project.tabs.length > 1) {
-    let oldTab = project.tabs[index];
+  if (project.tabManager.getTabs().length > 1) {
+    let oldTab = project.tabManager.getTabs()[index];
     // Switch files inside the tabs array
-    project.tabs.splice(index, 1); // Remove tab from tabs
-    project.tabs.unshift(oldTab);
+    project.tabManager.getTabs().splice(index, 1); // Remove tab from tabs
+    project.tabManager.getTabs().unshift(oldTab);
 
     // Switch to first tab
-    project.switchTab(0);
+    project.tabManager.switchTab(0);
   }
 }
 
+/**
+ * ToDo
+ *
+ * @export
+ * @param {any} project
+ * @param {any} data
+ */
 export function reloadFromData(project, data) {
 
 }

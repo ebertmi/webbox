@@ -2,7 +2,7 @@ import { Severity  } from './../severity';
 
 import Project from './project';
 import Runner from './skulptRunner';
-import { EventLog } from '../insights/socketConnection';
+import { EventLog } from '../insights/remoteDispatcher';
 
 
 

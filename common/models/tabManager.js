@@ -21,6 +21,14 @@ export default class TabManager extends EventEmitter {
     return this.tabs;
   }
 
+  /**
+   * Clears all tabs. Call with care!
+   */
+  clear() {
+    this.tabs = [];
+    this.emit('change');
+  }
+
   addTab(type, { item, active=true, callback } = {}) {
     let index = this.tabs.findIndex(tab => {
       return tab.type === type && tab.item === item;

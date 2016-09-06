@@ -20,7 +20,8 @@ const LEGEND_IN_CHART_STYLES = {
   position: 'absolute',
   textAlign: 'left',
   right: 0,
-  fontWeight: 'bold'
+  fontWeight: 'bold',
+  zIndex: 1000
 };
 
 /**
@@ -160,10 +161,11 @@ export default class TestResultOverview extends React.Component {
               <HorizontalGridLines />
               <VerticalGridLines />
               <XAxis title="Zeit" tickFormat={this.formatXAxisTicks} />
-              <YAxis title="Durchschnitt" orientation="left" />
+              <YAxis yDomain={[0, 100]} title="Durchschnitt" orientation="left" />
+              <YAxis yDomain={[0, 5]} title="Personen" orientation="right" />
               <LineMarkSeries data={series[0].values} onValueMouseOver={this._rememberHintValue}
               onValueMouseOut={this._forgetHintValue} />
-              <LineMarkSeries data={series[1].values} onValueMouseOver={this._rememberHintValue}
+              <LineMarkSeries data={series[1].values} yDomain={[0, 5]}  onValueMouseOver={this._rememberHintValue}
               onValueMouseOut={this._forgetHintValue}/>
               {this.state.hintValue ?
                 <Hint value={this.state.hintValue} format={this.formatHint}/> :

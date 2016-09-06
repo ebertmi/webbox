@@ -24,3 +24,12 @@ export const RunModeDefaults = {
 };
 
 export const TESTS_KEY = 'tests';
+
+export const RemoteActions = {
+  GetEvents: 'get-events',
+  SubscribeToEvents: 'subscribe',
+  UnsubscribeFromEvents: 'unsubscribe',
+  Submission: 'submission',
+  TestResult: 'testresult',
+  GetTestResults: 'get-testresults'
+};

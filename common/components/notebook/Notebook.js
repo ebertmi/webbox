@@ -265,12 +265,13 @@ export default class Notebook extends React.Component {
       'view-mode': !isAuthor
     });
 
+    const analyticsDashboard = this.props.notebook.get('showAnalytics') ? <AnalyticsDashboard notebook={this.props.notebook} /> : null;
+
     return (
       <div data-drag={true} className={classes} onDragOver={this.onDragOver} onDrop={this.onDrop}>
         <div className="global-message-list">
           <MessageList messageList={this.messageList} />
         </div>
-        <AnalyticsDashboard notebook={this.props.notebook} />
         <NotebookMetadata
         canToggleEditMode={this.props.notebook.get('canToggleEditMode')}
         isAuthor={isAuthor}
@@ -283,6 +284,7 @@ export default class Notebook extends React.Component {
         course={course}
         embedType={embedType}
         id={id} />
+        { analyticsDashboard }
         { this.renderCells() }
       </div>
     );

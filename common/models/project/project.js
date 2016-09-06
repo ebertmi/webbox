@@ -8,6 +8,7 @@ import throttle from 'lodash/throttle';
 import assert from '../../util/assert';
 import languages from './languages';
 import { copyText } from '../../util/nbUtil';
+import { RemoteActions } from '../../constants/Embed';
 import { getFileExtensionByLanguage } from '../../util/languageUtils';
 import { loadFromData } from './dataUtils';
 import { API } from '../../services';
@@ -18,7 +19,7 @@ import { MessageWithAction } from '../messages';
 import { Severity  } from './../severity';
 import { Action } from '../actions';
 import { MODES, TESTS_KEY } from '../../constants/Embed';
-import { SocketConnection, Action as RemoteAction } from '../insights/socketConnection';
+import { RemoteDispatcher, Action as RemoteAction } from '../insights/remoteDispatcher';
 import { Insights } from '../insights/insights';
 import TabManager from '../tabManager';
 
@@ -80,6 +81,9 @@ export default class Project extends EventEmitter {
     this.saveEmbed = throttle(this.saveEmbed, 800);
   }
 
+  /**
+   * Tries to set the language configuration for the embed.
+   */
   checkProjectConfiguration() {
     if (isString(this.projectData.embed.meta.language)) {
       this.config = languages[this.projectData.embed.meta.language];
@@ -88,6 +92,14 @@ export default class Project extends EventEmitter {
     }
   }
 
+  /**
+   * Change the status bar message
+   *
+   * @param {String} msg - The message to display
+   * @param {String} [icon=null] - Additional icon class or icon path
+   * @param {any} [color=StatusBarColor.Default] - Any {StatusBarColor}
+   * @param {Function} [command=null] - Optional command that is executed when the user clicks on the message
+   */
   setStatusMessage(msg, icon=null, color=StatusBarColor.Default, command=null) {
     this.status.message.setLabel(msg);
 
@@ -104,6 +116,9 @@ export default class Project extends EventEmitter {
     }
   }
 
+  /**
+   * Create the status bar items and add them to the status bar registry
+   */
   createStatusBarItems() {
     // Clear previous entries, may be required if we reset a project
     this.statusBarRegistry.clear();
@@ -166,6 +181,11 @@ export default class Project extends EventEmitter {
     this.statusBarRegistry.registerStatusbarItem(sbrToStart, StatusBarAlignment.Right, 0);
   }
 
+  /**
+   * Get the embed id of the project
+   *
+   * @returns {String} id
+   */
   getEmbedId() {
     return this.projectData.embed.id;
   }
@@ -192,6 +212,11 @@ export default class Project extends EventEmitter {
     }
   }
 
+  /**
+   * Displays the insights in a tab
+   *
+   * @returns
+   */
   showInsights() {
     // Check rights
     if (this.mode !== MODES.Default) {
@@ -389,7 +414,7 @@ export default class Project extends EventEmitter {
    * @param {String} url The url for the websocket connection
    */
   initCommunication() {
-    this.socketConnection = new SocketConnection(this.projectData.communication);
+    this.socketConnection = new RemoteDispatcher(this.projectData.communication);
     this.socketConnection.on('reconnect_failed', this.onReconnectFailed.bind(this));
   }
 
@@ -410,7 +435,7 @@ export default class Project extends EventEmitter {
       return;
     }
 
-    if (this.socketConnection instanceof SocketConnection) {
+    if (this.socketConnection instanceof RemoteDispatcher) {
       eventLog.setContext(this.getContextData());
       this.socketConnection.sendEvent(eventLog, eventLog);
     } else {
@@ -418,8 +443,14 @@ export default class Project extends EventEmitter {
     }
   }
 
+  /**
+   * Send a action to the server with the context data derived from the project
+   *
+   * @param {any} action
+   * @param {any} useQueue
+   */
   sendAction(action, useQueue) {
-    if (this.socketConnection instanceof SocketConnection) {
+    if (this.socketConnection instanceof RemoteDispatcher) {
       action.setContext(this.getContextData());
       this.socketConnection.sendAction(action, useQueue);
     } else {
@@ -446,6 +477,11 @@ export default class Project extends EventEmitter {
     };
   }
 
+  /**
+   * Returns the available user data or an anonymous user
+   *
+   * @returns
+   */
   getUserData() {
     if (this.projectData.user) {
       return this.projectData.user;
@@ -456,6 +492,11 @@ export default class Project extends EventEmitter {
     };
   }
 
+  /**
+   * Returns the assets of the project
+   *
+   * @returns {Array} of assets (objects)
+   */
   getAssets() {
     return this.projectData.embed.assets != undefined ? this.projectData.embed.assets : [];
   }
@@ -491,6 +532,13 @@ export default class Project extends EventEmitter {
     return this.tests;
   }
 
+  /**
+   * Create a new Test object for the project for the current language
+   *
+   * @param {any} metadata
+   * @param {any} data
+   * @returns
+   */
   createTestCode(metadata, data) {
     if (metadata == null) {
       metadata = {};
@@ -522,6 +570,11 @@ export default class Project extends EventEmitter {
     return `${protocol}//${host}/embed/${idOrSlug}${viewDocument}`;
   }
 
+  /**
+   * Creates a link pointing to the original version of the embed
+   *
+   * @returns str with the full URL
+   */
   getOriginalLink() {
     const host = window.location.host;
     const protocol = window.location.protocol;
@@ -545,7 +598,7 @@ export default class Project extends EventEmitter {
 
     shareAction = new Action('share.sharewithteacher.action', 'Abschicken', null, true, () => {
       let message = shareAction.input ? shareAction.input.value : '';
-      let remoteAction = new RemoteAction('submission', this.getUserData(), {
+      let remoteAction = new RemoteAction(RemoteActions.Submission, this.getUserData(), {
         shareableLink: this.getSharableLink(),
         message: message
       },
@@ -602,8 +655,12 @@ export default class Project extends EventEmitter {
     this.showMessage(Severity.Info, messageObj);
   }
 
+
   /**
    * Init the project from the given data object
+   *
+   * @param {Object} data -  The Embed
+   * @param {boolean} [ignoreDocument=false] - If true any code document will be ignored
    */
   fromInitialData(data, ignoreDocument=false) {
     loadFromData(this, data, ignoreDocument);
@@ -618,6 +675,11 @@ export default class Project extends EventEmitter {
     this.setLocationToSlug();
   }
 
+  /**
+   * Update the URL from the embed id to the slug if available
+   *
+   * @returns
+   */
   setLocationToSlug() {
     let url = window.location.href;
     const id = this.getEmbedId();
@@ -634,6 +696,9 @@ export default class Project extends EventEmitter {
     }
   }
 
+  /**
+   * Update the browser/document title with the project name
+   */
   setTitle() {
     if (this.projectData.embed.meta.name) {
       document.title = `${this.projectData.embed.meta.name} | ${document.title}`;

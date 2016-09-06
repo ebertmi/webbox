@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
+import Debug from 'debug';
 
-import { SocketConnection } from '../../../models/insights/socketConnection';
 import { getCodeEmbedsFromNotebook } from '../../../util/nbUtil';
+import { MultiEmbedAnalytics } from '../../../models/insights/multiEmbedAnalytics';
+import EventClusterChart from './EventClusterChart';
+
+const debug = Debug('webbox:AnalyticsDashboard');
 
 /**
  * ToDo: Subscribe to all embed ids. How can we handle the permissions? Server-side?
@@ -17,30 +21,70 @@ export default class AnalyticsDashboard extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
-    this.socketConnection = new SocketConnection({
-      jwt: '',
-      url: ''
-    });
+    this.state = {
+      embeds: []
+    };
+
+    // Bindings
+    this.onChange = this.onChange.bind(this);
   }
 
   componentWillMount() {
-    let ids = getCodeEmbedsFromNotebook(this.props.notebook);
+    let embeds = getCodeEmbedsFromNotebook(this.props.notebook);
+    embeds = embeds.toArray();
+
+    this.setState({
+      embeds: embeds,
+      analytics: new MultiEmbedAnalytics(embeds)
+    });
+    debug('Will mount with following embeds', embeds);
   }
 
   componentDidMount() {
-
+    // Retrieve inital date and subscribe
+    if (this.shouldRender() && this.state.analytics != null) {
+      this.state.analytics.on('change', this.onChange);
+      this.state.analytics.init();
+    }
   }
 
   componentWillUnmount() {
     // Unsubscribe, ... ...
+    if (this.state.analytics != null) {
+      this.state.analytics.dispose();
+    }
+  }
+
+  onChange() {
+    this.forceUpdate();
+  }
+
+  shouldRender() {
+    return window.USER_DATA != null && window.USER_DATA.isAnonymous != null && window.USER_DATA.isAnonymous === false;
   }
 
   render() {
-    return (
-      <div className="analytics">
-        <p>Anlaytics here!!!!11!!ELF11elf1!</p>
-      </div>
-    );
+
+    if (this.shouldRender()) {
+      let entries = this.state.analytics.getEntries();
+      let children = [];
+
+      entries.forEach((value, key) => {
+        debug('Adding EventClusterChart for embed %s', key);
+        children.push(<EventClusterChart key={key} series={value.dateClustersToSeries()} />);
+      });
+
+
+      return (
+        <div className="analytics col-xs-12">
+          <div className="col-xs-12">
+            <h4>Statistiken</h4>
+          </div>
+          {children}
+        </div>
+      );
+    } else {
+      return null;
+    }
   }
 }

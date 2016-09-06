@@ -2,7 +2,7 @@ import { EventEmitter } from 'events';
 import UUID from 'uuid';
 
 import assert from '../../util/assert';
-import { SocketEvents } from './socketConnection';
+import { RemoteEventTypes } from './remoteDispatcher';
 
 /**
  * A submission is a user/student sent object that contains
@@ -93,7 +93,7 @@ export class Submissions extends EventEmitter {
       return;
     }
 
-    this._connection.addSocketEventListener(SocketEvents.Submission, this.onSubmission);
+    this._connection.addSocketEventListener(RemoteEventTypes.Submission, this.onSubmission);
 
     this.allowSubmissions();
   }
@@ -108,7 +108,7 @@ export class Submissions extends EventEmitter {
       return;
     }
 
-    this._connection.removeSocketEventListener(SocketEvents.Submission, this.onSubmission);
+    this._connection.removeSocketEventListener(RemoteEventTypes.Submission, this.onSubmission);
 
     this.disallowSubmissions();
   }

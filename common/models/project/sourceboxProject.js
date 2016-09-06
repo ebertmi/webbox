@@ -5,7 +5,7 @@ import { Severity } from './../severity';
 
 import Project from './project';
 import Runner from './sourceboxRunner';
-import { EventLog } from '../insights/socketConnection';
+import { EventLog } from '../insights/remoteDispatcher';
 
 const PROCESS_DEFAULTS = {
   term: true
