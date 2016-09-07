@@ -28,7 +28,7 @@ block content
             h4 Kurse
             p Hier finden Sie alle Kurse, zum Ausführen der Beispiele müssen Sie jedoch angemeldet sein.
           .col-xs-12
-            div.card-columns
+            div.card-deck
               - each course in courses
                 div.card
                   img.card-img-top.course-logo(src="/media/" + course.slug + "/"+ course.logo, alt="Kurs-Thumbnail" + course.title)
