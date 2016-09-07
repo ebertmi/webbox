@@ -177,7 +177,7 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
           fontFamily: fonts.tertiary,
           minWidth: "100%",
           maxWidth: 800,
-          textAlign: "center"
+          textAlign: "left"
         },
         code: {
           textAlign: "left",

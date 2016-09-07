@@ -74,12 +74,13 @@ export default class AnalyticsDashboard extends Component {
         children.push(<EventClusterChart key={key} series={value.dateClustersToSeries()} />);
       });
 
+      if (children.length === 0) {
+        children.push(<p>Das Dokument enthält keine auswertbaren Beispiele.</p>);
+      }
 
       return (
         <div className="analytics col-xs-12">
-          <div className="col-xs-12">
-            <h4>Statistiken</h4>
-          </div>
+          <h4>Statistiken</h4>
           {children}
         </div>
       );
