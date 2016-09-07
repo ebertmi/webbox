@@ -23,7 +23,9 @@ import Package from './package.json';
 const defaultContext = {
   webboxVersion: Package.version,
   isProd: config.isProd,
-  isDev: config.isDev
+  isDev: config.isDev,
+  KEENIO_PROJECTID: JSON.stringify(config.keenio.projectId),
+  KEENIO_WRITEKEY: JSON.stringify(config.keenio.writeKey)
 };
 
 // ToDo import depending on the environment

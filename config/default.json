@@ -60,6 +60,10 @@
     "crumb": {
       "isSecure": false
     },
+    "keenio": {
+      "projectId": "",
+      "writeKey": ""
+    },
     "media": {
         "path": "./media",
         "maxBytes":  5242880
