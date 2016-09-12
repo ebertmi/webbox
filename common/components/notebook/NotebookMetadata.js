@@ -73,16 +73,16 @@ class NotebookMetadata extends React.Component {
   }
 
   renderViewMode() {
-    const iconName = this.props.isAuthor ? 'toggle-off' : 'toggle-on';
-    const titleText = this.props.isAuthor ? 'Leseansicht (Strg+Q)' : 'Editieransicht (Strg+Q)';
+    const iconName = this.props.isEditModeActive ? 'toggle-off' : 'toggle-on';
+    const titleText = this.props.isEditModeActive ? 'Leseansicht (Strg+Q)' : 'Editieransicht (Strg+Q)';
 
     const linkToPresentation = `/p/${this.props.id}`;
 
-    let toggleViewModeButton = this.props.canToggleEditMode === false ? null : (<ActionItem isIcon={true} title={titleText} onClick={this.toggleViewMode}>
+    let toggleViewModeButton = this.props.isAuthor === false ? null : (<ActionItem isIcon={true} title={titleText} onClick={this.toggleViewMode}>
           <Icon name={iconName} />
         </ActionItem>);
 
-    let toggleViewAnalyticsButton = this.props.canToggleEditMode === false ? null : (<ActionItem isIcon={true} title={'Diagramme Umschalten'} onClick={this.toggleViewAnalytics}>
+    let toggleViewAnalyticsButton = this.props.isAuthor === false ? null : (<ActionItem isIcon={true} title={'Diagramme Umschalten'} onClick={this.toggleViewAnalytics}>
           <Icon name="line-chart" />
         </ActionItem>);
 
@@ -121,7 +121,7 @@ class NotebookMetadata extends React.Component {
   }
 
   render() {
-    const { isAuthor, editable, metadata, slug, course, id, embedType } = this.props;
+    const { isEditModeActive, editable, metadata, slug, course, id, embedType } = this.props;
     const author = metadata.get('author');
     const date = metadata.get('lastUpdate');
     const title = metadata.get('title');
@@ -219,7 +219,7 @@ class NotebookMetadata extends React.Component {
             <Icon name="clock-o" />&nbsp;Zuletzt aktualisiert&nbsp;<Time value={date} locale="de" relative={true} />
           </span>
           <span className="metadata-sep">&nbsp;</span>
-          { isAuthor ? this.renderButtons() : null }
+          { isEditModeActive ? this.renderButtons() : null }
           { this.renderViewMode() }
         </div>
         <hr/>

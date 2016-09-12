@@ -170,7 +170,7 @@ export default class CodeEmbedCell extends BaseCell {
   }
 
   render() {
-    const { cell, isAuthor, editing, dispatch } = this.props;
+    const { cell, isEditModeActive, editing, dispatch } = this.props;
     const width = this.props.cell.getIn(['metadata', 'width']);
     const height = this.props.cell.getIn(['metadata', 'height']);
     let content;
@@ -182,7 +182,7 @@ export default class CodeEmbedCell extends BaseCell {
     let frame = source !== '' ? <IFrame lazy={true} className="col-xs-12" width={width} height={height} src={`/embed/${source}`} allowFullScreen={true} frameBorder="0" /> : <p>Keine ID angegeben.</p>;
 
 
-    if (!(isAuthor && editing)) {
+    if (!(isEditModeActive && editing)) {
       content = null;
     } else {
       content = this.renderEditMode();
@@ -194,7 +194,7 @@ export default class CodeEmbedCell extends BaseCell {
 
     return (
       <div className={classes}>
-        <EditButtonGroup isVisible={isVisible} isAuthor={isAuthor} editing={editing} onToggleVisibility={this.onToggleVisibility} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
+        <EditButtonGroup isVisible={isVisible} isEditModeActive={isEditModeActive} editing={editing} onToggleVisibility={this.onToggleVisibility} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
         {metadata}
         {content}
         {frame}
@@ -205,7 +205,7 @@ export default class CodeEmbedCell extends BaseCell {
 
 CodeEmbedCell.propTypes = {
   cell: React.PropTypes.object.isRequired,
-  isAuthor: React.PropTypes.bool.isRequired,
+  isEditModeActive: React.PropTypes.bool.isRequired,
   editing: React.PropTypes.bool.isRequired,
   lazy: React.PropTypes.bool,
   cellIndex: React.PropTypes.number.isRequired

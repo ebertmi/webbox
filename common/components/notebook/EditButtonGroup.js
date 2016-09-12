@@ -26,7 +26,7 @@ export function EditButtonGroup (props) {
   const isVisibleIcon = props.isVisible ? IS_VISIBLE_ICON_NAME : IS_INVISIBLE_ICON_NAME;
   const isVisibleTitle = props.isVisible ? IS_VISIBLE_TITLE : IS_INVISIBLE_TITLE;
 
-  if (props.isAuthor === false) {
+  if (props.isEditModeActive === false) {
     return null;
   }
 

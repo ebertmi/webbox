@@ -84,7 +84,6 @@ export function stateToJS(state) {
  *  -> All cells are added to a Immutable.Map using the cell.id as a key
  *  -> For storing the order of cells we use a Immutable.List "cellOrder"" - containing a mapping of index:key
  *  -> "isAuthor" manages the overall switching between edit and view mode
- *  -> Add canToggleEditMode to allow authors to view the document in view mode
  */
 export function documentToState(document) {
   let newState = initialState.set('metadata', Immutable.fromJS(document.metadata));
@@ -96,10 +95,10 @@ export function documentToState(document) {
   newState = newState.set('authors', new Immutable.List(document.authors));
 
   // ToDo: We should really rename the isAuthor thing and then just call it isNotebookEditable
-  newState = newState.set('isAuthor', false/*document.isAuthor*/);
+  //newState = newState.set('isAuthor', false/*document.isAuthor*/);
 
   // ToDo: This should be the real isAuthor key
-  newState = newState.set('canToggleEditMode', document.canToggleEditMode);
+  newState = newState.set('isAuthor', document.isAuthor);
   newState = newState.set('id', document.id);
 
   // now add cells

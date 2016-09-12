@@ -96,7 +96,7 @@ export default class BaseCell extends React.Component {
 
 BaseCell.propTypes = {
   cell: React.PropTypes.object.isRequired,
-  isAuthor: React.PropTypes.bool.isRequired,
+  isEditModeActive: React.PropTypes.bool.isRequired,
   editing: React.PropTypes.bool.isRequired,
   cellIndex: React.PropTypes.number.isRequired,
   course: React.PropTypes.string

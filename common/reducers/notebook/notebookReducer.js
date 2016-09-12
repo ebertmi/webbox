@@ -30,8 +30,8 @@ export const initialState = Immutable.Map({
   cells: new Immutable.Map(),
   notebookMetadataEditable: false, /* toggle notebook metadata edit mode */
   activeBlock: -1, /* current block in editing mode */
+  isEditModeActive: false, // old isAuthor
   isAuthor: false, /* should be canEdit, as only authors or admins can edit pages */
-  canToggleEditMode: false,
   showAnalytics: false,
   authors: new Immutable.List(),
   nbformat: 4, /* required by nbformat */
@@ -376,10 +376,10 @@ function toggleNotebookMetadataEditable(state) {
  * Disables the edit mode for the current active block/cell
  */
 function toggleViewMode(state) {
-  if (state.get('isAuthor')) {
-    return state.set('isAuthor', false).set('activeBlock', -1);
+  if (state.get('isEditModeActive')) {
+    return state.set('isEditModeActive', false).set('activeBlock', -1);
   } else {
-    return state.set('isAuthor', true);
+    return state.set('isEditModeActive', true);
   }
 }
 

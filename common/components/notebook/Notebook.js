@@ -63,7 +63,7 @@ export default class Notebook extends React.Component {
     let key = e.which || e.keyCode;
     if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 83) {
       // Pressed Ctrl-S for saving
-      if (this.props.notebook.get('canToggleEditMode', false)) {
+      if (this.props.notebook.get('isAuthor', false)) {
         this.onSave();
       }
       e.preventDefault();
@@ -72,7 +72,7 @@ export default class Notebook extends React.Component {
       this.onPresentationMode();
     } else if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 81) {
       // Pressed Ctrl-Q to toggle view mode
-      if (this.props.notebook.get('canToggleEditMode', false)) {
+      if (this.props.notebook.get('isAuthor', false)) {
         this.onToggleViewMode();
       }
       e.preventDefault();
@@ -201,7 +201,7 @@ export default class Notebook extends React.Component {
 
   renderCells() {
     const activeBlock = this.props.notebook.get('activeBlock');
-    const isAuthor = this.props.notebook.get('isAuthor');
+    const isEditModeActive = this.props.notebook.get('isEditModeActive');
     const cells = this.props.notebook.get('cells');
     const cellOrder = this.props.notebook.get('cellOrder');
     const notebookId = this.props.notebook.get('id');
@@ -217,25 +217,25 @@ export default class Notebook extends React.Component {
       let cell = cells.get(cellId);
       const id = cell.get('id');
 
-      if (isAuthor) {
+      if (isEditModeActive) {
         blocks.push(
-          <AddControls dispatch={dispatch} key={'add' + id}  cellIndex={index} id={id} isAuthor={isAuthor} />
+          <AddControls dispatch={dispatch} key={'add' + id}  cellIndex={index} id={id} isEditModeActive={isEditModeActive} />
         );
       }
 
       // push actual cell
       switch (cell.get('cell_type')) {
         case 'markdown':
-          blocks.push(<MarkdownCell document={notebookId} course={course} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor} editing={index === activeBlock}/>);
+          blocks.push(<MarkdownCell document={notebookId} course={course} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={index === activeBlock}/>);
           break;
         case 'code':
-          blocks.push(<CodeCell  embedType={embedType} course={course} notebookLanguage={notebookLanguage} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor} editing={index === activeBlock}/>);
+          blocks.push(<CodeCell  embedType={embedType} course={course} notebookLanguage={notebookLanguage} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={index === activeBlock}/>);
           break;
         case 'codeembed':
-          blocks.push(<CodeEmbedCell course={course} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor}editing={index === activeBlock}/>);
+          blocks.push(<CodeEmbedCell course={course} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive}editing={index === activeBlock}/>);
           break;
         case 'raw':
-          blocks.push(<RawCell dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isAuthor={isAuthor} editing={index === activeBlock}/>);
+          blocks.push(<RawCell dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={index === activeBlock}/>);
           break;
         default:
         //return null;
@@ -243,9 +243,9 @@ export default class Notebook extends React.Component {
 
     });
 
-    if (isAuthor) {
+    if (isEditModeActive) {
       blocks.push(
-          <AddControls dispatch={dispatch} key="add-end" isAuthor={isAuthor} />
+          <AddControls dispatch={dispatch} key="add-end" isEditModeActive={isEditModeActive} />
       );
     }
 
@@ -263,10 +263,10 @@ export default class Notebook extends React.Component {
     const editable = this.props.notebook.get('notebookMetadataEditable');
 
     // Is Author, renders the edit buttons or the view mode
-    const isAuthor = this.props.notebook.get('isAuthor');
+    const isEditModeActive = this.props.notebook.get('isEditModeActive');
 
     const classes = classnames("notebook row", {
-      'view-mode': !isAuthor
+      'view-mode': !isEditModeActive
     });
 
     const analyticsDashboard = this.props.notebook.get('showAnalytics') ? <AnalyticsDashboard notebook={this.props.notebook} /> : null;
@@ -277,8 +277,8 @@ export default class Notebook extends React.Component {
           <MessageList messageList={this.messageList} />
         </div>
         <NotebookMetadata
-        canToggleEditMode={this.props.notebook.get('canToggleEditMode')}
-        isAuthor={isAuthor}
+        isAuthor={this.props.notebook.get('isAuthor')}
+        isEditModeActive={isEditModeActive}
         onSave={this.onSave}
         onDelete={this.onDelete}
         redoStackSize={redoStackSize}

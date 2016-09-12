@@ -34,8 +34,8 @@ export default class AddControls extends Component {
   }
 
   render() {
-    const { isAuthor } = this.props;
-    if (!isAuthor) {
+    const { isEditModeActive } = this.props;
+    if (!isEditModeActive) {
       return null;
     }
     return (

@@ -94,13 +94,13 @@ export default class RawCell extends BaseCell {
   }
 
   render() {
-    const { cell, isAuthor, editing, dispatch } = this.props;
+    const { cell, isEditModeActive, editing, dispatch } = this.props;
     let content;
     let metadata = <CellMetadata beforeChange={this.onUpdateCell} className="col-xs-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
     let editingClass = editing ? ' editing' : '';
     const isVisible = this.isVisible();
 
-    if (!(isAuthor && editing)) {
+    if (!(isEditModeActive && editing)) {
       content = this.renderViewMode();
     } else {
       content = this.renderEditMode();
@@ -112,7 +112,7 @@ export default class RawCell extends BaseCell {
 
     return (
       <div className={classes}>
-        <EditButtonGroup isVisible={isVisible} isAuthor={isAuthor} editing={editing} onToggleVisibility={this.onToggleVisibility} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
+        <EditButtonGroup isVisible={isVisible} isEditModeActive={isEditModeActive} editing={editing} onToggleVisibility={this.onToggleVisibility} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
         {metadata}
         {content}
       </div>
@@ -123,7 +123,7 @@ export default class RawCell extends BaseCell {
 RawCell.propTypes = {
   minHeight: React.PropTypes.number,
   cell: React.PropTypes.object.isRequired,
-  isAuthor: React.PropTypes.bool.isRequired,
+  isEditModeActive: React.PropTypes.bool.isRequired,
   editing: React.PropTypes.bool.isRequired,
   cellIndex: React.PropTypes.number.isRequired
 };

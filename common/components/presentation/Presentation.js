@@ -51,7 +51,7 @@ export default class Presentation extends React.Component {
   renderCell(cell, index, notebook) {
     const id = cell.get('id');
     const activeBlock = -1;
-    const isAuthor = false;
+    const isEditModeActive = false;
     const dispatch = this.props.dispatch;
     const isVisible = cell.getIn(['metadata', 'isVisible'], true);
 
@@ -82,7 +82,7 @@ export default class Presentation extends React.Component {
           </LazyLoad>
         );
       case 'raw':
-        return <RawCell dispatch={dispatch} cellIndex={index} key={id} id={id} cell={cell} isAuthor={isAuthor} editing={id === activeBlock}/>;
+        return <RawCell dispatch={dispatch} cellIndex={index} key={id} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={id === activeBlock}/>;
       default:
         // Should only occur for some flawed notebook files
         return <Text></Text>;
