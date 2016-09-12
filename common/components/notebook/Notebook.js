@@ -63,15 +63,19 @@ export default class Notebook extends React.Component {
     let key = e.which || e.keyCode;
     if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 83) {
       // Pressed Ctrl-S for saving
-
-      this.onSave();
+      if (this.props.notebook.get('canToggleEditMode', false)) {
+        this.onSave();
+      }
       e.preventDefault();
     } else if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 77) {
       // Pressed Ctrl+M to open the presentation
       this.onPresentationMode();
     } else if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 81) {
       // Pressed Ctrl-Q to toggle view mode
-      this.onToggleViewMode();
+      if (this.props.notebook.get('canToggleEditMode', false)) {
+        this.onToggleViewMode();
+      }
+      e.preventDefault();
     }
   }
 

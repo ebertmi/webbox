@@ -7,6 +7,10 @@ import Debug from 'debug';
 
 const debug = Debug('webbox:ide');
 
+function loadedInIFrame () {
+  return window.frameElement && window.frameElement.nodeName == "IFRAME";
+}
+
 export default class Ide extends React.Component {
   constructor(props) {
     super(props);
@@ -21,6 +25,12 @@ export default class Ide extends React.Component {
     // ToDo: Add a check for unsaved changes!
     addEventListener('beforeunload', event => {
       if (this.props.project.canSave() === false) {
+        return false;
+      }
+
+      // Do not bother users with iFrame stuff
+      // ToDo: should we limit this on presentations only?
+      if ((loadedInIFrame())) {
         return false;
       }
 

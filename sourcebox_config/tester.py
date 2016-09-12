@@ -29,7 +29,8 @@ def testcases_in_module(module):
 try:
     import tests
 except:
-    print("Es wurden keine Tests angelegt.")
+    print("Es wurden keine Tests angelegt oder es befinden sich Fehler im Testcode.")
+    traceback.print_exc(file=sys.stdout)
     sys.exit()
 
 testcases = testcases_in_module(tests)

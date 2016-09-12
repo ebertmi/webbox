@@ -16,6 +16,7 @@ import isFunction from 'lodash/isFunction';
 import Debug from 'debug';
 
 import { getCookie } from '../../services/utils';
+import { trackUserInteraction } from '../../util/trackingUtils';
 
 const debug = Debug('webbox:RemoteDispatcher');
 
@@ -245,6 +246,9 @@ export class RemoteDispatcher extends EventEmitter {
       }
     } else {
       let actionAsObject = action.asObject();
+
+      trackUserInteraction('embed-action', actionAsObject);
+
       debug('sending action: ', actionAsObject);
       this._socket.emit('embed-action', actionAsObject, res => {
         action.run(res);
@@ -266,7 +270,11 @@ export class RemoteDispatcher extends EventEmitter {
 
     // Check if we have a open connection
     if (this.isConnected()) {
-      this._socket.emit('embed-event', eventLog.asObject(), res => {
+      const eventObj = eventLog.asObject();
+
+      trackUserInteraction('embed-event', eventObj);
+
+      this._socket.emit('embed-event', eventObj, res => {
         // ToDo:
         if (res && res.error) {
           console.error(res.error);

@@ -94,7 +94,11 @@ export function documentToState(document) {
   newState = newState.set('nbformat_minor', document.nbformat_minor || 0);
   newState = newState.set('course', document.course);
   newState = newState.set('authors', new Immutable.List(document.authors));
-  newState = newState.set('isAuthor', document.isAuthor);
+
+  // ToDo: We should really rename the isAuthor thing and then just call it isNotebookEditable
+  newState = newState.set('isAuthor', false/*document.isAuthor*/);
+
+  // ToDo: This should be the real isAuthor key
   newState = newState.set('canToggleEditMode', document.canToggleEditMode);
   newState = newState.set('id', document.id);
 

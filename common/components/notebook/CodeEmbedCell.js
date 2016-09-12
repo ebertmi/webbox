@@ -96,6 +96,9 @@ export default class CodeEmbedCell extends BaseCell {
       e.preventDefault();
       const value = e.target.value || '';
       this.props.dispatch(updateCell(this.props.cell.get('id'), value));
+    } else if (this.sourceInput != null) {
+      const value = this.sourceInput.value || '';
+      this.props.dispatch(updateCell(this.props.cell.get('id'), value));
     }
   }
 
@@ -156,7 +159,7 @@ export default class CodeEmbedCell extends BaseCell {
         <p className="text-muted">Sie können die Größe (Höhe und Breite) über die Metadaten auch selbst steuern. Nutzen Sie dazu die Schlüssel <code>height</code> bzw. <code>width</code> und einen numerischen Wert (z.B. <code>500</code>) ohne Einheit.</p>
         <div className="form-group">
           <label className="form-control-label">Beispiel-ID</label>
-          <input className="form-control" type="text" placeholder="ID..." onChange={this.onUpdateCell} value={source}/>
+          <input className="form-control" type="text" placeholder="ID..." onChange={this.onUpdateCell} value={source} ref={ref => this.sourceInput = ref}/>
         </div>
         <hr className="top-sep" />
         { createForm }

@@ -209,8 +209,8 @@ export default class MarkdownCell extends BaseCell {
 
     return (
       <div className="col-xs-12" onKeyDown={this.onKeyDown}>
-        <strong>Markdown</strong>  <Icon className="icon-control" onClick={this.toggleImageGallery} title="Verfügbare Bilder anzeigen" name="picture-o"/>
         { this.renderImageGallery() }
+        <strong>Markdown</strong>  <Icon className="icon-control" onClick={this.toggleImageGallery} title="Verfügbare Bilder anzeigen" name="picture-o"/>
         { this.renderTextToolbar() }
         { this.renderVariousToolbar() }
         { this.renderListToolbar() }

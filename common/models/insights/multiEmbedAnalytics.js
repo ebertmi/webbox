@@ -11,6 +11,17 @@ import { normalizeDate } from '../../util/dateUtils';
 import { RemoteDispatcher, Action as RemoteAction, RemoteEventTypes } from './remoteDispatcher';
 import { RemoteActions } from '../../constants/Embed';
 
+/**
+ * Rich data model for storing and computing analytics based on user interactions:
+ *  - clusters errors by type
+ *  - clusters events by type (run, test, error, failure, etc..) and interval '(hourly, daily, monthly..) and period
+ *  - Allows to filter errors by type
+ *  - Can subscribe to events from the server and updates the clusters automatically (tries to avoid as many computations as possible)
+ *
+ * @export
+ * @class EmbedAnalytics
+ * @extends {EventEmitter}
+ */
 export class EmbedAnalytics extends EventEmitter {
   constructor(embedId, remoteDispatcher) {
     super();
@@ -32,7 +43,7 @@ export class EmbedAnalytics extends EventEmitter {
 
     this.isSubscribed = false;
 
-    //this.testResultsOverview = new TestResultsOverview(this._connection, this._project);
+    this.testResultsOverview = new TestResultsOverview(this._connection, this._project);
 
     // Context binding
     this.subscribeToEvents = this.subscribeToEvents.bind(this);

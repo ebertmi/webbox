@@ -74,7 +74,7 @@ class NotebookMetadata extends React.Component {
 
   renderViewMode() {
     const iconName = this.props.isAuthor ? 'toggle-off' : 'toggle-on';
-    const titleText = this.props.isAuthor ? 'Leseansicht' : 'Editieransicht';
+    const titleText = this.props.isAuthor ? 'Leseansicht (Strg+Q)' : 'Editieransicht (Strg+Q)';
 
     const linkToPresentation = `/p/${this.props.id}`;
 
@@ -91,7 +91,7 @@ class NotebookMetadata extends React.Component {
       <Toolbar className="notebook-toolbar" animated={true}>
         {toggleViewModeButton}
         {toggleViewAnalyticsButton}
-        <ActionItem isIcon={true} title="Präsentationsmodus" href={linkToPresentation} target="_blank" >
+        <ActionItem isIcon={true} title="Präsentationsmodus (Strg+M)" href={linkToPresentation} target="_blank" >
           <Icon name="television" />
         </ActionItem>
       </Toolbar>
@@ -113,7 +113,7 @@ class NotebookMetadata extends React.Component {
         {/*<ActionItem isIcon={true} title="Wiederholen" onClick={this.onRedo}>
           <Icon name="repeat" />
         </ActionItem>*/}
-        <ActionItem isIcon={true} title="Speichern" onClick={this.props.onSave}>
+        <ActionItem isIcon={true} title="Speichern (Strg+S)" onClick={this.props.onSave}>
           <Icon name="floppy-o" />
         </ActionItem>
       </Toolbar>

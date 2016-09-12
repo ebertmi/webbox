@@ -29,6 +29,12 @@ export default class BaseCell extends React.Component {
 
 
   onToggleVisibility() {
+
+    if (this.onUpdateCell) {
+      // Save the current session, otherwise it will be overridden
+      this.onUpdateCell();
+    }
+
     this.props.dispatch(toggleCellVisibility(this.props.cell.get('id')));
   }
 
