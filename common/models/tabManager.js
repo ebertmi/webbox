@@ -15,6 +15,20 @@ export default class TabManager extends EventEmitter {
   }
 
   /**
+   * Clear all has changes flags of the file tabs, should be called
+   * after an successful save.
+   *
+   * @memberOf TabManager
+   */
+  clearFileChanges() {
+    // Get all file tabs and clear the internal changes, indicator o.O?
+    let fileTabs = this.tabs.filter(tab => tab.type === 'file');
+    fileTabs.forEach(tab => {
+      tab.item.clearChanges();
+    });
+  }
+
+  /**
    * Return all tabs of the project
    */
   getTabs() {

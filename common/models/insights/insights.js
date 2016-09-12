@@ -299,8 +299,8 @@ export class Insights extends EventEmitter {
     let action = new Action(RemoteActions.GetEvents, this._project.getUserData(), {
       startDate: this.eventStartDate
     }, res => {
-      if (res.error) {
-        console.error(res.error);
+      if (res.error || res.events === undefined) {
+        console.error('Failed request:', res.error, res);
       } else {
         this.onEvents(res.events, true);
       }

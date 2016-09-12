@@ -9,6 +9,33 @@ export default class File extends EditSession {
     this._name = name;
     this._isNameEditable = false;
     this._nameChanged = false;
+    this.hasChanges = false;
+
+    // Binding
+    this.onDocumentChange = this.onDocumentChange.bind(this);
+    this.on('input', this.onDocumentChange);
+  }
+
+  /**
+   * Set the hasChanges flag to true and notify all listeners if it has changes.
+   *
+   * @returns
+   *
+   * @memberOf File
+   */
+  onDocumentChange() {
+    // Skip if document is already dirty
+    if (this.hasChanges === true) {
+      return;
+    }
+
+    this.hasChanges = true;
+    this._emit('hasChangesUpdate');
+  }
+
+  clearChanges() {
+    this.hasChanges = false;
+    this._emit('hasChangesUpdate');
   }
 
   autoDetectMode() {
@@ -72,6 +99,7 @@ export default class File extends EditSession {
     this.removeAllListeners("changeName");
     this.removeAllListeners("changedName");
     this.removeAllListeners("changeNameEditable");
+    this.removeAllListeners("hasChangesUpdate");
   }
 }
 

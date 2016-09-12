@@ -43,6 +43,10 @@ export function loadFromData(project, data, ignoreDocument=false) {
     // Switch to first tab
     project.tabManager.switchTab(0);
   }
+
+  // Otherwise we have unsaved changes, when adding files
+  project.hasUnsavedChanges = false;
+  project.tabManager.clearFileChanges();
 }
 
 /**

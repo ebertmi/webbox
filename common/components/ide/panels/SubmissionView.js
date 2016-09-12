@@ -35,12 +35,13 @@ export default class SubmissionView extends React.Component {
 
   onChange() {
     this.setState({
-      submissions: this.props.submissions.get()
+      submissions: this.props.submissions.get(),
+      isActive: this.props.submissions.isActive()
     });
   }
 
   render() {
-    const iconName = this.props.submissions.isActive() ? 'toggle-on' : 'toggle-off';
+    const iconName = this.state.isActive ? 'toggle-on' : 'toggle-off';
     return (
       <div className="row">
       <div className="col-xs-12">

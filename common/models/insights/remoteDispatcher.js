@@ -163,6 +163,14 @@ export class RemoteDispatcher extends EventEmitter {
     // CSRF token (hapi crumb plugin)
     let crumb = getCookie('crumb');
 
+    if (crumb == null) {
+      crumb = window.__crumb__;
+    }
+
+    if (crumb == null) {
+      debug('Failed to access crumb. Establishing websocket connection will fail.');
+    }
+
     // Defer the connection until we receive our first message or event
     this._socket = io(this._url,  {query : `Authorization=${this._jwt}&crumb=${crumb}`});
 

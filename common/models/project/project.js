@@ -12,7 +12,7 @@ import { RemoteActions } from '../../constants/Embed';
 import { getFileExtensionByLanguage } from '../../util/languageUtils';
 import { loadFromData } from './dataUtils';
 import { API } from '../../services';
-import { StatusBarRegistry, StatusBarAlignment, StatusBarItem, StatusBarColor, languageToIcon } from './status';
+import { StatusBarRegistry, StatusBarAlignment, StatusBarItem, StatusBarColor } from './status';
 import File from './file';
 import Test from './test';
 import { MessageWithAction } from '../messages';
@@ -76,6 +76,7 @@ export default class Project extends EventEmitter {
     // Project state variables
     this.isConsistent = true;
     this.pendingSave = false;
+    this.hasUnsavedChanges = false; // Flag if the project has unsaved changes!
 
     // Handle throttling and debouncing
     this.saveEmbed = throttle(this.saveEmbed, 800);
@@ -306,6 +307,13 @@ export default class Project extends EventEmitter {
 
     // filename change handler
     file.on('changedName', this.onChangedFileName.bind(this));
+    file.on('hasChangesUpdate', () => {
+      if (file.hasChanges) {
+        this.hasUnsavedChanges = true;
+      }
+    });
+
+    this.hasUnsavedChanges = true;
 
     this.tabManager.addTab('file', { item: file, active: active});
   }
@@ -758,6 +766,8 @@ export default class Project extends EventEmitter {
       if (res.error) {
         this.setStatusMessage('Beim Speichern ist ein Fehler augetreten.', null, StatusBarColor.Danger);
       } else {
+        this.hasUnsavedChanges = false; // Reset
+        this.tabManager.clearFileChanges();
         this.setStatusMessage('Gespeichert.', null, StatusBarColor.Success);
         // Update the document, if received any and not set
         if (res.document) {
