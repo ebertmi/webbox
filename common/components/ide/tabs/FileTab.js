@@ -15,6 +15,7 @@ export default class FileTab extends React.Component {
     this.onRename = this.onRename.bind(this);
     this.onRenameBlur = this.onRenameBlur.bind(this);
     this.onEnterRename = this.onEnterRename.bind(this);
+    this.onHasChangesUpdate = this.onHasChangesUpdate.bind(this);
   }
 
   componentWillMount() {
@@ -23,10 +24,12 @@ export default class FileTab extends React.Component {
     item.on('changeName', this.onChangeName);
     item.on('changeAnnotation', this.onChangeAnnotation);
     item.on('changeNameEditable', this.onChangeNameEditable);
+    item.on('hasChangesUpdate', this.onHasChangesUpdate);
 
     this.onChangeName();
     this.onChangeAnnotation();
     this.onChangeNameEditable();
+    this.onHasChangesUpdate();
   }
 
   componentWillUnmount() {
@@ -35,6 +38,7 @@ export default class FileTab extends React.Component {
     item.removeListener('changeName', this.onChangeName);
     item.removeListener('changeAnnotation', this.onChangeAnnotation);
     item.removeListener('changeNameEditable', this.onChangeNameEditable);
+    item.removeListener('hasChangesUpdate', this.onHasChangesUpdate);
   }
 
   onChangeNameEditable() {
@@ -63,6 +67,12 @@ export default class FileTab extends React.Component {
     this.setState({
       annotationLevel: types[worst],
       annotationCount: annotations.length
+    });
+  }
+
+  onHasChangesUpdate() {
+    this.setState({
+      hasChanges: this.props.item.hasChanges
     });
   }
 
@@ -131,7 +141,7 @@ export default class FileTab extends React.Component {
 
   render() {
     return (
-      <Tab {...this.props} icon="file" draggable={false} onPress={this.handleRename}>
+      <Tab {...this.props} icon="file" draggable={false} onPress={this.handleRename} showDotIndicator={this.state.hasChanges}>
         <span onDoubleClick={this.handleRename}>{this.renderNameOrInput()}</span> {this.renderAnnotations()}
       </Tab>
     );

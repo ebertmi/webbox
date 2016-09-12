@@ -9,7 +9,7 @@ export default class File extends EditSession {
     this._name = name;
     this._isNameEditable = false;
     this._nameChanged = false;
-    this.hasChanges = false;
+    this.hasChanges = true; // a new file is a change, basically
 
     // Binding
     this.onDocumentChange = this.onDocumentChange.bind(this);

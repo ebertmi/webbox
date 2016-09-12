@@ -73,6 +73,13 @@ export default class SkulptProject extends Project {
     }
   }
 
+  removeTab(tab) {
+    // special file tab handling
+    if (tab.type === 'file') {
+      this.setUnsavedChanges(true);
+    }
+  }
+
   isRunning() {
     return this.runner && this.runner.isRunning();
   }

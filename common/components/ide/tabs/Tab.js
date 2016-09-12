@@ -123,7 +123,8 @@ export default class Tab extends React.Component {
 
   renderCloseButton() {
     if (this.props.onClose) {
-      return <a onClick={this.onClose} className="action-label icon close-editor-action" role="button" title="Schließen"><span className="fa fa-times"></span></a>;
+      let closeIconClass = this.props.showDotIndicator === true ? 'close-editor-action-icon fa fa-circle' : ' close-editor-action-icon fa fa-times';
+      return <a onClick={this.onClose} className="action-label icon close-editor-action" role="button" title="Schließen"><span className={closeIconClass}></span></a>;
     }
   }
 

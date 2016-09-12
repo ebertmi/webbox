@@ -59,16 +59,17 @@ export default class Project extends EventEmitter {
     // TabManager instance
     this.tabManager = new TabManager(this.messageList);
 
-    // Load the embed data
-    this.fromInitialData(this.projectData.embed);
-
     // The StatusBarRegistry holds all items of the status bar
     this.statusBarRegistry = new StatusBarRegistry();
 
     // The Status object holds references to important status bar items, e.g. message
     this.status = {
-      message: null
+      message: null,
+      hasChanges: null
     };
+
+    // Load the embed data
+    this.fromInitialData(this.projectData.embed);
 
     // Create the initial status bar items
     this.createStatusBarItems();
@@ -160,6 +161,12 @@ export default class Project extends EventEmitter {
     this.statusBarRegistry.registerStatusbarItem(statusMessage, StatusBarAlignment.Left, 0);
 
     // Right side:
+
+    // Has Changes
+    const hasChanges = new StatusBarItem('', null);
+    this.status.hasChanges = hasChanges;
+    this.statusBarRegistry.registerStatusbarItem(hasChanges, StatusBarAlignment.Right, 200);
+
     // Zum original
     const sbrToOriginal =  new StatusBarItem('Zum Original', null, 'Zeigt das unveränderte Original an', null, (e) => {
       if (e && e.preventDefault()) {
@@ -273,6 +280,8 @@ export default class Project extends EventEmitter {
 
         this.setConsistency(true);
         this.hideMessage(messageObj); // hide message
+
+        this.setUnsavedChanges(true);
       });
 
       let renameAction = new Action('rename.message.action', 'Umbenennen', null, true, () => {
@@ -281,6 +290,7 @@ export default class Project extends EventEmitter {
 
         this.setConsistency(true);
         this.hideMessage(messageObj);
+        this.setUnsavedChanges(true);
       });
 
       messageObj = new MessageWithAction('Es existiert bereits eine Datei mit diesem Namen. Was möchten Sie machen?',
@@ -309,13 +319,35 @@ export default class Project extends EventEmitter {
     file.on('changedName', this.onChangedFileName.bind(this));
     file.on('hasChangesUpdate', () => {
       if (file.hasChanges) {
-        this.hasUnsavedChanges = true;
+        this.setUnsavedChanges(true);
       }
     });
 
-    this.hasUnsavedChanges = true;
+    this.setUnsavedChanges(true);
 
     this.tabManager.addTab('file', { item: file, active: active});
+  }
+
+  setUnsavedChanges(val) {
+    // Prevent Changes display in RunMode, etc.
+    if (this.canSave() === false) {
+      val = false;
+    }
+
+    this.hasUnsavedChanges = val;
+    let label = '';
+
+    if (this.hasUnsavedChanges === false) {
+      this.tabManager.clearFileChanges();
+    } else {
+      label = 'Ungespeicherte Änderungen';
+    }
+
+    if (this.status.hasChanges != null) {
+      this.status.hasChanges.setLabel(label);
+    }
+
+    this.emit('change');
   }
 
   /**
@@ -766,8 +798,9 @@ export default class Project extends EventEmitter {
       if (res.error) {
         this.setStatusMessage('Beim Speichern ist ein Fehler augetreten.', null, StatusBarColor.Danger);
       } else {
-        this.hasUnsavedChanges = false; // Reset
-        this.tabManager.clearFileChanges();
+        // Reset the unsaved changes indicators
+        this.setUnsavedChanges(false);
+
         this.setStatusMessage('Gespeichert.', null, StatusBarColor.Success);
         // Update the document, if received any and not set
         if (res.document) {

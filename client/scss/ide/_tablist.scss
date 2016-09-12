@@ -79,3 +79,7 @@
 .tabs-container>.tab.dirty>.tab-close .action-label {
     opacity: 1;
 }
+
+.tabs-container > .tab > .tab-close:hover .close-editor-action-icon:before {
+  content: '\f00d'
+}

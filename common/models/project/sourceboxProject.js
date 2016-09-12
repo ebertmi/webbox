@@ -145,6 +145,8 @@ export default class SourceboxProject extends Project {
       // delete file from disk to avoid using old files
       var filePath = tab.item.getName();
       this.deleteFile(filePath);
+
+      this.setUnsavedChanges(true);
     }
   }
 
