@@ -139,7 +139,7 @@ export class CourseForm extends Component {
           <small className="text-muted">Eindeutige interne ID des Kurses. Diese wird für die interne Datenhaltung verwendet.</small>
         </div>
         <Input onChange={this.handleChange.bind(this)} name="title" required type="text" label="Titel" placeholder="Titel des Kurses" muted="Der Titel des Kurses wird auf der Hauptseite angezeigt." value={this.props.course.title} />
-        <Input onChange={this.handleChange.bind(this)} name="published" required type="checkbox" label="Veröffentlicht" mutedParagraph="Ist der Kurs veröffentlicht, dann wird er auf der Hauptseite angezeigt." value={this.props.course.published} />
+        <Input onChange={this.handleChange.bind(this)} name="published" required type="checkbox" label="Veröffentlicht" mutedParagraph="Ist der Kurs veröffentlicht, dann wird er auf der Hauptseite angezeigt." checked={this.props.course.published} />
         <Input onChange={this.handleChange.bind(this)} name="description" required type="text" label="Beschreibung" placeholder="Dieser Kurs..." muted="Hier können Sie den Kurs näher beschreiben." value={this.props.course.description} />
         <Input onChange={this.handleChange.bind(this)} name="slug" required type="text" label="Kurzlink" placeholder="Kurzlink" muted="Geben Sie einen Kurzlink an, unter diesem der Kurs erreicht werden kann." value={this.props.course.slug} />
         <Input onChange={this.handleChange.bind(this)} name="document" required type="text" label="ID des Indexdokuments" placeholder="" muted="Jeder Kurs hat ein Indexdokument (Notebook), welches alle weiteren Dokumente verlinkt. Dies ist der Einstieg und sollte alle Kursinformationen beinhalten." value={this.props.course.document} />

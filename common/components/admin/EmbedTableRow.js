@@ -8,7 +8,6 @@ import { Time } from '../Time';
 export function EmbedTableRow (props) {
   const userDetailPath = `/admin/user/${props.data.creator.id}`;
   const embedPath = `/embed/${props.data.id}`;
-  console.info(props.data);
   return (
 
     <tr key={props.data.id}>

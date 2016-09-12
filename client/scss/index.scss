@@ -139,6 +139,7 @@ form .btn,
 .course-logo {
   max-height: 200px;
   width: 350px;
+  max-width: 100%;
 }
 
 @include media-breakpoint-down(xs) {
