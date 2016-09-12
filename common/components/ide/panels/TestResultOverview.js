@@ -21,7 +21,7 @@ const LEGEND_IN_CHART_STYLES = {
   textAlign: 'left',
   right: 0,
   fontWeight: 'bold',
-  zIndex: 1000
+  zIndex: 200
 };
 
 /**

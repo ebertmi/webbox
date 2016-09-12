@@ -13,7 +13,7 @@ export default class File extends EditSession {
 
     // Binding
     this.onDocumentChange = this.onDocumentChange.bind(this);
-    this.on('input', this.onDocumentChange);
+    this.on('change', this.onDocumentChange);
   }
 
   /**

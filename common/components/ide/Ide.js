@@ -34,6 +34,11 @@ export default class Ide extends React.Component {
         return false;
       }
 
+      // If there are not any changes, just close it
+      if (this.props.project.hasUnsavedChanges === false) {
+        return false;
+      }
+
       event.returnValue = 'Bitte speichere ggf. noch deine Änderungen!';
       return 'Bitte speichere ggf. noch deine Änderungen!';
     });
