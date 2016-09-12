@@ -7,7 +7,10 @@ import {
   HorizontalGridLines,
   Hint,
   VerticalGridLines,
+  makeWidthFlexible,
   LineMarkSeries} from 'react-vis';
+
+const FlexibleXYPlot = makeWidthFlexible(XYPlot);
 
 import DatePicker from 'react-datepicker';
 import { normalDateFormatter, multiTimeFormat } from '../../../util/d3Util';
@@ -136,10 +139,9 @@ export default class EventDatesClusterChart extends React.Component {
               width={180}
               items={this.props.lineData}/>
           </div>
-          <XYPlot
+          <FlexibleXYPlot
             xType="time"
             yType="linear"
-            width={800}
             height={300}>
             <HorizontalGridLines />
             <VerticalGridLines />
@@ -156,7 +158,7 @@ export default class EventDatesClusterChart extends React.Component {
               <Hint value={this.state.hintValue} format={this.formatHint}/> :
               null
             }
-          </XYPlot>
+          </FlexibleXYPlot>
           </div>
           <div className="col-md-4 col-xs-12">
             <form>
