@@ -104,18 +104,6 @@ server.register({
   }
 });
 
-// add ratelimiting middleware
-// requires redis
-/*server.register({
-  register: hratelimit,
-  options: config.ratelimit
-  },
-  function (err) {
-  console.log(err);
-  }
-);*/
-
-
 // add vision template engine support
 server.register(Vision, (err) => {
   if (err) {
