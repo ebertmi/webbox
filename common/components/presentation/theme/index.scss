@@ -3,6 +3,10 @@
           transform-origin: center center;
 }
 
+.spectacle-slide .fragment * {
+  opacity: inherit;
+}
+
 /* Firefox */
 
 _:-moz-tree-row(hover), .spectacle-deck {

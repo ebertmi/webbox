@@ -12,6 +12,8 @@ import {
 } from 'spectacle/lib/index';
 import 'spectacle/lib/themes/default/index';
 
+require("./theme/index.scss");
+
 // Custom Modules
 import Highlight from './Highlight';
 import { toMarkdownComponent } from './markdownRenderer';

@@ -174,6 +174,7 @@ export const mdOptions = {
 
       case 'p':
         content = makeChildren(children, props);
+        console.info('le text', props, content);
         return <Text {...props}>{content}</Text>;
 
       case 'img':

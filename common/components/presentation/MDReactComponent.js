@@ -217,10 +217,12 @@ function mdReactFactory(options={}) {
 /**
  * MarkdownReact Component, that does the rendering
  */
-const MDReactComponent = props => {
-  const { text, ...propsWithoutText } = props;
-  return mdReactFactory(propsWithoutText)(text);
-};
+class MDReactComponent extends React.Component {
+  render () {
+    const { text, ...propsWithoutText } = this.props;
+    return mdReactFactory(propsWithoutText)(text);
+  }
+}
 
 MDReactComponent.propTypes = {
   text: PropTypes.string.isRequired,
