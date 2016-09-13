@@ -1,3 +1,6 @@
+import Debug from 'debug';
+const debug = Debug('webbox:services/utils');
+
 /**
  * Checks the status and either returns or throws and error.
  * Should be used with window.fetch
@@ -52,7 +55,16 @@ export function getDefaultHeaders() {
     'Content-Type': 'application/json'
   };
 
-  const crumb = getCookie('crumb');
+  let crumb = getCookie('crumb');
+
+  if (crumb == null) {
+    crumb = window.__crumb__;
+  }
+
+  if (crumb == null) {
+    debug('Failed to access crumb. Establishing websocket connection will fail.');
+  }
+
   if (crumb) {
     defaultHeaders['X-CSRF-Token'] = crumb;
   }
