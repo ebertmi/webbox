@@ -44,7 +44,7 @@ class Highlight extends React.Component {
      */
     // short test
     const code = this.props.source;
-    const language = 'python3';
+    const language = this.props.executionLanguage;
     const embedType = this.props.embedType || EmbedTypes.Sourcebox;
     const id = this.props.runId || RunModeDefaults.id;
 
@@ -96,6 +96,7 @@ Highlight.contextTypes = {
 
 Highlight.defaultProps = {
   lang: '',
+  executionLanguage: '',
   source: '',
   showRunButton: false
 };

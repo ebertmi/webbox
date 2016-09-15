@@ -14,7 +14,7 @@ import { Action } from '../../models/actions';
 import { Severity } from '../../models/severity';
 import { MessageList } from '../messageList/messageList';
 
-import { loadCellsFromIPYNB, stateToJS, replaceIdWithSlug } from '../../util/nbUtil';
+import { loadCellsFromIPYNB, stateToJS, replaceIdWithSlug, notebookMetadataToSourceboxLanguage } from '../../util/nbUtil';
 import { addCellsFromJS, toggleViewMode } from '../../actions/NotebookActions';
 
 import { API } from '../../services';
@@ -208,6 +208,7 @@ export default class Notebook extends React.Component {
     const course = this.props.notebook.get('course');
     const embedType = this.props.notebook.get('embedType');
     const notebookLanguage = this.props.notebook.getIn(['metadata', 'language_info', 'name'], 'plain');
+    const executionLanguage = notebookMetadataToSourceboxLanguage(this.props.notebook.get('metadata'));
 
     let blocks = [];
     let dispatch = this.props.dispatch;
@@ -229,7 +230,7 @@ export default class Notebook extends React.Component {
           blocks.push(<MarkdownCell document={notebookId} course={course} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={index === activeBlock}/>);
           break;
         case 'code':
-          blocks.push(<CodeCell  embedType={embedType} course={course} notebookLanguage={notebookLanguage} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={index === activeBlock}/>);
+          blocks.push(<CodeCell  embedType={embedType} course={course} executionLanguage={executionLanguage} notebookLanguage={notebookLanguage} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={index === activeBlock}/>);
           break;
         case 'codeembed':
           blocks.push(<CodeEmbedCell course={course} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive}editing={index === activeBlock}/>);

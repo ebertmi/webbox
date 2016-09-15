@@ -13,6 +13,7 @@ import { updateCell } from '../../actions/NotebookActions';
 
 import { EmbedTypes, RunModeDefaults } from '../../constants/Embed';
 import Markdown from '../../util/markdown';
+import  { notebookMetadataToSourceboxLanguage } from '../../util/nbUtil';
 
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
@@ -53,14 +54,15 @@ export default class CodeCell extends BaseCell {
      */
 
     const code = this.getSourceFromCell();
-    const language = 'python3';
+    let executionLanguage = this.props.cell.getIn(['metadata', 'executionLanguage'], this.props.executionLanguage);
+
     let notebookEmbedType = this.props.embedType || EmbedTypes.Sourcebox;
     const embedType = this.props.cell.getIn(['metadata', 'embedType'], notebookEmbedType);
 
     // Experimental
     const id = this.props.cell.getIn(['metadata', 'runid'], RunModeDefaults.id);
 
-    const url = `${window.location.protocol}//${window.location.host}/run?language=${encodeURIComponent(language)}&id=${encodeURIComponent(id)}&embedType=${encodeURIComponent(embedType)}&code=${encodeURIComponent(code)}`;
+    const url = `${window.location.protocol}//${window.location.host}/run?language=${encodeURIComponent(executionLanguage)}&id=${encodeURIComponent(id)}&embedType=${encodeURIComponent(embedType)}&code=${encodeURIComponent(code)}`;
     const strWindowFeatures = "menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes";
 
     window.open(url, "Beispiel Ausführen", strWindowFeatures);
@@ -118,8 +120,8 @@ export default class CodeCell extends BaseCell {
     let source = this.getSourceFromCell();
 
     // Get default language from notebook if mode is not available
-    let language = this.props.notebookLanguage || 'python';
-    let mode = this.props.cell.getIn(['metadata', 'mode'], language);
+    let languageName = this.props.notebookLanguage || 'python';
+    let mode = this.props.cell.getIn(['metadata', 'mode'], languageName);
 
     if (this.session) {
       this.session.setValue(source);
@@ -132,7 +134,7 @@ export default class CodeCell extends BaseCell {
     return (
       <div className="col-xs-12" onKeyDown={this.onKeyDown}>
         <strong>Code</strong>
-        <p className="text-muted">Sie können über die Schlüssel <code>embedType</code> (<em>sourcebox</em> oder <em>skulpt</em>) und <code>mode</code> (Sprache) die Ausführungsumgebung für eine Zelle einzeln definieren. Ansonsten werden die Werte aus den Notebook-Metadaten übernommen.</p>
+        <p className="text-muted">Sie können über die Schlüssel <code>embedType</code> (<em>sourcebox</em> oder <em>skulpt</em>) und <code>executionLanguage</code> die Ausführungsumgebung für eine Zelle einzeln definieren. Ansonsten werden die Werte aus den Notebook-Metadaten übernommen. Sie können die Syntax-Hervorhebung (Farben) über den Schlüssel <code>mode</code> ändern.</p>
         <Editor fontSize="14px" minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />
       </div>
     );

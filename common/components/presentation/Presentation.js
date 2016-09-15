@@ -16,7 +16,7 @@ import 'spectacle/lib/themes/default/index';
 import Highlight from './Highlight';
 import { toMarkdownComponent } from './markdownRenderer';
 import createTheme from "./theme";
-import { sourceFromCell, replaceIdWithSlug } from '../../util/nbUtil';
+import { sourceFromCell, replaceIdWithSlug, notebookMetadataToSourceboxLanguage } from '../../util/nbUtil';
 import RawCell from '../notebook/RawCell';
 
 // Create the Theme from our custom theme
@@ -56,6 +56,7 @@ export default class Presentation extends React.Component {
     const isVisible = cell.getIn(['metadata', 'isVisible'], true);
 
     let lang;
+    let executionLanguage;
     let embedType;
     let runId;
     let source = sourceFromCell(cell);
@@ -70,10 +71,16 @@ export default class Presentation extends React.Component {
       case 'markdown':
         return toMarkdownComponent({source: source});
       case 'code':
-        lang = cell.getIn(['metadata', 'mode'], '');
+        lang = cell.getIn(['metadata', 'mode']);
+        executionLanguage = cell.getIn(['metadata', 'executionLanguage']);
+
+        if (executionLanguage == null || executionLanguage === '') {
+          executionLanguage = notebookMetadataToSourceboxLanguage(notebook.get('metadata'));
+        }
+
         embedType = cell.getIn(['metadata', 'embedType'], notebook.getIn(['metadata', 'embedType']));
         runId = cell.getIn(['metadata', 'runid']);
-        return <Highlight showRunButton={true} embedType={embedType} runId={runId} source={source} lang={lang}></Highlight>;
+        return <Highlight showRunButton={true} embedType={embedType} runId={runId} source={source} executionLanguage={executionLanguage} lang={lang}></Highlight>;
       case 'codeembed':
         // ToDo: use IFrame.js //noFocus={true}
         return (

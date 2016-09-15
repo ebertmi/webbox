@@ -10,6 +10,7 @@
 var webpack = require('webpack');
 var path = require('path');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 var autoprefixer = require('autoprefixer');
 
 process.env.NODE_ENV = '"production"';
@@ -88,7 +89,10 @@ module.exports = {
     new ExtractTextPlugin('../css/all.bundle.' + VERSION + '.css', {
       allChunks: true,
       disable: false
-    })
+    }),
+    new CopyWebpackPlugin([
+      { from: 'common/presentation/theme/index.css', to: '../css/spectacle.css' }
+    ])
   ],
   node: {
     Buffer: true,

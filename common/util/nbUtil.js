@@ -26,6 +26,13 @@ export function replaceIdWithSlug(notebook) {
   }
 }
 
+export function notebookMetadataToSourceboxLanguage(metadata) {
+  let languageName = metadata.getIn(['language_info', 'name'], 'python');
+  let languageVersion = metadata.getIn(['language_info', 'version'], '3');
+
+  return `${languageName}${languageVersion}`;
+}
+
 /**
  * Returns the source of a cell as one string
  */
