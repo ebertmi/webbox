@@ -14,7 +14,8 @@ python3: {
   displayName: 'Python 3 (Sourcebox)',
   env: {
     PYTHONPATH: '/usr/local/lib/sourcebox/',
-    MPLBACKEND: 'module://backend_sb'
+    MPLBACKEND: 'module://backend_sb',
+    MPLCONFIGDIR: '/usr/local/lib/sourcebox/mplconfig'
   },
   streams: 3,
   streamsObjectMode: [false, false, false] /* set the mode for the additional streams */
@@ -24,6 +25,12 @@ python3: {
 ## Changing the PYTHONPATH env variable
 Changes to the location requires to recompile the client modules. The current default is `/usr/local/lib/sourcebox/`.
 You can put the  `turtle.py` and `backend_sb` there on your sourcebox container template.
+
+## Prevent font-cache regeneration for every user
+Create a empty dir `/usr/local/lib/sourcebox/mplconfig` and then apply `chmod -R 0777 mplconfig` to allow every user to write on it.
+Next, use `export MPLCONFIGDIR=/usr/local/lib/sourcebox/mplconfig` and then run `python3` and in the REPL `import matplotlib.pyplot`. This
+generates the font-cache.
+This avoids the continous regeneration of the font-cache and therefore speeds up the import of matplotlib.
 
 ## Turtle
 The client-server Turtle support requires the use of a custom turtle implementation (see turtle.py:WebCommunication).

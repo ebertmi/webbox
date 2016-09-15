@@ -16,7 +16,7 @@ sys.path.insert(0, path)
 #sys.path.append(path)
 
 import unittest
-from test_utils_new import JSONTestRunner
+from test_utils import JSONTestRunner
 
 def testcases_in_module(module):
     md = module.__dict__

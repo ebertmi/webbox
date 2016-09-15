@@ -56,7 +56,8 @@ export default {
     displayName: 'Python 3',
     env: {
       PYTHONPATH: '/usr/local/lib/sourcebox/',
-      MPLBACKEND: 'module://backend_sb'
+      MPLBACKEND: 'module://backend_sb',
+      MPLCONFIGDIR: '/usr/local/lib/sourcebox/mplconfig'
     },
     streams: 3,
     streamsObjectMode: [false, true, false] /* set the mode for the additional streams */,
@@ -69,7 +70,14 @@ export default {
       return ['python', mainFile];
     },
     displayName: 'Python 2',
-    errorParser: new PythonErrorParser()
+    errorParser: new PythonErrorParser(),
+    env: {
+      PYTHONPATH: '/usr/local/lib/sourcebox/',
+      MPLBACKEND: 'module://backend_sb',
+      MPLCONFIGDIR: '/usr/local/lib/sourcebox/mplconfig'
+    },
+    streams: 3,
+    streamsObjectMode: [false, true, false] /* set the mode for the additional streams */,
   }
 
 };

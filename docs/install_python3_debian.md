@@ -12,7 +12,7 @@ NumPy is easy to install with pip `pip3 install numpy`. All dependencies should 
 ## Matplotlib
 Mpl requires some more work. You can either use the distro version (older) or install it with pip.
 Pip installation requires a couple of dependencies:
-`apt-get install apt-get install libpng-dev pkg-config libfreetype6-dev`
+`apt-get install libpng-dev pkg-config libfreetype6-dev`
 
 Then with pip install:
 `pip3 install python-dateutil nose cycler pyparsing pytz`

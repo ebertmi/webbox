@@ -46,15 +46,14 @@ def show():
             fd = os.fdopen(3, 'wb')
             fd.write(b'STARTIMGAGE')
             fd.flush()
-            os.fsync(fd)
-            #canvas.print_png(fd, transparent=True)
-            canvas.print_jpg(fd, quality=95)
+            canvas.print_png(fd, transparent=True)
+            #canvas.print_jpg(fd, quality=95)
             fd.flush()
             fd.write(b'ENDIMAGE')
             fd.flush()
             fd.close()
-        except Exception as e:
-            print('An error occured while sending the image to your browser.', e)
+        except e:
+            print('An error occured while sending the image to your browser.')
 
 
 ########################################################################

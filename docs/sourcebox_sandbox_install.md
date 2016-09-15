@@ -28,9 +28,27 @@ For using the `sourcebox-sandbox` repository your public key must be added to th
 In my first `sourcebox create --interactive /root/sb` tries the creation failed with `path is of type unknown` or some similar message.
 After some tries the following command was working:
 ```bash
-sudo sourcebox create --distro debian --release jessie --loop 2GB /bar
+sudo sourcebox create --distro debian --release jessie --loop 4GB /bar
 ```
 
 ## Trouble Shooting
 ### Installing `sandbox-web` fails or cannot run server
 Try to rerun `sudo node-gype rebuild` in the sourcebox-lxc directory (the one with the bindings.gyp)
+
+
+## Install Script
+```bash
+#!/bin/sh -e
+set -e
+
+TARGET=$1
+shift
+PACKAGES=$*
+
+sourcebox create -d debian -r jessie -a amd64 -l 2GB $TARGET
+sourcebox manage $TARGET -- bash -e << EOF
+apt-get --yes update
+apt-get --yes dist-upgrade
+apt-get --yes install $PACKAGES
+EOF
+```

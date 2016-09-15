@@ -137,7 +137,7 @@
       }
     },
     "sourcebox": {
-      "url": "http://52.58.227.70:80",
+      "url": "http://52.57.103.114",
       "secret": "ItsASecretToEverybody!",
       "expiresIn": "10h"
     },
