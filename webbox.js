@@ -157,6 +157,12 @@ server.ext('onPreResponse', function (request, reply) {
     console.log(`Repsonse is Error with status ${request.response.output.statusCode}`);
   }
 
+  // We should try to do some useful logging
+  let errorMessage = isString(request.response) ? request.repsonse : 'Server Error 500';
+  let errorStack = request.response.stack != undefined ? request.response.stack : 'No stack available';
+
+  console.log('Error in request: %s', errorMessage, errorStack);
+
   let err;
   let errName;
   let statusCode;
@@ -170,8 +176,6 @@ server.ext('onPreResponse', function (request, reply) {
     errName = 'Fehler';
     statusCode = request.response.output.statusCode;
   }
-
-
 
   if (statusCode === 403) {
     err = 'Sie besitzen nicht die benötigten Rechte, um auf diese Seite zuzugreifen.';

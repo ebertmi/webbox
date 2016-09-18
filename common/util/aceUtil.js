@@ -91,7 +91,7 @@ export const CodeBlockItem = {
   closeBlockWith: '\n```\n'
 };
 
-export const ExtendedFormat = ' <!-- {} -->';
+export const ExtendedFormat = '<!-- {} -->';
 
 /**
  * Inserts the item in the Ace Editor Session.

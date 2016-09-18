@@ -6,6 +6,8 @@ import Icon from '../Icon';
 import * as NotebookActions from '../../actions/NotebookActions';
 import { EmbedTypes } from '../../constants/Embed';
 
+import { API } from '../../services';
+
 import { Toolbar, ActionItem } from '../Toolbar';
 
 /**
@@ -31,6 +33,20 @@ class NotebookMetadata extends React.Component {
     this.onUpdate = this.onUpdate.bind(this);
     this.toggleViewMode = this.toggleViewMode.bind(this);
     this.toggleViewAnalytics = this.toggleViewAnalytics.bind(this);
+
+    this.state = {
+      coursesInfo: []
+    };
+  }
+
+  componentWillMount() {
+    API.autocomplete.courses().then(resp => {
+      if (resp.error) {
+        console.error('Error occured');
+      } else {
+        this.setState({ coursesInfo: resp.coursesInfo });
+      }
+    });
   }
 
   onUpdate(e) {
@@ -38,6 +54,8 @@ class NotebookMetadata extends React.Component {
 
     let name = e.target.name;
     let value = e.target.value;
+
+    console.info(e.target.name, e.target.value);
 
     this.props.dispatch(NotebookActions.updateNotebookMetadata(name, value));
   }
@@ -182,7 +200,13 @@ class NotebookMetadata extends React.Component {
             <div className="form-group row">
               <label className={"col-sm-2 form-control-label"} ><Icon name="bank" /> Zugehöriger Kurs</label>
               <div className={"col-sm-10"}>
-                <input className={"form-control"} onChange={this.onUpdate} type="text" defaultValue={course} name="course" ref="courseField" onBlur={e => {}} title="Kurs-Slug" />
+                <select defaultValue={course != undefined ? course : ''} ref="courseField" title="Kurs-Slug" onChange={this.onUpdate} className={"form-control custom-select"} name="course">
+                  {this.state.coursesInfo.map(info => {
+                    return <option value={info.slug} key={info.id}>{info.title}</option>;
+                  })}
+                  <option value="">Nicht zugeordnet</option>
+                </select>
+                {/*<input className={"form-control"} onChange={this.onUpdate} type="text" defaultValue={course} name="course" ref="courseField" onBlur={e => {}} title="Kurs-Slug" />*/}
                 <small>Angabe eines Kurses (Kurz-Link oder ID), um diese Document zuzuordnen. <strong>Eine Änderung am Kursnamen verschiebt keine Bilder.</strong></small>
               </div>
             </div>

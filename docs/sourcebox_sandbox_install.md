@@ -45,10 +45,14 @@ TARGET=$1
 shift
 PACKAGES=$*
 
-sourcebox create -d debian -r jessie -a amd64 -l 2GB $TARGET
+sourcebox create -d debian -r jessie -a amd64 -l 4GB $TARGET
 sourcebox manage $TARGET -- bash -e << EOF
 apt-get --yes update
 apt-get --yes dist-upgrade
 apt-get --yes install $PACKAGES
 EOF
 ```
+
+and here is a example using the script:
+
+`installer.sh ./trycodingsb python3 python3-pip python python-pip`

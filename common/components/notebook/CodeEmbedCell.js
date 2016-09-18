@@ -1,5 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
+import Autosuggest from 'react-autosuggest';
 
 import BaseCell from './BaseCell';
 import IFrame from './IFrame';
@@ -22,6 +23,8 @@ export default class CodeEmbedCell extends BaseCell {
     this.onCancelCreateEmbed = this.onCancelCreateEmbed.bind(this);
     this.onFormDataChange = this.onFormDataChange.bind(this);
     this.onCreateEmbed = this.onCreateEmbed.bind(this);
+    this.onSuggestionsFetchRequested = this.onSuggestionsFetchRequested.bind(this);
+    this.onSuggestionsClearRequested = this.onSuggestionsClearRequested.bind(this);
 
     this.state = {
       showCreateEmbed: false,
@@ -30,6 +33,7 @@ export default class CodeEmbedCell extends BaseCell {
         embedType: EmbedTypes.Sourcebox,
         name: ''
       },
+      suggestions: [],
       message: ''
     };
   }
@@ -67,6 +71,38 @@ export default class CodeEmbedCell extends BaseCell {
     this.setState({formData: formData});
   }
 
+  shouldRenderEmbedSuggestions() {
+    return true;
+  }
+
+  getSuggestionValue(suggestion) {
+    if (suggestion.id) {
+      return suggestion.id;
+    } else {
+      return suggestion;
+    }
+  }
+
+  onSuggestionsFetchRequested(obj) {
+    API.autocomplete.embeds(null, {search: obj.value}).then(resp => {
+      if (resp.error) {
+        console.error(resp.error);
+      } else {
+        this.setState({
+          suggestions: resp.embedsInfo
+        });
+      }
+    });
+  }
+
+  onSuggestionsClearRequested() {
+    this.setState({ suggestions: [] });
+  }
+
+  renderSuggestion(suggestion) {
+    return <span>{suggestion.meta.name}</span>;
+  }
+
   /**
    * Callback for creating an embed!
    * 1. Get form data
@@ -91,10 +127,10 @@ export default class CodeEmbedCell extends BaseCell {
     });
   }
 
-  onUpdateCell(e) {
-    if (e && e.preventDefault) {
-      e.preventDefault();
-      const value = e.target.value || '';
+  onUpdateCell(e, update) {
+    console.info(update);
+    if (update != undefined) {
+      const value = update.newValue; //e.target.value || '';
       this.props.dispatch(updateCell(this.props.cell.get('id'), value));
     } else if (this.sourceInput != null) {
       const value = this.sourceInput.value || '';
@@ -151,6 +187,15 @@ export default class CodeEmbedCell extends BaseCell {
 
     let createForm = this.state.showCreateEmbed ? this.renderCreateEmbed() : this.renderCreateEmbedButton();
 
+    const inputProps = {
+      placeholder: 'ID oder Slug eines Embeds, Sie können auch suchen',
+      value: source,
+      onChange: this.onUpdateCell,
+      type: 'text',
+      className: 'form-control',
+      ref: ref => this.sourceInput = ref
+    };
+
     return (
       // onKeyDown={this.onKeyDown}
       // ToDo: handle onUpdateCell differently, as this does not work for ESC to stop editing
@@ -159,7 +204,14 @@ export default class CodeEmbedCell extends BaseCell {
         <p className="text-muted">Sie können die Größe (Höhe und Breite) über die Metadaten auch selbst steuern. Nutzen Sie dazu die Schlüssel <code>height</code> bzw. <code>width</code> und einen numerischen Wert (z.B. <code>500</code>) ohne Einheit.</p>
         <div className="form-group">
           <label className="form-control-label">Beispiel-ID</label>
-          <input className="form-control" type="text" placeholder="ID..." onChange={this.onUpdateCell} value={source} ref={ref => this.sourceInput = ref}/>
+          <Autosuggest suggestions={this.state.suggestions}
+          shouldRenderSuggestions={this.shouldRenderEmbedSuggestions}
+          getSuggestionValue={this.getSuggestionValue}
+          onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+          onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+          renderSuggestion={this.renderSuggestion}
+          inputProps={inputProps} />
+          {/*<input className="form-control" type="text" placeholder="ID..." onChange={this.onUpdateCell} value={source} ref={ref => this.sourceInput = ref}/>*/}
         </div>
         <hr className="top-sep" />
         { createForm }
