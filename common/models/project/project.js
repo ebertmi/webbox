@@ -330,7 +330,7 @@ export default class Project extends EventEmitter {
 
   setUnsavedChanges(val) {
     // Prevent Changes display in RunMode, etc.
-    if (this.canSave() === false) {
+    if (this.canSave(false) === false) {
       val = false;
     }
 
@@ -745,16 +745,20 @@ export default class Project extends EventEmitter {
     }
   }
 
-  canSave() {
+  canSave(showWarnings=true) {
     // 1. Check current mode
     if (this.mode !== MODES.Default) {
-      this.showMessage(Severity.Warning, 'Sie können dieses Beispiel nicht speichern, da es in der Leseansicht geöffnet wurde.');
+      if (showWarnings) {
+        this.showMessage(Severity.Warning, 'Sie können dieses Beispiel nicht speichern, da es in der Leseansicht geöffnet wurde.');
+      }
       return false;
     }
 
     let userData = this.getUserData();
     if (userData.isAnonymous === true) {
-      this.showMessage(Severity.Warning, 'Sie können dieses Beispiel nicht speichern, da Sie nicht angemeldet sind.');
+      if (showWarnings) {
+        this.showMessage(Severity.Warning, 'Sie können dieses Beispiel nicht speichern, da Sie nicht angemeldet sind.');
+      }
       return false;
     }
 

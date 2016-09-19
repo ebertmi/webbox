@@ -7,6 +7,14 @@
   opacity: inherit;
 }
 
+.spectacle-slide .katex-display {
+  font-size: 1.2rem;
+}
+
+.spectacle-slide pre {
+  text-align: left;
+}
+
 /* Firefox */
 
 _:-moz-tree-row(hover), .spectacle-deck {

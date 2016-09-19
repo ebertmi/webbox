@@ -24,7 +24,7 @@ export default class Ide extends React.Component {
 
     // ToDo: Add a check for unsaved changes!
     addEventListener('beforeunload', event => {
-      if (this.props.project.canSave() === false) {
+      if (this.props.project.canSave(false) === false) {
         return false;
       }
 
@@ -42,6 +42,18 @@ export default class Ide extends React.Component {
       event.returnValue = 'Bitte speichere ggf. noch deine Änderungen!';
       return 'Bitte speichere ggf. noch deine Änderungen!';
     });
+
+    // Try to give back the focus to the parent
+    if (loadedInIFrame()) {
+      if (window.parent && window.parent.focus) {
+        try {
+          window.parent.focus();
+        } catch (e) {
+          // Dismiss, we tried but failed
+          debug('Failed to give the parent the focus back.');
+        }
+      }
+    }
   }
 
   onDrop(e) {

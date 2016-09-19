@@ -9,7 +9,7 @@ const defaultColors = {
 
 const defaultFonts = {
   primary: "Open Sans Condensed",
-  secondary: "Lobster Two",
+  secondary: 'Open Sans Condensed',
   tertiary: "monospace"
 };
 
@@ -148,6 +148,7 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         margin: 20,
         borderLeft: "2px solid #217dbb",
         paddingLeft: "1rem",
+        lineHeight: "1.2"
       },
       quote: {
         borderLeft: `1px solid ${colors.primary}`,
@@ -155,7 +156,7 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         display: "block",
         color: colors.primary,
         fontSize: "4.9rem",
-        lineHeight: 1,
+        lineHeight: "1.2",
         fontWeight: "bold"
       },
       cite: {
@@ -198,8 +199,9 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         h1: {
           color: "rgb(32, 32, 32)",
           fontSize: "3rem",
-          fontFamily: fonts.primary,
-          lineHeight: 1,
+          letterSpacing: "0.095rem",
+          fontFamily: fonts.secondary,
+          lineHeight: 1.1,
           fontWeight: "bold",
           margin: 0,
           zoom: 1
@@ -207,15 +209,17 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         h2: {
           color: colors.secondary,
           fontSize: "2.3rem",
-          fontFamily: fonts.primary,
-          lineHeight: 1,
+          letterSpacing: "0.095rem",
+          fontFamily: fonts.secondary,
+          lineHeight: 1.1,
           fontWeight: "bold",
           margin: 0
         },
         h3: {
           color: "black",
           fontSize: "1.8rem",
-          fontFamily: fonts.primary,
+          fontFamily: fonts.secondary,
+          letterSpacing: "0.095rem",
           lineHeight: 1,
           fontWeight: "bold",
           margin: "0.5rem auto"
@@ -223,7 +227,8 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         h4: {
           color: "black",
           fontSize: "1.5rem",
-          fontFamily: fonts.primary,
+          fontFamily: fonts.secondary,
+          letterSpacing: "0.095rem",
           lineHeight: 1,
           fontWeight: "bold",
           margin: "0.5rem auto"
@@ -231,7 +236,8 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         h5: {
           color: "black",
           fontSize: "1.4rem",
-          fontFamily: fonts.primary,
+          fontFamily: fonts.secondary,
+          letterSpacing: "0.095rem",
           lineHeight: 1,
           fontWeight: "bold",
           margin: "0.5rem auto"
@@ -239,7 +245,8 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         h6: {
           color: "black",
           fontSize: "1.3rem",
-          fontFamily: fonts.primary,
+          fontFamily: fonts.secondary,
+          letterSpacing: "0.095rem",
           lineHeight: 1,
           fontWeight: "bold",
           margin: "0.5rem auto"
@@ -257,11 +264,13 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
       },
       list: {
         textAlign: "left",
+        lineHeight: "1.2"
         /*listStylePosition: "inside",*/
         /*padding: 0*/
       },
       orderedList: {
         textAlign: "left",
+        lineHeight: "1.2"
         /*listStylePosition: "inside",*/
         /*padding: 0*/
       },
@@ -276,14 +285,16 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         fontSize: "1.8rem"
       },
       table: {
-        width: "100%"
+        width: "100%",
+        lineHeight: "1.2"
       },
       text: {
         color: "black",
         fontSize: "1.8rem",
         fontFamily: fonts.primary,
         margin: "1.5rem auto",
-        textAlign: "left"
+        textAlign: "left",
+        lineHeight: "1.2"
       }
     }
   };

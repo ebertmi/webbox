@@ -55,6 +55,7 @@ export default class Presentation extends React.Component {
     const dispatch = this.props.dispatch;
     const isVisible = cell.getIn(['metadata', 'isVisible'], true);
 
+    let height;
     let lang;
     let executionLanguage;
     let embedType;
@@ -82,9 +83,10 @@ export default class Presentation extends React.Component {
         runId = cell.getIn(['metadata', 'runid']);
         return <Highlight showRunButton={true} embedType={embedType} runId={runId} source={source} executionLanguage={executionLanguage} lang={lang}></Highlight>;
       case 'codeembed':
-        // ToDo: use IFrame.js //noFocus={true}
+        height = parseInt(cell.getIn(['metadata', 'height'], 350));
+        height = isNaN(height) ? 350 : height;
         return (
-          <LazyLoad height={cell.getIn(['metadata', 'height'], 350)} once>
+          <LazyLoad height={height} once>
             <iframe className={this.props.className} width={cell.getIn(['metadata', 'width'], 800)} height={cell.getIn(['metadata', 'height'], 400)} src={`/embed/${source}`} seamless={true} allowFullScreen={true} frameBorder="0" />
           </LazyLoad>
         );
