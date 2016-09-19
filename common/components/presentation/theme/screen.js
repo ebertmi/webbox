@@ -26,7 +26,7 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         fontWeight: "normal",
         fontSize: "2em",
         color: colors.secondary,
-        overflow: "hidden"
+        overflow: "hidden",
       },
       "html, body": {
         height: "100%"
@@ -148,7 +148,7 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         margin: 20,
         borderLeft: "2px solid #217dbb",
         paddingLeft: "1rem",
-        lineHeight: "1.2"
+        lineHeight: 1.2
       },
       quote: {
         borderLeft: `1px solid ${colors.primary}`,
@@ -156,7 +156,7 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         display: "block",
         color: colors.primary,
         fontSize: "4.9rem",
-        lineHeight: "1.2",
+        lineHeight: 1.2,
         fontWeight: "bold"
       },
       cite: {
@@ -168,7 +168,8 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
       },
       content: {
         margin: "0 auto",
-        textAlign: "center"
+        textAlign: "center",
+        lineHeight: 1.2
       },
       codePane: {
         pre: {
@@ -178,15 +179,17 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
           fontFamily: fonts.tertiary,
           minWidth: "100%",
           maxWidth: 800,
-          textAlign: "left"
+          textAlign: "left",
+          backgroundColor: "rgba(248, 248, 248, 0.5)",
+          borderLeft: "2px solid #1d79b6"
         },
         code: {
           textAlign: "left",
-          fontWeight: "normal"
+          fontWeight: "normal",
+          backgroundColor: "transparent"
         }
       },
       code: {
-        /*color: "black",*/
         fontSize: "1.8rem",
         fontFamily: fonts.tertiary,
         margin: "0.25rem auto",
@@ -264,13 +267,13 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
       },
       list: {
         textAlign: "left",
-        lineHeight: "1.2"
+        lineHeight: 1.3
         /*listStylePosition: "inside",*/
         /*padding: 0*/
       },
       orderedList: {
         textAlign: "left",
-        lineHeight: "1.2"
+        lineHeight: 1.3
         /*listStylePosition: "inside",*/
         /*padding: 0*/
       },
@@ -286,7 +289,7 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
       },
       table: {
         width: "100%",
-        lineHeight: "1.2"
+        lineHeight: 1.2
       },
       text: {
         color: "black",
@@ -294,7 +297,7 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         fontFamily: fonts.primary,
         margin: "1.5rem auto",
         textAlign: "left",
-        lineHeight: "1.2"
+        lineHeight: 1.2
       }
     }
   };

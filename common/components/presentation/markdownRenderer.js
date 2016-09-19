@@ -18,6 +18,7 @@ import Math from './Math';
 import MarkdownHTMLElement from './MarkdownHTMLElement';
 import Highlight from './Highlight';
 import OrderedList from './OrderedList';
+import DefaultWrapper from './DefaultWrapper';
 
 const debug = Debug('webbox:presentation:markdownRenderer');
 
@@ -174,14 +175,15 @@ export const mdOptions = {
 
       case 'p':
         content = makeChildren(children, props);
-        return <Text {...props}>{content}</Text>;
+        debug('Paragraph: ', content, children, props);
+        return <Text lineHeight={1.2} {...props}>{content}</Text>;
 
       case 'img':
         return <Image src={props.src} {...props} />;
 
       case 'h1':
         content = makeChildren(children, props);
-        return <Heading size={1} {...props}>{content}</Heading>;
+        return <Heading fit size={1} {...props}>{content}</Heading>;
       case 'h2':
         content = makeChildren(children, props);
         return <Heading size={2} {...props}>{content}</Heading>;
@@ -243,6 +245,9 @@ export const mdOptions = {
           type: 'htmlinline',
           content
         };
+
+      case 'wrapper':
+        return <DefaultWrapper {...props}>{children}</DefaultWrapper>;
 
       default:
         return null; // now MDReactComponent is going to create the tag with React.createElement

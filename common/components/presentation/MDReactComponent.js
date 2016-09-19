@@ -14,7 +14,7 @@ import fromPairs from 'lodash/fromPairs';
 
 
 const DEFAULT_TAGS = {
-  'html': 'span'
+  'html': 'wrapper'
 };
 
 /**

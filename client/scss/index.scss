@@ -159,4 +159,21 @@ form .btn,
     margin-left: auto;
 }
 
+/*
+ * Override some figure and hljs styles for better contrast
+ */
+
+figure.hljs {
+  background-color: rgba(248, 248, 248, 0.3);
+  border-left: 2px solid #1d79b6;
+}
+
+pre.hljs {
+  background-color: transparent;
+}
+
+code {
+  background-color: transparent;
+}
+
 @import "./notebook/_print.scss";

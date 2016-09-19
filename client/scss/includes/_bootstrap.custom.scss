@@ -61,6 +61,7 @@ $state-danger-border:            darken($state-danger-bg, 5%) !default;
 
   &.alert-danger.alert-left-border {
     border-left: 4px solid $state-danger-bg;
+    background-color: rgb(249, 249, 249);
   }
 }
 
