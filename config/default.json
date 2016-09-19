@@ -139,7 +139,22 @@
     "sourcebox": {
       "url": "http://52.57.103.114",
       "secret": "ItsASecretToEverybody!",
-      "expiresIn": "10h"
+      "expiresIn": "10h",
+      "supportedLanguages": [
+        {
+        "displayName": "Python 3",
+        "value": "python-3"
+        }, {
+        "displayName": "Python 2",
+        "value": "python-2"
+        }, {
+        "displayName": "C",
+        "value": "c-13"
+        }, {
+        "displayName": "Java",
+        "value": "java-8"
+        }
+      ]
     },
     "websocket": {
       "url": "http://localhost:3000",

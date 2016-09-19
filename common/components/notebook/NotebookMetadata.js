@@ -202,17 +202,13 @@ class NotebookMetadata extends React.Component {
               <div className={"col-sm-10"}>
                 <select defaultValue={course != undefined ? course : ''} ref="courseField" title="Kurs-Slug" onChange={this.onUpdate} className={"form-control custom-select"} name="course">
                   {this.state.coursesInfo.map(info => {
-                    return <option value={info.slug} key={info.id}>{info.title}</option>;
+                    let infoStr = '' + info.title + ' (' + (info.published ? 'Veröffentlicht' : 'Nicht Veröffentlicht') + ')';
+                    return <option value={info.slug} key={info.id}>{infoStr}</option>;
                   })}
                   <option value="">Nicht zugeordnet</option>
                 </select>
                 {/*<input className={"form-control"} onChange={this.onUpdate} type="text" defaultValue={course} name="course" ref="courseField" onBlur={e => {}} title="Kurs-Slug" />*/}
                 <small>Angabe eines Kurses (Kurz-Link oder ID), um diese Document zuzuordnen. <strong>Eine Änderung am Kursnamen verschiebt keine Bilder.</strong></small>
-              </div>
-            </div>
-            <div className="form-group row">
-              <label className={"col-sm-2 form-control-label"} ><Icon name="cogs" /> Interne ID</label>
-              <div className={"col-sm-10"}>
                 <input className={"form-control"} disabled readOnly type="text" defaultValue={this.props.id} name="notebookdid" />
                 <small>Interne ID des Dokumentes.</small>
               </div>

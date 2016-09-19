@@ -6,7 +6,10 @@ const LANGUAGE_EXT = new Map([
   ['cs', 'cs'],
   ['cpp', 'cpp'],
   ['c', 'c'],
+  ['c13', 'c'],
   ['java', 'java'],
+  ['java7', 'java'],
+  ['java8', 'java'],
   ['ruby', 'rb']
 ]);
 

@@ -211,6 +211,7 @@ export default class CodeEmbedCell extends BaseCell {
           onSuggestionsClearRequested={this.onSuggestionsClearRequested}
           renderSuggestion={this.renderSuggestion}
           inputProps={inputProps} />
+          <p className="text-muted">Sie können hier direkt eine ID einfügen, oder ihre eigenen Beispiele durchsuchen. Ein Klick in das leere Feld, zeigt all Ihre Beispiele in einer Liste an.</p>
           {/*<input className="form-control" type="text" placeholder="ID..." onChange={this.onUpdateCell} value={source} ref={ref => this.sourceInput = ref}/>*/}
         </div>
         <hr className="top-sep" />
