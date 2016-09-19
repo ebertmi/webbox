@@ -57,6 +57,7 @@ export default class Presentation extends React.Component {
     let height;
     let lang;
     let executionLanguage;
+    let notebookLanguageInformation;
     let embedType;
     let runId;
     let source = sourceFromCell(cell);
@@ -71,12 +72,10 @@ export default class Presentation extends React.Component {
       case 'markdown':
         return toMarkdownComponent({source: source});
       case 'code':
-        lang = cell.getIn(['metadata', 'mode']);
-        executionLanguage = cell.getIn(['metadata', 'executionLanguage']);
+        notebookLanguageInformation = notebookMetadataToSourceboxLanguage(notebook.get('metadata'));
+        lang = cell.getIn(['metadata', 'mode'], notebookLanguageInformation.languageName);
 
-        if (executionLanguage == null || executionLanguage === '') {
-          executionLanguage = notebookMetadataToSourceboxLanguage(notebook.get('metadata'));
-        }
+        executionLanguage = cell.getIn(['metadata', 'executionLanguage'], notebookLanguageInformation.executionLanguage);
 
         embedType = cell.getIn(['metadata', 'embedType'], notebook.getIn(['metadata', 'embedType']));
         runId = cell.getIn(['metadata', 'runid']);
