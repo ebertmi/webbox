@@ -5139,6 +5139,9 @@ Sk.configure = function (options) {
     Sk.inputfun = options["inputfun"] || Sk.inputfun;
     goog.asserts.assert(typeof Sk.inputfun === "function");
     
+    Sk.inputfunTakesPrompt = options["inputfunTakesPrompt"] || false;
+    goog.asserts.assert(typeof Sk.inputfunTakesPrompt === "boolean");
+
     Sk.retainGlobals = options["retainglobals"] || false;
     goog.asserts.assert(typeof Sk.retainGlobals === "boolean");
 
@@ -5338,7 +5341,7 @@ Sk.dunderToSkulpt = {
     "__pow__": "nb$power",
     "__rpow__": "nb$reflected_power",
     "__contains__": "sq$contains",
-    "__len__": ["sq$length", 0]
+    "__len__": ["sq$length", 1]
 };
 
 /**
@@ -5638,9 +5641,10 @@ Sk.builtin.type = function (name, bases, dict) {
                 var args = Array.prototype.slice.call(arguments), canSuspend;
                 args.unshift(magic_func, this);
 
-                if (canSuspendIdx) {
+                if (canSuspendIdx !== null) {
                     canSuspend = args[canSuspendIdx+1];
                     args.splice(canSuspendIdx+1, 1);
+
                     if (canSuspend) {
                         return Sk.misceval.callsimOrSuspend.apply(undefined, args);
                     }
@@ -7670,6 +7674,7 @@ Sk.builtin.func.prototype.tp$call = function (args, kw) {
                 args.push(undefined);
             }
         }
+
         args.push(this.func_closure);
     }
 
@@ -7980,7 +7985,7 @@ Sk.builtin.len = function len (item) {
     var int_ = function(i) { return new Sk.builtin.int_(i); };
 
     if (item.sq$length) {
-        return Sk.misceval.chain(item.sq$length(), int_);
+        return Sk.misceval.chain(item.sq$length(true), int_);
     }
 
     if (item.mp$length) {
@@ -8527,23 +8532,30 @@ Sk.builtin.getattr = function getattr (obj, name, default_) {
 };
 
 Sk.builtin.setattr = function setattr (obj, name, value) {
-
     Sk.builtin.pyCheckArgs("setattr", arguments, 3, 3);
-    if (!Sk.builtin.checkString(name)) {
-        throw new Sk.builtin.TypeError("attribute name must be string");
-    }
-    if (obj.tp$setattr) {
-        obj.tp$setattr(Sk.ffi.remapToJs(name), value);
-    } else {
-        throw new Sk.builtin.AttributeError("object has no attribute " + Sk.ffi.remapToJs(name));
+    // cannot set or del attr from builtin type
+    if (obj === undefined || obj["$r"] === undefined || obj["$r"]().v.slice(1,5) !== "type") {
+        if (!Sk.builtin.checkString(name)) {
+            throw new Sk.builtin.TypeError("attribute name must be string");
+        }
+        if (obj.tp$setattr) {
+            obj.tp$setattr(Sk.ffi.remapToJs(name), value);
+        } else {
+            throw new Sk.builtin.AttributeError("object has no attribute " + Sk.ffi.remapToJs(name));
+        }
+        return Sk.builtin.none.none$;
     }
 
-    return Sk.builtin.none.none$;
+    throw new Sk.builtin.TypeError("can't set attributes of built-in/extension type '" + obj.tp$name + "'");
 };
 
 Sk.builtin.raw_input = function (prompt) {
     var sys = Sk.importModule("sys");
     var lprompt = prompt ? prompt : "";
+
+    if (Sk.inputfunTakesPrompt) {
+        return Sk.misceval.callsimOrSuspend(Sk.builtin.file.$readline, sys["$d"]["stdin"], null, lprompt);
+    }
 
     return Sk.misceval.chain(undefined, function () {
         return Sk.misceval.callsimOrSuspend(sys["$d"]["stdout"]["write"], sys["$d"]["stdout"], new Sk.builtin.str(prompt));
@@ -8733,6 +8745,7 @@ Sk.builtin.filter = function filter (fun, iterable) {
 
 Sk.builtin.hasattr = function hasattr (obj, attr) {
     Sk.builtin.pyCheckArgs("hasattr", arguments, 2, 2);
+    var special, ret;
     if (!Sk.builtin.checkString(attr)) {
         throw new Sk.builtin.TypeError("hasattr(): attribute name must be string");
     }
@@ -8741,7 +8754,26 @@ Sk.builtin.hasattr = function hasattr (obj, attr) {
         if (obj.tp$getattr(attr.v)) {
             return Sk.builtin.bool.true$;
         } else {
-            return Sk.builtin.bool.false$;
+            special = Sk.abstr.lookupSpecial(obj, "__getattr__");
+            if (special) {
+                ret = Sk.misceval.tryCatch(function () {
+                    var val = Sk.misceval.callsim(special, obj, attr);
+                    if (val) {
+                        return Sk.builtin.bool.true$;
+                    } else {
+                        return Sk.builtin.bool.false$;
+                    }
+                }, function(e) {
+                    if (e instanceof Sk.builtin.AttributeError) {
+                        return Sk.builtin.bool.false$;
+                    } else {
+                        throw e;
+                    }
+                });
+                return ret;
+            } else {
+                return Sk.builtin.bool.false$;
+            }
         }
     } else {
         throw new Sk.builtin.AttributeError("Object has no tp$getattr method");
@@ -8970,9 +9002,37 @@ Sk.builtin.callable = function callable (obj) {
     return Sk.builtin.bool.false$;
 };
 
-Sk.builtin.delattr = function delattr () {
-    throw new Sk.builtin.NotImplementedError("delattr is not yet implemented");
+Sk.builtin.delattr = function delattr (obj, attr) {
+    Sk.builtin.pyCheckArgs("delattr", arguments, 2, 2);
+    if (obj["$d"][attr.v] !== undefined) {
+        var ret = Sk.misceval.tryCatch(function() {
+            var try1 = Sk.builtin.setattr(obj, attr, undefined);
+            return try1;
+        }, function(e) {
+            Sk.misceval.tryCatch(function() {
+                var try2 = Sk.builtin.setattr(obj["$d"], attr, undefined);
+
+                return try2;
+            }, function(e) {
+                if (e instanceof Sk.builtin.AttributeError) {
+                    throw new Sk.builtin.AttributeError(Sk.abstr.typeName(obj) + " instance has no attribute '"+ attr.v+ "'");
+                } else {
+                    throw e;
+                }
+            });
+        });
+        return ret;
+    } // cannot set or del attr from builtin type
+    if (obj["$r"]().v.slice(1,5) !== "type") {
+        if (obj.ob$type === Sk.builtin.type && obj[attr.v] !== undefined) {
+            obj[attr.v] = undefined;
+            return Sk.builtin.none.none$;
+        }
+        throw new Sk.builtin.AttributeError(Sk.abstr.typeName(obj) + " instance has no attribute '"+ attr.v+ "'");
+    }
+    throw new Sk.builtin.TypeError("can't set attributes of built-in/extension type '" + obj.tp$name + "'");
 };
+
 Sk.builtin.execfile = function execfile () {
     throw new Sk.builtin.NotImplementedError("execfile is not yet implemented");
 };
@@ -17034,6 +17094,8 @@ Sk.builtin.int_ = function (x, base) {
     return this;
 };
 
+Sk.builtin.int_.$shiftconsts = [0.5, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432, 67108864, 134217728, 268435456, 536870912, 1073741824, 2147483648, 4294967296, 8589934592, 17179869184, 34359738368, 68719476736, 137438953472, 274877906944, 549755813888, 1099511627776, 2199023255552, 4398046511104, 8796093022208, 17592186044416, 35184372088832, 70368744177664, 140737488355328, 281474976710656, 562949953421312, 1125899906842624, 2251799813685248, 4503599627370496, 9007199254740992];
+
 Sk.abstr.setUpInheritance("int", Sk.builtin.int_, Sk.builtin.numtype);
 
 /* NOTE: See constants used for kwargs in constants.js */
@@ -17530,6 +17592,10 @@ Sk.builtin.int_.prototype.nb$reflected_xor = Sk.builtin.int_.prototype.nb$xor;
 Sk.builtin.int_.prototype.nb$lshift = function (other) {
     var thisAsLong;
 
+    if (this.v === 0) {
+        return this;
+    }
+
     if (other instanceof Sk.builtin.int_) {
         var tmp;
         var shift = Sk.builtin.asnum$(other);
@@ -17538,10 +17604,15 @@ Sk.builtin.int_.prototype.nb$lshift = function (other) {
             if (shift < 0) {
                 throw new Sk.builtin.ValueError("negative shift count");
             }
-            tmp = this.v << shift;
-            if (tmp <= this.v) {
+
+            if (shift > 53) {
+                return new Sk.builtin.lng(this.v).nb$lshift(new Sk.builtin.int_(shift));
+            }
+
+            tmp = this.v * 2 * Sk.builtin.int_.$shiftconsts[shift]; 
+            if (tmp > Sk.builtin.int_.threshold$ || tmp < -Sk.builtin.int_.threshold$) {
                 // Fail, recompute with longs
-                return new Sk.builtin.lng(this.v).nb$lshift(other);
+                return new Sk.builtin.lng(tmp);
             }
         }
 
@@ -22278,12 +22349,15 @@ Sk.builtin.file.prototype["read"] = new Sk.builtin.func(function (self, size) {
     return ret;
 });
 
-Sk.builtin.file.prototype["readline"] = new Sk.builtin.func(function (self, size) {
+Sk.builtin.file.$readline = function (self, size, prompt) {
     if (self.fileno === 0) {
         var x, resolution, susp;
 
-        var prompt = prompt ? prompt.v : "";
-        x = Sk.inputfun(prompt);
+        var lprompt = prompt != null ? Sk.ffi.remapToJs(prompt) : "";
+
+        lprompt = lprompt ? lprompt : "";
+
+        x = Sk.inputfun(lprompt);
 
         if (x instanceof Promise) {
             susp = new Sk.misceval.Suspension();
@@ -22315,6 +22389,10 @@ Sk.builtin.file.prototype["readline"] = new Sk.builtin.func(function (self, size
         }
         return new Sk.builtin.str(line);
     }
+};
+
+Sk.builtin.file.prototype["readline"] = new Sk.builtin.func(function (self, size) { 
+    return Sk.builtin.file.$readline(self, size, undefined); 
 });
 
 Sk.builtin.file.prototype["readlines"] = new Sk.builtin.func(function (self, sizehint) {
@@ -31101,9 +31179,14 @@ Compiler.prototype.buildcodeobj = function (n, coname, decorator_list, args, cal
         }
     }
     if (hasFree) {
-        funcArgs.push("$free");
-        this.u.tempsToSave.push("$free");
+        if (vararg) {
+            this.u.varDeclsCode += "$free = arguments[arguments.length-1];"
+        } else {
+            funcArgs.push("$free");
+            this.u.tempsToSave.push("$free");
+        }
     }
+
     this.u.prefixCode += funcArgs.join(",");
 
     this.u.prefixCode += "){";
@@ -31195,8 +31278,9 @@ Compiler.prototype.buildcodeobj = function (n, coname, decorator_list, args, cal
     //
     if (vararg) {
         start = funcArgs.length;
+
         this.u.localnames.push(vararg.v);
-        this.u.varDeclsCode += vararg.v + "=new Sk.builtins['tuple'](Array.prototype.slice.call(arguments," + start + ")); /*vararg*/";
+        this.u.varDeclsCode += vararg.v + "=new Sk.builtins['tuple'](Array.prototype.slice.call(arguments," + start + (hasFree ? ",-1)" : ")") + "); /*vararg*/";
     }
 
     //
@@ -33566,4 +33650,4 @@ Sk.builtin.lng.$defaults = [ new Sk.builtin.int_(10) ];
 Sk.builtin.sorted.co_varnames = ["cmp", "key", "reverse"];
 Sk.builtin.sorted.co_numargs = 4;
 Sk.builtin.sorted.$defaults = [Sk.builtin.none.none$, Sk.builtin.none.none$, Sk.builtin.bool.false$];
-Sk.internalPy={"files": {"src/staticmethod.py": "class staticmethod(object):\n    \"Emulate PyStaticMethod_Type() in Objects/funcobject.c\"\n\n    def __init__(self, f):\n        self.f = f\n\n    def __get__(self, obj, objtype=None):\n        return self.f\n", "src/property.py": "class property(object):\n    \"Emulate PyProperty_Type() in Objects/descrobject.c\"\n\n    def __init__(self, fget=None, fset=None, fdel=None, doc=None):\n        self.fget = fget\n        self.fset = fset\n        self.fdel = fdel\n        if doc is None and fget is not None:\n            if hasattr(fget, '__doc__'):\n                doc = fget.__doc__\n            else:\n                doc = None\n        self.__doc__ = doc\n\n    def __get__(self, obj, objtype=None):\n        if obj is None:\n            return self\n        if self.fget is None:\n            raise AttributeError(\"unreadable attribute\")\n        return self.fget(obj)\n\n    def __set__(self, obj, value):\n        if self.fset is None:\n            raise AttributeError(\"can't set attribute\")\n        self.fset(obj, value)\n\n    def __delete__(self, obj):\n        if self.fdel is None:\n            raise AttributeError(\"can't delete attribute\")\n        self.fdel(obj)\n\n    def getter(self, fget):\n        return type(self)(fget, self.fset, self.fdel, self.__doc__)\n\n    def setter(self, fset):\n        return type(self)(self.fget, fset, self.fdel, self.__doc__)\n\n    def deleter(self, fdel):\n        return type(self)(self.fget, self.fset, fdel, self.__doc__)\n"}};
+Sk.internalPy={"files": {"src/staticmethod.py": "class staticmethod(object):\n    \"Emulate PyStaticMethod_Type() in Objects/funcobject.c\"\n\n    def __init__(self, f):\n        self.f = f\n\n    def __get__(self, obj, objtype=None):\n        return self.f\n", "src/property.py": "class property(object):\n    \"Emulate PyProperty_Type() in Objects/descrobject.c\"\n\n    def __init__(self, fget=None, fset=None, fdel=None, doc=None):\n        self.fget = fget\n        self.fset = fset\n        self.fdel = fdel\n        if doc is None and fget is not None:\n            if hasattr(fget, '__doc__'):\n                doc = fget.__doc__\n            else:\n                doc = None\n        self.__doc__ = doc\n\n    def __get__(self, obj, objtype=None):\n        if obj is None:\n            return self\n        if self.fget is None:\n            raise AttributeError(\"unreadable attribute\")\n        return self.fget(obj)\n\n    def __set__(self, obj, value):\n        if self.fset is None:\n            raise AttributeError(\"can't set attribute\")\n        self.fset(obj, value)\n\n    def __delete__(self, obj):\n        if self.fdel is None:\n            raise AttributeError(\"can't delete attribute\")\n        self.fdel(obj)\n\n    def getter(self, fget):\n        return type(self)(fget, self.fset, self.fdel, self.__doc__)\n\n    def setter(self, fset):\n        return type(self)(self.fget, fset, self.fdel, self.__doc__)\n\n    def deleter(self, fdel):\n        return type(self)(self.fget, self.fset, fdel, self.__doc__)\n", "src/classmethod.py": "class classmethod(object):\n    \"Emulate PyClassMethod_Type() in Objects/funcobject.c\"\n\n    def __init__(self, f):\n        self.f = f\n\n    def __get__(self, obj, klass=None):\n        if klass is None:\n            klass = type(obj)\n        def newfunc(*args):\n            return self.f(klass, *args)\n        return newfunc\n"}};

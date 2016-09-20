@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 import { PassThrough, Transform } from 'stream';
 
 import Bluebird from 'bluebird';
+import isString from 'lodash/isString';
 import { EventLog } from '../insights/remoteDispatcher';
 import { TerminalTransform } from '../../util/streamUtils';
 
@@ -158,9 +159,14 @@ export default class Runner extends EventEmitter {
     }
   }
 
-  readPrompt() {
+  readPrompt(prompt) {
     // We need to use here the original Promise and not bluebird,
     // otherwise the skulpt checks for promises are failing
+
+    //if (prompt != null && isString(prompt)) {
+    //  this._output(prompt);
+    //}
+
     return new Promise((resolve, reject) => {
       this.readPromptRejectFunction = reject;
       // Now read from stdin.
