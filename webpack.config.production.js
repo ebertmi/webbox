@@ -91,7 +91,11 @@ module.exports = {
       disable: false
     }),
     new CopyWebpackPlugin([
-      { from: 'common/presentation/theme/index.css', to: '../css/spectacle.css' }
+      {
+        from: path.resolve(__dirname, 'common/components/presentation/theme/theme.css'),
+        to: '../css/spectacle.css',
+        copyUnmodified: true
+      }
     ])
   ],
   node: {
