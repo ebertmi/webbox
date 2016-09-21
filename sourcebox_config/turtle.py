@@ -211,6 +211,9 @@ except:
     print ("No configfile read, reason unknown")
 
 
+class ScrolledCanvas():
+    pass
+
 class Vec2D(tuple):
     """A 2 dimensional vector class, used as a helper class
     for implementing turtle graphics.
@@ -1175,7 +1178,11 @@ class WebCanvas:
 
     def coords(self, item, coords=None):
         if coords is None:
-            return self.items[item]['coords']
+            if hasattr(self.items[item], 'coords'):
+                return self.items[item]['coords']
+            else:
+                return [0,0,0,0]
+
         self.items[item]['coords'] = coords
         self.addbatch('coords', item, coords)
 
@@ -1212,6 +1219,8 @@ class WebCanvas:
         if event.type in self.bindings:
             self.bindings[event.type](event)
 
+    def find_all(self):
+      return self.items
 
 class TurtleScreenBase(object):
     """Provide the basic graphics functionality.
@@ -1512,15 +1521,16 @@ class TurtleScreenBase(object):
 
     def _rescale(self, xscalefactor, yscalefactor):
         items = self.cv.find_all()
-        for item in items:
-            coordinates = list(self.cv.coords(item))
+        for item_index in range(len(items)):
+            item = items[item_index]
+            coordinates = list(self.cv.coords(item_index))
             newcoordlist = []
             while coordinates:
                 x, y = coordinates[:2]
                 newcoordlist.append(x * xscalefactor)
                 newcoordlist.append(y * yscalefactor)
                 coordinates = coordinates[2:]
-            self.cv.coords(item, newcoordlist)
+            self.cv.coords(item_index, newcoordlist)
 
     def _resize(self, canvwidth=None, canvheight=None, bg=None):
         """Resize the canvas the turtles are drawing on. Does
@@ -1825,7 +1835,7 @@ class TurtleScreen(TurtleScreenBase):
         sry1 = -ury * self.yscale
         srx2 = self.canvwidth + srx1
         sry2 = self.canvheight + sry1
-        self._setscrollregion(srx1, sry1, srx2, sry2)
+        #self._setscrollregion(srx1, sry1, srx2, sry2)
         self._rescale(self.xscale/oldxscale, self.yscale/oldyscale)
         self.update()
 

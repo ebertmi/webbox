@@ -151,7 +151,7 @@ export default class Terminal extends React.Component {
     let cols = x * this.terminal.cols | 0;
     let rows = y * this.terminal.rows | 0;
 
-    if (this.terminals !== cols || this.terminal.rows != rows) {
+    if (this.terminal.cols !== cols || this.terminal.rows != rows) {
       this.terminal.resize(cols, rows);
       if (this.props.onResize) {
         this.props.onResize(cols, rows);
