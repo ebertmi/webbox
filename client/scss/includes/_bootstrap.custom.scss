@@ -49,14 +49,17 @@ $state-danger-border:            darken($state-danger-bg, 5%) !default;
 
   &.alert-info.alert-left-border {
     border-left: 4px solid $state-info-bg;
+    background-color: rgb(249, 249, 249)
   }
 
   &.alert-success.alert-left-border {
     border-left: 4px solid $state-success-bg;
+    background-color: rgb(249, 249, 249)
   }
 
   &.alert-warning.alert-left-border {
     border-left: 4px solid $state-warning-bg;
+    background-color: rgb(249, 249, 249)
   }
 
   &.alert-danger.alert-left-border {

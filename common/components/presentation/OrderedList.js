@@ -5,7 +5,7 @@ import Radium from "radium";
 class OrderedList extends Component {
   render() {
     return (
-      <ol className={this.props.className} style={[this.context.styles.components.orderedList, getStyles.call(this), this.props.style]}>
+      <ol {...this.props} className={this.props.className} style={[this.context.styles.components.orderedList, getStyles.call(this), this.props.style]}>
         {this.props.children}
       </ol>
     );
