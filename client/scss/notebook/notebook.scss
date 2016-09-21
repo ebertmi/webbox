@@ -199,6 +199,14 @@ h1.notebook-title {
   flex-basis: auto;
 }
 
+/*
+ * Render the run btn on the left side of the code panes
+ */
+#notebook-container span.fa.fa-play-circle-o.icon-control.code-cell-run-btn {
+  position: absolute;
+  z-index: 2;
+}
+
 .image-upload-wrapper {
   display: inline-block;
 }

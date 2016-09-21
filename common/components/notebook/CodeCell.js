@@ -54,7 +54,7 @@ export default class CodeCell extends BaseCell {
      */
 
     const code = this.getSourceFromCell();
-    let executionLanguage = this.props.cell.getIn(['metadata', 'executionLanguage'], this.props.executionLanguage);
+    let notebookLanguageInformation = this.props.cell.getIn(['metadata', 'executionLanguage'], this.props.executionLanguage.executionLanguage);
 
     let notebookEmbedType = this.props.embedType || EmbedTypes.Sourcebox;
     const embedType = this.props.cell.getIn(['metadata', 'embedType'], notebookEmbedType);
@@ -62,7 +62,7 @@ export default class CodeCell extends BaseCell {
     // Experimental
     const id = this.props.cell.getIn(['metadata', 'runid'], RunModeDefaults.id);
 
-    const url = `${window.location.protocol}//${window.location.host}/run?language=${encodeURIComponent(executionLanguage)}&id=${encodeURIComponent(id)}&embedType=${encodeURIComponent(embedType)}&code=${encodeURIComponent(code)}`;
+    const url = `${window.location.protocol}//${window.location.host}/run?language=${encodeURIComponent(notebookLanguageInformation)}&id=${encodeURIComponent(id)}&embedType=${encodeURIComponent(embedType)}&code=${encodeURIComponent(code)}`;
     const strWindowFeatures = "menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes";
 
     window.open(url, "Beispiel Ausführen", strWindowFeatures);

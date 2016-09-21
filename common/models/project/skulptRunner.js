@@ -46,6 +46,10 @@ export default class Runner extends EventEmitter {
     this.project = project;
     this.sourcebox = project.sourcebox;
 
+    this.createStdio();
+  }
+
+  createStdio() {
     this.stdin = new PassThrough();
     this.stdout = new PassThrough({
       decodeStrings: false,
@@ -54,7 +58,10 @@ export default class Runner extends EventEmitter {
     this.stderr = this.stdout;
 
     this.stdio = [this.stdin, this.stdout, this.stderr];
+
+    this.emit('streamsChanged');
   }
+
 
   defaultFileRead(x) {
     // Try to read local fileObject
@@ -145,7 +152,9 @@ export default class Runner extends EventEmitter {
 
   showTurtleTab() {
     // add a new tab with the turtle canvas
-    this.project.tabManager.addTab('turtle', {item: {canvas: this.canvas}});
+    this.project.tabManager.closeTabByType('turtle');
+    let tabIndex = this.project.tabManager.addTab('turtle', {item: {canvas: this.canvas}, active: false});
+    this.project.tabManager.toggleTab(tabIndex);
   }
 
 
@@ -190,6 +199,9 @@ export default class Runner extends EventEmitter {
     if (this.isRunning()) {
       return;
     }
+
+    // Set up new streams -> clears current console
+    this.createStdio();
 
     this.config = this.project.config;
     this.files = this.project.getFiles();

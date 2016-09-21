@@ -214,8 +214,12 @@ export class Turtle extends EventEmitter {
       this.canvas.height = 600;
 
       // add a new tab with the turtle canvas
-      let index = this.project.tabManager.addTab('turtle', {item: this});
-      this.tab = this.project.tabManager.getTabs()[index]; // Get Tab Reference
+      // Delete all turtle tabs
+
+      this.project.tabManager.closeTabByType('turtle');
+      let tabIndex = this.project.tabManager.addTab('turtle', {item: this, active: false});
+      this.project.tabManager.toggleTab(tabIndex);
+      this.tab = this.project.tabManager.getTabs()[tabIndex]; // Get Tab Reference
       this.addCanvasClickHandler();
     }
 

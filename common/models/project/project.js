@@ -38,6 +38,12 @@ export default class Project extends EventEmitter {
     // Check the project/language configuration
     this.checkProjectConfiguration();
 
+    // Everything failed, greatly
+    if (this.config == null) {
+      this.config = languages['python3'];
+      this.showLoadError = true;
+    }
+
     this.name = this.projectData.embed.meta.name || '';
 
     // Insights instance, when required
@@ -81,6 +87,11 @@ export default class Project extends EventEmitter {
 
     // Handle throttling and debouncing
     this.saveEmbed = throttle(this.saveEmbed, 800);
+
+    // Show error message, when the language configuration failed
+    if (this.showLoadError === true) {
+      this.showMessage(Severity.Error, 'Es konnte keine gültige Sprachkonfiguration für das Beispiel gefunden werden. Lade mit Python 3..');
+    }
   }
 
   /**
@@ -89,8 +100,6 @@ export default class Project extends EventEmitter {
   checkProjectConfiguration() {
     if (isString(this.projectData.embed.meta.language)) {
       this.config = languages[this.projectData.embed.meta.language];
-    } else {
-      this.config = this.projectData.embed.meta.language;
     }
   }
 

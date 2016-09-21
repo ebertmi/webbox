@@ -1,4 +1,7 @@
 import { Transform } from 'stream';
+import Debug from 'debug';
+
+const debug = Debug('webbox:streamUtils');
 
 /**
  * Replaces newlines (\n) with \r\n (for term.js)
@@ -89,7 +92,7 @@ export class MatplotLibTransfrom extends Transform {
       this.isImageEnd = false;
 
       this.imageParts.push(chunk.slice(0, -9));
-      console.info('MPLStream: ENDIMAGE %d', chunk.length);
+      debug('MatplotLibTransfrom._transform: ENDIMAGE %d', chunk.length);
 
       // must be called after appending the last image part
       this._createImageFromBuffer();
@@ -99,10 +102,10 @@ export class MatplotLibTransfrom extends Transform {
       this.imageBuffer = null;
 
       this.imageParts.push(chunk.slice(11));
-      console.info('MPLStream: STARTIMGAGE %d', chunk.length);
+      debug('MatplotLibTransfrom._transform: STARTIMAGE %d', chunk.length);
     } else {
       this.imageParts.push(chunk);
-      console.info('MPLStream: DATA %d', chunk.length);
+      debug('MatplotLibTransfrom._transform: DATA %d', chunk.length);
     }
 
     callback();

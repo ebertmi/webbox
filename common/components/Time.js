@@ -92,5 +92,6 @@ Time.defaultProps = {
   value: null,
   titleFormat: 'YYYY-MM-DD HH:mm',
   Component: 'time',
-  invalidDateString: 'Invalid Date'
+  invalidDateString: 'Invalid Date',
+  locale: 'de'
 };

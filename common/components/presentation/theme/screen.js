@@ -8,7 +8,7 @@ const defaultColors = {
 };
 
 const defaultFonts = {
-  primary: "Open Sans Condensed",
+  primary: 'Source Sans Pro',
   secondary: 'Open Sans Condensed',
   tertiary: "monospace"
 };
@@ -285,7 +285,8 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         fontWeight: "bold"
       },
       tableItem: {
-        fontSize: "1.8rem"
+        fontSize: "1.8rem",
+        textAlign: "left"
       },
       table: {
         width: "100%",
