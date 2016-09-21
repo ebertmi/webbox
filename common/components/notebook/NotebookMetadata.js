@@ -222,7 +222,7 @@ class NotebookMetadata extends React.Component {
           </span>
           <hr/>
           <span className="metadata-item">
-            <a href={`/export/d/${id}`} download={`${title}.ipynb`}>Export (ipynb)</a>
+            <a href={`/export/d/${id}`} target="_blank">Export (ipynb)</a>
           </span>
         </div>
       );
