@@ -7,13 +7,6 @@ var AWS = require('aws-sdk');
 var fmt = require('dateformat');
 var r = require('rethinkdb');
 
-//var client = knox.createClient({
-//  key: process.env.AWS_ACCESS_KEY_ID,
-//  secret: process.env.AWS_SECRET_ACCESS_KEY,
-//  bucket: process.env.S3_BUCKET,
-//  region: process.env.AWS_REGION
-//});
-
 /*
 function withRethink(callback) {
   let opts = {host: 'rethink', port: 28015};
@@ -49,23 +42,6 @@ function backup() {
   });
 }
 
-/*
-function upload_old(file) {
-  console.log('starting upload', getDate());
-  client.putFile(file, file, function(err, res){
-    if (err) {
-      console.error(err);
-    }
-    res.resume();
-    console.log('completed upload: ', Date.now());
-  }).on('progress', function(v) {
-    // track upload progress if you need here:
-    // console.log('progress event')
-    // console.log(v)
-  });
-}
-*/
-
 
 function upload(file) {
   console.log('Try to connect to S3 with: ', process.env.AWS_ACCESS_KEY_ID, process.env.AWS_SECRET_ACCESS_KEY, process.env.AWS_REGION);
@@ -80,10 +56,6 @@ function upload(file) {
       console.log(err, data);
     });
 }
-
-// 1 day = 86400 sec
-const dayInSeconds = 60 * 60 * 24;
-const dayInMs = 1000 * dayInSeconds;
 
 //withRethink(() => {
 //console.log('rethinkdb connection established');
