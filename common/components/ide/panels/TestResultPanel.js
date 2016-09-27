@@ -70,7 +70,7 @@ export default class TestsPanel extends React.Component {
 
             // Render hint only, when the test failed
             let hint = test.success === false && test.hint != null ? <p><small><strong>Hinweis: </strong>{test.hint}</small></p> : null;
-            let output = test.output != null ? <div><p className="text-danger test-result-output-label">Ausgabe:</p><pre className="test-result-output"><code>{ test.output }</code></pre></div> : null;
+            let output = test.success === false && test.output != null ? <div><p className="text-danger test-result-output-label">Ausgabe:</p><pre className="test-result-output"><code>{ test.output }</code></pre></div> : null;
             return (
               <li className="list-group-item" key={index}>
                 <p>

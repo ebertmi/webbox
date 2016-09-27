@@ -1,6 +1,7 @@
 import os
 import sys
 import io
+import traceback
 
 # Set the current working dir to the project
 if len(sys.argv) < 2:

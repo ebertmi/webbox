@@ -27,6 +27,7 @@ Contact GitHub API Training Shop Blog About
 	color: white;
 	font-size: 12px;
 	padding: 0 10px;
+  overflow-x: hidden; /* Prevents broken layout on small screen and adds a scrollable 2nd row for the statusbar */
 }
 
 .part.statusbar > .statusbar-item {

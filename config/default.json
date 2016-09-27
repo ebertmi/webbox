@@ -21,7 +21,10 @@
             "password": "secret_cookie_for_webbox_that_must_be_atleast_32_chars_long!", // use something more secure in production
             "redirectTo": "/login", // If there is no session, redirect here
             "isSecure": false, // change this in production
-            "appendNext": true
+            "appendNext": true,
+            "keepAlive": true,
+            "ttl": 604800000, // 7 days: 7 * 24 * 60 * 60 * 1000
+            "clearInvalid": true
         },
         "authAttempts": 7,
         "validSignupEmailHosts": ["hs-coburg.de", "stud.hs-coburg.de"],

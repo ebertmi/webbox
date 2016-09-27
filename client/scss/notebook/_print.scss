@@ -1,4 +1,13 @@
 @media print {
+
+  blockquote {
+    border: none;
+  }
+
+  .header-anchor {
+    display: none;
+  }
+
   .hljs {
     background: transparent;
     border: none;
@@ -6,6 +15,11 @@
 
   figure.hljs {
     border-left: 1px solid #ddd;
+    background-color: transparent;
+  }
+
+  pre.hljs {
+    background-color: transparent;
   }
 
   code {
@@ -21,7 +35,7 @@
 
   .markdown-cell p {
     font-size: 1.1rem;
-    line-height: 1;
+    line-height: 1.2;
   }
 
   .markdown-cell h1 {

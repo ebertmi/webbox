@@ -183,7 +183,7 @@ export const mdOptions = {
 
       case 'h1':
         content = makeChildren(children, props);
-        return <Heading fit size={1} {...props}>{content}</Heading>;
+        return <Heading size={1} {...props}>{content}</Heading>;
       case 'h2':
         content = makeChildren(children, props);
         return <Heading size={2} {...props}>{content}</Heading>;

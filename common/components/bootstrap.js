@@ -150,7 +150,7 @@ export class Input extends React.Component {
       <div className={classes}>
         <label>
           <input {...rest}/>
-          {label}
+          {" "}{label}
           {this.renderMuted()}
         </label>
       </div>

@@ -176,16 +176,18 @@ export default class Project extends EventEmitter {
     this.status.hasChanges = hasChanges;
     this.statusBarRegistry.registerStatusbarItem(hasChanges, StatusBarAlignment.Right, 200);
 
-    // Zum original
-    const sbrToOriginal =  new StatusBarItem('Zum Original', null, 'Zeigt das unveränderte Original an', null, (e) => {
-      if (e && e.preventDefault()) {
-        e.preventDefault();
-      }
+    if (this.mode != MODES.RunMode) {
+      // Zum original
+      const sbrToOriginal =  new StatusBarItem('Zum Original', null, 'Zeigt das unveränderte Original an', null, (e) => {
+        if (e && e.preventDefault()) {
+          e.preventDefault();
+        }
 
-      const link = this.getOriginalLink();
-      window.open(link, '_blank');
-    }, '#');
-    this.statusBarRegistry.registerStatusbarItem(sbrToOriginal, StatusBarAlignment.Right, 100);
+        const link = this.getOriginalLink();
+        window.open(link, '_blank');
+      }, '#');
+      this.statusBarRegistry.registerStatusbarItem(sbrToOriginal, StatusBarAlignment.Right, 100);
+    }
 
     // Zur Startseite
     const sbrToStart = new StatusBarItem('Startseite', null, 'Zur Startseite', null, (e) => {
@@ -887,7 +889,7 @@ export default class Project extends EventEmitter {
         this.showMessage(Severity.Error, 'Beim Aktualisieren ist ein Fehler augetreten.');
       } else {
         // ToDo: Trigger auto reload here for the IDE
-        this.showMessage(Severity.Info, 'Erfolgreich aktualisiert.');
+        this.showMessage(Severity.Ignore, 'Erfolgreich aktualisiert.');
       }
     }).catch(err => {
       this.showMessage(Severity.Error, 'Aktualisieren fehlgeschlagen!');

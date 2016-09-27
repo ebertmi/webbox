@@ -165,7 +165,7 @@ export default class CodeCell extends BaseCell {
       <div className={classes}>
         <EditButtonGroup isVisible={isVisible} isEditModeActive={isEditModeActive} editing={editing} onToggleVisibility={this.onToggleVisibility} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
         {metadata}
-        <Icon name="play-circle-o" className="icon-control code-cell-run-btn" onClick={this.onRun} title="Code Ausführen" />
+        <Icon name="play-circle-o" className="icon-control code-cell-run-btn hidden-print" onClick={this.onRun} title="Code Ausführen" />
         {content}
       </div>
     );

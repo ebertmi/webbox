@@ -82,6 +82,15 @@ h1.notebook-title {
   font-style: normal;
   line-height: 1.6rem;
   color: #000000;
+
+  /* Now some "Blocksatz" text-align */
+  text-align: justify;
+
+  /* Let the browser insert hyphens, when supported */
+  -webkit-hyphens: auto;
+   -moz-hyphens: auto;
+    -ms-hyphens: auto;
+        hyphens: auto;
 }
 
 .markdown-cell img {

@@ -228,7 +228,7 @@ class NotebookMetadata extends React.Component {
       );
     }
     return (
-      <div className="col-xs-12">
+      <div className="col-xs-12 hidden-print">
         <h1 className="notebook-title">{title}</h1>
         <div className="notebook-metadata">
           <span className="metadata-item">

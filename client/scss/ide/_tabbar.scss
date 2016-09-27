@@ -38,6 +38,10 @@
   }
 }
 
+.nav-pills.controls {
+  display: inline-flex;
+}
+
 .nav-pills.controls .nav-link {
   color: #333333;
   font-weight: 300;
@@ -93,4 +97,5 @@
   flex-shrink: 1;
   flex-basis: 0px;
   background-color: #ececec;
+  min-width: 90px;
 }
