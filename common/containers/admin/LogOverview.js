@@ -38,7 +38,7 @@ class LogOverview extends Component {
           pages={this.props.logOverview.pages}
           pagesQuery={this.props.logOverview.pagesQuery}
           location={this.props.location}>
-        <h2>Letzte Änderungen</h2>
+        <h2>Letzte Events <small>({this.props.logOverview.count})</small></h2>
         <LoadingContainer isLoading={this.props.logOverview.isFetching}>
           {content}
         </LoadingContainer>

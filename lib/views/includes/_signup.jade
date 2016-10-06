@@ -9,6 +9,10 @@ form(action="/signup", method="POST")
     input.form-control(placeholder="Passwort", name="password", type="password", id="su_password", minlength=6, required)
     p.text-muted Mindestens 6 Zeichen lang!
   div.form-group
+    label(for="su_password") Passwort Wiederholen
+    input.form-control(placeholder="Passwort", name="password", type="password", id="su_password_repeat", minlength=6, required)
+    p.text-muted Wiederholen Sie Ihr Passwort
+  div.form-group
     label(for="su_semester") Semester
     select.form-control(id="su_semester", name="semester" ,required)
       option SS16

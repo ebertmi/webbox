@@ -166,6 +166,7 @@ export default class Runner extends EventEmitter {
       .then(this._writeFiles)
       .then(this._compile)
       .then(this._exec)
+      .then(this.reloadFiles)
       .tap(() => {
         this._status('\n', false);
         this._status('Ausführung Beendet', true);
@@ -542,6 +543,38 @@ export default class Runner extends EventEmitter {
     } else if (Array.isArray(command)) {
       return command.slice();
     }
+  }
+
+  reloadFiles() {
+    let files = this.project.getFiles();
+    let projectBasePath = this.project.name || '.';
+
+    //console.info(files);
+
+    //let cmd = this.sourcebox.exec('ls', ['-l', '-t'], {
+    //  cwd: this.path,
+    //  term: false,
+    //  env: this.config.env
+    //});
+    //console.info(cmd);
+    //run-parts --list --regex . Kap18\ -\ Formatiertes\ Schreiben/
+    //then(res => {
+    //  console.info('ls:', res);
+    //});
+
+    return Promise.map(files, function (file) {
+      var path = pathModule.join(projectBasePath, file.getName());
+      return this.sourcebox.readFile(path)
+        .bind(this)
+        .then(function (contents) {
+          let fileIndex = files.findIndex(f => f.getName() == file.getName());
+          if (fileIndex >= 0) {
+            files[fileIndex].setValue(contents);
+          } else {
+            // ToDo: new file
+          }
+        });
+    }.bind(this));
   }
 
   /**

@@ -14,6 +14,31 @@ block content
           p Die Hochschule Coburg ist eine Körperschaft des Öffentlichen Rechts. Sie wird durch ihren Präsidenten gesetzlich vertreten.
 
         section.col-sm-12
+          h2 Kontakt und technischer Support
+          p.
+            Falls Sie Fragen oder Probleme bei der Verwendung von <em>trycoding.io</em> haben bzw. entdecken, melden Sie sich bitte indem
+            auf den folgenden Link klicken:
+
+          script.
+            { coded = "1GQ2WaN.aPa9p@2w-QgPm95.4a"
+              key = "N5DnL83GBeIotkPHAQ7v2wU19zd0MRFZYuCalgpyTq6ixVJjXKbf4cOShsEmrW"
+              shift=coded.length
+              link=""
+              for (i=0; i<coded.length; i++) {
+                if (key.indexOf(coded.charAt(i))==-1) {
+                  ltr = coded.charAt(i)
+                  link += (ltr)
+                }
+                else {
+                  ltr = (key.indexOf(coded.charAt(i))-shift+key.length) % key.length
+                  link += (key.charAt(ltr))
+                }
+              }
+            document.write("<a href='mailto:"+link+"?subject=Anfrage trycoding.io'>Technischer Support</a>")
+            }
+          noscript Sie benötigen JavaScript, um die Kontaktadresse anzuzeigen.
+
+        section.col-sm-12
           h2 Logo und Fav-Icon
           img(src="/public/img/trycoding_logo.png" alt="trycoding.io Logo")
           p Das verwendete Logo stammt ursprünglich von <em>goopy mart</em> und wurde für diese Webseite bearbeitet (<a href="https://www.flickr.com/photos/goopymart/289959683/in/album-72157594362502502/" target="_blank">Original</a>). <br>Das Logo steht unter folgender Lizenz: <a href="https://creativecommons.org/licenses/by-nc-sa/2.0/" target="_blank">Attribution-NonCommercial-ShareAlike 2.0 Generic</a>.

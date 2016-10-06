@@ -35,7 +35,7 @@ function AuthAttemptOverview(props) {
         pages={props.authAttemptOverview.pages}
         pagesQuery={props.authAttemptOverview.pagesQuery}
         location={props.location}>
-      <h2>Auffällige Loginversuche</h2>
+      <h2>Auffällige Loginversuche <small>({props.authAttemptOverview.count})</small></h2>
       <LoadingContainer isLoading={props.authAttemptOverview.isFetching}>
         {content}
       </LoadingContainer>

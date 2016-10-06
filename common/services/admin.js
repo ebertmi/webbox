@@ -178,5 +178,31 @@ export const AdminAPI = {
       return data;
     })
     .catch(commonErrorHandler);
+  },
+  getRecyclebinEntries(query) {
+    return fetch(`/api/recyclebin?page=${query.page}&limit=${query.limit}`, {
+      credentials: 'same-origin',
+      headers: getDefaultHeaders()
+    })
+    .then(checkStatus)
+    .then(parseJSON)
+    .then(data => {
+      return data;
+    })
+    .catch(commonErrorHandler);
+  },
+  sendMail(payload) {
+    return fetch(`/api/sendmail/`, {
+      method: 'PUT',
+      credentials: 'same-origin',
+      headers: getDefaultHeaders(),
+      body: JSON.stringify(payload)
+    })
+    .then(checkStatus)
+    .then(parseJSON)
+    .then(data => {
+      return data;
+    })
+    .catch(commonErrorHandler);
   }
 };

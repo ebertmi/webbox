@@ -1,6 +1,8 @@
 import Sourcebox from '@sourcebox/web';
 import isString from 'lodash/isString';
 import pathModule from 'path';
+import Bluebird from 'bluebird';
+
 import { Severity } from './../severity';
 
 import Project from './project';

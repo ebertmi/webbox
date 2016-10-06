@@ -2,6 +2,13 @@ import React, { Component } from 'react';
 
 export class SearchBar extends Component {
 
+  constructor(props) {
+    super(props);
+
+    this.handleSearchClick = this.handleSearchClick.bind(this);
+    this.handleSearchQuery = this.handleSearchQuery.bind(this);
+  }
+
   componentWillMount () {
     this.setState({
       q: this.props.searchQuery
@@ -36,12 +43,12 @@ export class SearchBar extends Component {
     return (
         <div className="row table-search-bar">
           <div className="col-sm-6">
-            <form className="form-inline">
+            <form className="form-inline" onSubmit={this.handleSearchClick}>
               <div className="form-group">
                 <div className="input-group">
-                  <input style={{width: "auto"}} defaultValue={this.props.searchQuery} onChange={this.handleSearchQuery.bind(this)} type="text" className="form-control shadow" placeholder={this.props.placeholderText} />
+                  <input style={{width: "auto"}} defaultValue={this.props.searchQuery} onChange={this.handleSearchQuery} type="text" className="form-control shadow" placeholder={this.props.placeholderText} />
                   <span className="input-group-btn">
-                    <button onClick={this.handleSearchClick.bind(this)} className="btn btn-info" type="button">Suchen</button>
+                    <button onClick={this.handleSearchClick} className="btn btn-info" type="button">Suchen</button>
                   </span>
                 </div>
               </div>

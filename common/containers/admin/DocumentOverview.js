@@ -41,7 +41,7 @@ class DocumentOverview extends Component {
           pages={this.props.documentOverview.pages}
           pagesQuery={this.props.documentOverview.pagesQuery}
           location={this.props.location}>
-        <h2>Dokumente</h2>
+        <h2>Dokumente <small>({this.props.documentOverview.count})</small></h2>
         <LoadingContainer isLoading={this.props.documentOverview.isFetching}>
           {content}
         </LoadingContainer>

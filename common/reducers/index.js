@@ -6,6 +6,8 @@ import documentOverview from './document';
 import courseOverview from './course';
 import logOverview from './log';
 import authAttemptOverview from './authattempt';
+import recyclebinOverview from './recyclebin';
+import mailOverview from './mail';
 
 const rootReducer = combineReducers({
   dashboardApp,
@@ -14,7 +16,9 @@ const rootReducer = combineReducers({
   courseOverview,
   logOverview,
   documentOverview,
-  authAttemptOverview
+  authAttemptOverview,
+  recyclebinOverview,
+  mailOverview
 });
 
 export default rootReducer;

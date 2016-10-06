@@ -133,12 +133,15 @@ html(lang="de")
             .col-md-6.col-xs-12
               ul.wb-footer-links
                 li
-                  a(href="/impressum") Impressum
+                  a(href="/impressum") Impressum & Kontakt
                 li
                   a(href="/datenschutz") Datenschutz
                 li
                   a(href="/admin") Verwaltung
 
+                if showHelp
+                  li
+                    a(href="/d/hilfe") Hilfe
               p
                 Erstellt von Michael Ebert im Rahmen des Projektes Evelin
               p

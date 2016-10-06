@@ -13,10 +13,8 @@ export class UserForm extends Component {
     this.addRole = this.addRole.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleRoleChange = this.handleRoleChange.bind(this);
-  }
 
-  componentWillMount () {
-    this.setState(UserForm.getInitialState());
+    this.state = UserForm.getInitialState();
   }
 
   addRole(e) {

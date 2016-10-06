@@ -3,6 +3,7 @@ import * as adminTypes from '../constants/AdminActionTypes';
 export const INITIAL_DOCUMENTS_STATE = {
   documents: [],
   document: null,
+  count: 0,
   pagesQuery: {
     page: 1,
     limit: 15
@@ -18,7 +19,8 @@ export default function document(state = INITIAL_DOCUMENTS_STATE, action) {
       return Object.assign({}, state, {
         isFetching: false,
         documents: action.documents,
-        pages: action.pages || 1
+        pages: action.pages != null ? action.pages : 1,
+        count: action.count != null ? action.count : 1
       });
     case adminTypes.GET_DOCUMENTS_REQUEST:
       return Object.assign({}, state, {

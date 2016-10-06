@@ -14,7 +14,7 @@ function* fetchUsers (action) {
     if (data.error) {
       yield put({type: adminTypes.GET_USERS_FAILURE, message: data.error.message});
     } else {
-      yield put({type: adminTypes.GET_USERS_SUCCESS, users: data.users, pages: data.pages});
+      yield put({type: adminTypes.GET_USERS_SUCCESS, users: data.users, pages: data.pages, count: data.count});
     }
   } catch (e) {
     yield put({type: adminTypes.GET_USERS_FAILURE, message: e.message});
@@ -120,7 +120,7 @@ function* fetchCourses (action) {
     if (data.error) {
       yield put({type: adminTypes.GET_COURSES_FAILURE, message: data.error.message});
     } else {
-      yield put({type: adminTypes.GET_COURSES_SUCCESS, courses: data.courses, pages: data.pages});
+      yield put({type: adminTypes.GET_COURSES_SUCCESS, courses: data.courses, pages: data.pages, count: data.count});
     }
   } catch (e) {
     yield put({type: adminTypes.GET_COURSES_FAILURE, message: e.message});
@@ -192,7 +192,7 @@ function* fetchEmbeds (action) {
     if (data.error) {
       yield put({type: adminTypes.GET_EMBEDS_FAILURE, message: data.error.message});
     } else {
-      yield put({type: adminTypes.GET_EMBEDS_SUCCESS, embeds: data.embeds, pages: data.pages});
+      yield put({type: adminTypes.GET_EMBEDS_SUCCESS, embeds: data.embeds, pages: data.pages, count: data.count});
     }
   } catch (e) {
     yield put({type: adminTypes.GET_EMBEDS_FAILURE, message: e.message});
@@ -212,7 +212,7 @@ function* fetchDocuments (action) {
     if (data.error) {
       yield put({type: adminTypes.GET_DOCUMENTS_FAILURE, message: data.error.message});
     } else {
-      yield put({type: adminTypes.GET_DOCUMENTS_SUCCESS, documents: data.documents, pages: data.pages});
+      yield put({type: adminTypes.GET_DOCUMENTS_SUCCESS, documents: data.documents, pages: data.pages, count: data.count});
     }
   } catch (e) {
     yield put({type: adminTypes.GET_DOCUMENTS_FAILURE, message: e.message});
@@ -232,7 +232,7 @@ function* fetchLogs (action) {
     if (data.error) {
       yield put({type: adminTypes.GET_LOGS_FAILURE, message: data.error.message});
     } else {
-      yield put({type: adminTypes.GET_LOGS_SUCCESS, logs: data.logs, pages: data.pages});
+      yield put({type: adminTypes.GET_LOGS_SUCCESS, logs: data.logs, pages: data.pages, count: data.count});
     }
   } catch (e) {
     yield put({type: adminTypes.GET_LOGS_FAILURE, message: e.message});
@@ -252,10 +252,50 @@ function* fetchAuthAttempts (action) {
     if (data.error) {
       yield put({type: adminTypes.GET_AUTHATTEMPTS_FAILURE, message: data.error.message});
     } else {
-      yield put({type: adminTypes.GET_AUTHATTEMPTS_SUCCESS, attempts: data.attempts, pages: data.pages});
+      yield put({type: adminTypes.GET_AUTHATTEMPTS_SUCCESS, attempts: data.attempts, pages: data.pages, count: data.count});
     }
   } catch (e) {
     yield put({type: adminTypes.GET_AUTHATTEMPTS_FAILURE, message: e.message});
+  }
+}
+
+/**
+ * Recyclebin entries fetching...
+ */
+function* fetchRecyclebinEntries (action) {
+  try {
+    // reset notification message
+    yield put({ type: adminTypes.RESET_MESSAGE });
+
+    const data = yield call(API.admin.getRecyclebinEntries, action.query);
+
+    if (data.error) {
+      yield put({type: adminTypes.GET_RECYCLEBIN_FAILURE, message: data.error.message});
+    } else {
+      yield put({type: adminTypes.GET_RECYCLEBIN_SUCCESS, entries: data.entries, pages: data.pages, count: data.count});
+    }
+  } catch (e) {
+    yield put({type: adminTypes.GET_RECYCLEBIN_FAILURE, message: e.message});
+  }
+}
+
+/**
+ * Recyclebin entries fetching...
+ */
+function* fetchSendMail (action) {
+  try {
+    // reset notification message
+    yield put({ type: adminTypes.RESET_MESSAGE });
+
+    const data = yield call(API.admin.sendMail, action.payload);
+
+    if (data.error) {
+      yield put({type: adminTypes.SEND_MAIL_FAILURE, message: data.error.message});
+    } else {
+      yield put({type: adminTypes.SEND_MAIL_SUCCESS});
+    }
+  } catch (e) {
+    yield put({type: adminTypes.SEND_MAIL_FAILURE, message: e.message});
   }
 }
 
@@ -275,6 +315,8 @@ export default function* adminSaga () {
     fork(takeLatest, adminTypes.SAVE_COURSE_REQUEST, saveCourse),
     fork(takeLatest, adminTypes.DELETE_COURSE_REQUEST, deleteCourse),
     fork(takeLatest, adminTypes.GET_LOGS_REQUEST, fetchLogs),
-    fork(takeLatest, adminTypes.GET_AUTHATTEMPTS_REQUEST, fetchAuthAttempts)
+    fork(takeLatest, adminTypes.GET_AUTHATTEMPTS_REQUEST, fetchAuthAttempts),
+    fork(takeLatest, adminTypes.GET_RECYCLEBIN_REQUEST, fetchRecyclebinEntries),
+    fork(takeLatest, adminTypes.SEND_MAIL_REQUEST, fetchSendMail)
   ];
 }

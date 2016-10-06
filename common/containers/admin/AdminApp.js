@@ -40,10 +40,16 @@ function AdminApp(props) {
             <li className="nav-item">
               <Link to="/admin/authattempts" className="nav-link" activeClassName="active">Login-Überwachung</Link>
             </li>
+            <li className="nav-item">
+              <Link to="/admin/recyclebin" className="nav-link" activeClassName="active">Gelöschte Elemente</Link>
+            </li>
+            <li>
+              <Link to="/admin/mail" className="nav-link" activeClassName="active">Mail</Link>
+            </li>
           </ul>
         </div>
         <div className="col-md-9 card p-t-1">
-          {renderMessage(props) }
+          {renderMessage(props)}
           {props.children}
         </div>
       </div>

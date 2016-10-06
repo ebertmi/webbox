@@ -40,7 +40,7 @@ class EmbedOverview extends Component {
           pages={this.props.embedOverview.pages}
           pagesQuery={this.props.embedOverview.pagesQuery}
           location={this.props.location}>
-        <h2>Codebeispiele</h2>
+        <h2>Codebeispiele <small>({this.props.embedOverview.count})</small></h2>
         <LoadingContainer isLoading={this.props.embedOverview.isFetching}>
           {content}
         </LoadingContainer>

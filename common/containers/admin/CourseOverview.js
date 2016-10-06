@@ -53,7 +53,7 @@ class CourseOverview extends Component {
           pages={this.props.courseOverview.pages}
           pagesQuery={this.props.courseOverview.pagesQuery}
           location={this.props.location}>
-        <h2>Kurse</h2>
+        <h2>Kurse <small>({this.props.courseOverview.count})</small></h2>
         { this.renderNewCourseButton() }
         <LoadingContainer isLoading={this.props.courseOverview.isFetching}>
           {content}

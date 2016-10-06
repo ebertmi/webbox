@@ -75,7 +75,7 @@ class UserOverview extends Component {
         pages={this.props.userOverview.pages}
         pagesQuery={this.props.userOverview.pagesQuery}
         location={this.props.location}>
-        <h2>Benutzer</h2>
+        <h2>Benutzer <small>({this.props.userOverview.count})</small></h2>
         {this.renderSearch()}
         <LoadingContainer isLoading={this.props.userOverview.isFetching}>
           {content}

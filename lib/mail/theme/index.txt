@@ -6,6 +6,11 @@
 <% }) -%>
 <% } %>
 
+<!-- Text -->
+<% if (locals.text) { %>
+<%- locals.text %>
+<% } %
+
 <% if (locals.dictionary) { %>
 <% for (item in dictionary) { -%>
 <%- item.charAt(0).toUpperCase() + item.slice(1) %>: <%- dictionary[item] %>

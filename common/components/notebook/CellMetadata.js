@@ -149,9 +149,10 @@ export default class CellMetadata extends React.Component {
             <select name="slide_type" value={slideType} onChange={this.onSlideTypeChange}>
               <option value="slide">Folie</option>
               <option value="fragment">Fragment</option>
-              <option value="">Keine Option</option>
+              <option value="">Standard</option>
               <option value="skip">Nicht anzeigen</option>
             </select>
+            <p className="text-muted" style={{fontSize: "0.75rem", lineHeight: 1}}><em>Folie</em> erzeugt eine neue Folie; <em>Standard</em> wird auf der aktuellen Folie platziert; <em>Fragment</em> wird auf <kbd>→</kbd> eingeblendet; <em>Nicht anzeigen</em> wird nicht auf der Folie angezeigt.</p>
           </div>
         </div>
         <strong>Weitere Metadaten</strong>

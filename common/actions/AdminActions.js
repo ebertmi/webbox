@@ -204,7 +204,7 @@ export function changeLogsPage(page) {
 }
 
 /**
- * Admin/Logingattempt
+ * Admin/Loginattempt
  */
 export function requestAuthAttemptsPage(query) {
   return {
@@ -217,5 +217,49 @@ export function changeAuthAttemptsPage(page) {
   return {
     type: types.CHANGE_AUTHATTEMPTS_PAGE,
     page: page
+  };
+}
+
+/**
+ * Admin / recyclebin
+ */
+export function requestRecyclebinPage(query) {
+  return {
+    type: types.GET_RECYCLEBIN_REQUEST,
+    query: query
+  };
+}
+
+export function changeRecyclebinPage(page) {
+  return {
+    type: types.CHANGE_RECYCLEBIN_PAGE,
+    page: page
+  };
+}
+
+/**
+ * General individual email send request.
+ *
+ * @export
+ * @param {any} email - The email address of the person (only one!)
+ * @param {any} subject
+ * @param {any} message
+ * @returns
+ */
+export function sendMail(email, subject, message) {
+  return {
+    type: types.SEND_MAIL_REQUEST,
+    payload: {
+      email: email,
+      subject: subject,
+      message: message
+    }
+  };
+}
+
+export function changeMailData(mail) {
+  return {
+    type: types.CHANGE_MAIL_DATA,
+    mail
   };
 }

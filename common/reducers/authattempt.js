@@ -3,6 +3,7 @@ import * as adminTypes from '../constants/AdminActionTypes';
 export const INITIAL_AUTHATTEMPT_STATE = {
   attempts: [],
   attempt: null,
+  count: 0,
   pagesQuery: {
     page: 1,
     limit: 10
@@ -37,11 +38,11 @@ export default function authAttempt(state = INITIAL_AUTHATTEMPT_STATE, action) {
         isFetching: false
       });
     case adminTypes.GET_AUTHATTEMPTS_SUCCESS:
-      console.log('GET_AUTHATTEMPTS_SUCCESS', action);
       return Object.assign({}, state, {
         isFetching: false,
         attempts: action.attempts,
-        pages: action.pages || 1
+        pages: action.pages != null ? action.pages : 1,
+        count: action.count != null ? action.count : 0
       });
     default:
       return state;

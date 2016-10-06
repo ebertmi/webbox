@@ -18,7 +18,7 @@ export function UserTableRow(props) {
   return (
     <tr key={props.data.id}>
       <td>
-        <Link to={userDetailPath}>{props.data.id}</Link>
+        <Link to={userDetailPath}><code>{props.data.id}</code></Link>
       </td>
       <td>{props.data.email}</td>
       <td>{renderIsActive(props)}</td>

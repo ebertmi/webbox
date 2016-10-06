@@ -20,6 +20,7 @@ export default function dashboard(state = INITIAL_DASHBOARD_STATE, action) {
     case adminTypes.DELETE_COURSE_FAILURE:
     case adminTypes.SAVE_COURSE_FAILURE:
     case adminTypes.GET_COURSE_FAILURE:
+    case adminTypes.SEND_MAIL_FAILURE:
       return Object.assign({}, state, {
         message: {
           type: 'error',
@@ -36,6 +37,7 @@ export default function dashboard(state = INITIAL_DASHBOARD_STATE, action) {
       });
     case adminTypes.RESEND_USER_CONFIRMATION_EMAIL_SUCCESS:
     case adminTypes.UNBLOCK_USER_SUCCESS:
+    case adminTypes.SEND_MAIL_SUCCESS:
       return Object.assign({}, state, {
         message: {
           type: 'success',
@@ -50,4 +52,3 @@ export default function dashboard(state = INITIAL_DASHBOARD_STATE, action) {
       return state;
   }
 }
-

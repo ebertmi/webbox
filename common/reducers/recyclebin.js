@@ -1,8 +1,8 @@
 import * as adminTypes from '../constants/AdminActionTypes';
 
-export const INITIAL_LOG_STATE = {
-  logs: [],
-  log: null,
+export const INITIAL_RECYCLEBIN_STATE = {
+  entries: [],
+  entry: null,
   count: 0,
   pagesQuery: {
     page: 1,
@@ -13,34 +13,34 @@ export const INITIAL_LOG_STATE = {
   isFetching: false
 };
 
-export default function log(state = INITIAL_LOG_STATE, action) {
+export default function recyclebin(state = INITIAL_RECYCLEBIN_STATE, action) {
   switch (action.type) {
-    case adminTypes.CHANGE_LOGS_PAGE:
+    case adminTypes.CHANGE_RECYCLEBIN_PAGE:
       return Object.assign({}, state, {
         pagesQuery: {
           page: action.page,
           limit: state.pagesQuery.limit
         }
       });
-    case adminTypes.CHANGE_LOGS_LIMIT:
+    case adminTypes.CHANGE_RECYCLEBIN_LIMIT:
       return Object.assign({}, state, {
         pagesQuery: {
           page: state.pagesQuery.page,
           limit: action.limit
         }
       });
-    case adminTypes.GET_LOGS_REQUEST:
+    case adminTypes.GET_RECYCLEBIN_REQUEST:
       return Object.assign({}, state, {
         isFetching: true
       });
-    case adminTypes.GET_LOGS_FAILURE:
+    case adminTypes.GET_RECYCLEBIN_FAILURE:
       return Object.assign({}, state, {
         isFetching: false
       });
-    case adminTypes.GET_LOGS_SUCCESS:
+    case adminTypes.GET_RECYCLEBIN_SUCCESS:
       return Object.assign({}, state, {
         isFetching: false,
-        logs: action.logs,
+        entries: action.entries,
         pages: action.pages != null ? action.pages : 1,
         count: action.count != null ? action.count : 0
       });

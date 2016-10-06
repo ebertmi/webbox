@@ -251,6 +251,13 @@ if (locals.action) {
                       <% }) -%>
                     <% } %>
 
+                    <!-- Text -->
+                    <% if (locals.text) { %>
+                    <p class="body-text">
+                      <%- locals.text %>
+                    </p>
+                    <% } %
+
                     <!-- Dictionary -->
                     <% if (locals.dictionary) { %>
                     <dl class="body-dictionary">

@@ -95,8 +95,8 @@ export default class ImageUpload extends React.Component {
           <div data-name="image-upload" className="image-upload card-primary text-xs-center" style={{ maxWidth: MAX_WIDTH }}>
             <Dropzone accept="image/*" multiple={false} onDrop={this.onDrop} className="image-dropzone" data-name="image-upload">
                 <div data-name="image-upload">
-                  <p data-name="image-upload">{dropzoneText}</p>
-                  <p data-name="image-upload">Klicke auf ein Bild, um es einzufügen.<br /><small data-name="image-upload">Maximal 5MB</small></p>
+                  <p data-name="image-upload" style={{textAlign: 'left'}}>{dropzoneText}</p>
+                  <p data-name="image-upload" style={{textAlign: 'left'}}>Klicke auf ein Bild, um es einzufügen.<br /><small data-name="image-upload">Maximal 5MB</small></p>
                 </div>
             </Dropzone>
           </div>

@@ -3,6 +3,7 @@ import * as adminTypes from '../constants/AdminActionTypes';
 export const INITIAL_COURSE_STATE = {
   courses: [],
   course: null,
+  count: 0,
   pagesQuery: {
     page: 1,
     limit: 10
@@ -18,7 +19,8 @@ export default function course(state = INITIAL_COURSE_STATE, action) {
       return Object.assign({}, state, {
         isFetching: false,
         courses: action.courses,
-        pages: action.pages || 1
+        pages: action.pages != null ? action.pages : 1,
+        count: action.count != null ? action.count : 1
       });
     case adminTypes.GET_COURSES_REQUEST:
       return Object.assign({}, state, {

@@ -4,6 +4,7 @@ export const INITIAL_USER_STATE = {
   users: [],
   user: null,
   pages: 1,
+  count: 0,
   pagesQuery: {
     page: 1,
     limit: 15,
@@ -23,7 +24,8 @@ export default function user(state = INITIAL_USER_STATE, action) {
       return Object.assign({}, state, {
         isFetching: false,
         users: action.users,
-        pages: action.pages || 1
+        pages: action.pages != null ? action.pages : 1,
+        count: action.count != null ? action.count : 0
       });
     case adminTypes.GET_USER_SUCCESS:
       return Object.assign({}, state, {

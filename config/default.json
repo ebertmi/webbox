@@ -5,7 +5,9 @@
         "url": {
             "protocol": "http"
         },
-        "locale": "de"
+        "locale": "de",
+        "contact": "michael.ebert@hs-coburg.de",
+        "showHelpInFooter": false
     },
     "security": true,
     "views": {
@@ -26,7 +28,8 @@
             "ttl": 604800000, // 7 days: 7 * 24 * 60 * 60 * 1000
             "clearInvalid": true
         },
-        "authAttempts": 7,
+        "authAttempts": 10,
+        "ipOnlyLimit": false,
         "validSignupEmailHosts": ["hs-coburg.de", "stud.hs-coburg.de"],
         "verification": {
           "secret": "secret_verification_secret_for_webbox_email_signup_also_pretty_long!!",
@@ -96,6 +99,7 @@
         "verificationSendMessage": "Wir haben Ihnen eine E-Mail zur Verifikation zugeschickt. Sie sollten diese innerhalb der nächsten 10 Minuten erhalten. Bitte klicken Sie dort auf den Aktivierungslink, um die Registrierung abzuschließen.",
         "verificationErrorMessage": "Es ist ein Fehler bei der Registrierung aufgetreten. Bitte versuchen Sie es erneut oder kontaktieren Sie uns.",
         "confirmInvalidToken": "Der Aktivierungsschlüssel ist ungültig.",
+        "alreadyConfirmed": "Sie haben Ihren Account bereits aktiviert. Sollte dies nicht der Fall sein, kontaktieren Sie uns.",
         "confirmSuccessMessage": "Aktivierung erfolgreich abgeschlossen. Sie können sich nun einloggen.",
         "signedInErrorMessage": "Aktivierung fehlgeschlagen - Sie sind derzeit mit einem anderen Account eingeloggt. Loggen Sie sich bitte davor aus.",
         "validationErrorMessage": "Bitte füllen Sie das Formular komplett aus. Das Passwort sollte mindestens 6 Zeichen lang sein.",

@@ -25,7 +25,8 @@ const defaultContext = {
   isProd: config.isProd,
   isDev: config.isDev,
   KEENIO_PROJECTID: JSON.stringify(config.keenio.projectId),
-  KEENIO_WRITEKEY: JSON.stringify(config.keenio.writeKey)
+  KEENIO_WRITEKEY: JSON.stringify(config.keenio.writeKey),
+  showHelp: config.app.showHelpInFooter
 };
 
 // ToDo import depending on the environment
