@@ -25,7 +25,8 @@ if (process.env.NODE_ENV === 'production') {
  */
 Promise.config({
   cancellation: true,
-  warnings: BLUEBIRD_WARNINGS
+  warnings: BLUEBIRD_WARNINGS,
+  longStackTraces: true
 });
 
 function processPromise(process, cleanExit) {
@@ -167,6 +168,7 @@ export default class Runner extends EventEmitter {
       .then(this._compile)
       .then(this._exec)
       .then(this.reloadFiles)
+      .then(this.processExecErrors)
       .tap(() => {
         this._status('\n', false);
         this._status('Ausführung Beendet', true);
@@ -352,35 +354,6 @@ export default class Runner extends EventEmitter {
         throw new Error('Ausführen fehlgeschlagen');
       }
     }).finally(() => {
-      // Check for any error that might occur
-      if (this.config.errorParser && this.config.errorParser.hasError()) {
-        let errObj = this.config.errorParser.getAsObject();
-
-        // Try to get file content
-        let tabIndex = this.project.getIndexForFilename(errObj.file.replace('./', ''));
-
-        let fileContent = tabIndex > -1 ? this.project.tabManager.getTabs()[tabIndex].item.getValue() : '';
-
-        let errorEvent = new EventLog(EventLog.NAME_ERROR, Object.assign({}, errObj, { fileContent: fileContent }));
-        this.project.sendEvent(errorEvent);
-        console.info(errorEvent);
-
-        let normalizedFileName = errObj.file.replace('./', '');
-        if (annotationMap[normalizedFileName] == null) {
-          annotationMap[normalizedFileName] = [];
-        }
-        annotationMap[normalizedFileName].push({
-          row: errObj.line - 1,
-          column: errObj.column != null ? errObj.column  : 0,
-          text: errObj.message,
-          type: 'error'
-        });
-      }
-
-      this.files.forEach((file) => {
-        let annotations = annotationMap[file.getName()];
-        file.setAnnotations(annotations || []);
-      });
 
 
       this.stdin.unpipe(this.process.stdin);
@@ -545,6 +518,46 @@ export default class Runner extends EventEmitter {
     }
   }
 
+  processExecErrors() {
+    let annotationMap = {};
+    // Check for any error that might occur
+    let files = this.project.getFiles();
+    if (this.config.errorParser && this.config.errorParser.hasError()) {
+      let errObj = this.config.errorParser.getAsObject();
+
+      // Try to get file content
+      let tabIndex = this.project.getIndexForFilename(errObj.file.replace('./', ''));
+
+      let fileContent = tabIndex > -1 ? this.project.tabManager.getTabs()[tabIndex].item.getValue() : '';
+
+      let errorEvent = new EventLog(EventLog.NAME_ERROR, Object.assign({}, errObj, { fileContent: fileContent }));
+      this.project.sendEvent(errorEvent);
+      console.info(errorEvent);
+
+      let normalizedFileName = errObj.file.replace('./', '');
+      if (annotationMap[normalizedFileName] == null) {
+        annotationMap[normalizedFileName] = [];
+      }
+      annotationMap[normalizedFileName].push({
+        row: errObj.line - 1,
+        column: errObj.column != null ? errObj.column  : 0,
+        text: errObj.message,
+        type: 'error'
+      });
+    }
+
+    files.forEach((file) => {
+      console.info('Updating annotations', file.getName());
+      let annotations = annotationMap[file.getName()];
+      if (annotations != null) {
+        file.setAnnotations(annotations);
+        file._emit('changeAnnotation');
+      } else {
+        file.clearAnnotations();
+      }
+    });
+  }
+
   reloadFiles() {
     let files = this.project.getFiles();
     let projectBasePath = this.project.name || '.';
@@ -568,7 +581,11 @@ export default class Runner extends EventEmitter {
         .bind(this)
         .then(function (contents) {
           let fileIndex = files.findIndex(f => f.getName() == file.getName());
-          if (fileIndex >= 0) {
+
+          // Only update, when we have real changes
+          // I guess we will never have 10k lines of code to compare here, hashing does also required
+          // to iterate over all characters, so the normal comparing is pretty cheap
+          if (fileIndex >= 0 && files[fileIndex].getValue() !== contents) {
             files[fileIndex].setValue(contents);
           } else {
             // ToDo: new file

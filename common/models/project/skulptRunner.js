@@ -313,7 +313,12 @@ export default class Runner extends EventEmitter {
     // Display annotations
     this.files.forEach((file) => {
       let annotations = annotationMap[file.getName()];
-      file.setAnnotations(annotations || []);
+
+      if (annotations == null) {
+        file.clearAnnotations();
+      } else {
+        file.setAnnotations(annotations);
+      }
     });
   }
 

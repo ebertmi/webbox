@@ -179,4 +179,14 @@ export default class SourceboxProject extends Project {
   isRunning() {
     return this.runner && this.runner.isRunning();
   }
+
+  /**
+   * Resets the project ot the original data loaded from the server.
+   */
+  reset() {
+    // All changes are not saved to the internal embed.code, rather they are stored in the this.tabs->element.item
+    // So we can savely replace the current code with the embed.code
+    this.fromInitialData(this.projectData.embed, true);
+    this.runner = null;
+  }
 }

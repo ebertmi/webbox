@@ -23,7 +23,8 @@ export default class File extends EditSession {
    *
    * @memberOf File
    */
-  onDocumentChange() {
+  onDocumentChange(event) {
+    console.log(event);
     // Skip if document is already dirty
     if (this.hasChanges === true) {
       return;
@@ -93,6 +94,12 @@ export default class File extends EditSession {
 
   getName() {
     return this._name;
+  }
+
+  updateAnnotations(annotations) {
+    console.info('new annotations', annotations);
+    this.setAnnotations(annotations);
+    this._emit('hasChangesUpdate');
   }
 
   dispose() {
