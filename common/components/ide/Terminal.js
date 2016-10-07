@@ -3,7 +3,6 @@ import React from 'react';
 import Term from 'xterm/src/xterm.js';
 import 'xterm/addons/fit';
 
-
 import capitalize from 'lodash/capitalize';
 import debounce from 'lodash/debounce';
 

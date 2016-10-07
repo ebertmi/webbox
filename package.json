@@ -1,6 +1,6 @@
 {
   "name": "webbox",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "Webbased course editor powered by sourcebox",
   "main": "webbox.js",
   "scripts": {
@@ -119,7 +119,7 @@
     "uuid": "^2.0.3",
     "vision": "^4.1.0",
     "whatwg-fetch": "^1.0.0",
-    "xterm": "github:sourcelair/xterm.js"
+    "xterm": "^2.0.1"
   },
   "devDependencies": {
     "babel-cli": "^6.16.0",
