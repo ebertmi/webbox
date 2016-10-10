@@ -73,6 +73,23 @@ function* saveUser (action) {
   }
 }
 
+function* confirmUser (action) {
+  try {
+    // reset notification message
+    yield put({ type: adminTypes.RESET_MESSAGE });
+
+    const data = yield call(API.admin.confirmUser, action.params, action.payload);
+
+    if (data.error) {
+      yield put({type: adminTypes.CONFIRM_USER_FAILURE, message: data.error.message});
+    } else {
+      yield put({type: adminTypes.CONFIRM_USER_SUCCESS, user: data.user});
+    }
+  } catch (e) {
+    yield put({type: adminTypes.CONFIRM_USER_FAILURE, message: e.message});
+  }
+}
+
 function* resendConfirmationEmail (action) {
   try {
     // reset notification message
@@ -307,6 +324,7 @@ export default function* adminSaga () {
     fork(takeLatest, adminTypes.GET_USERS_REQUEST, fetchUsers),
     fork(takeLatest, adminTypes.DELETE_USER_REQUEST, deleteUser),
     fork(takeLatest, adminTypes.UNBLOCK_USER_REQUEST, unblockUser),
+    fork(takeLatest, adminTypes.CONFIRM_USER_REQUEST, confirmUser),
     fork(takeLatest, adminTypes.RESEND_USER_CONFIRMATION_EMAIL_REQUEST, resendConfirmationEmail),
     fork(takeLatest, adminTypes.GET_EMBEDS_REQUEST, fetchEmbeds),
     fork(takeLatest, adminTypes.GET_DOCUMENTS_REQUEST, fetchDocuments),

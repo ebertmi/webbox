@@ -2,19 +2,19 @@ form(action="/signup", method="POST")
   input(type="hidden", name="crumb", value=crumb)
   div.form-group
     label(for="su_email") Email-Adresse
-    input.form-control(type="email", name="email", id="su_email", placeholder="...@stud.hs-coburg.de")
+    input.form-control(type="email", name="email", id="su_email", placeholder="...@stud.hs-coburg.de", value=registration != null ? registration.email : "")
     small.text-muted Bitte verwenden Sie zur Registrierung ihre Email-Adresse der Hochschule
   div.form-group
     label(for="su_password") Passwort
     input.form-control(placeholder="Passwort", name="password", type="password", id="su_password", minlength=6, required)
     p.text-muted Mindestens 6 Zeichen lang!
   div.form-group
-    label(for="su_password") Passwort Wiederholen
-    input.form-control(placeholder="Passwort", name="password", type="password", id="su_password_repeat", minlength=6, required)
-    p.text-muted Wiederholen Sie Ihr Passwort
+    label(for="password_repeat") Passwort Wiederholen
+    input.form-control(placeholder="Passwort Wiederholen", name="password_repeat", type="password", id="password_repeat", minlength=6, required)
+    p.text-muted Geben Sie das Passwort erneut ein, um Fehler zu vermeiden.
   div.form-group
     label(for="su_semester") Semester
-    select.form-control(id="su_semester", name="semester" ,required)
+    select.form-control(id="su_semester", name="semester", required, selected=registration != null ? registration.semester : "")
       option SS16
       option WS16
       option SS17
@@ -23,7 +23,7 @@ form(action="/signup", method="POST")
   div.checkbox
     label(for="su_accept_terms")
       a(href="/datenschutz", target="_blank") Datenschutzbedingungen
-      !{" akzeptieren"}
+      = " akzeptieren"
       input.checkbox(type="checkbox" id="su_accept_terms", name="terms", required)
     p.text-muted Der Dienst kann nur unter Zustimmung der Bedingungen vollständig genutzt werden.
 

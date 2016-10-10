@@ -80,6 +80,18 @@ export const AdminAPI = {
     })
     .catch(commonErrorHandler);
   },
+  confirmUser(params) {
+    return fetch(`/api/user/${params.id}/confirmuser`, {
+      credentials: 'same-origin',
+      headers: getDefaultHeaders()
+    })
+    .then(checkStatus)
+    .then(parseJSON)
+    .then(data => {
+      return data;
+    })
+    .catch(commonErrorHandler);
+  },
   getCourses(query) {
     return fetch(`/api/courses?page=${query.page}&limit=${query.limit}`, {
       credentials: 'same-origin',
@@ -156,7 +168,7 @@ export const AdminAPI = {
     .catch(commonErrorHandler);
   },
   getLogs(query) {
-    return fetch(`/api/logs?page=${query.page}&limit=${query.limit}`, {
+    return fetch(`/api/logs?page=${query.page}&limit=${query.limit}&q=${query.q}`, {
       credentials: 'same-origin',
       headers: getDefaultHeaders()
     })

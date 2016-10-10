@@ -37,6 +37,7 @@ export default function dashboard(state = INITIAL_DASHBOARD_STATE, action) {
       });
     case adminTypes.RESEND_USER_CONFIRMATION_EMAIL_SUCCESS:
     case adminTypes.UNBLOCK_USER_SUCCESS:
+    case adminTypes.CONFIRM_USER_SUCCESS:
     case adminTypes.SEND_MAIL_SUCCESS:
       return Object.assign({}, state, {
         message: {

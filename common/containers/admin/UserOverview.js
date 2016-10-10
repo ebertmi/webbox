@@ -43,12 +43,9 @@ class UserOverview extends Component {
     if (this.props.userOverview.pagesQuery.q === newQuery) {
       return;
     }
-
-    console.log('changeQuery', newQuery);
   }
 
   onSearchClick (query) {
-    console.log('onSearchClick', query);
     this.props.changeUsersSearch(query);
   }
 

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Input } from '../bootstrap';
 import TaggedInput from '../TaggedInput';
+import { Link } from 'react-router';
 
 /**
  * The UserForm Component displays a user and allows to edit the user data.
@@ -127,6 +128,22 @@ export class UserForm extends Component {
     this.props.resendConfirmationEmail(this.props.user);
   }
 
+  handleConfirmUser (event) {
+    event.preventDefault();
+
+    this.props.confirmUser(this.props.user);
+  }
+
+  handleSendMail (event) {
+    // ToDo: push state
+
+    this.props.changeMailData({
+      email: this.props.user.email,
+      subject: '',
+      message: ''
+    });
+  }
+
   /**
    * Renders the confirm dialog when a user should be deleted
    */
@@ -136,8 +153,8 @@ export class UserForm extends Component {
         <ReactCSSTransitionGroup transitionName="fade-in" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
           <div className="form-inline">
             <p className="form-control-static">Soll der Benutzer wirklich gelöscht werden?</p>
-            <button onClick={this.handleDeleteConfirm.bind(this)} className="btn btn-danger">Ja</button>
-            <button onClick={this.handleDeleteDismiss.bind(this)} className="btn btn-default">Nein</button>
+            <button onClick={this.handleDeleteConfirm.bind(this)} className="btn btn-danger btn-sm">Ja</button>
+            <button onClick={this.handleDeleteDismiss.bind(this)} className="btn btn-default btn-sm">Nein</button>
           </div>
         </ReactCSSTransitionGroup>
       </div>
@@ -150,10 +167,12 @@ export class UserForm extends Component {
   renderFormButtons (isDirty) {
     return (
       <div className="form-footer">
-        <button type="submit" onClick={this.handleSave.bind(this)} disabled={!isDirty} className="btn btn-success">Speichern</button>
-        <button type="submit" onClick={this.handleDelete.bind(this)} inputClassName="form-control" className="btn btn-danger">Löschen</button>
-        <button type="submit" onClick={this.handleResendConfirmationEmail.bind(this)} inputClassName="form-control" className="btn btn-warning">Aktivierungs-E-Mail erneut schicken</button>
-        <button type="submit" onClick={this.handleUnblock.bind(this)} inputClassName="form-control" className="btn btn-default">Anmeldung wieder erlauben</button>
+        <button type="submit" onClick={this.handleSave.bind(this)} disabled={!isDirty} className="btn btn-success btn-sm">Speichern</button>
+        <button type="submit" onClick={this.handleDelete.bind(this)} className="btn btn-danger btn-sm">Löschen</button>
+        <button type="submit" onClick={this.handleResendConfirmationEmail.bind(this)} className="btn btn-warning btn-sm">Aktivierungs-E-Mail erneut schicken</button>
+        <button type="submit" onClick={this.handleUnblock.bind(this)} className="btn btn-default btn-sm">Anmeldung wieder erlauben</button>
+        <button type="submit" onClick={this.handleConfirmUser.bind(this)} className="btn btn-default btn-sm">Benutzer freischalten</button>
+        <Link to="/admin/mail" onClick={this.handleSendMail.bind(this)} className="btn btn-info btn-sm">Mail schicken</Link>
       </div>
     );
   }

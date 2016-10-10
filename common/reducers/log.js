@@ -6,7 +6,8 @@ export const INITIAL_LOG_STATE = {
   count: 0,
   pagesQuery: {
     page: 1,
-    limit: 10
+    limit: 10,
+    q: ''
   },
   pages: 1,
   filter: null,
@@ -19,14 +20,24 @@ export default function log(state = INITIAL_LOG_STATE, action) {
       return Object.assign({}, state, {
         pagesQuery: {
           page: action.page,
-          limit: state.pagesQuery.limit
+          limit: state.pagesQuery.limit,
+          q: state.pagesQuery.q
         }
       });
     case adminTypes.CHANGE_LOGS_LIMIT:
       return Object.assign({}, state, {
         pagesQuery: {
           page: state.pagesQuery.page,
-          limit: action.limit
+          limit: action.limit,
+          q: state.pagesQuery.q
+        }
+      });
+    case adminTypes.CHANGE_LOGS_SEARCH:
+      return Object.assign({}, state, {
+        pagesQuery: {
+          page: 1,
+          limit: state.pagesQuery.limit,
+          q: action.q
         }
       });
     case adminTypes.GET_LOGS_REQUEST:

@@ -203,6 +203,13 @@ export function changeLogsPage(page) {
   };
 }
 
+export function changeLogsSearch(search) {
+  return {
+    type: types.CHANGE_LOGS_SEARCH,
+    q: search
+  };
+}
+
 /**
  * Admin/Loginattempt
  */
@@ -261,5 +268,14 @@ export function changeMailData(mail) {
   return {
     type: types.CHANGE_MAIL_DATA,
     mail
+  };
+}
+
+export function confirmUser(user) {
+  return {
+    type: types.CONFIRM_USER_REQUEST,
+    params: {
+      id: user.id
+    }
   };
 }

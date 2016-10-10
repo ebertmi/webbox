@@ -32,7 +32,7 @@
   },
   "homepage": "https://github.com/waywaaard/webbox#readme",
   "dependencies": {
-    "@sourcebox/web": "git+ssh://git@github.com/waywaaard/sourcebox-web.git#0.0.16",
+    "@sourcebox/web": "git://github.com/waywaaard/sourcebox-web.git#0.0.16",
     "async": "^2.0.1",
     "autoprefixer": "^6.5.0",
     "babel-core": "^6.17.0",

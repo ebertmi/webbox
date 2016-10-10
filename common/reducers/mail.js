@@ -19,6 +19,8 @@ export default function mail(state = INITIAL_MAIL_STATE, action) {
       return Object.assign({}, state, {
         mail: {
           email: '',
+          subject: state.mail.subject,
+          message: state.mail.message
         }
       });
     case adminTypes.SEND_MAIL_FAILURE:

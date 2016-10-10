@@ -20,7 +20,7 @@ export class SearchBar extends Component {
       return null;
     }
 
-    return <button onClick={this.props.resetSearchHandler} type="button" className="btn btn-warning">Zurücksetzen</button>;
+    return <button onClick={this.props.resetSearchHandler} type="button" className="btn btn-warning btn-sm">Zurücksetzen</button>;
   }
 
   handleSearchQuery (event) {
@@ -46,9 +46,9 @@ export class SearchBar extends Component {
             <form className="form-inline" onSubmit={this.handleSearchClick}>
               <div className="form-group">
                 <div className="input-group">
-                  <input style={{width: "auto"}} defaultValue={this.props.searchQuery} onChange={this.handleSearchQuery} type="text" className="form-control shadow" placeholder={this.props.placeholderText} />
+                  <input style={{width: "auto"}} defaultValue={this.props.searchQuery} onChange={this.handleSearchQuery} type="text" className="form-control form-control-sm" placeholder={this.props.placeholderText} />
                   <span className="input-group-btn">
-                    <button onClick={this.handleSearchClick} className="btn btn-info" type="button">Suchen</button>
+                    <button onClick={this.handleSearchClick} className="btn btn-sm btn-info" type="button">Suchen</button>
                   </span>
                 </div>
               </div>

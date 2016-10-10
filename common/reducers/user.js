@@ -28,6 +28,7 @@ export default function user(state = INITIAL_USER_STATE, action) {
         count: action.count != null ? action.count : 0
       });
     case adminTypes.GET_USER_SUCCESS:
+    case adminTypes.CONFIRM_USER_SUCCESS:
       return Object.assign({}, state, {
         isFetching: false,
         user: action.user
@@ -79,7 +80,7 @@ export default function user(state = INITIAL_USER_STATE, action) {
     case adminTypes.CHANGE_USERS_SEARCH:
       return Object.assign({}, state, {
         pagesQuery: {
-          page: state.pagesQuery.page,
+          page: 1,
           limit: state.pagesQuery.limit,
           q: action.q
         }
