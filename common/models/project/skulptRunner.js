@@ -5,6 +5,7 @@ import Bluebird from 'bluebird';
 import isString from 'lodash/isString';
 import { EventLog } from '../insights/remoteDispatcher';
 import { TerminalTransform } from '../../util/streamUtils';
+import readline from '../../util/readline';
 
 // Disable warnings in production
 let BLUEBIRD_WARNINGS = true;
@@ -17,23 +18,6 @@ Bluebird.config({
   warnings: BLUEBIRD_WARNINGS
 });
 
-class SkulptInputTransform extends Transform{
-  _transform(chunk, encoding, callback) {
-
-    let str = chunk.toString();
-
-    if (str && str.length > 0 && str.charCodeAt(0) === 13) {
-      this.skulptBuffer.push('');
-      this.push('\n\r');
-      this.skulptInputDone();
-    } else {
-      this.skulptBuffer.push(str);
-      this.push(chunk);
-    }
-
-    callback();
-  }
-}
 
 let CANVAS_ID_COUNTER = 0;
 
@@ -176,6 +160,42 @@ export default class Runner extends EventEmitter {
     //  this._output(prompt);
     //}
 
+
+    return new Promise((resolve, reject) => {
+      //this.stdin.pipe(this.stdoutTransform, { end: false });
+
+      this.stdoutTransform.write(prompt);
+
+      let rli = readline.createInterface({
+        input: this.stdin,
+        output: this.stdoutTransform,
+        terminal: true
+      });
+
+      rli.setPrompt(prompt);
+
+      /*rli.question('', answer => {
+        console.info('answer:', answer);
+        //this.stdoutTransform.write('\n\r');
+        resolve(answer);
+
+        rli.close();
+      });*/
+
+      rli.on('line', line => {
+        console.info('line', line);
+        resolve(line);
+      });
+
+      rli.on('error', err => {
+        console.log(err);
+
+        reject();
+      });
+    });
+
+
+    /*
     return new Promise((resolve, reject) => {
       this.readPromptRejectFunction = reject;
       // Now read from stdin.
@@ -184,6 +204,7 @@ export default class Runner extends EventEmitter {
       let skulptInputTransform = new SkulptInputTransform();
       skulptInputTransform.skulptBuffer = [];
       skulptInputTransform.skulptInputDone = () => {
+        // ToDo: handle deleting of characters!
         inputStr = skulptInputTransform.skulptBuffer.join('');
         this.stdin.unpipe(skulptInputTransform);
         this.stdin.unpipe(this.stdoutTransform);
@@ -192,7 +213,8 @@ export default class Runner extends EventEmitter {
       };
 
       this.stdin.pipe(skulptInputTransform, { end: false }).pipe(this.stdoutTransform, { end: false });
-    });
+    });*/
+
   }
 
   run() {
@@ -233,6 +255,7 @@ export default class Runner extends EventEmitter {
         this._output(text);
       },
       inputfun: this.readPrompt.bind(this),
+      inputfunTakesPrompt: true,
       read: x => {
         return this.defaultFileRead(x);
       },
