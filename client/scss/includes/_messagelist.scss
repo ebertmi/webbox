@@ -99,7 +99,7 @@
   }
 
   & li.message-list-entry .message-left-side.message-overflow-ellipsis {
-    overflow: hidden;
+    /*overflow: hidden;*/
     text-overflow: ellipsis;
     white-space: nowrap;
     display: block;
@@ -111,14 +111,14 @@
 }
 
 .global-message-list li.message-list-entry .actions-container .message-action input {
-    padding-left: 10px;
-    padding-right: 10px;
-    display: inline-block;
-    height: 35px;
-    border-right: 1px solid #eee;
-    border-top: none;
-    border-bottom: none;
-    border-left: 1px solid #eee;
+  padding-left: 10px;
+  padding-right: 10px;
+  display: inline-block;
+  height: 35px;
+  border-right: 1px solid #eee;
+  border-top: none;
+  border-bottom: none;
+  border-left: 1px solid #eee;
 }
 
 .global-message-list li.message-list-entry .actions-container .message-action {

@@ -3,6 +3,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Input } from '../bootstrap';
 import TaggedInput from '../TaggedInput';
 import { Link } from 'react-router';
+import { Time } from '../Time';
 
 /**
  * The UserForm Component displays a user and allows to edit the user data.
@@ -193,7 +194,7 @@ export class UserForm extends Component {
         <Input onChange={this.handleChange} name="username" type="text" label="Benutzername" muted="Dieser wird aus der E-Mail-Adresse automatisch generiert." value={this.props.user.username} />
         <Input onChange={this.handleChange} name="isActive" type="checkbox" label="Aktiviert: Hiermit könnten Benutzer aktiviert und deaktiviert werden."  checked={this.props.user.isActive} />
         <Input onChange={this.handleChange} name="semester" type="text" label="Semester" muted="Semester in dem sich der Benutzer registriert hat." value={this.props.user.semester} />
-        <Input onChange={this.handleChange} name="createdAt" type="text" label="Erstellt am" readOnly="readonly" value={this.props.user.createdAt} />
+        <Input onChange={this.handleChange} name="createdAt" type="text" label="Erstellt am" readOnly="readonly" value={this.props.user.createdAt} /> <span><Time value={this.props.user.createdAt} locale="de" relative={true} invalidDateString="kein Datum"/></span>
         <Input onChange={this.handleChange} name="verification.isCompleted" type="checkbox" label="Registrierung abgeschlossen" checked={this.props.user.verification.isCompleted} />
         <Input onChange={this.handleChange} name="verification.token" muted="Mit diesem Token kann der Benutzer den Account aktivieren." disabled type="text" label="Aktivierungs-Token" value={this.props.user.verification.token || null} />
         <div className="form-group">

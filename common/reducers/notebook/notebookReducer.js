@@ -400,6 +400,8 @@ function updateNotebookMetadata(state, name, value) {
   switch(name) {
     case 'slug':
       return state.set('slug', value);
+    case 'authors':
+      return state.set('authors', value);
     case 'course':
       return state.set('course', value);
     case 'embedType':

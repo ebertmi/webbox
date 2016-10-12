@@ -99,6 +99,9 @@ export default class Notebook extends React.Component {
         this.messageList.showMessage(Severity.Error, res.error);
       }
     }).catch(err => {
+      if (err == null) {
+        err = new Error('Die Funktion konnte nicht ausgeführt werden.');
+      }
       this.messageList.showMessage(Severity.Error, err);
     });
   }
@@ -279,6 +282,7 @@ export default class Notebook extends React.Component {
         </div>
         <NotebookMetadata
         isAuthor={this.props.notebook.get('isAuthor')}
+        authors={this.props.notebook.get('authors')}
         isEditModeActive={isEditModeActive}
         onSave={this.onSave}
         onDelete={this.onDelete}

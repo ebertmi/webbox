@@ -25,12 +25,15 @@ export function checkStatus(response) {
 // common network problem error
 const NETWORK_ERROR = new Error('Netzwerkfehler - die Anfrage konnte nicht abgeschlossen werden.');
 const AUTHORISATION_ERROR = new Error('Nicht angemeldet - Anscheinend ist ihre Session abgelaufen. Bitte laden Sie die Seite neu.');
+const PERMISSION_ERROR = new Error('Sie besitzen anscheinend nicht die benötigten Rechte für diese Operation.');
 
 export function commonErrorHandler(err) {
   console.log(err, '');
   // check if we need to redirect
   if (err.response && err.response.status === 401) {
     throw AUTHORISATION_ERROR;
+  } else if (err.response && err.response.status === 403) {
+    throw PERMISSION_ERROR;
   }
 
   throw NETWORK_ERROR;

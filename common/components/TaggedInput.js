@@ -109,7 +109,7 @@ export default React.createClass({
         onKeyDown={this._handleKeyDown}
         onChange={this._handleChange}
         onBlur={this._handleBlur}
-        value={s.currentInput}
+        value={s.currentInput || ''}
         placeholder={placeholder}
         tabIndex={p.tabIndex}>
       </input>

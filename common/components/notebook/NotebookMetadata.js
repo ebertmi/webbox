@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
+import Immutable from 'immutable';
 import { Time } from '../Time';
 import Icon from '../Icon';
 import * as NotebookActions from '../../actions/NotebookActions';
 import { EmbedTypes } from '../../constants/Embed';
-
+import TaggedInput from '../TaggedInput';
 import { API } from '../../services';
 
 import { Toolbar, ActionItem } from '../Toolbar';
@@ -33,6 +33,7 @@ class NotebookMetadata extends React.Component {
     this.onUpdate = this.onUpdate.bind(this);
     this.toggleViewMode = this.toggleViewMode.bind(this);
     this.toggleViewAnalytics = this.toggleViewAnalytics.bind(this);
+    this.handleAuthorsChange = this.handleAuthorsChange.bind(this);
 
     this.state = {
       coursesInfo: []
@@ -55,9 +56,12 @@ class NotebookMetadata extends React.Component {
     let name = e.target.name;
     let value = e.target.value;
 
-    console.info(e.target.name, e.target.value);
-
     this.props.dispatch(NotebookActions.updateNotebookMetadata(name, value));
+  }
+
+  handleAuthorsChange(author, authors) {
+    console.info('handleAuthorsChange', author, authors);
+    this.props.dispatch(NotebookActions.updateNotebookMetadata('authors', new Immutable.List(authors)));
   }
 
   toggleEditClicked(e) {
@@ -139,7 +143,7 @@ class NotebookMetadata extends React.Component {
   }
 
   render() {
-    const { isEditModeActive, editable, metadata, slug, course, id, embedType } = this.props;
+    const { isEditModeActive, editable, metadata, slug, course, id, embedType, authors } = this.props;
     const author = metadata.get('author');
     const date = metadata.get('lastUpdate');
     const title = metadata.get('title');
@@ -147,7 +151,18 @@ class NotebookMetadata extends React.Component {
     const language_version = metadata.getIn(['language_info', 'version']);
     const language = `${language_name}-${language_version}`;
 
+    let authorsArray = authors;
+
+    if (authors == null) {
+      authorsArray = [];
+    } else {
+      authorsArray = authors.toArray();
+    }
+
+    // Update document title (browser window)
     document.title = title;
+
+    // Determine what text and icon we need to show
     const editIconName = editable ? '' : 'edit';
     const editTitleText = editable ? 'Schließen' : 'Metadata bearbeiten';
 
@@ -212,6 +227,13 @@ class NotebookMetadata extends React.Component {
                 <input className={"form-control"} disabled readOnly type="text" defaultValue={this.props.id} name="notebookdid" />
                 <small>Interne ID des Dokumentes.</small>
               </div>
+            </div>
+          </div>
+          <div className="form-group row">
+            <label className={"col-sm-2 form-control-label"} ><Icon name="users" /> Weitere Autoren</label>
+            <div className={"col-sm-10"}>
+              <TaggedInput className={"form-control"} onAddTag={this.handleAuthorsChange} onRemoveTag={this.handleAuthorsChange} name="authors"ref="authorsField" placeholder="Weitere Autoren" tags={authorsArray} title="Mitautoren" />
+              <small className="text-muted">Diese erhalten Bearbeitungsrechte für dieses Dokument.</small>
             </div>
           </div>
           <span className="metadata-item">

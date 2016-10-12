@@ -127,7 +127,7 @@ export default class Menu extends React.Component {
       saveZipAsFile(name, zipFile);
     } else {
       // download as single file
-      saveTextAsFile(files[0]);
+      saveTextAsFile(name, files[0]);
     }
   }
 

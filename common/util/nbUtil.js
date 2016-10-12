@@ -81,6 +81,7 @@ export function stateToJS(state) {
   // save metadata
   document.metadata = state.get('metadata').toJS();
 
+  document.authors = state.get('authors').toJS();
   document.slug = state.get('slug');
   document.nbformat = state.get('nbformat');
   document.nbformat_minor = state.get('nbformat_minor');
