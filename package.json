@@ -1,6 +1,6 @@
 {
   "name": "webbox",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "Webbased course editor powered by sourcebox",
   "main": "webbox.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "start:prod-win": "set NODE_ENV=production&&node webbox.babel.js",
     "start:dev": "nodemon webbox.babel.js",
     "web:build": "webpack --config webpack.config.production.js -p --progress",
-    "web:build-json:": "webpack --config webpack.config.production.js -p --progress --json",
+    "web:json:": "webpack --config webpack.config.production.js -p --progress --json > webox.stats.json",
     "web:watch": "webpack -d --watch --display-modules"
   },
   "private": true,

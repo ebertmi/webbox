@@ -1,4 +1,29 @@
-'use strict';
+/*
+"""
+Copyright Node.js contributors. All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
+"""
+
+This license applies to parts of Node.js originating from the
+https://github.com/joyent/node repository:
+*/
 
 // Regexes used for ansi escape code splitting
 // eslint-disable-next-line no-control-regex
@@ -9,19 +34,10 @@ const functionKeyCodeReAnywhere = new RegExp('(?:\x1b+)(O|N|\\[|\\[\\[)(?:' + [
   '(?:1;)?(\\d+)?([a-zA-Z])'
 ].join('|') + ')');
 
-
-module.exports = {
-  emitKeys,
-  getStringWidth,
-  isFullWidthCodePoint,
-  stripVTControlCharacters
-};
-
-
 /**
  * Returns the number of columns required to display the given string.
  */
-function getStringWidth(str) {
+export function getStringWidth(str) {
   let width = 0;
 
   str = stripVTControlCharacters(str);
@@ -48,7 +64,7 @@ function getStringWidth(str) {
  * Returns true if the character represented by a given
  * Unicode code point is full-width. Otherwise returns false.
  */
-function isFullWidthCodePoint(code) {
+export function isFullWidthCodePoint(code) {
   if (isNaN(code)) {
     return false;
   }
@@ -95,7 +111,7 @@ function isFullWidthCodePoint(code) {
  * Tries to remove all VT control characters. Use to estimate displayed
  * string width. May be buggy due to not running a real state machine
  */
-function stripVTControlCharacters(str) {
+export function stripVTControlCharacters(str) {
   str = str.replace(new RegExp(functionKeyCodeReAnywhere.source, 'g'), '');
   return str.replace(new RegExp(metaKeyCodeReAnywhere.source, 'g'), '');
 }
@@ -128,7 +144,7 @@ function stripVTControlCharacters(str) {
                 (right_alt * 8)
   - two leading ESCs apparently mean the same as one leading ESC
 */
-function* emitKeys(stream) {
+export function* emitKeys(stream) {
   while (true) {
     let ch = yield;
     let s = ch;

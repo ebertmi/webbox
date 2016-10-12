@@ -210,7 +210,7 @@ export default class Project extends EventEmitter {
   }
 
   getEmbedDocumentId() {
-    this.projectData.embed.document ? this.projectData.embed.document.id : undefined;
+    this.projectData.embed._document ? this.projectData.embed._document.id : undefined;
   }
 
   /**
@@ -615,7 +615,7 @@ export default class Project extends EventEmitter {
   getSharableLink() {
     const host = window.location.host;
     const protocol = window.location.protocol;
-    const viewDocument = this.projectData.embed.document ? `?showDocument=${this.getEmbedDocumentId()}`: '';
+    const viewDocument = this.projectData.embed._document ? `?showDocument=${this.getEmbedDocumentId()}`: '';
     const idOrSlug = this.projectData.embed.slug || this.getEmbedId();
 
     return `${protocol}//${host}/embed/${idOrSlug}${viewDocument}`;

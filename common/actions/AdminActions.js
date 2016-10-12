@@ -107,6 +107,14 @@ export function changeCoursesPage(page) {
   };
 }
 
+export function changeCoursesSearch(search) {
+  return {
+    type: types.CHANGE_COURSES_SEARCH,
+    q: search
+  };
+}
+
+
 export function updateCourse(course) {
   return {
     type: types.GET_COURSE_SUCCESS,
@@ -168,6 +176,12 @@ export function changeEmbedsPage(page) {
   };
 }
 
+export function changeEmbedsSearch(search) {
+  return {
+    type: types.CHANGE_EMBEDS_SEARCH,
+    q: search
+  };
+}
 
 /**
  * Admin/Documents
@@ -183,6 +197,13 @@ export function changeDocumentsPage(page) {
   return {
     type: types.CHANGE_DOCUMENTS_PAGE,
     page: page
+  };
+}
+
+export function changeDocumentsSearch(search) {
+  return {
+    type: types.CHANGE_DOCUMENTS_SEARCH,
+    q: search
   };
 }
 
@@ -224,6 +245,12 @@ export function changeAuthAttemptsPage(page) {
   return {
     type: types.CHANGE_AUTHATTEMPTS_PAGE,
     page: page
+  };
+}
+
+export function deleteAllAuthAttempts() {
+  return {
+    type: types.DELETE_AUTHATTEMPTS_REQUEST
   };
 }
 

@@ -277,6 +277,26 @@ function* fetchAuthAttempts (action) {
 }
 
 /**
+ * Log fetching...
+ */
+function* fetchDeleteAllAuthAttempts () {
+  try {
+    // reset notification message
+    yield put({ type: adminTypes.RESET_MESSAGE });
+
+    const data = yield call(API.admin.deleteAllAuthAttempts);
+
+    if (data.error) {
+      yield put({type: adminTypes.DELETE_AUTHATTEMPTS_FAILURE, message: data.error.message});
+    } else {
+      yield put({type: adminTypes.DELETE_AUTHATTEMPTS_SUCCESS, attempts: data.attempts, pages: data.pages, count: data.count});
+    }
+  } catch (e) {
+    yield put({type: adminTypes.DELETE_AUTHATTEMPTS_FAILURE, message: e.message});
+  }
+}
+
+/**
  * Recyclebin entries fetching...
  */
 function* fetchRecyclebinEntries (action) {
@@ -334,6 +354,7 @@ export default function* adminSaga () {
     fork(takeLatest, adminTypes.DELETE_COURSE_REQUEST, deleteCourse),
     fork(takeLatest, adminTypes.GET_LOGS_REQUEST, fetchLogs),
     fork(takeLatest, adminTypes.GET_AUTHATTEMPTS_REQUEST, fetchAuthAttempts),
+    fork(takeLatest, adminTypes.DELETE_AUTHATTEMPTS_REQUEST, fetchDeleteAllAuthAttempts),
     fork(takeLatest, adminTypes.GET_RECYCLEBIN_REQUEST, fetchRecyclebinEntries),
     fork(takeLatest, adminTypes.SEND_MAIL_REQUEST, fetchSendMail)
   ];

@@ -6,8 +6,34 @@ import { PaginationContainer } from '../PaginationContainer';
 import { LoadingContainer } from '../LoadingContainer';
 import { EmbedTableRow } from '../../components/admin/EmbedTableRow';
 import * as AdminActions from '../../actions/AdminActions';
+import { SearchBar } from '../../components/admin/SearchBar';
 
 class EmbedOverview extends Component {
+
+  onSearchQueryChange (newQuery) {
+    // trigger change, if needed
+    // update url query
+    if (this.props.embedOverview.pagesQuery.q === newQuery) {
+      return;
+    }
+  }
+
+  onSearchClick (query) {
+    this.props.changeEmbedsSearch(query);
+  }
+
+  onResetSearchClick () {
+    this.props.changeEmbedsSearch('');
+  }
+
+  renderSearch () {
+    return (<SearchBar
+      placeholderText="Nach Beispiel suchen..."
+      searchClickHandler={this.onSearchClick.bind(this)}
+      changeSearchQuery={this.onSearchQueryChange.bind(this)}
+      resetSearchHandler={this.onResetSearchClick.bind(this)}
+      searchQuery={this.props.embedOverview.pagesQuery.q} />);
+  }
 
   renderTable() {
     return (<table className="table table-sm tabl-striped">
@@ -41,6 +67,7 @@ class EmbedOverview extends Component {
           pagesQuery={this.props.embedOverview.pagesQuery}
           location={this.props.location}>
         <h2>Codebeispiele <small>({this.props.embedOverview.count})</small></h2>
+        {this.renderSearch()}
         <LoadingContainer isLoading={this.props.embedOverview.isFetching}>
           {content}
         </LoadingContainer>

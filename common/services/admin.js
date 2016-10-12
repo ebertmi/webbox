@@ -93,7 +93,7 @@ export const AdminAPI = {
     .catch(commonErrorHandler);
   },
   getCourses(query) {
-    return fetch(`/api/courses?page=${query.page}&limit=${query.limit}`, {
+    return fetch(`/api/courses?page=${query.page}&limit=${query.limit}&q=${query.q}`, {
       credentials: 'same-origin',
       headers: getDefaultHeaders()
     })
@@ -144,7 +144,7 @@ export const AdminAPI = {
     .catch(commonErrorHandler);
   },
   getEmbeds(query) {
-    return fetch(`/api/embeds?page=${query.page}&limit=${query.limit}`, {
+    return fetch(`/api/embeds?page=${query.page}&limit=${query.limit}&q=${query.q}`, {
       credentials: 'same-origin',
       headers: getDefaultHeaders()
     })
@@ -156,7 +156,7 @@ export const AdminAPI = {
     .catch(commonErrorHandler);
   },
   getDocuments(query) {
-    return fetch(`/api/documents?page=${query.page}&limit=${query.limit}`, {
+    return fetch(`/api/documents?page=${query.page}&limit=${query.limit}&q=${query.q}`, {
       credentials: 'same-origin',
       headers: getDefaultHeaders()
     })
@@ -181,6 +181,19 @@ export const AdminAPI = {
   },
   getAuthAttempts(query) {
     return fetch(`/api/authattempts?page=${query.page}&limit=${query.limit}`, {
+      credentials: 'same-origin',
+      headers: getDefaultHeaders()
+    })
+    .then(checkStatus)
+    .then(parseJSON)
+    .then(data => {
+      return data;
+    })
+    .catch(commonErrorHandler);
+  },
+  deleteAllAuthAttempts() {
+    return fetch(`/api/authattempts`, {
+      method: 'DELETE',
       credentials: 'same-origin',
       headers: getDefaultHeaders()
     })

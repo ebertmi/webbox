@@ -6,9 +6,33 @@ import { PaginationContainer } from '../PaginationContainer';
 import { LoadingContainer } from '../LoadingContainer';
 import { DocumentTableRow } from '../../components/admin/DocumentTableRow';
 import * as AdminActions from '../../actions/AdminActions';
-
+import { SearchBar } from '../../components/admin/SearchBar';
 
 class DocumentOverview extends Component {
+  onSearchQueryChange (newQuery) {
+    // trigger change, if needed
+    // update url query
+    if (this.props.documentOverview.pagesQuery.q === newQuery) {
+      return;
+    }
+  }
+
+  onSearchClick (query) {
+    this.props.changeDocumentsSearch(query);
+  }
+
+  onResetSearchClick () {
+    this.props.changeDocumentsSearch('');
+  }
+
+  renderSearch () {
+    return (<SearchBar
+      placeholderText="Nach Beispiel suchen..."
+      searchClickHandler={this.onSearchClick.bind(this)}
+      changeSearchQuery={this.onSearchQueryChange.bind(this)}
+      resetSearchHandler={this.onResetSearchClick.bind(this)}
+      searchQuery={this.props.documentOverview.pagesQuery.q} />);
+  }
 
   renderTable() {
     return (<table className="table table-sm tabl-striped">
@@ -42,6 +66,7 @@ class DocumentOverview extends Component {
           pagesQuery={this.props.documentOverview.pagesQuery}
           location={this.props.location}>
         <h2>Dokumente <small>({this.props.documentOverview.count})</small></h2>
+        {this.renderSearch()}
         <LoadingContainer isLoading={this.props.documentOverview.isFetching}>
           {content}
         </LoadingContainer>

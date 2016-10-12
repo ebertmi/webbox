@@ -6,7 +6,8 @@ export const INITIAL_EMBED_STATE = {
   count: 0,
   pagesQuery: {
     page: 1,
-    limit: 15
+    limit: 15,
+    q: ''
   },
   pages: 1,
   filter: null,
@@ -42,6 +43,14 @@ export default function embed(state = INITIAL_EMBED_STATE, action) {
         pagesQuery: {
           page: state.pagesQuery.page,
           limit: action.limit
+        }
+      });
+    case adminTypes.CHANGE_EMBEDS_SEARCH:
+      return Object.assign({}, state, {
+        pagesQuery: {
+          page: 1,
+          limit: state.pagesQuery.limit,
+          q: action.q
         }
       });
     default:

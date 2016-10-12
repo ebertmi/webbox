@@ -1,8 +1,7 @@
 import { EventEmitter } from 'events';
-import { PassThrough, Transform } from 'stream';
+import { PassThrough } from 'stream';
 
 import Bluebird from 'bluebird';
-import isString from 'lodash/isString';
 import { EventLog } from '../insights/remoteDispatcher';
 import { TerminalTransform } from '../../util/streamUtils';
 import readline from '../../util/readline';
@@ -17,7 +16,6 @@ Bluebird.config({
   cancellation: true,
   warnings: BLUEBIRD_WARNINGS
 });
-
 
 let CANVAS_ID_COUNTER = 0;
 
@@ -153,17 +151,7 @@ export default class Runner extends EventEmitter {
   }
 
   readPrompt(prompt) {
-    // We need to use here the original Promise and not bluebird,
-    // otherwise the skulpt checks for promises are failing
-
-    //if (prompt != null && isString(prompt)) {
-    //  this._output(prompt);
-    //}
-
-
     return new Promise((resolve, reject) => {
-      //this.stdin.pipe(this.stdoutTransform, { end: false });
-
       this.stdoutTransform.write(prompt);
 
       let rli = readline.createInterface({
@@ -172,49 +160,22 @@ export default class Runner extends EventEmitter {
         terminal: true
       });
 
+      // Prevent the deletion of the prompt, when pressing backspace
       rli.setPrompt(prompt);
 
-      /*rli.question('', answer => {
-        console.info('answer:', answer);
-        //this.stdoutTransform.write('\n\r');
-        resolve(answer);
+      rli.on('line', line => {
+        resolve(line);
 
         rli.close();
-      });*/
-
-      rli.on('line', line => {
-        console.info('line', line);
-        resolve(line);
       });
 
       rli.on('error', err => {
         console.log(err);
 
         reject();
+        rli.close();
       });
     });
-
-
-    /*
-    return new Promise((resolve, reject) => {
-      this.readPromptRejectFunction = reject;
-      // Now read from stdin.
-      let inputStr = '';
-
-      let skulptInputTransform = new SkulptInputTransform();
-      skulptInputTransform.skulptBuffer = [];
-      skulptInputTransform.skulptInputDone = () => {
-        // ToDo: handle deleting of characters!
-        inputStr = skulptInputTransform.skulptBuffer.join('');
-        this.stdin.unpipe(skulptInputTransform);
-        this.stdin.unpipe(this.stdoutTransform);
-
-        resolve(inputStr);
-      };
-
-      this.stdin.pipe(skulptInputTransform, { end: false }).pipe(this.stdoutTransform, { end: false });
-    });*/
-
   }
 
   run() {

@@ -30,14 +30,23 @@ export default function authAttempt(state = INITIAL_AUTHATTEMPT_STATE, action) {
         }
       });
     case adminTypes.GET_AUTHATTEMPTS_REQUEST:
+    case adminTypes.DELETE_AUTHATTEMPTS_REQUEST:
       return Object.assign({}, state, {
         isFetching: true
       });
     case adminTypes.GET_AUTHATTEMPTS_FAILURE:
+    case adminTypes.DELETE_AUTHATTEMPTS_FAILURE:
       return Object.assign({}, state, {
         isFetching: false
       });
     case adminTypes.GET_AUTHATTEMPTS_SUCCESS:
+      return Object.assign({}, state, {
+        isFetching: false,
+        attempts: action.attempts,
+        pages: action.pages != null ? action.pages : 1,
+        count: action.count != null ? action.count : 0
+      });
+    case adminTypes.DELETE_AUTHATTEMPTS_SUCCESS:
       return Object.assign({}, state, {
         isFetching: false,
         attempts: action.attempts,

@@ -26,6 +26,20 @@ function renderTable (props) {
     </table>);
 }
 
+function renderDeleteAllButton(props) {
+  return (
+    <div className="row table-search-bar">
+      <div className="col-sm-6">
+        <form className="form-inline" onSubmit={e => e.preventDefault()}>
+          <div className="form-group">
+            <button className="btn btn-danger btn-sm" onClick={props.deleteAllAuthAttempts}>Alle Löschen</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 function AuthAttemptOverview(props) {
   const content = renderTable(props);
   return (
@@ -36,6 +50,7 @@ function AuthAttemptOverview(props) {
         pagesQuery={props.authAttemptOverview.pagesQuery}
         location={props.location}>
       <h2>Auffällige Loginversuche <small>({props.authAttemptOverview.count})</small></h2>
+      { renderDeleteAllButton(props) }
       <LoadingContainer isLoading={props.authAttemptOverview.isFetching}>
         {content}
       </LoadingContainer>

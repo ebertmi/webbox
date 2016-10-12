@@ -6,8 +6,34 @@ import { PaginationContainer } from '../PaginationContainer';
 import { LoadingContainer } from '../LoadingContainer';
 import { CourseTableRow } from '../../components/admin/CourseTableRow';
 import * as AdminActions from '../../actions/AdminActions';
+import { SearchBar } from '../../components/admin/SearchBar';
 
 class CourseOverview extends Component {
+  onSearchQueryChange (newQuery) {
+    // trigger change, if needed
+    // update url query
+    if (this.props.courseOverview.pagesQuery.q === newQuery) {
+      return;
+    }
+  }
+
+  onSearchClick (query) {
+    this.props.changeCoursesSearch(query);
+  }
+
+  onResetSearchClick () {
+    this.props.changeCoursesSearch('');
+  }
+
+  renderSearch () {
+    return (<SearchBar
+      placeholderText="Nach Beispiel suchen..."
+      searchClickHandler={this.onSearchClick.bind(this)}
+      changeSearchQuery={this.onSearchQueryChange.bind(this)}
+      resetSearchHandler={this.onResetSearchClick.bind(this)}
+      searchQuery={this.props.courseOverview.pagesQuery.q} />);
+  }
+
   renderTable () {
     return (
       <table className="table table-sm tabl-striped">
@@ -55,6 +81,7 @@ class CourseOverview extends Component {
           location={this.props.location}>
         <h2>Kurse <small>({this.props.courseOverview.count})</small></h2>
         { this.renderNewCourseButton() }
+        { this.renderSearch() }
         <LoadingContainer isLoading={this.props.courseOverview.isFetching}>
           {content}
         </LoadingContainer>

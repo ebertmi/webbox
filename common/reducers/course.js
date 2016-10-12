@@ -6,7 +6,8 @@ export const INITIAL_COURSE_STATE = {
   count: 0,
   pagesQuery: {
     page: 1,
-    limit: 10
+    limit: 10,
+    q: ''
   },
   pages: 1,
   filter: null,
@@ -38,6 +39,14 @@ export default function course(state = INITIAL_COURSE_STATE, action) {
         pagesQuery: {
           page: state.pagesQuery.page,
           limit: action.limit
+        }
+      });
+    case adminTypes.CHANGE_COURSES_SEARCH:
+      return Object.assign({}, state, {
+        pagesQuery: {
+          page: 1,
+          limit: state.pagesQuery.limit,
+          q: action.q
         }
       });
     case adminTypes.GET_COURSE_SUCCESS:
