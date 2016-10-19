@@ -152,6 +152,10 @@ export default class Runner extends EventEmitter {
 
   readPrompt(prompt) {
     return new Promise((resolve, reject) => {
+      // Store the reject function, so that we can
+      // terminate the program while waiting for user input
+      this.readPromptRejectFunction = reject;
+
       this.stdoutTransform.write(prompt);
 
       let rli = readline.createInterface({
@@ -163,6 +167,7 @@ export default class Runner extends EventEmitter {
       // Prevent the deletion of the prompt, when pressing backspace
       rli.setPrompt(prompt);
 
+      // Resolve promise with first input line
       rli.on('line', line => {
         resolve(line);
 
@@ -421,7 +426,10 @@ export default class Runner extends EventEmitter {
    * @returns
    */
   resize(cols, rows) {
-    return;
+    return {
+      cols,
+      rows
+    };
   }
 
   kill() {

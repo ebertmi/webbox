@@ -75,14 +75,26 @@ export default class Ide extends React.Component {
   }
 
   /**
-   * Check for Ctrl+S and try to save the document if possible
+   * Check for global key codes and bindings for commands
    */
   onKeyDown(e) {
     let key = e.which || e.keyCode;
+    // Check for Ctrl+S and try to save the document if possible
     if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 83) {
 
       // SaveEmbed is debounced
       this.props.project.saveEmbed();
+      e.preventDefault();
+    } else if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 69) {
+      // Run/Stop current programm Ctrl+E
+      let project = this.props.project;
+
+      if (project.isRunning()) {
+        project.stop();
+      } else {
+        project.run();
+      }
+
       e.preventDefault();
     }
   }

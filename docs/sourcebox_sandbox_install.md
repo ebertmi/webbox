@@ -56,3 +56,6 @@ EOF
 and here is a example using the script:
 
 `installer.sh ./trycodingsb python3 python3-pip python python-pip`
+
+## Run the sourcebox server
+Use `sudo NODE_ENV=production pm2 start server.js` for production mode and config

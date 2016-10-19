@@ -62,10 +62,26 @@ module.exports = {
     ],
     noParse: [
       /acorn\/dist\/acorn\.js$/,
+      /xterm.js$/
     ]
   },
   postcss: [ autoprefixer({ browsers: ['last 2 versions'] }) ],
   plugins: [
+    new webpack.ContextReplacementPlugin(/^\.\/locale$/, context => {
+      // check if the context was created inside the moment package
+      if (!/\/moment\//.test(context.context)) {
+        return;
+      }
+      // context needs to be modified in place
+      Object.assign(context, {
+        // include only german variants
+        // all tests are prefixed with './' so this must be part of the regExp
+        // the default regExp includes everything; /^$/ could be used to include nothing
+        regExp: /^\.\/(de)/,
+        // point to the locale data folder relative to moment/src/lib/locale
+        request: '../../locale'
+      });
+    }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'react-commons',
       chunks: ['dashboard', 'embed', 'notebook', 'presentation']

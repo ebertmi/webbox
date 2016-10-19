@@ -35,14 +35,16 @@ export default function embed(state = INITIAL_EMBED_STATE, action) {
       return Object.assign({}, state, {
         pagesQuery: {
           page: action.page,
-          limit: state.pagesQuery.limit
+          limit: state.pagesQuery.limit,
+          q: state.query.q
         }
       });
     case adminTypes.CHANGE_EMBEDS_LIMIT:
       return Object.assign({}, state, {
         pagesQuery: {
           page: state.pagesQuery.page,
-          limit: action.limit
+          limit: action.limit,
+          q: state.query.q
         }
       });
     case adminTypes.CHANGE_EMBEDS_SEARCH:

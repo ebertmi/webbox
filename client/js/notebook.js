@@ -8,6 +8,8 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 
+import { disableBackspace } from '../../common/util/backspaceDisabler';
+
 // own modules
 import notebookStore from '../../common/store/notebookStore';
 
@@ -20,6 +22,9 @@ const notebookState = documentToState(window.__INITIAL_STATE__);
 const storeInit = { notebook: notebookState };
 const store = notebookStore(storeInit);
 const rootElement = document.getElementById('notebook-container');
+
+// Try to disable backspace to avoid page backward and forward actions while working in an editor.
+disableBackspace();
 
 // Add document handler for all copy buttons
 document.addEventListener('click', function (event) {

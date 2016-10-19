@@ -210,7 +210,7 @@ export default class Project extends EventEmitter {
   }
 
   getEmbedDocumentId() {
-    this.projectData.embed._document ? this.projectData.embed._document.id : undefined;
+    return this.projectData.embed._document ? this.projectData.embed._document.id : undefined;
   }
 
   /**

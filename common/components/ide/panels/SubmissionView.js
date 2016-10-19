@@ -1,7 +1,6 @@
 import React from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
 import { Time } from '../../Time';
-import Icon from '../../Icon';
+//import Icon from '../../Icon';
 
 export default class SubmissionView extends React.Component {
   constructor(props) {
@@ -13,12 +12,12 @@ export default class SubmissionView extends React.Component {
 
     this.onChange = this.onChange.bind(this);
     this.onToggleSubmissions = this.onToggleSubmissions.bind(this);
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   componentWillMount() {
-    this.props.submissions.subscribe(); // ToDo: put this into the submission view
     this.props.submissions.on('change', this.onChange);
+    this.props.submissions.subscribe(); // ToDo: put this into the submission view
+    this.onChange(); // Trigger initial state update
   }
 
   componentWillUnmount() {
@@ -41,12 +40,14 @@ export default class SubmissionView extends React.Component {
   }
 
   render() {
-    const iconName = this.state.isActive ? 'toggle-on' : 'toggle-off';
+    //const iconName = this.state.isActive ? 'toggle-on' : 'toggle-off';
+    const toggleText = this.state.isActive ? 'Deaktivieren' : 'Aktivieren';
     return (
       <div className="row">
       <div className="col-xs-12">
         <h4>Einreichungen</h4>
-        <span>Akzeptiert?</span> <Icon className="icon-control" name={iconName} title="Aktivieren/Deaktivieren" onClick={this.onToggleSubmissions} />
+        <button className="btn btn-sm btn-primary m-b-1" title="Aktivieren/Deaktivieren" onClick={this.onToggleSubmissions}>{toggleText}</button>
+        {/*<span>Akzeptiert?</span> <Icon className="icon-control" name={iconName} title="Aktivieren/Deaktivieren" onClick={this.onToggleSubmissions} />*/}
       </div>
       <div className="col-xs-12">
         <table className="table table-sm table-hover">
@@ -56,6 +57,7 @@ export default class SubmissionView extends React.Component {
               <th>Benutzer</th>
               <th>Hinweis</th>
               <th>Zeitpunkt</th>
+              <th>Revision</th>
             </tr>
           </thead>
           <tbody>
@@ -67,6 +69,7 @@ export default class SubmissionView extends React.Component {
                   <td>{submission.username}</td>
                   <td><code>{submission.message}</code></td>
                   <td><Time value={new Date(submission.timeStamp)} locale="de" relative={true} invalidDateString="Nicht verfügbar"></Time></td>
+                  <td><span className="tag tag-default">{submission.revision}</span></td>
                 </tr>
               );
             })}

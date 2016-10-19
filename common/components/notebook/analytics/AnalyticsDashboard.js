@@ -72,6 +72,7 @@ export default class AnalyticsDashboard extends Component {
       entries.forEach((value, key) => {
         debug('Adding EventClusterChart for embed %s', key);
         children.push(<EventClusterChart key={key} series={value.dateClustersToSeries()} />);
+        children.push(<p className="text-muted">Beispiel: {key}</p>);
       });
 
       if (children.length === 0) {

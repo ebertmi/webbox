@@ -19,6 +19,7 @@ export class Submission {
     this.timeStamp = timeStamp;
     this.message = message;
     this.id = UUID.v4(); // generate a unique id
+    this.revision = 1;
   }
 }
 
@@ -121,9 +122,26 @@ export class Submissions extends EventEmitter {
   onSubmission(event) {
 
     let submission = Submission.fromAction(event);
-    this.submissions.push(submission);
+    this.updateOrAddSubmission(submission);
 
     this.emit('change');
+  }
+
+  updateOrAddSubmission(submission) {
+    let index = this.submissions.findIndex(value => {
+      return value.userId === submission.userId;
+    });
+
+    // We need to update!
+    if (index >= 0) {
+      let revision = this.submissions[index].revision += 1;
+      this.submissions[index] = submission;
+
+      // Update revision, so teacher can see that student has submitted multiple times
+      this.submissions[index].revision = revision;
+    } else {
+      this.submissions.push(submission);
+    }
   }
 
   /**

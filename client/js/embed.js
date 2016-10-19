@@ -1,5 +1,6 @@
 import '../scss/index.scss';
 import 'babel-polyfill';
+import 'exports?fetch!whatwg-fetch/fetch';
 import React from 'react';
 import {render} from 'react-dom';
 
@@ -10,7 +11,12 @@ import { MessageListModel } from '../../common/models/messages';
 import { usageConsole } from '../../common/util/usageLogger';
 import { EmbedTypes } from '../../common/constants/Embed';
 
+import { disableBackspace } from '../../common/util/backspaceDisabler';
+
 import 'expose?Perf!react-addons-perf';
+
+// Try to disable backspace to avoid page backward and forward actions while working in an editor.
+disableBackspace();
 
 // DOMNode closest polyfill
 if (!Element.prototype.matches) {

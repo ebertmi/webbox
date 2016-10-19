@@ -119,6 +119,8 @@ html(lang="de")
                 if !user.isAnonymous
                   .pull-xs-right
                     a(class="nav-item btn btn-warning btn-sm", href="/logout") Ausloggen
+                  .pull-xs-right
+                    span.text-muted.m-r-1=user.email
                 else
                   .pull-xs-right
                     - var nextQuery = "?next=" + (next || "");

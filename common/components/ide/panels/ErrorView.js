@@ -89,6 +89,18 @@ export default class ErrorView extends React.Component {
     this.filterErrors();
   }
 
+  highlightError(errorId, e) {
+    if (errorId == this.state.errorInDetail) {
+      return;
+    }
+
+    this.setState({
+      errorInDetail: errorId
+    });
+
+    e.preventDefault();
+  }
+
   // Async filtering
   filterErrors() {
     this.props.insights.filterErrors(this.state.n, {
@@ -100,6 +112,27 @@ export default class ErrorView extends React.Component {
         errors: res
       });
     });
+  }
+
+  renderErrorInDetail() {
+    if (this.state.errorInDetail != null) {
+      // Get error
+      let error = this.state.errors.find(val => {
+        return val.id === this.state.errorInDetail;
+      });
+
+      if (error != null) {
+        return (<div>
+          <p className="text-muted">Detailansicht: {error.type} in <strong>{error.data.file}</strong> Zeile: {error.data.line} <Time value={new Date(error.timeStamp)} locale="de" relative={true} invalidDateString="Nicht verfügbar"></Time></p>
+          <pre><code>{error.data.fileContent}</code></pre>
+        </div>);
+      } else {
+        // No matching error found, may lost after filtering?
+        return null;
+      }
+    } else {
+      return null;
+    }
   }
 
   render() {
@@ -137,6 +170,9 @@ export default class ErrorView extends React.Component {
             </form>
           </div>
           <div className="col-xs-12">
+            { this.renderErrorInDetail() }
+          </div>
+          <div className="col-xs-12">
             <table className="table table-sm table-hover">
               <thead>
                 <tr>
@@ -150,8 +186,9 @@ export default class ErrorView extends React.Component {
               </thead>
               <tbody>
                 {this.state.errors.map((err) => {
+                  const className = err.id === this.state.errorInDetail ? 'table-info' : '';
                   return (
-                    <tr key={err.id}>
+                    <tr className={className} key={err.id} data-errorId={err.id} onDoubleClick={this.highlightError.bind(this, err.id)}>
                       <td>{err.type}</td>
                       <td><code>{err.message}</code></td>
                       <td><pre>{err.data.errorHint}</pre></td>

@@ -31,14 +31,16 @@ export default function course(state = INITIAL_COURSE_STATE, action) {
       return Object.assign({}, state, {
         pagesQuery: {
           page: action.page,
-          limit: state.pagesQuery.limit
+          limit: state.pagesQuery.limit,
+          q: state.query.q
         }
       });
     case adminTypes.CHANGE_COURSES_LIMIT:
       return Object.assign({}, state, {
         pagesQuery: {
           page: state.pagesQuery.page,
-          limit: action.limit
+          limit: action.limit,
+          q: state.query.q
         }
       });
     case adminTypes.CHANGE_COURSES_SEARCH:

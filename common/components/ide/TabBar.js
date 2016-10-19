@@ -165,13 +165,14 @@ export default class TabBar extends React.Component {
     let startStop;
     let tester;
     let shareWithTeacher;
+    const isRunning = project.isRunning();
 
     const fullScreenIcon = screenfull.isFullscreen ? 'compress' : 'expand';
 
     if (project.run) {
       startStop = (
         <NavItem className="unselectable" onClick={this.onStartStop} useHref={false}>
-          {project.isRunning() ? <Icon name="stop" className="danger"/> : <Icon name="play" className="success"/>}
+          {isRunning ? <Icon name="stop" className="danger"/> : <Icon name="play" className="success"/>}
         </NavItem>
       );
     }
@@ -203,7 +204,7 @@ export default class TabBar extends React.Component {
         <Nav className="controls" bsStyle="pills">
           {startStop}
           {tester}
-          <NavItem className="unselectable" onClick={this.onSave} useHref={false} title="Speichern">
+          <NavItem className="unselectable" onClick={this.onSave} useHref={false} title="Speichern (Strg+S)">
             <Icon name="save" />
           </NavItem>
           { shareWithTeacher }

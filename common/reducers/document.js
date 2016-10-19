@@ -35,14 +35,16 @@ export default function document(state = INITIAL_DOCUMENTS_STATE, action) {
       return Object.assign({}, state, {
         pagesQuery: {
           page: action.page,
-          limit: state.pagesQuery.limit
+          limit: state.pagesQuery.limit,
+          q: state.query.q
         }
       });
     case adminTypes.CHANGE_DOCUMENTS_LIMIT:
       return Object.assign({}, state, {
         pagesQuery: {
           page: state.pagesQuery.page,
-          limit: action.limit
+          limit: action.limit,
+          q: state.query.q
         }
       });
     case adminTypes.CHANGE_DOCUMENTS_SEARCH:
