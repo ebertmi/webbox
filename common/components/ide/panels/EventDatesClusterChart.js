@@ -18,7 +18,8 @@ import { normalDateFormatter, multiTimeFormat } from '../../../util/d3Util';
 const LEGEND_IN_CHART_STYLES = {
   position: 'absolute',
   textAlign: 'left',
-  right: 0,
+  left: '2rem',
+  bottom: '1rem',
   fontWeight: 'bold'
 };
 
@@ -136,7 +137,8 @@ export default class EventDatesClusterChart extends React.Component {
           <div className="col-md-7 col-xs-12">
           <div style={LEGEND_IN_CHART_STYLES}>
             <DiscreteColorLegend
-              width={180}
+              orientation="horizontal"
+
               items={this.props.lineData}/>
           </div>
           <FlexibleXYPlot

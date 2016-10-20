@@ -28,6 +28,7 @@ export class Insights extends EventEmitter {
     this.dateClusterResolution = 'day';
     this.dateClusterStart = null;
     this.dateClusterEnd = null;
+    this.userMap = new Map();
 
     this.errorClusters = new ErrorClusters();
 
@@ -47,6 +48,7 @@ export class Insights extends EventEmitter {
     this.errorClusters.reset();
     this.errors = [];
     this.events = [];
+    this.userMap.clear();
   }
 
   /**
@@ -91,6 +93,16 @@ export class Insights extends EventEmitter {
     this._project.sendAction(subscribeAction, true);
   }
 
+  addEventUserToMap(event) {
+    let userId = event.userId;
+
+    if (this.userMap.has(userId)) {
+      this.userMap.set(userId, this.userMap.get(userId) + 1);
+    } else {
+      this.userMap.set(userId, 1);
+    }
+  }
+
   onEvents(events, reset=false) {
     assert(Array.isArray(events), 'Insights.onEvents expected array of events');
 
@@ -108,6 +120,8 @@ export class Insights extends EventEmitter {
       if (event.embedId !== this._project.getEmbedId()) {
         continue;
       }
+
+      this.addEventUserToMap(event);
 
       if (event && event.name === 'error') {
         this.errors.push(event);

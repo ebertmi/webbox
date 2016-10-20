@@ -119,7 +119,7 @@
     "uuid": "^2.0.3",
     "vision": "^4.1.0",
     "whatwg-fetch": "^1.0.0",
-    "xterm": "^2.0.1"
+    "xterm": "github:sourcelair/xterm.js"
   },
   "devDependencies": {
     "babel-cli": "^6.16.0",

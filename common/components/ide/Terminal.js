@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Term from 'xterm/src/xterm.js';
+import Term from 'xterm';
 import 'xterm/addons/fit';
 
 import capitalize from 'lodash/capitalize';

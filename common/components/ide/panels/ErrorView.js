@@ -1,9 +1,20 @@
 import React from 'react';
 
+import Ace, {EditSession, UndoManager} from 'ace';
+
+import Editor from '../../Editor';
+import optionManager from '../../../models/options';
+import { Button } from '../../bootstrap';
 import { Time } from '../../Time';
+
+const modelist = Ace.require('ace/ext/modelist');
+const FIXED_OPTIONS = {
+  showPrintMargin: false
+};
 
 /**
  * Displays and filters recent errors in a table
+ * Allows to view an error in detail with the associated file
  *
  * @export
  * @class ErrorView
@@ -18,11 +29,13 @@ export default class ErrorView extends React.Component {
       filterType: '',
       filterUsername: '',
       isFiltering: false,
-      detailViewActive: false,
+      errorInDetailSession: new EditSession(''),
       errorInDetail: null,
-      errors: []
+      errors: [],
+      options: {}
     };
 
+    this.onChangeOption = this.onChangeOption.bind(this);
     this.onFilterTypeChange = this.onFilterTypeChange.bind(this);
     this.onFilterUsernameChange = this.onFilterUsernameChange.bind(this);
     this.onCountChange = this.onCountChange.bind(this);
@@ -34,10 +47,18 @@ export default class ErrorView extends React.Component {
   componentWillMount() {
     this.props.insights.on('newErrors', this.onChange);
     this.onChange();
+    optionManager.on('change', this.onChangeOption);
+    this.onChangeOption();
   }
 
   componentWillUnmount() {
     this.props.insights.removeListener('newErrors', this.onChange);
+  }
+
+  onChangeOption() {
+    this.setState({
+      options: optionManager.getOptions()
+    });
   }
 
   onChange() {
@@ -122,9 +143,24 @@ export default class ErrorView extends React.Component {
       });
 
       if (error != null) {
+        let {font, fontSize, ace: aceOptions} = this.state.options;
+        this.state.errorInDetailSession.setValue(error.data.fileContent);
+
+        // Update mode
+        let mode = modelist.getModeForPath(error.data.file).mode;
+        this.state.errorInDetailSession.setMode(mode);
+
         return (<div>
           <p className="text-muted">Detailansicht: {error.type} in <strong>{error.data.file}</strong> Zeile: {error.data.line} <Time value={new Date(error.timeStamp)} locale="de" relative={true} invalidDateString="Nicht verfügbar"></Time></p>
-          <pre><code>{error.data.fileContent}</code></pre>
+          <Editor
+            minHeight="150px"
+            fontFamily={`${font}, monospace`}
+            fontSize={`${fontSize}pt`}
+            {...aceOptions}
+            {...FIXED_OPTIONS}
+            session={this.state.errorInDetailSession}
+            ref={editor => this.editor = editor}
+          />
         </div>);
       } else {
         // No matching error found, may lost after filtering?
@@ -186,7 +222,7 @@ export default class ErrorView extends React.Component {
               </thead>
               <tbody>
                 {this.state.errors.map((err) => {
-                  const className = err.id === this.state.errorInDetail ? 'table-info' : '';
+                  const className = err.id === this.state.errorInDetail ? 'table-active' : '';
                   return (
                     <tr className={className} key={err.id} data-errorId={err.id} onDoubleClick={this.highlightError.bind(this, err.id)}>
                       <td>{err.type}</td>

@@ -30,7 +30,8 @@ export default class InsightsPanel extends React.Component {
     this.setState({
       dateClusters: dateClusters,
       events: this.props.item.events,
-      errors: this.props.item.errors
+      errors: this.props.item.errors,
+      uniqueUsers: this.props.item.userMap.size
     });
   }
 
@@ -74,7 +75,7 @@ export default class InsightsPanel extends React.Component {
         <SubmissionView submissions={this.props.item.submissions} />
         <hr/>
 
-        <h3>Daten</h3>
+        <h3>Daten <small className="text-muted">(von {this.state.uniqueUsers} Benutzern)</small></h3>
         <TestResultOverview testResults={this.props.item.testResultsOverview} />
         <EventDatesClusterChart onSettingsChange={this.onDateClusterSettingsChange} lineData={this.state.dateClusters} dateClusterResolution={this.props.item.dateClusterResolution} />
         <ErrorClusterView errorClusters={this.props.item.errorClusters}/>

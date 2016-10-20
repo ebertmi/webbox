@@ -54,7 +54,7 @@ module.exports = {
 
           // Add all npm modules that need to be transpiled!
           // Include xterm module
-          /\bxterm\b/,
+          ///\bxterm\b/,
         ],
         loader: 'babel-loader',
         query: {

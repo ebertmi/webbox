@@ -19,13 +19,14 @@ import { Time } from '../../Time';
 const LEGEND_IN_CHART_STYLES = {
   position: 'absolute',
   textAlign: 'left',
-  right: 0,
+  right: '2rem',
+  top: '-35px',
   fontWeight: 'bold',
   zIndex: 200
 };
 
 /**
- * Shows the Test Results
+ * Shows the Test Results for the embed owner/author
  *
  * @export
  * @class TestResultOverview
@@ -110,6 +111,14 @@ export default class TestResultOverview extends React.Component {
     });
   }
 
+  formatYAxisTicks(data) {
+    if (data % 1 === 0) {
+      return data;
+    } else {
+      return "";
+    }
+  }
+
   render() {
     // Avoid rendering if there are not results.
     if (this.props.testResults.getTestResultSize() === 0) {
@@ -124,6 +133,8 @@ export default class TestResultOverview extends React.Component {
       values: []
     }];
 
+    let userDomain = [0, 1];
+
     this.state.history.map(entry => {
       series[0].values.push({
         x: entry.time,
@@ -133,6 +144,11 @@ export default class TestResultOverview extends React.Component {
         x: entry.time,
         y: entry.uniqueUsers
       });
+
+      // Update maximum of user domain
+      if (userDomain[1] < entry.uniqueUsers) {
+        userDomain[1] = entry.uniqueUsers;
+      }
     });
 
     // ToDo: Add a 2nd YAxis and custom domains on the series and YAxis
@@ -150,22 +166,22 @@ export default class TestResultOverview extends React.Component {
           <div className="col-xs-12">
             <div style={LEGEND_IN_CHART_STYLES}>
               <DiscreteColorLegend
+                orientation="horizontal"
                 width={180}
                 items={series}/>
             </div>
             <FlexibleXYPlot
               xType="time"
-
               height={150}
               margin={{left: 40, right: 40, top: 20, bottom: 40}} >
               <HorizontalGridLines />
               <VerticalGridLines />
               <XAxis title="Zeit" tickFormat={this.formatXAxisTicks} />
               <YAxis yDomain={[0, 100]} title="Durchschnitt" orientation="left" />
-              <YAxis yDomain={[0, 5]} title="Personen" orientation="right" />
+              <YAxis tickFormat={this.formatYAxisTicks} yDomain={userDomain} title="Personen" orientation="right" />
               <LineMarkSeries data={series[0].values} onValueMouseOver={this._rememberHintValue}
               onValueMouseOut={this._forgetHintValue} />
-              <LineMarkSeries data={series[1].values} yDomain={[0, 5]}  onValueMouseOver={this._rememberHintValue}
+              <LineMarkSeries data={series[1].values} yDomain={userDomain} onValueMouseOver={this._rememberHintValue}
               onValueMouseOut={this._forgetHintValue}/>
               {this.state.hintValue ?
                 <Hint value={this.state.hintValue} format={this.formatHint}/> :
