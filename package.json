@@ -1,6 +1,6 @@
 {
   "name": "webbox",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "description": "Webbased course editor powered by sourcebox",
   "main": "webbox.js",
   "scripts": {

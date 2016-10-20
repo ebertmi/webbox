@@ -29,6 +29,16 @@
   white-space: nowrap;
 }
 
+.terminal .xterm-helper-textarea {
+  position: absolute;
+  opacity: 0;
+  left: -9999em;
+  top: 0px!important;
+  width: 0;
+  height: 0;
+  z-index: -10;
+}
+
 .terminal .xterm-viewport {
   /* On OS X this is required in order for the scroll bar to appear fully opaque */
   background-color: #F9F9F9 !important;
