@@ -29,6 +29,9 @@
   white-space: nowrap;
 }
 
+/*
+ * Overrides new xterm styles, that cause page jumps
+ */
 .terminal .xterm-helper-textarea {
   position: absolute;
   opacity: 0;

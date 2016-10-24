@@ -36,7 +36,7 @@ export default function document(state = INITIAL_DOCUMENTS_STATE, action) {
         pagesQuery: {
           page: action.page,
           limit: state.pagesQuery.limit,
-          q: state.query.q
+          q: state.pagesQuery.q
         }
       });
     case adminTypes.CHANGE_DOCUMENTS_LIMIT:
@@ -44,7 +44,7 @@ export default function document(state = INITIAL_DOCUMENTS_STATE, action) {
         pagesQuery: {
           page: state.pagesQuery.page,
           limit: action.limit,
-          q: state.query.q
+          q: state.pagesQuery.q
         }
       });
     case adminTypes.CHANGE_DOCUMENTS_SEARCH:

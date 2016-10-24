@@ -36,7 +36,7 @@ export default function embed(state = INITIAL_EMBED_STATE, action) {
         pagesQuery: {
           page: action.page,
           limit: state.pagesQuery.limit,
-          q: state.query.q
+          q: state.pagesQuery.q
         }
       });
     case adminTypes.CHANGE_EMBEDS_LIMIT:

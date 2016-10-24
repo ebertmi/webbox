@@ -49,8 +49,8 @@ function upload(file) {
   var body = fs.createReadStream(file).pipe(zlib.createGzip());
   var s3obj = new AWS.S3({params: {Bucket: process.env.S3_BUCKET, Key: file}});
   s3obj.upload({Body: body}).
-    on('httpUploadProgress', function(evt) {
-      console.log(evt);
+    on('httpUploadProgress', function() {
+      //console.log(evt);
     }).
     send(function(err, data) {
       console.log(err, data);
