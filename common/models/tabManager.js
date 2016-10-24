@@ -132,8 +132,17 @@ export default class TabManager extends EventEmitter {
     });
   }
 
-  toggleTabByType(type) {
+  hideTabsByType(type) {
+    let tabs = this.tabs.filter(tab => tab.type === type);
 
+    tabs.forEach(tab => {
+      if (tab) {
+        tab.active = false;
+        this.emitChange();
+      }
+    });
+
+    this.emitChange();
   }
 
   /**

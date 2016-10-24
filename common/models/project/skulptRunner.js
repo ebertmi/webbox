@@ -136,7 +136,9 @@ export default class Runner extends EventEmitter {
     // add a new tab with the turtle canvas
     this.project.tabManager.closeTabByType('turtle');
     let tabIndex = this.project.tabManager.addTab('turtle', {item: {canvas: this.canvas}, active: false});
-    this.project.tabManager.switchTab(tabIndex);
+
+    this.project.tabManager.hideTabsByType('file');
+    this.project.tabManager.toggleTab(tabIndex);
   }
 
 
@@ -163,11 +165,10 @@ export default class Runner extends EventEmitter {
       });
 
       this.readPromptRejectFunction = () => {
+        resolve('\n');
         if (rli != null && rli.close != null) {
           rli.close();
         }
-
-        reject();
       };
 
       // Prevent the deletion of the prompt, when pressing backspace
@@ -255,6 +256,7 @@ export default class Runner extends EventEmitter {
     this.stdoutTransform.pipe(this.stdout, {end: false});
 
     this.readPromptRejectFunction = null;
+    this.throwInterrupt = false;
 
     // Wrap Skulpt native Promise with Bluebird
     this.promiseChain = this._exec()
@@ -387,9 +389,11 @@ export default class Runner extends EventEmitter {
       Sk.misceval.asyncToPromise(() => {
         return Sk.importMainWithBody(mainFile.name.replace('.py',''), false, mainFile.code, true);
       }, {'*': this.handleInterrupt.bind(this)})
-      .then(() => {
+      .then((res) => {
+        console.info('resolving skulpt execution', res);
         resolve();
-      },  err => {
+      }, err => {
+        console.info('rejecting skulpt execution', err);
         reject(err);
       });
     });
@@ -406,11 +410,12 @@ export default class Runner extends EventEmitter {
 
   stop() {
     if (this.isRunning()) {
-      this.throwInterrupt = true;
       if (this.readPromptRejectFunction != null) {
         this.readPromptRejectFunction();
         this.readPromptRejectFunction = null;
       }
+
+      this.throwInterrupt = true;
     }
   }
 

@@ -218,8 +218,10 @@ export class Turtle extends EventEmitter {
       this.project.tabManager.closeTabByType('turtle');
       let tabIndex = this.project.tabManager.addTab('turtle', {item: this, active: false});
 
+      this.project.tabManager.hideTabsByType('file');
+
       // Now only show the turtle tab
-      this.project.tabManager.switchTab(tabIndex);
+      this.project.tabManager.toggleTab(tabIndex);
       this.tab = this.project.tabManager.getTabs()[tabIndex]; // Get Tab Reference
       this.addCanvasClickHandler();
     }
