@@ -1,4 +1,6 @@
-// styles
+/**
+ * Notebook pages entry file. This produces the notebook bundle.
+ */
 import '../scss/index.scss';
 
 import 'babel-polyfill';
@@ -16,9 +18,12 @@ import notebookStore from '../../common/store/notebookStore';
 import NotebookApp from '../../common/containers/notebook/NotebookApp';
 import { documentToState, copyText } from '../../common/util/nbUtil';
 
+// This has no effect in production mode
 require('expose?Perf!react-addons-perf');
 
+// Convert our database model into an immutable state model
 const notebookState = documentToState(window.__INITIAL_STATE__);
+
 const storeInit = { notebook: notebookState };
 const store = notebookStore(storeInit);
 const rootElement = document.getElementById('notebook-container');

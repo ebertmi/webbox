@@ -1,7 +1,6 @@
 import React from 'react';
 
 import Term from 'xterm';
-import 'xterm/addons/fit';
 
 import capitalize from 'lodash/capitalize';
 import debounce from 'lodash/debounce';
@@ -68,9 +67,6 @@ export default class Terminal extends React.Component {
     });
 
     this.terminal.open(this.container);
-    this.terminal.fit();
-
-    this.onStreamChange();
 
     window.addEventListener('resize', this.onResize);
 
@@ -85,6 +81,8 @@ export default class Terminal extends React.Component {
     });
 
     this.onResize();
+
+    this.onStreamChange();
   }
 
   componentWillUnmount() {
@@ -132,8 +130,8 @@ export default class Terminal extends React.Component {
       });
     }
 
-
     this.terminal.refresh();
+    this.terminal.focus();
   }
 
   onResize() {
@@ -156,8 +154,6 @@ export default class Terminal extends React.Component {
         this.props.onResize(cols, rows);
       }
     }
-
-    this.terminal.fit();
   }
 
   render() {

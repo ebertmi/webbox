@@ -13,6 +13,9 @@ import MailOverview from '../containers/admin/MailOverview';
 import User from '../components/admin/User';
 import Course from '../components/admin/Course';
 
+/**
+ * Export react-router admin/dashboard routes. Works on client and server.
+ */
 export default (
   <Route path='/admin' component={AdminApp}>
     <IndexRoute component={LogOverview} />

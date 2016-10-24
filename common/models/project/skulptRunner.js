@@ -136,7 +136,7 @@ export default class Runner extends EventEmitter {
     // add a new tab with the turtle canvas
     this.project.tabManager.closeTabByType('turtle');
     let tabIndex = this.project.tabManager.addTab('turtle', {item: {canvas: this.canvas}, active: false});
-    this.project.tabManager.toggleTab(tabIndex);
+    this.project.tabManager.switchTab(tabIndex);
   }
 
 
@@ -154,8 +154,6 @@ export default class Runner extends EventEmitter {
     return new Promise((resolve, reject) => {
       // Store the reject function, so that we can
       // terminate the program while waiting for user input
-      this.readPromptRejectFunction = reject;
-
       this.stdoutTransform.write(prompt);
 
       let rli = readline.createInterface({
@@ -163,6 +161,14 @@ export default class Runner extends EventEmitter {
         output: this.stdoutTransform,
         terminal: true
       });
+
+      this.readPromptRejectFunction = () => {
+        if (rli != null && rli.close != null) {
+          rli.close();
+        }
+
+        reject();
+      };
 
       // Prevent the deletion of the prompt, when pressing backspace
       rli.setPrompt(prompt);
@@ -247,6 +253,8 @@ export default class Runner extends EventEmitter {
     });
     //this.stdoutTransform = this.stdout;
     this.stdoutTransform.pipe(this.stdout, {end: false});
+
+    this.readPromptRejectFunction = null;
 
     // Wrap Skulpt native Promise with Bluebird
     this.promiseChain = this._exec()

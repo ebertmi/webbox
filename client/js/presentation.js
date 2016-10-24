@@ -1,4 +1,6 @@
-// styles
+/**
+ * Presentation mode entry file. This produces the presentation bundle.
+ */
 import '../scss/index.scss';
 
 import 'babel-polyfill';

@@ -132,6 +132,10 @@ export default class TabManager extends EventEmitter {
     });
   }
 
+  toggleTabByType(type) {
+
+  }
+
   /**
    * Removes a tab from the internal tabs array. When deleted it's gone!
    */
@@ -158,7 +162,7 @@ export default class TabManager extends EventEmitter {
   }
 
   /**
-   * ext install addDocComments
+   * Switch to the tab with the given index.
    *
    * @param {Number} index The index of the tab, that shuld be focused/activated
    */

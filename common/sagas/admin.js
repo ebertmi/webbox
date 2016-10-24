@@ -1,3 +1,9 @@
+/**
+ * redux-saga is a library that aims to make side effects (i.e. asynchronous things like data fetching and impure things like accessing the
+ * browser cache) in React/Redux applications easier and better. (https://github.com/yelouafi/redux-saga)
+ *
+ * The functions here are called by the saga middleware when the actions are triggered by the action dispatcher.
+ */
 import { takeLatest } from 'redux-saga';
 import { call, put, fork } from 'redux-saga/effects';
 import * as adminTypes from '../constants/AdminActionTypes';
