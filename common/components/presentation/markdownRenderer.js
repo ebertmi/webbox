@@ -80,17 +80,14 @@ function makeChildren(children, props) {
 
       // 1. Is opening Tag?
       if (regexIndexOf(child.content, /<\s*\/.*>/) < 0 && !isEmptyElement) {
-        //debug('makeChildren found opening tag: ', child.content);
         openTags += 1;
         htmlContent.push(child.content);
       } else if (isEmptyElement) {
-        //debug('makeChildren found empty element: ', child.content);
         // when we deal with an empty element, just add this and proceed
         let {key, ...rest} = props; // Extract key from props
         keyCounter += 1;
         result.push(<MarkdownHTMLElement key={`${key}-inlinehtml-${keyCounter}`} {...rest} displayMode={false} content={child.content} />);
       } else {
-        //debug('makeChildren found closing tag: ', child.content);
         // closing tag
         openTags -= 1;
         htmlContent.push(child.content);
@@ -105,10 +102,8 @@ function makeChildren(children, props) {
       }
     } else if (openTags > 0) {
       // add child to html
-      //debug('makeChildren: Adding child to HTML', htmlContent, child);
       htmlContent.push(child);
     } else {
-      //debug('makeChildren: Adding child to result array', result, child);
       result.push(child);
     }
   }
@@ -129,8 +124,6 @@ export const mdOptions = {
     let content;
     let displayMode;
     let source;
-
-    //debug('Processing Tag: ', tag, props, children);
 
     if (props.class != null) {
       props.className = props.class;
@@ -175,7 +168,6 @@ export const mdOptions = {
 
       case 'p':
         content = makeChildren(children, props);
-        debug('Paragraph: ', content, children, props);
         return <Text lineHeight={1.2} {...props}>{content}</Text>;
 
       case 'img':

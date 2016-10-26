@@ -85,7 +85,7 @@ export default class Ide extends React.Component {
       // SaveEmbed is debounced
       this.props.project.saveEmbed();
       e.preventDefault();
-    } else if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 69) {
+    } else if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 66) {
       // Run/Stop current programm Ctrl+E
       let project = this.props.project;
 

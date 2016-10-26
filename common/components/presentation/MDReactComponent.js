@@ -1,5 +1,3 @@
-'use strict';
-
 import markdown from 'markdown-it';
 import React, { PropTypes } from 'react';
 import isPlainObject from 'lodash/isPlainObject';
@@ -11,7 +9,6 @@ import compact from 'lodash/compact';
 import camelCase from 'lodash/camelCase';
 import isString from 'lodash/isString';
 import fromPairs from 'lodash/fromPairs';
-
 
 const DEFAULT_TAGS = {
   'html': 'wrapper'
@@ -218,6 +215,11 @@ function mdReactFactory(options={}) {
  * MarkdownReact Component, that does the rendering
  */
 class MDReactComponent extends React.Component {
+  shouldComponentUpdate(nextProps) {
+    // Only update if the markdown text changes!
+    return this.props.text !== nextProps.text;
+  }
+
   render () {
     const { text, ...propsWithoutText } = this.props;
     return mdReactFactory(propsWithoutText)(text);

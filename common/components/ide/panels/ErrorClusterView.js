@@ -62,12 +62,13 @@ export default class ErrorClusterView extends React.Component {
             <div className="col-xs-12">
               <h4>Häufige Fehler</h4>
               <XYPlot
+                margin={{bottom: 70}}
                 xType="ordinal"
                 width={800}
-                height={300}>
+                height={500}>
                 <VerticalGridLines />
                 <HorizontalGridLines />
-                <XAxis title="Typ" />
+                <XAxis tickPadding={65} tickLabelAngle={45} title="Typ" />
                 <YAxis title="Anzahl" tickFormat={this.formatYAxisTicks} />
                 <VerticalBarSeries data={this.state.data}/>
               </XYPlot>
