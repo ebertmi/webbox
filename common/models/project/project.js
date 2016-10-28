@@ -152,16 +152,42 @@ export default class Project extends EventEmitter {
     // conditional log off or log on button
     let logOnOffUrl;
     let logOnOffLabel;
+    let logOnOffCommand = null;
     if (this.projectData.user.isAnonymous) {
       let url = window.location.href;
       logOnOffUrl = `/login?next=${encodeURI(url)}`;
       logOnOffLabel = 'Anmelden';
     } else {
-      logOnOffUrl = '/logout';
+      logOnOffUrl = '#';//'/logout';
       logOnOffLabel = 'Abmelden';
+      logOnOffCommand = () => {
+        let logOutMessage;
+        let logOutAction;
+        let closeAction;
+
+        var closeMessage = () => {
+          this.messageList.hideMessage(logOutMessage);
+        };
+
+        logOutAction = new Action('confirm.logout.action', 'Abmelden', null, true, () => {
+          // Change page to /logout
+          window.location.pathname = '/logout';
+          closeMessage();
+        });
+
+        closeAction = new Action('cancle.logout.action', 'Abbrechen', null, true, () => {
+          closeMessage();
+        });
+
+        // Create message instance
+        logOutMessage = new MessageWithAction('Wollen Sie sich wirklich abmelden? Alle ungespeicherten Änderungen gehen dabei verloren!', [logOutAction, closeAction]);
+
+        // Show it
+        this.showMessage(Severity.Warning, logOutMessage);
+      };
     }
 
-    const sbrLogOnOff = new StatusBarItem(logOnOffLabel, null, 'An/Abmelden', null, null, logOnOffUrl);
+    const sbrLogOnOff = new StatusBarItem(logOnOffLabel, null, 'An/Abmelden', null, logOnOffCommand, logOnOffUrl);
     this.statusBarRegistry.registerStatusbarItem(sbrLogOnOff, StatusBarAlignment.Left, 70);
 
     // The message

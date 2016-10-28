@@ -5,37 +5,103 @@ import { MODES } from '../common/constants/Embed';
 import Project from '../common/models/project/project';
 import { StatusBarRegistry, StatusBarItem } from '../common/models/project/status';
 
+const ANONYMOUS_PROJECT_DATA = {
+  embed: {
+    _creatorId: '17db10e0-5a9c-4a73-9e8c-ec923e5b9326',
+    _mode: 'Default',
+    assets: [],
+    code: {},
+    createdAt: '2016-10-20T10:21:28.628Z',
+    id: '6564b0bb-2fb9-4c97-8387-7d53f2da38a1',
+    lastUpdate: '2016-10-24T11:24:13.248Z',
+    meta: {
+      embedType: 'skulpt',
+      language: 'python3',
+      mainFile: 'main.py',
+      name: 'Test - Testproject'
+    },
+    slug: null
+  },
+  communication: {
+    jwt: 'invalid-jsonwebtoken',
+    url: 'http://localhost',
+    port: '3000'
+  },
+  user: {
+
+  }
+};
+
+const OWNER_PROJECT_DATA = {
+  embed: {
+    _creatorId: '17db10e0-5a9c-4a73-9e8c-ec923e5b9326',
+    _mode: 'Default',
+    assets: [],
+    code: {},
+    createdAt: '2016-10-20T10:21:28.628Z',
+    id: '6564b0bb-2fb9-4c97-8387-7d53f2da38a1',
+    lastUpdate: '2016-10-24T11:24:13.248Z',
+    meta: {
+      embedType: 'skulpt',
+      language: 'python3',
+      mainFile: 'main.py',
+      name: 'Test - Testproject'
+    },
+    slug: null
+  },
+  communication: {
+    jwt: 'invalid-jsonwebtoken',
+    url: 'http://localhost',
+    port: '3000'
+  },
+  user: {
+    id: '17db10e0-5a9c-4a73-9e8c-ec923e5b9326',
+    email: 'owner@owner.com',
+    username: 'ownername'
+  }
+};
+
+const USER_PROJECT_DATA = {
+  embed: {
+    _creatorId: '23b11e0-5a9c-4b93-1n8c-ba153e5b7438',
+    _mode: 'Default',
+    assets: [],
+    code: {
+      'main.py': 'print("owner code")'
+    },
+    createdAt: '2016-10-20T10:21:28.628Z',
+    id: '6564b0bb-2fb9-4c97-8387-7d53f2da38a1',
+    lastUpdate: '2016-10-24T11:24:13.248Z',
+    meta: {
+      embedType: 'skulpt',
+      language: 'python3',
+      mainFile: 'main.py',
+      name: 'Test - Testproject'
+    },
+    _document: {
+      code: {
+        'main.py': 'print("user code")'
+      }
+    },
+    slug: null
+  },
+  communication: {
+    jwt: 'invalid-jsonwebtoken',
+    url: 'http://localhost',
+    port: '3000'
+  },
+  user: {
+    id: '23b11e0-5a9c-4b93-1n8c-ba153e5b7438',
+    email: 'user@user.com',
+    username: 'username'
+  }
+};
+
 describe('Project', function () {
   describe('#constructor', function () {
     it('should correctly initialze from the valid project data', function () {
-      const projectData = {
-        embed: {
-          _creatorId: '17db10e0-5a9c-4a73-9e8c-ec923e5b9326',
-          _mode: 'Default',
-          assets: [],
-          code: {},
-          createdAt: '2016-10-20T10:21:28.628Z',
-          id: '6564b0bb-2fb9-4c97-8387-7d53f2da38a1',
-          lastUpdate: '2016-10-24T11:24:13.248Z',
-          meta: {
-            embedType: 'skulpt',
-            language: 'python3',
-            mainFile: 'main.py',
-            name: 'Test - Testproject'
-          },
-          slug: null
-        },
-        communication: {
-          jwt: 'invalid-jsonwebtoken',
-          url: 'http://localhost',
-          port: '3000'
-        },
-        user: {
 
-        }
-      };
-
-      const project = new Project(projectData);
+      const project = new Project(ANONYMOUS_PROJECT_DATA);
 
       expect(project).to.be.an.instanceof(Project);
 

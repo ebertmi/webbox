@@ -16,10 +16,10 @@ block content
   if user.isAnonymous
     .pull-xs-right
       - var nextQuery = "?next=" + (next || "");
-      div.alert.alert-warning(role="alert")
+      div.alert.alert-danger(role="alert")
         p.centered
           strong= "Hinweis: "
-          span Sie müssen sich einloggen, um alle Funktionen (z.B. Speichern und ggf. Ausführen) zu nutzen. Nach dem Einloggen werden Sie auf diese Seite zurückgeleitet:
+          span Sie müssen sich einloggen, um alle Funktionen (z.B. Speichern und ggf. Ausführen) nutzen zu können! Nach dem Einloggen werden Sie auf diese Seite zurückgeleitet:
           =" "
           a(style="color: white;", href="/login" + nextQuery) Einloggen
   #notebook-container.container
