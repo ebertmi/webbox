@@ -13,6 +13,15 @@ block styles
   script(src="https://use.fontawesome.com/3797abfac7.js")
 
 block content
+  if user.isAnonymous
+    .pull-xs-right
+      - var nextQuery = "?next=" + (next || "");
+      div.alert.alert-warning(role="alert")
+        p.centered
+          strong= "Hinweis: "
+          span Sie müssen sich einloggen, um alle Funktionen (z.B. Speichern und ggf. Ausführen) zu nutzen. Nach dem Einloggen werden Sie auf diese Seite zurückgeleitet:
+          =" "
+          a(style="color: white;", href="/login" + nextQuery) Einloggen
   #notebook-container.container
     <progress class="progress progress-striped progress-animated" value="100" max="100">Lade...</progress>
 

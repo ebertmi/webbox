@@ -1,28 +1,14 @@
 /* global __dirname */
-
-'use strict';
+// see http://stackoverflow.com/questions/32385219/mocha-tests-dont-run-with-webpack-and-mocha-loader
 
 var webpack = require('webpack');
 var path = require('path');
 var autoprefixer = require('autoprefixer');
-
 module.exports = {
-  context: path.resolve(__dirname, 'client'),
-  entry: {
-    dashboard: './js/dashboard.js',
-    index: './js/index.js',
-    embed: './js/embed.js',
-    notebook: './js/notebook.js',
-    presentation: './js/presentation'
-  },
+  entry: './test-client/all.js',
   output: {
-    filename: '[name].bundle.js',
-    chunkFilename: '[id].bundle.js',
-    path: __dirname + '/public/js'
-  },
-  resolve: {
-    extensions: ['', '.js', '.scss'],
-    modulesDirectories: ['client', 'node_modules']
+    filename: 'test.build.js',
+    path: 'test-client/',
   },
   externals: {
     "ace": true,
@@ -40,6 +26,7 @@ module.exports = {
           // as 'exclude' has a higher priority than include
           path.resolve(__dirname, 'common'),
           path.resolve(__dirname, 'client'),
+          path.resolve(__dirname, 'test-client'),
 
           // Add all npm modules that need to be transpiled!
           // Include xterm module
@@ -81,10 +68,6 @@ module.exports = {
         // point to the locale data folder relative to moment/src/lib/locale
         request: '../../locale'
       });
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'react-commons',
-      chunks: ['dashboard', 'embed', 'notebook', 'presentation']
     }),
     new webpack.DefinePlugin({
       'process.env': {

@@ -1,5 +1,5 @@
-import Ace, {EditSession, UndoManager} from 'ace';
-
+import Ace, { EditSession, UndoManager } from 'ace';
+//import modelist from 'ace-builds/src-min-noconflict/ext-modelist';
 const modelist = Ace.require('ace/ext/modelist');
 
 export default class File extends EditSession {
