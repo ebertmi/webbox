@@ -3,7 +3,6 @@
 
 var webpack = require('webpack');
 var path = require('path');
-var autoprefixer = require('autoprefixer');
 module.exports = {
   entry: './test-client/all.js',
   output: {
@@ -18,7 +17,7 @@ module.exports = {
     'd3': true
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         include: [
@@ -40,7 +39,7 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        loaders: ['style', 'css?-url', 'postcss', 'sass']
+        use: ['style', 'css?-url', 'postcss', 'sass']
       },
       {
         test: /\.json$/,
@@ -52,7 +51,6 @@ module.exports = {
       ///xterm.js$/
     ]
   },
-  postcss: [ autoprefixer({ browsers: ['last 2 versions'] }) ],
   plugins: [
     new webpack.ContextReplacementPlugin(/^\.\/locale$/, context => {
       // check if the context was created inside the moment package

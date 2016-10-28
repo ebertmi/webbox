@@ -1,7 +1,7 @@
 /**
  * Presentation mode entry file. This produces the presentation bundle.
  */
-import '../scss/index.scss';
+require('../scss/index.scss');
 
 import 'babel-polyfill';
 import 'exports?fetch!whatwg-fetch/fetch';

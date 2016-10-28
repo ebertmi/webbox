@@ -25,7 +25,7 @@ import React from 'react';
 import VerticalScrollbar from './VerticalScrollbar.js';
 import HorizontalScrollbar from './HorizontalScrollbar.js';
 
-import './_scrollable.scss';
+//import './_scrollable.scss';
 
 /**
  * Wraps a single child component with vertical and horizontal custom scrollbars.

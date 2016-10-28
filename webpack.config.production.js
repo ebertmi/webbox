@@ -33,8 +33,8 @@ module.exports = {
     path: __dirname + '/public/js'
   },
   resolve: {
-    extensions: ['', '.js', '.scss'],
-    modulesDirectories: ['client', 'node_modules']
+    extensions: ['.js', '.scss'],
+    modules: ['client', 'node_modules']
   },
   externals: {
     ace: true,
@@ -43,7 +43,7 @@ module.exports = {
     'katex': 'katex'
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         include: [
@@ -58,13 +58,30 @@ module.exports = {
         ],
         loader: 'babel-loader',
         query: {
-          presets: ["es2015", 'react'],
+          presets: [['es2015', { modules: false }], 'react'],
           plugins: ["transform-object-rest-spread"]
         }
       },
       {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract('style', 'css!postcss!sass')
+        loader: ExtractTextPlugin.extract({
+          fallbackLoader: 'style',
+          loader: [
+            {
+              loader: 'css-loader',
+              options: { importLoaders: 1 }
+            },
+            {
+              loader: 'postcss-loader',
+              options: {
+                plugins: function () {
+                  return [ autoprefixer({ browsers: ['last 2 versions'] }) ];
+                }
+              }
+            },
+            'sass'
+          ]
+        })
       },
       {
         test: /\.json$/,
@@ -76,7 +93,6 @@ module.exports = {
       /xterm.js$/
     ]
   },
-  postcss: [ autoprefixer({ browsers: ['last 3 versions'] }) ],
   plugins: [
     new webpack.DefinePlugin({
       "process.env": {
@@ -102,7 +118,8 @@ module.exports = {
       name: 'react-commons',
       chunks: ['dashboard', 'embed', 'notebook', 'presentation']
     }),
-    new ExtractTextPlugin('../css/all.bundle.' + VERSION + '.css', {
+    new ExtractTextPlugin({
+      filename: '../css/all.bundle.' + VERSION + '.css',
       allChunks: true,
       disable: false
     }),

@@ -12,7 +12,7 @@ import dashboardStore from '../../common/store/dashboardStore';
 import adminRoutes from '../../common/route/AdminRoutes';
 
 // Styles
-import '../scss/index.scss';
+require('../scss/index.scss');
 
 const initialState = window.__INITIAL_STATE__;
 const store = dashboardStore(initialState);

@@ -1,7 +1,7 @@
 /**
  * Notebook pages entry file. This produces the notebook bundle.
  */
-import '../scss/index.scss';
+require('../scss/index.scss');
 
 import 'babel-polyfill';
 import 'exports?fetch!whatwg-fetch/fetch';

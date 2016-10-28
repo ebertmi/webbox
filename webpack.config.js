@@ -21,8 +21,8 @@ module.exports = {
     path: __dirname + '/public/js'
   },
   resolve: {
-    extensions: ['', '.js', '.scss'],
-    modulesDirectories: ['client', 'node_modules']
+    extensions: ['.js', '.scss'],
+    modules: ['client', 'node_modules']
   },
   externals: {
     "ace": true,
@@ -32,7 +32,7 @@ module.exports = {
     'd3': true
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         include: [
@@ -47,13 +47,28 @@ module.exports = {
         ],
         loader: 'babel-loader',
         query: {
-          presets: ['es2015', 'react'],
+          presets: [['es2015', { modules: false }], 'react'],
           plugins: ["transform-object-rest-spread"]
-        }
+        },
       },
       {
         test: /\.scss$/,
-        loaders: ['style', 'css?-url', 'postcss', 'sass']
+        use: [
+          'style',
+          {
+            loader: 'css-loader',
+            options: { importLoaders: 1 }
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: function () {
+                return [ autoprefixer({ browsers: ['last 2 versions'] }) ];
+              }
+            }
+          },
+          'sass'
+        ]
       },
       {
         test: /\.json$/,
@@ -65,7 +80,6 @@ module.exports = {
       ///xterm.js$/
     ]
   },
-  postcss: [ autoprefixer({ browsers: ['last 2 versions'] }) ],
   plugins: [
     new webpack.ContextReplacementPlugin(/^\.\/locale$/, context => {
       // check if the context was created inside the moment package
