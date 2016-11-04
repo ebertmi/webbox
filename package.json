@@ -15,7 +15,7 @@
     "web:watch": "webpack -d --watch --display-modules"
   },
   "private": true,
-  "engine": ">= node 6.2.0",
+  "engine": ">= node 7.0.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/waywaaard/webbox.git"
@@ -37,7 +37,7 @@
     "@sourcebox/web": "git://github.com/waywaaard/sourcebox-web.git#0.0.16",
     "async": "^2.1.2",
     "autoprefixer": "^6.5.1",
-    "babel-core": "^6.18.0",
+    "babel-core": "^6.18.2",
     "babel-loader": "^6.2.7",
     "babel-polyfill": "^6.16.0",
     "babel-register": "^6.18.0",
@@ -70,7 +70,7 @@
     "hapi-io": "0.1.0",
     "hapi-named-routes": "^0.3.0",
     "hapi-rate-limit": "^1.2.3",
-    "highlight.js": "^9.7.0",
+    "highlight.js": "^9.8.0",
     "hoek": "^4.1.0",
     "immutable": "^3.8.1",
     "inert": "^4.0.2",
@@ -102,10 +102,10 @@
     "react-lazyload": "^2.1.6",
     "react-paginate": "^2.2.3",
     "react-redux": "^4.4.5",
-    "react-router": "^2.8.1",
+    "react-router": "^3.0.0",
     "react-vis": "^0.6.4",
     "redux": "^3.6.0",
-    "redux-saga": "^0.12.0",
+    "redux-saga": "^0.12.1",
     "screenfull": "^3.0.2",
     "socket.io": "^1.5.1",
     "socket.io-client": "^1.5.1",
@@ -127,8 +127,8 @@
     "chai": "*",
     "copy-webpack-plugin": "^4.0.0",
     "css-loader": "^0.25.0",
-    "eslint": "^3.8.1",
-    "eslint-plugin-react": "^6.4.1",
+    "eslint": "^3.9.1",
+    "eslint-plugin-react": "^6.5.0",
     "exports-loader": "^0.6.3",
     "expose-loader": "^0.7.1",
     "extract-text-webpack-plugin": "^2.0.0-beta.4",
@@ -137,7 +137,7 @@
     "json-loader": "^0.5.4",
     "loaders.css": "^0.1.2",
     "mocha": "*",
-    "node-sass": "^3.10.1",
+    "node-sass": "^3.11.0",
     "postcss-loader": "^1.1.0",
     "react-addons-perf": "^15.3.2",
     "redux-devtools": "^3.3.1",
@@ -145,6 +145,7 @@
     "sinon": "*",
     "style-loader": "^0.13.1",
     "webpack": "^2.1.0-beta.25",
+    "webpack-bundle-analyzer": "^1.4.1",
     "yargs": "^6.3.0"
   }
 }

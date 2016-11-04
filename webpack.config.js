@@ -5,6 +5,7 @@
 var webpack = require('webpack');
 var path = require('path');
 var autoprefixer = require('autoprefixer');
+var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   context: path.resolve(__dirname, 'client'),
@@ -81,21 +82,7 @@ module.exports = {
     ]
   },
   plugins: [
-    new webpack.ContextReplacementPlugin(/^\.\/locale$/, context => {
-      // check if the context was created inside the moment package
-      if (!/\/moment\//.test(context.context)) {
-        return;
-      }
-      // context needs to be modified in place
-      Object.assign(context, {
-        // include only german variants
-        // all tests are prefixed with './' so this must be part of the regExp
-        // the default regExp includes everything; /^$/ could be used to include nothing
-        regExp: /^\.\/(de)/,
-        // point to the locale data folder relative to moment/src/lib/locale
-        request: '../../locale'
-      });
-    }),
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'react-commons',
       chunks: ['dashboard', 'embed', 'notebook', 'presentation']
@@ -104,11 +91,18 @@ module.exports = {
       'process.env': {
         'NODE_ENV': JSON.stringify('development')
       }
-    })
+    }),
+    /*new webpack.SourceMapDevToolPlugin({
+      filename: '[file].map',
+      include: ['presentation.bundle.js', 'index.bundle.js', 'react-commons.bundle.js', 'dashboard.bundle.js'],
+      exclude: [],
+      columns: false
+    }),*/
+    //new BundleAnalyzerPlugin()
   ],
   node: {
     Buffer: true,
     fs: 'empty' // needed for term.js
   },
-  devtool: 'source-map'
+  devtool: "eval-inline-source-map"
 };

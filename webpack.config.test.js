@@ -77,5 +77,5 @@ module.exports = {
     Buffer: true,
     fs: 'empty' // needed for term.js
   },
-  devtool: 'source-map'
+  devtool: 'inline-source-map'
 };

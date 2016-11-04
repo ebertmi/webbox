@@ -235,6 +235,13 @@ export default class Project extends EventEmitter {
     return this.projectData.embed.id;
   }
 
+  /**
+   * Get the id of the CodeDocument for a specific user.
+   *
+   * @returns {String|undefined} id of the CodeDocument if present
+   *
+   * @memberOf Project
+   */
   getEmbedDocumentId() {
     return this.projectData.embed._document ? this.projectData.embed._document.id : undefined;
   }
@@ -287,6 +294,13 @@ export default class Project extends EventEmitter {
     this.emitChange();
   }
 
+  /**
+   * Returns the current consistency of the project
+   *
+   * @returns {Boolean}
+   *
+   * @memberOf Project
+   */
   getConsistency() {
     return this.isConsistent;
   }
@@ -365,6 +379,13 @@ export default class Project extends EventEmitter {
     this.tabManager.addTab('file', { item: file, active: active});
   }
 
+  /**
+   * Sets the unsaved changes statusbar and project indicators.
+   *
+   * @param {Boolean} val
+   *
+   * @memberOf Project
+   */
   setUnsavedChanges(val) {
     // Prevent Changes display in RunMode, etc.
     if (this.canSave(false) === false) {
@@ -436,6 +457,14 @@ export default class Project extends EventEmitter {
     return index;
   }
 
+  /**
+   * Returns the file model matching the name
+   *
+   * @param {String} name
+   * @returns {File|undefined}
+   *
+   * @memberOf Project
+   */
   getFileForName(name) {
     let index = this.getIndexForFilename(name);
 
@@ -523,8 +552,8 @@ export default class Project extends EventEmitter {
   /**
    * Send a action to the server with the context data derived from the project
    *
-   * @param {any} action
-   * @param {any} useQueue
+   * @param {Action|RemoteAction} action to sen/send
+   * @param {Boolean} useQueue to queue the action if there is no connection available
    */
   sendAction(action, useQueue) {
     if (this.socketConnection instanceof RemoteDispatcher) {
@@ -557,7 +586,7 @@ export default class Project extends EventEmitter {
   /**
    * Returns the available user data or an anonymous user
    *
-   * @returns
+   * @returns {object} user object, can be also a anonymous user
    */
   getUserData() {
     if (this.projectData.user) {
@@ -581,7 +610,7 @@ export default class Project extends EventEmitter {
   /**
    * Returns true if the project has tests in the assets.
    *
-   * @returns
+   * @returns {Boolean}
    */
   hasTestCode() {
     return this.tests !== undefined;
@@ -605,6 +634,13 @@ export default class Project extends EventEmitter {
     return undefined;
   }
 
+  /**
+   * Returns the associated test code for this project
+   *
+   * @returns {Test|undefined} tests
+   *
+   * @memberOf Project
+   */
   getTestCode() {
     return this.tests;
   }
@@ -737,7 +773,7 @@ export default class Project extends EventEmitter {
    * Init the project from the given data object
    *
    * @param {Object} data -  The Embed
-   * @param {boolean} [ignoreDocument=false] - If true any code document will be ignored
+   * @param {Boolean} [ignoreDocument=false] - If true any code document will be ignored
    */
   fromInitialData(data, ignoreDocument=false) {
     loadFromData(this, data, ignoreDocument);
@@ -782,6 +818,14 @@ export default class Project extends EventEmitter {
     }
   }
 
+  /**
+   * Checks if the current project can be saved.
+   *
+   * @param {Boolean} [showWarnings=true] allows to disable message notifications
+   * @returns {Boolean} true if the current user can save the project
+   *
+   * @memberOf Project
+   */
   canSave(showWarnings=true) {
     // 1. Check current mode
     if (this.mode !== MODES.Default) {
@@ -923,6 +967,11 @@ export default class Project extends EventEmitter {
     });
   }
 
+  /**
+   * Tries to delete the current codeEmbed (owners only).
+   *
+   * @memberOf Project
+   */
   deleteEmbed() {
     const id = this.getEmbedId();
     let messageObj;

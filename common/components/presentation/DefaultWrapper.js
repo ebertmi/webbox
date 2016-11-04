@@ -5,7 +5,7 @@ import Radium from "radium";
 class DefaultWrapper extends Component {
   render() {
     return (
-      <div className={this.props.className} style={[getStyles.call(this), this.props.style]}>
+      <div className={this.props.className} style={[this.context.styles.components.markdown, getStyles.call(this), this.props.style]}>
         {this.props.children}
       </div>
     );

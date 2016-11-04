@@ -195,6 +195,8 @@ function mdReactFactory(options={}) {
       );
     }
 
+    // MDReactComponent passed in styles
+    console.info('passed in styles: ', props.style, tag);
 
     if ((typeof onIterate === 'function')) {
       let element = onIterate(tag, props, children, level);
@@ -237,7 +239,13 @@ MDReactComponent.propTypes = {
   disableRules: PropTypes.array,
   convertRules: PropTypes.object,
   plugins: PropTypes.array,
-  className: PropTypes.string
+  className: PropTypes.string,
+  style: PropTypes.object
+};
+
+MDReactComponent.defaultProps = {
+  source: '',
+  style: {}
 };
 
 export default MDReactComponent;

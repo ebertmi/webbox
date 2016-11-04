@@ -5,6 +5,7 @@
 import moment from 'moment';
 import 'moment/locale/de';
 import React, {PropTypes} from 'react';
+moment.locale('de');
 
 const ISO8601FORMAT = 'DD-MM-YYYYTHH:mm:ssZ';
 

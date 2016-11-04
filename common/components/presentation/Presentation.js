@@ -81,6 +81,7 @@ export default class Presentation extends React.Component {
         runId = cell.getIn(['metadata', 'runid']);
         return <Highlight showRunButton={true} embedType={embedType} runId={runId} source={source} executionLanguage={executionLanguage} lang={lang}></Highlight>;
       case 'codeembed':
+        //return <Text>{source}</Text>;
         height = parseInt(cell.getIn(['metadata', 'height'], 350));
         height = isNaN(height) ? 350 : height;
         return (
@@ -130,7 +131,7 @@ export default class Presentation extends React.Component {
       } else if (isInSlide === true && slideType === 'slide') {
         // End current slide and start new one
         slideCounter += 1;
-        slides.push(<Slide maxHeight={maxHeight} maxWidth={maxWidth} key={`slide-${slideCounter}`} children={children}></Slide>);
+        slides.push(<Slide transition={[]} maxHeight={maxHeight} maxWidth={maxWidth} key={`slide-${slideCounter}`} children={children}></Slide>);
         children = []; // reset children
         children.push(this.renderCell(cell, i, this.props.notebook)); // add first new child
       } else {
@@ -140,7 +141,7 @@ export default class Presentation extends React.Component {
 
           // Fragments are wrapped with the Appear Tag
           if (slideType === 'fragment') {
-            children.push(<Appear>{renderResult}</Appear>);
+            children.push(<Appear><div>{renderResult}</div></Appear>);
           } else {
             children.push(renderResult);
           }
@@ -151,7 +152,7 @@ export default class Presentation extends React.Component {
     // Final Slide
     if (isInSlide === true) {
       slideCounter += 1;
-      slides.push(<Slide maxHeight={maxHeight} maxWidth={maxWidth} key={`slide-${slideCounter}`} children={children}></Slide>);
+      slides.push(<Slide transition={[]} maxHeight={maxHeight} maxWidth={maxWidth} key={`slide-${slideCounter}`} children={children}></Slide>);
     }
 
     return slides;

@@ -119,6 +119,22 @@ describe('Project', function () {
       // The mode should be set correctly
       expect(project.mode).to.equal(MODES.Default);
     });
+
+    it('should load the user document code data and not the embed code data', function () {
+      const project = new Project(USER_PROJECT_DATA);
+
+      expect(project).to.be.an.instanceof(Project);
+
+      // The mode should be set correctly
+      expect(project.mode).to.equal(MODES.Default);
+
+      // We have only 1 file
+      let files = project.getFiles().filter(file => file.getName() === 'main.py');
+      expect(files.length).to.equal(1);
+
+      let code = files[0].getValue();
+      expect(code).to.equal(USER_PROJECT_DATA.embed._document.code['main.py']);
+    });
   });
 });
 

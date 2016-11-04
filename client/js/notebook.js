@@ -10,6 +10,10 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 
+import moment from 'moment';
+import 'moment/locale/de';
+moment.locale('de');
+
 import { disableBackspace } from '../../common/util/backspaceDisabler';
 
 // own modules

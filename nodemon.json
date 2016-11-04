@@ -10,7 +10,9 @@
     "logs",
     "media",
     "public",
-    "common"
+    "common",
+    "webpack.config.js",
+    "webpack.config.production.js"
   ],
   "ext": "js jade json",
   "env": {

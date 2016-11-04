@@ -7,6 +7,10 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { Router, browserHistory } from 'react-router';
 
+import moment from 'moment';
+import 'moment/locale/de';
+moment.locale('de');
+
 // own modules
 import dashboardStore from '../../common/store/dashboardStore';
 import adminRoutes from '../../common/route/AdminRoutes';

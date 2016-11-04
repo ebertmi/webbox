@@ -3,7 +3,7 @@
           transform-origin: center center;
 }
 
-.spectacle-slide .fragment * {
+.spectacle-content .fragment * {
   opacity: inherit;
 }
 

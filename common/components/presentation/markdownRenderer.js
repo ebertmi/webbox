@@ -168,6 +168,7 @@ export const mdOptions = {
 
       case 'p':
         content = makeChildren(children, props);
+        console.info('make tag p to Text with style:', props.style)
         return <Text lineHeight={1.2} {...props}>{content}</Text>;
 
       case 'img':
@@ -216,7 +217,7 @@ export const mdOptions = {
         return <List {...props}>{children}</List>;
 
       case 'ol':
-        return <OrderedList {...props}>{children}</OrderedList>;
+        return <List ordered {...props}>{children}</List>;
 
       case 'math':
         displayMode = props.display === 'inline' ? false : true;
