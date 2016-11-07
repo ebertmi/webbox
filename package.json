@@ -1,6 +1,6 @@
 {
   "name": "webbox",
-  "version": "0.1.18",
+  "version": "0.2.0",
   "description": "Webbased course editor powered by sourcebox",
   "main": "webbox.js",
   "scripts": {
@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/waywaaard/webbox#readme",
   "dependencies": {
-    "@sourcebox/web": "git://github.com/waywaaard/sourcebox-web.git#0.0.16",
+    "@sourcebox/web": "github:waywaaard/sourcebox-web",
     "async": "^2.1.2",
     "autoprefixer": "^6.5.1",
     "babel-core": "^6.18.2",
@@ -138,6 +138,7 @@
     "loaders.css": "^0.1.2",
     "mocha": "*",
     "node-sass": "^3.11.0",
+    "postcss-load-config": "^1.0.0",
     "postcss-loader": "^1.1.0",
     "react-addons-perf": "^15.3.2",
     "redux-devtools": "^3.3.1",
