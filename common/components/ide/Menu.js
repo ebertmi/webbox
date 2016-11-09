@@ -33,6 +33,7 @@ export default class Menu extends React.Component {
     this.onSmallerFontsize = this.onSmallerFontsize.bind(this);
     this.toggleShareLinkModal = this.toggleShareLinkModal.bind(this);
     this.onCopyShareLink = this.onCopyShareLink.bind(this);
+    this.focusShareLink = this.focusShareLink.bind(this);
 
     this.state = {
       showShareLinkModal: false,
@@ -75,6 +76,7 @@ export default class Menu extends React.Component {
 
   onCopyShareLink(e) {
     e.preventDefault();
+
     let succeeded = copyText(null, this.state.shareLink);
 
     if (succeeded) {
@@ -84,12 +86,20 @@ export default class Menu extends React.Component {
     } else {
       this.props.project.showMessage(Severity.Warning, 'Link konnte nicht automatisch in die Zwischenablage kopiert werden. Bitte manuell markieren und kopieren.');
     }
+
+    this.focusShareLink();
   }
 
   toggleShareLinkModal() {
     this.setState({
       showShareLinkModal: !this.state.showShareLinkModal
     });
+  }
+
+  focusShareLink() {
+    if (this.refs.sharelinkinput) {
+      this.refs.sharelinkinput.select();
+    }
   }
 
   onResetProject(e) {
@@ -197,12 +207,10 @@ export default class Menu extends React.Component {
 
   onShowShareableLink(e) {
     e.preventDefault();
-    console.info('onShowShareableLink', this.state.showShareLinkModal, this.props.project.getSharableLink());
     this.setState({
       shareLink: this.props.project.getSharableLink(),
       showShareLinkModal: true
     });
-    //this.props.project.showShareableLink();
   }
 
   onOpenInNewWindow(e) {
@@ -289,7 +297,8 @@ export default class Menu extends React.Component {
           <ModalHeader toggle={this.toggle}>Teilbarer Link</ModalHeader>
           <ModalBody>
             <p>Unter folgendem Link kann das Beispiel inklusive Ihrer Änderungen aufgerufen werden.</p>
-            <input className="form-control" type="text" disabled value={this.state.shareLink} />
+            <input ref="sharelinkinput" className="form-control" type="text" readOnly value={this.state.shareLink} onClick={this.focusShareLink} />
+            <small>Falls Sie iOS verwenden, klicken Sie bitte auf den Link und nutzen Sie die Standardfunktionen zum kopieren.</small>
           </ModalBody>
           <ModalFooter>
             <button className="btn btn-primary" onClick={this.onCopyShareLink}>{this.state.shareLinkModalCopyButtonText}</button>{' '}
