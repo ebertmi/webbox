@@ -151,8 +151,6 @@ export default class TestResultOverview extends React.Component {
       }
     });
 
-    // ToDo: Add a 2nd YAxis and custom domains on the series and YAxis
-
     return (
       <div className="container-fluid">
         <div className="row">
@@ -160,7 +158,7 @@ export default class TestResultOverview extends React.Component {
             <h4>Test-Ergebnisse</h4>
           </div>
           <div className="col-xs-12">
-            <p><strong>Aktueller Durchschnitt:</strong> { this.state.mean }% <Time locale="de" relative={true} value={this.state.meanTime} invalidDateString="noch nie berechnet..." /> bei { this.state.uniqueUsers } Person(en)</p>
+            <p><strong>Aktueller Durchschnitt:</strong> { Math.round(this.state.mean) }% <Time locale="de" relative={true} value={this.state.meanTime} invalidDateString="noch nie berechnet..." /> bei { this.state.uniqueUsers } Person(en)</p>
             <p><small>Standardabweichung: <span>{this.state.stdDeviation}</span></small></p>
           </div>
           <div className="col-xs-12">

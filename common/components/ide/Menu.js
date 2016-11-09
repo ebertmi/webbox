@@ -3,7 +3,14 @@ import set from 'lodash/set';
 
 import optionManager from '../../models/options';
 
+import Modal from '../Modal';
+import ModalBody from '../ModalBody';
+import ModalFooter from '../ModalFooter';
+import ModalHeader from '../ModalHeader';
+import { Severity  } from './../../models/severity';
+
 import Icon from '../Icon';
+import { copyText } from '../../util/nbUtil';
 import { NavDropdown, DropdownItem, DropdownDivider, Button } from '../bootstrap';
 import { generateZip, saveZipAsFile, saveTextAsFile } from '../../util/saveUtil';
 
@@ -24,6 +31,14 @@ export default class Menu extends React.Component {
     this.onShowShareableLink = this.onShowShareableLink.bind(this);
     this.onBiggerFontsize = this.onBiggerFontsize.bind(this);
     this.onSmallerFontsize = this.onSmallerFontsize.bind(this);
+    this.toggleShareLinkModal = this.toggleShareLinkModal.bind(this);
+    this.onCopyShareLink = this.onCopyShareLink.bind(this);
+
+    this.state = {
+      showShareLinkModal: false,
+      shareLink: '',
+      shareLinkModalCopyButtonText: 'Kopieren'
+    };
   }
 
   componentWillMount() {
@@ -38,12 +53,43 @@ export default class Menu extends React.Component {
   /**
    * Only rerender on a new project
    */
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps, nextState) {
     if (this.props.project != nextProps.project) {
       return true;
     }
 
+    if (this.state.showShareLinkModal != nextState.showShareLinkModal) {
+      return true;
+    }
+
+    if (this.state.shareLink != nextState.shareLink) {
+      return true;
+    }
+
+    if (this.state.shareLinkModalCopyButtonText != nextState.shareLinkModalCopyButtonText) {
+      return true;
+    }
+
     return false;
+  }
+
+  onCopyShareLink(e) {
+    e.preventDefault();
+    let succeeded = copyText(null, this.state.shareLink);
+
+    if (succeeded) {
+      this.setState({
+        shareLinkModalCopyButtonText: 'Kopiert!'
+      });
+    } else {
+      this.props.project.showMessage(Severity.Warning, 'Link konnte nicht automatisch in die Zwischenablage kopiert werden. Bitte manuell markieren und kopieren.');
+    }
+  }
+
+  toggleShareLinkModal() {
+    this.setState({
+      showShareLinkModal: !this.state.showShareLinkModal
+    });
   }
 
   onResetProject(e) {
@@ -151,7 +197,12 @@ export default class Menu extends React.Component {
 
   onShowShareableLink(e) {
     e.preventDefault();
-    this.props.project.showShareableLink();
+    console.info('onShowShareableLink', this.state.showShareLinkModal, this.props.project.getSharableLink());
+    this.setState({
+      shareLink: this.props.project.getSharableLink(),
+      showShareLinkModal: true
+    });
+    //this.props.project.showShareableLink();
   }
 
   onOpenInNewWindow(e) {
@@ -234,6 +285,17 @@ export default class Menu extends React.Component {
         <DropdownItem onClick={this.onShowShareableLink}>
           <Icon name="share" fixedWidth/> Teilen (Link)
         </DropdownItem>
+        <Modal isOpen={this.state.showShareLinkModal} toggle={this.toggleShareLinkModal} backdrop={true}>
+          <ModalHeader toggle={this.toggle}>Teilbarer Link</ModalHeader>
+          <ModalBody>
+            <p>Unter folgendem Link kann das Beispiel inklusive Ihrer Änderungen aufgerufen werden.</p>
+            <input className="form-control" type="text" disabled value={this.state.shareLink} />
+          </ModalBody>
+          <ModalFooter>
+            <button className="btn btn-primary" onClick={this.onCopyShareLink}>{this.state.shareLinkModalCopyButtonText}</button>{' '}
+            <button className="btn btn-secondary" onClick={this.toggleShareLinkModal}>Schließen</button>
+          </ModalFooter>
+        </Modal>
 
         { this.renderStatisticsItem() }
         { this.renderEmbedAttributes() }
