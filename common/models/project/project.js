@@ -700,43 +700,19 @@ export default class Project extends EventEmitter {
    * Sends the current document to the teacher. The teacher only receives this message if
    * he has activated the sharing.
    */
-  shareWithTeacher() {
-    let shareMessage;
-    let shareAction;
-    let closeAction;
-
-    var closeMessage = () => {
-      this.messageList.hideMessage(shareMessage);
-    };
-
-    shareAction = new Action('share.sharewithteacher.action', 'Abschicken', null, true, () => {
-      let message = shareAction.input ? shareAction.input.value : '';
-      let remoteAction = new RemoteAction(RemoteActions.Submission, this.getUserData(), {
-        shareableLink: this.getSharableLink(),
-        message: message
-      },
-        res => {
-          if (res.error) {
-            this.showMessage(Severity.Error, 'Das Senden ist fehlgeschlagen :()');
-            console.error(res.error);
-          }
+  shareWithTeacher(message) {
+    const remoteAction = new RemoteAction(RemoteActions.Submission, this.getUserData(), {
+      shareableLink: this.getSharableLink(),
+      message: message
+    },
+      res => {
+        if (res.error) {
+          this.showMessage(Severity.Error, 'Das Senden ist fehlgeschlagen :/');
+          console.error(res.error);
         }
-      );
-      this.sendAction(remoteAction);
-      closeMessage();
-    });
-
-    shareAction.addInput('text', 'Nachricht...', '');
-
-    closeAction = new Action('close.sharablelink.action', 'Schließen', null, true, () => {
-      closeMessage();
-    });
-
-    // Create message instance
-    shareMessage = new MessageWithAction('Aktuelle Lösung an den Dozenten schicken?', [shareAction, closeAction]);
-
-    // Show it
-    this.showMessage(Severity.Warning, shareMessage);
+      }
+    );
+    this.sendAction(remoteAction);
   }
 
   /**

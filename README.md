@@ -3,6 +3,7 @@ Webbased editor powered by sourcebox (secure remote-code-execution with bidirect
 
 ## Table of Contents
 * [Quick start](#quick-start)
+* [Architecture in 2 Minutes](#architecture-in-2-minutes)
 * [Start server](#start-server)
 * [Config](#config)
 * [Routing](#routes)
@@ -25,6 +26,20 @@ Follow those steps to get webbox running on your system:
 7. Use the *CLI*  to add an user. (See CLI)
 
 You can find further details below.
+
+## Architecture in 2 Minutes
+The below list summarizes the items of primary importance for this project:
+* Server: Webbox is basically a simple web application using an document data base (rethinkdb)
+* Server: We store documents in the IPYNB standard
+* Server: We store code examples as database documents (see `lib\models\codeEmbed.js`) and students' modifications in an additional document (see `lib\models\codeDocument.js`)
+* Server: We use websockets to track events and trigger actions from the webbased IDE
+* Client: The client code is split into 3 *applications*: *administration/dashboard*, *IDE* and *notebook and presentation*
+* Client: All clients use **React** for rendering, however the underlying models are different in each case
+* Dashboard: Uses React + Redux without immutable states (for now) and is partially rendered on the server (isomorphic rendering)
+* IDE: Uses React + custom model that implement the `EventEmitter` interface and notify all listeners on changes.
+* Notebook: Uses React + Immutable.js for state manipulation and storing
+* Presentation: Uses React + Immutable.js and shares a lot of components with the notebook. Uses spectacle/spectacle for the presentation rendering
+Read the following sections in order to get used to the system.
 
 ### Start server
 You can start a local dev server with: `$ NODE_ENV=development node webbox.js` or on windows with:

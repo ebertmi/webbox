@@ -5,6 +5,7 @@ import Icon from '../Icon';
 import {Nav, NavItem} from '../bootstrap';
 
 import Menu from './Menu';
+import SendToTeacherModal from './SendToTeacherModal';
 
 import Tab from './tabs/Tab';
 import FileTab from './tabs/FileTab';
@@ -42,6 +43,21 @@ export default class TabBar extends React.Component {
     this.onSave = this.onSave.bind(this);
     this.onToggleFullscreen = this.onToggleFullscreen.bind(this);
     this.onTabListScroll = this.onTabListScroll.bind(this);
+    this.onToggleSendToTeacherModal = this.onToggleSendToTeacherModal.bind(this);
+
+    this.state = {
+      showSendToTeacherModal: false
+    };
+  }
+
+  onToggleSendToTeacherModal() {
+    this.setState({
+      showSendToTeacherModal: !this.state.showSendToTeacherModal
+    });
+  }
+
+  onShareWithTeacher(message) {
+    this.props.project.shareWithTeacher(message);
   }
 
   componentWillMount() {
@@ -127,12 +143,6 @@ export default class TabBar extends React.Component {
     this.props.project.saveEmbed();
   }
 
-  onShareWithTeacher(e) {
-    e.preventDefault();
-    this.props.project.shareWithTeacher();
-  }
-
-
   onTabListScroll(offset) {
     if (this.tabList != null) {
       if (offset.scrollLeft != null) {
@@ -187,7 +197,7 @@ export default class TabBar extends React.Component {
 
     if (this.props.project.mode === MODES.Default) {
       shareWithTeacher = (
-          <NavItem className="unselectable" onClick={this.onShareWithTeacher} useHref={false} title="An Dozenten schicken" >
+          <NavItem className="unselectable" onClick={this.onToggleSendToTeacherModal} useHref={false} title="An Dozenten schicken" >
             <Icon className="unselectable" name="paper-plane" title="An Dozenten schicken" />
           </NavItem>
       );
@@ -208,6 +218,7 @@ export default class TabBar extends React.Component {
             <Icon name="save" />
           </NavItem>
           { shareWithTeacher }
+          <SendToTeacherModal isOpen={this.state.showSendToTeacherModal} toggle={this.onToggleSendToTeacherModal} callback={this.onShareWithTeacher}/>
 
           <NavItem className="unselectable" onClick={this.onToggleFullscreen} title="Vollbildmodus" disabled={!screenfull.enabled}>
             <Icon name={fullScreenIcon} title="Vollbildmodus"/>

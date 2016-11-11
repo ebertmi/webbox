@@ -7,7 +7,6 @@ import Modal from '../Modal';
 import ModalBody from '../ModalBody';
 import ModalFooter from '../ModalFooter';
 import ModalHeader from '../ModalHeader';
-import { Severity  } from './../../models/severity';
 
 import Icon from '../Icon';
 import { copyText } from '../../util/nbUtil';
@@ -84,7 +83,9 @@ export default class Menu extends React.Component {
         shareLinkModalCopyButtonText: 'Kopiert!'
       });
     } else {
-      this.props.project.showMessage(Severity.Warning, 'Link konnte nicht automatisch in die Zwischenablage kopiert werden. Bitte manuell markieren und kopieren.');
+      this.setState({
+        shareLinkModalCopyButtonText: 'Hat leider nicht funktioniert.'
+      });
     }
 
     this.focusShareLink();
@@ -294,7 +295,7 @@ export default class Menu extends React.Component {
           <Icon name="share" fixedWidth/> Teilen (Link)
         </DropdownItem>
         <Modal isOpen={this.state.showShareLinkModal} toggle={this.toggleShareLinkModal} backdrop={true}>
-          <ModalHeader toggle={this.toggle}>Teilbarer Link</ModalHeader>
+          <ModalHeader toggle={this.toggleShareLinkModal}>Teilbarer Link</ModalHeader>
           <ModalBody>
             <p>Unter folgendem Link kann das Beispiel inklusive Ihrer Änderungen aufgerufen werden.</p>
             <input ref="sharelinkinput" className="form-control" type="text" readOnly value={this.state.shareLink} onClick={this.focusShareLink} />
