@@ -26,7 +26,6 @@ export class Message extends React.Component {
       action.on(Action.ENABLED, this.onActionChanged);
       action.on(Action.CHECKED, this.onActionChanged);
       action.on(Action.TOOLTIP, this.onActionChanged);
-      action.on(Action.INPUT, this.onActionChanged);
     });
   }
 
@@ -42,27 +41,11 @@ export class Message extends React.Component {
       action.removeListener(Action.ENABLED, this.onActionChanged);
       action.removeListener(Action.CHECKED, this.onActionChanged);
       action.removeListener(Action.TOOLTIP, this.onActionChanged);
-      action.removeListener(Action.INPUT, this.onActionChanged);
     });
   }
 
   onActionChanged() {
     this.forceUpdate();
-  }
-
-  renderInput(action) {
-    if (action.input == null) {
-      return null;
-    }
-
-    return (
-      <input
-      type={action.input.type}
-      placeholder={action.input.placeholder}
-      value={action.input.value}
-      onChange={action.setInput.bind(action)}
-      {...action.input.props}/>
-    );
   }
 
   renderActions() {
@@ -71,7 +54,6 @@ export class Message extends React.Component {
         {this.props.message.actions.map((action, index) => {
           return (
             <div key={index} className="message-action">
-              {this.renderInput(action)}
               <a className="action-button" role="button" tabIndex="0" onClick={action.run.bind(action)}>{action.label}</a>
             </div>
           );

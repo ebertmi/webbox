@@ -5,6 +5,13 @@ import ModalBody from '../ModalBody';
 import ModalFooter from '../ModalFooter';
 import ModalHeader from '../ModalHeader';
 
+/**
+ * Toggable overlay for showing the send/share to/with teacher form.
+ *
+ * @export
+ * @class SendToTeacherModal
+ * @extends {React.Component}
+ */
 export default class SendToTeacherModal extends React.Component {
   constructor(props) {
     super(props);
@@ -41,7 +48,7 @@ export default class SendToTeacherModal extends React.Component {
       <ModalHeader toggle={this.props.toggle}>An Dozenten Schicken</ModalHeader>
       <ModalBody>
         <p>Sie können hier noch eine optinale Nachricht eingeben:</p>
-        <textarea className="form-control" rows="5" cols="" onChange={this.onMessageChange} value={this.state.message}></textarea>
+        <textarea placeholder="Die Lösung verwendet..." className="form-control" rows="5" cols="" onChange={this.onMessageChange} value={this.state.message}></textarea>
         <small></small>
       </ModalBody>
       <ModalFooter>

@@ -35,26 +35,6 @@ export class Action extends EventEmitter {
     this.cssClass = cssClass;
     this.enabled = enabled;
     this.actionCallback = actionCallback;
-    this.input = null;
-  }
-
-  addInput(type='text', placeholder='', value='', props={}) {
-    this.input = {
-      type: type,
-      placeholder: placeholder,
-      value: value,
-      props: props
-    };
-
-    this.emit(Action.INPUT, { source: this });
-  }
-
-  setInput(event) {
-    let value = event.target.value || '';
-    if (this.input && this.input.value !== value) {
-      this.input.value = value;
-      this.emit(Action.INPUT, { source: this });
-    }
   }
 
   setLabel(value) {
@@ -110,4 +90,3 @@ Action.TOOLTIP = 'tooltip';
 Action.CLASS = 'class';
 Action.ENABLED = 'enabled';
 Action.CHECKED = 'checked';
-Action.INPUT = 'input';
