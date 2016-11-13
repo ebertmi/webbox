@@ -8,7 +8,7 @@ const LOCAL_STORAGE_KEY = 'sourcebox.options';
 
 const DEFAULT_OPTIONS = {
   fontSize: 14,
-  font: 'monospace',
+  font: 'Monaco, Menlo, "Ubuntu Mono", source-code-pro, Consolas, "Courier New", monospace',
   terminal: {
     audibleBell: true
   },
