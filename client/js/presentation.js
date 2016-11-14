@@ -4,7 +4,7 @@
 require('../scss/index.scss');
 
 import 'babel-polyfill';
-import 'exports?fetch!whatwg-fetch/fetch';
+import 'exports-loader?fetch!whatwg-fetch/fetch';
 
 import moment from 'moment';
 import 'moment/locale/de';

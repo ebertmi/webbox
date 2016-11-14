@@ -37,7 +37,7 @@ module.exports = {
     modules: ['client', 'node_modules']
   },
   externals: {
-    ace: true,
+    ace: 'ace',
     'highlight.js': 'hljs',
     'markdown-it': 'markdownit',
     'katex': 'katex'
@@ -65,7 +65,7 @@ module.exports = {
       {
         test: /\.scss$/,
         loader: ExtractTextPlugin.extract({
-          fallbackLoader: 'style',
+          fallbackLoader: 'style-loader',
           loader: [
             {
               loader: 'css-loader',
@@ -79,19 +79,16 @@ module.exports = {
                 }
               }
             },
-            'sass'
+            'sass-loader'
           ]
         })
       },
       {
         test: /\.json$/,
-        loader: "json"
+        loader: "json-loader"
       }
     ],
-    noParse: [
-      /acorn\/dist\/acorn\.js$/,
-      /xterm.js$/
-    ]
+    noParse: /acorn\/dist\/acorn\.js$|xterm.js$/
   },
   plugins: [
     new webpack.DefinePlugin({

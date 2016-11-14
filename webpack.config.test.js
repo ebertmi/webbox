@@ -10,11 +10,10 @@ module.exports = {
     path: 'test-client/',
   },
   externals: {
-    "ace": true,
+    'ace': 'ace',
     'highlight.js': 'hljs',
     'markdown-it': 'markdownit',
     'katex': 'katex',
-    'd3': true
   },
   module: {
     rules: [
@@ -39,17 +38,14 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        use: ['style', 'css?-url', 'postcss', 'sass']
+        use: ['style-loader', 'css-loader?-url', 'postcss-loader', 'sass-loader']
       },
       {
         test: /\.json$/,
-        loader: "json"
+        loader: "json-loader"
       }
     ],
-    noParse: [
-      /acorn\/dist\/acorn\.js$/,
-      ///xterm.js$/
-    ]
+    noParse: /acorn\/dist\/acorn\.js$/
   },
   plugins: [
     new webpack.ContextReplacementPlugin(/^\.\/locale$/, context => {

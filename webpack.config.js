@@ -8,6 +8,7 @@ var autoprefixer = require('autoprefixer');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
+  target: 'web',
   context: path.resolve(__dirname, 'client'),
   entry: {
     dashboard: './js/dashboard.js',
@@ -26,11 +27,11 @@ module.exports = {
     modules: ['client', 'node_modules']
   },
   externals: {
-    "ace": true,
+    'ace': 'ace',
     'highlight.js': 'hljs',
     'markdown-it': 'markdownit',
     'katex': 'katex',
-    'd3': true
+    /*'d3': 'd3'*/
   },
   module: {
     rules: [
@@ -55,7 +56,7 @@ module.exports = {
       {
         test: /\.scss$/,
         use: [
-          'style',
+          'style-loader',
           {
             loader: 'css-loader',
             options: { importLoaders: 1 }
@@ -68,18 +69,15 @@ module.exports = {
               }
             }
           },
-          'sass'
+          'sass-loader'
         ]
       },
       {
         test: /\.json$/,
-        loader: "json"
+        loader: "json-loader"
       }
     ],
-    noParse: [
-      /acorn\/dist\/acorn\.js$/,
-      ///xterm.js$/
-    ]
+    noParse: /acorn\/dist\/acorn\.js$/
   },
   plugins: [
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
@@ -104,5 +102,5 @@ module.exports = {
     Buffer: true,
     fs: 'empty' // needed for term.js
   },
-  devtool: "eval-inline-source-map"
+  devtool: "#inline-source-map"
 };

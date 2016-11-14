@@ -1,6 +1,6 @@
 require('../scss/index.scss');
 import 'babel-polyfill';
-import 'exports?fetch!whatwg-fetch/fetch';
+import 'exports-loader?fetch!whatwg-fetch/fetch';
 import React from 'react';
 import {render} from 'react-dom';
 
@@ -17,7 +17,7 @@ import { EmbedTypes } from '../../common/constants/Embed';
 
 import { disableBackspace } from '../../common/util/backspaceDisabler';
 
-import 'expose?Perf!react-addons-perf';
+import 'expose-loader?Perf!react-addons-perf';
 
 // Try to disable backspace to avoid page backward and forward actions while working in an editor.
 disableBackspace();
