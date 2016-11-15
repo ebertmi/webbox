@@ -34,6 +34,7 @@ export class EmbedAnalytics extends EventEmitter {
     this.events = [];
     this.dateMaps = this.getInitialDateClusterMaps();
     this.errorClusters = new ErrorClusters();
+    this.userMap = new Map();
 
     this.dateClusterResolution = 'day';
     this.dateClusterStart = null;
@@ -48,12 +49,27 @@ export class EmbedAnalytics extends EventEmitter {
     // Context binding
     this.subscribeToEvents = this.subscribeToEvents.bind(this);
     this.getEvents = this.getEvents.bind(this);
+    this.getCodeEmbedMetadata = this.getCodeEmbedMetadata.bind(this);
   }
 
+  /**
+   * Returns the id of the code embed.
+   *
+   * @returns {String} the ID of the code embed
+   *
+   * @memberOf EmbedAnalytics
+   */
   getId() {
     return this.id;
   }
 
+  /**
+   * Returns the remote dispatcher instance for sending websocket requests (actions).
+   *
+   * @returns {RemoteDispatcher} dispatcher instance
+   *
+   * @memberOf EmbedAnalytics
+   */
   getDispatcher() {
     return this.remoteDispatcher;
   }
@@ -73,13 +89,51 @@ export class EmbedAnalytics extends EventEmitter {
     };
   }
 
+  /**
+   * Reset all maps and clusters. This function DOES NOT trigger a reculstering.
+   *
+   * @memberOf EmbedAnalytics
+   */
   reset() {
     this.dateMaps = this.getInitialDateClusterMaps();
     this.errorClusters.reset();
     this.errors = {};
     this.events = {};
+    this.userMap.clear();
   }
 
+  /**
+   * Retrieve all metadata for the code embed.
+   *
+   * @returns
+   *
+   * @memberOf EmbedAnalytics
+   */
+  getCodeEmbedMetadata() {
+    if (this.metadata != null) {
+      return; // already fetched
+    }
+
+    let remoteAction = new RemoteAction(RemoteActions.GetCodeEmbedMetadata, {}, {}, result => {
+      debug('getCodeEmbedMetadata->remoteAction result:', result);
+
+      this.metadata = result.metadata;
+      this.emit('change');
+    });
+
+    // Set the context for the current embed
+    remoteAction.setContext({
+      embedId: this.getId()
+    });
+    this.getDispatcher().sendAction(remoteAction, true);
+  }
+
+  /**
+   * Retrieves all previous events for the code embed.
+   * ToDo: Maybe we should add here a date limits or count limits?
+   *
+   * @memberOf EmbedAnalytics
+   */
   getEvents() {
     let remoteAction = new RemoteAction(RemoteActions.GetEvents, {}, {}, result => {
       debug('getEvents->remoteAction result:', result);
@@ -119,6 +173,24 @@ export class EmbedAnalytics extends EventEmitter {
     });
   }
 
+  addEventUserToMap(event) {
+    let userId = event.userId;
+
+    if (this.userMap.has(userId)) {
+      this.userMap.set(userId, this.userMap.get(userId) + 1);
+    } else {
+      this.userMap.set(userId, 1);
+    }
+  }
+
+  /**
+   * Handles events from the event feed and triggers the clustering and map updates.
+   *
+   * @param {Array} events Collection of events
+   * @param {boolean} [reset=false] If true, all clusters and maps will be reseted before clustering the new events.
+   *
+   * @memberOf EmbedAnalytics
+   */
   onEvents(events, reset=false) {
     assert(Array.isArray(events), 'Insights.onEvents expected array of events');
 
@@ -136,6 +208,8 @@ export class EmbedAnalytics extends EventEmitter {
       if (event.embedId !== this.getId()) {
         continue;
       }
+
+      this.addEventUserToMap(event);
 
       if (event && event.name === 'error') {
         this.errors.push(event);
@@ -156,6 +230,15 @@ export class EmbedAnalytics extends EventEmitter {
     this.emit('change');
   }
 
+  /**
+   * Allows to adjust the event clusters on a specific time range and cluster resolution.
+   *
+   * @param {any} startDate
+   * @param {any} endDate
+   * @param {any} resolution
+   *
+   * @memberOf EmbedAnalytics
+   */
   changeDatesClusterSettings(startDate, endDate, resolution) {
     let isChange = startDate !== this.dateClusterStart || resolution !== this.dateClusterResolution || endDate !== this.dateClusterEnd;
 
@@ -302,9 +385,9 @@ export class MultiEmbedAnalytics extends EventEmitter {
       embedAnalytics.on('change', this.onChange);
       this.embedAnalytics.set(embedId, embedAnalytics);
 
-      embedAnalytics.getEvents();
-      embedAnalytics.subscribeToEvents();
-
+      embedAnalytics.getEvents(); // fetch previous events
+      embedAnalytics.subscribeToEvents(); // subscribe to event feed
+      embedAnalytics.getCodeEmbedMetadata(); // get metadata for the code embed (title, etc...)
     }
   }
 

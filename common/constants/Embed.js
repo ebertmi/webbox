@@ -38,10 +38,11 @@ export const TESTS_KEY = 'tests';
  * Possible remote actions for the IDE and the websocket connection.
  */
 export const RemoteActions = {
-  GetEvents: 'get-events',
-  SubscribeToEvents: 'subscribe',
-  UnsubscribeFromEvents: 'unsubscribe',
-  Submission: 'submission',
-  TestResult: 'testresult',
-  GetTestResults: 'get-testresults'
+  GetEvents: 'get-events', // get all events for the specific code embed
+  SubscribeToEvents: 'subscribe', // subscribe to event feed for a specific code embed
+  UnsubscribeFromEvents: 'unsubscribe', // unsubscribe from event feed
+  Submission: 'submission', // student submission to teacher
+  TestResult: 'testresult', // student's testresult
+  GetTestResults: 'get-testresults', // get all test results for a specific code embed
+  GetCodeEmbedMetadata: 'get-codeembed-metadata' // get metadata for a specific code embed
 };

@@ -105,7 +105,7 @@
     "react-router": "^3.0.0",
     "react-vis": "^0.6.5",
     "redux": "^3.6.0",
-    "redux-saga": "^0.12.1",
+    "redux-saga": "^0.13.0",
     "screenfull": "^3.0.2",
     "socket.io": "^1.5.1",
     "socket.io-client": "^1.5.1",
@@ -115,7 +115,7 @@
     "thinky": "^2.3.8",
     "uuid": "^2.0.3",
     "vision": "^4.1.0",
-    "whatwg-fetch": "^1.0.0",
+    "whatwg-fetch": "^1.1.0",
     "xterm": "github:sourcelair/xterm.js"
   },
   "devDependencies": {
@@ -125,10 +125,10 @@
     "babel-preset-react": "^6.16.0",
     "babel-preset-stage-2": "^6.18.0",
     "chai": "*",
-    "copy-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.25.0",
-    "eslint": "^3.10.0",
-    "eslint-plugin-react": "^6.6.0",
+    "eslint": "^3.10.1",
+    "eslint-plugin-react": "^6.7.1",
     "exports-loader": "^0.6.3",
     "expose-loader": "^0.7.1",
     "extract-text-webpack-plugin": "^2.0.0-beta.4",
@@ -137,7 +137,7 @@
     "json-loader": "^0.5.4",
     "loaders.css": "^0.1.2",
     "mocha": "*",
-    "node-sass": "^3.11.3",
+    "node-sass": "^3.12.5",
     "postcss-load-config": "^1.0.0",
     "postcss-loader": "^1.1.1",
     "react-addons-perf": "^15.3.2",
@@ -145,8 +145,8 @@
     "sass-loader": "^4.0.2",
     "sinon": "*",
     "style-loader": "^0.13.1",
-    "webpack": "^2.1.0-beta.26",
+    "webpack": "^2.1.0-beta.27",
     "webpack-bundle-analyzer": "^1.5.3",
-    "yargs": "^6.3.0"
+    "yargs": "^6.4.0"
   }
 }

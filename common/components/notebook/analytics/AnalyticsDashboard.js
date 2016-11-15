@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
 import Debug from 'debug';
 
 import { getCodeEmbedsFromNotebook } from '../../../util/nbUtil';
@@ -71,8 +70,10 @@ export default class AnalyticsDashboard extends Component {
 
       entries.forEach((value, key) => {
         debug('Adding EventClusterChart for embed %s', key);
+        let uniqueUsers = value.userMap.size;
+        let metadata = value.metadata != null ? value.metadata : {name: 'Lade Daten...'};
         children.push(<EventClusterChart key={key} series={value.dateClustersToSeries()} />);
-        children.push(<p className="text-muted">Beispiel: {key}</p>);
+        children.push(<p className="text-muted">Beispiel: <strong>{metadata.name}</strong> (Events von {uniqueUsers} Benutzern) <small>{key}</small></p>);
       });
 
       if (children.length === 0) {
