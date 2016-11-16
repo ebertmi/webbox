@@ -14,6 +14,8 @@ Webbased editor powered by sourcebox (secure remote-code-execution with bidirect
 * [IDE](#ide)
 * [React](#react)
 * [Versioning](#versioning)
+* [Deploying](#deploying)
+* [Tests](#tests)
 
 ## Quick start
 Follow those steps to get webbox running on your system:
@@ -180,3 +182,13 @@ sudo env NODE_ENV=production pm2 start webbox.babel.js
 ```
 
 You need the pm2 kill, if you messed up with pm2 before. Otherwise it does not recognize the `NODE_ENV` in cluster mode.
+
+## Tests
+Currently, we have only example tests for the client. See `/test-client`. The client side tests are also using es6 and need to be compiled.
+Run `npm run test:watch` to automatically (re)build the tests on changes. Then just open `/test-client/index.html` and you get an overview
+of the passed and failed tests.
+
+You can add tests by adding a new file under `/test-client` using following naming convention `package.module.test.js`. Any `js`-file that ends with `.test.js` will
+be automatically included in the test suite.
+
+It is also possible to just build the tests once using `npm run test:build`.
