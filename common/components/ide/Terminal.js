@@ -108,9 +108,6 @@ export default class Terminal extends React.Component {
     let process = this.props.process;
 
     // Reset the terminal and delete old lines!
-    //this.terminal.eraseInDisplay([2]);
-    //this.terminal.cursorPos([1, 1]);
-    //this.terminal.refresh(0, this.terminal.rows - 1);
     this.terminal.clear();
 
     if (process.stdin) {
