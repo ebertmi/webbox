@@ -4,7 +4,7 @@ import Debug from 'debug';
 const debug = Debug('webbox:MultiEmbedAnalytics');
 
 import { ErrorFilter } from './errorFilter';
-import { ErrorClusters } from './errorclusters';
+import { ErrorClusters } from './errorClusters';
 import { TestResultsOverview } from './testResultsOverview';
 
 import { normalizeDate } from '../../util/dateUtils';

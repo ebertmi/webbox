@@ -1,6 +1,5 @@
 import React from 'react';
 import { Time } from '../../Time';
-//import Icon from '../../Icon';
 
 export default class SubmissionView extends React.Component {
   constructor(props) {

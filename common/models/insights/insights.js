@@ -4,7 +4,7 @@ import Debug from 'debug';
 
 import { RemoteActions } from '../../constants/Embed';
 import { ErrorFilter } from './errorFilter';
-import { ErrorClusters } from './errorclusters';
+import { ErrorClusters } from './errorClusters';
 import { Submissions } from './submissions';
 import { normalizeDate } from '../../util/dateUtils';
 import { TestResultsOverview } from './testResultsOverview';
