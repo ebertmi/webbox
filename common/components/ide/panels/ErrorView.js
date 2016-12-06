@@ -1,10 +1,9 @@
 import React from 'react';
 
-import Ace, {EditSession, UndoManager} from 'ace';
+import Ace, {EditSession} from 'ace';
 
 import Editor from '../../Editor';
 import optionManager from '../../../models/options';
-import { Button } from '../../bootstrap';
 import { Time } from '../../Time';
 
 const modelist = Ace.require('ace/ext/modelist');

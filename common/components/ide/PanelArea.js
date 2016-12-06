@@ -6,7 +6,7 @@ import OptionsPanel from './panels/OptionsPanel';
 import InsightsPanel from './panels/InsightsPanel';
 import TurtlePanel from './panels/TurtlePanel';
 import AttributesPanel from './panels/AttributesPanel';
-import { MessageList } from '../messageList/messageList';
+import { MessageList } from '../messagelist/messageList';
 import MatplotlibPanel from './panels/MatplotlibPanel';
 import TestAuthoringPanel from './panels/TestAuthoringPanel';
 import TestResultPanel from './panels/TestResultPanel';

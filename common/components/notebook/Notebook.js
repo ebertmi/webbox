@@ -12,7 +12,7 @@ import AnalyticsDashboard from './analytics/AnalyticsDashboard';
 import { MessageListModel, MessageWithAction } from '../../models/messages';
 import { Action } from '../../models/actions';
 import { Severity } from '../../models/severity';
-import { MessageList } from '../messageList/messageList';
+import { MessageList } from '../messagelist/messageList';
 
 import { loadCellsFromIPYNB, stateToJS, replaceIdWithSlug, notebookMetadataToSourceboxLanguage } from '../../util/nbUtil';
 import { addCellsFromJS, toggleViewMode } from '../../actions/NotebookActions';
