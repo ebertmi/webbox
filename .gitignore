@@ -45,6 +45,11 @@ media
 # ignore bundled files
 public/js/*.bundle.js
 public/js/*.bundle.js.map
+public/js/*.bundle.*.js
+public/css/*.*
 
 # Ignore development settings
 config/development.json
+
+# IntelliJ Folder
+.idea
