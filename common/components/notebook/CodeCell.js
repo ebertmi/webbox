@@ -144,6 +144,18 @@ export default class CodeCell extends BaseCell {
     return <div className="col-xs-12" ref={this.onRef} dangerouslySetInnerHTML={{__html: this.state.rendered}}/>;
   }
 
+  switchEditMode() {
+
+  }
+
+  switchReadMode() {
+
+  }
+
+  switchExecMode() {
+
+  }
+
   render() {
     const { cell, isEditModeActive, editing, dispatch } = this.props;
     let content;
@@ -165,8 +177,12 @@ export default class CodeCell extends BaseCell {
       <div className={classes}>
         <EditButtonGroup isVisible={isVisible} isEditModeActive={isEditModeActive} editing={editing} onToggleVisibility={this.onToggleVisibility} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
         {metadata}
-        <Icon name="play-circle-o" className="icon-control code-cell-run-btn hidden-print" onClick={this.onRun} title="Code Ausführen" />
+        <Icon name="external-link" className="icon-control code-cell-run-btn hidden-print" onClick={this.onRun} title="IDE in neuem Fenster öffnen" />
+        <Icon name="edit" className="icon-control code-cell-run-btn hidden-print" onClick={this.switchEditMode} title="Editiermodus" />
+        <Icon name="book" className="icon-control code-cell-run-btn hidden-print" onClick={this.switchReadMode} title="Lesemodus" />
+        <Icon name="code" className="icon-control code-cell-run-btn hidden-print" onClick={this.switchExecMode} title="Ausführmodus" />
         {content}
+        <div>This is a Testdiv, to see what will change :O</div>
       </div>
     );
   }
