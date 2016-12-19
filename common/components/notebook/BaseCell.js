@@ -11,7 +11,7 @@ import { sourceFromCell } from '../../util/nbUtil';
  * @class CellBase
  * @extends {React.Component}
  */
-export default class BaseCell extends React.Component {
+export default class BaseCell extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -24,9 +24,19 @@ export default class BaseCell extends React.Component {
     this.onToggleVisibility = this.onToggleVisibility.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
 
+    // PureRenderMixin.shouldComponentUpdate, makes a shallow compare on state and props
     this.fastShouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
+  /**
+   *
+   *
+   * @param {any} nextProps
+   * @param {any} nextState
+   * @returns
+   *
+   * @memberOf BaseCell
+   */
   shouldComponentUpdate(nextProps, nextState) {
     // Call onUpdateCell, when the component state is changing, e.g. caused by clicking on another cell to edit
     if (this.props.editing === true && nextProps.editing === false) {
@@ -72,6 +82,17 @@ export default class BaseCell extends React.Component {
 
     this.props.dispatch(stopEditCell());
     this.onUpdateCell();
+
+    // try to get the current id and scroll to the element
+    this.scrollToId();
+  }
+
+  scrollToId() {
+    const element = document.getElementById(this.props.id);
+
+    if (element && element.scrollIntoView) {
+      element.scrollIntoView();
+    }
   }
 
   // Dummpy impl.

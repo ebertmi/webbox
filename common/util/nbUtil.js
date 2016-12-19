@@ -10,19 +10,18 @@ export function getCodeEmbedsFromNotebook(notebookImmutable) {
   return embeds;
 }
 
-export function replaceIdWithSlug(notebook) {
-  let url = window.location.href;
-  const id = notebook.get('id');
-  const slug = notebook.get('slug');
-
-  if (slug == null || slug == '' || slug.length <= 3) {
-    return;
-  }
-
-  // Check if we need to update
-  if (url.includes(id)) {
-    url = url.replace(id, slug);
-    location.replace(url);
+/**
+ * Replaces the current URL either with the id or the new slug
+ * Uses history.replaceState to avoid browser refresh
+ * @export
+ * @param {any} id
+ * @param {any} slug
+ */
+export function replaceIdWithSlug(id, slug) {
+  if (slug == null || slug == '') {
+    window.history.replaceState({}, document.title, id);
+  } else {
+    window.history.replaceState({}, document.title, slug);
   }
 }
 

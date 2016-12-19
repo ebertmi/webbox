@@ -15,7 +15,7 @@ import { Severity } from '../../models/severity';
 import { MessageList } from '../messagelist/messageList';
 
 import { loadCellsFromIPYNB, stateToJS, replaceIdWithSlug, notebookMetadataToSourceboxLanguage } from '../../util/nbUtil';
-import { addCellsFromJS, toggleViewMode } from '../../actions/NotebookActions';
+import { addCellsFromJS, toggleViewMode, updateNotebookMetadata } from '../../actions/NotebookActions';
 
 import { API } from '../../services';
 
@@ -53,7 +53,7 @@ export default class Notebook extends React.Component {
     document.addEventListener('keydown', this.onKeyDown);
 
     // Try to update url
-    replaceIdWithSlug(this.props.notebook);
+    replaceIdWithSlug(this.props.notebook.get('id'), this.props.notebook.get('slug'));
   }
 
   /**
@@ -94,6 +94,10 @@ export default class Notebook extends React.Component {
     API.document.save({ id: documentObj.id }, { document: documentObj }).then(res => {
       if (!res.error) {
         this.messageList.showMessage(Severity.Ignore, 'Erfolgreich gespeichert.');
+
+        this.props.dispatch(updateNotebookMetadata('slug', res.document.slug));
+        // Update current url with slug from the server and update the notebook slug here
+        replaceIdWithSlug(this.props.notebook.get('id'), res.document.slug);
       } else {
         console.log(res);
         this.messageList.showMessage(Severity.Error, res.error);
