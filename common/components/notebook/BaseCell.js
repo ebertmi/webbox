@@ -24,7 +24,16 @@ export default class BaseCell extends React.Component {
     this.onToggleVisibility = this.onToggleVisibility.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
 
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+    this.fastShouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    // Call onUpdateCell, when the component state is changing, e.g. caused by clicking on another cell to edit
+    if (this.props.editing === true && nextProps.editing === false) {
+      this.onUpdateCell();
+    }
+
+    return this.fastShouldComponentUpdate(nextProps, nextState);
   }
 
 
@@ -96,8 +105,8 @@ export default class BaseCell extends React.Component {
 
 BaseCell.propTypes = {
   cell: React.PropTypes.object.isRequired,
-  isEditModeActive: React.PropTypes.bool.isRequired,
-  editing: React.PropTypes.bool.isRequired,
+  isEditModeActive: React.PropTypes.bool.isRequired, // shows edit icons and actions, e.g. adding new cells
+  editing: React.PropTypes.bool.isRequired, // current cell is active for editing
   cellIndex: React.PropTypes.number.isRequired,
   course: React.PropTypes.string
 };
