@@ -20,7 +20,8 @@ module.exports = {
   output: {
     filename: '[name].bundle.js',
     chunkFilename: '[id].bundle.js',
-    path: __dirname + '/public/js'
+    path: __dirname + '/public/js',
+    publicPath: '/public/js/'
   },
   resolve: {
     extensions: ['.js', '.scss'],
@@ -102,5 +103,5 @@ module.exports = {
     Buffer: true,
     fs: 'empty' // needed for term.js
   },
-  devtool: "#inline-source-map"
+  devtool: "eval-source-map"
 };
