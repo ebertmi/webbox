@@ -7,7 +7,6 @@ import RawCell from './RawCell';
 import CodeCell from './CodeCell';
 import AddControls from './AddControls';
 import NotebookMetadata from './NotebookMetadata';
-import AnalyticsDashboard from './analytics/AnalyticsDashboard';
 
 import { MessageListModel, MessageWithAction } from '../../models/messages';
 import { Action } from '../../models/actions';
@@ -37,7 +36,8 @@ export default class Notebook extends React.Component {
     this.onToggleViewMode = this.onToggleViewMode.bind(this);
 
     this.state = {
-      isDragging: false
+      isDragging: false,
+      dashboardComponent: null
     };
   }
 
@@ -260,7 +260,7 @@ export default class Notebook extends React.Component {
     return blocks;
   }
 
-  render() {
+  renderNotebook() {
     const undoStackSize = this.props.notebook.get('undoStack').size;
     const redoStackSize = this.props.notebook.get('redoStack').size;
     const course = this.props.notebook.get('course');
@@ -277,7 +277,11 @@ export default class Notebook extends React.Component {
       'view-mode': !isEditModeActive
     });
 
-    const analyticsDashboard = this.props.notebook.get('showAnalytics') ? <AnalyticsDashboard notebook={this.props.notebook} /> : null;
+    let dashboard = null;
+
+    if (this.state.dashboardComponent != null && this.props.notebook.get('showAnalytics')) {
+      dashboard = <this.state.dashboardComponent notebook={this.props.notebook} />;
+    }
 
     return (
       <div data-drag={true} className={classes} onDragOver={this.onDragOver} onDrop={this.onDrop}>
@@ -297,10 +301,23 @@ export default class Notebook extends React.Component {
         course={course}
         embedType={embedType}
         id={id} />
-        { analyticsDashboard }
+        { dashboard }
         { this.renderCells() }
       </div>
     );
+  }
+
+  render() {
+
+    // Init dynamic loading of AnalyticsDashboard to reduce initial load
+    if (this.props.notebook.get('showAnalytics') && this.state.dashboardComponent == null) {
+      require.ensure('./analytics/AnalyticsDashboard', require => {
+        const AnalyticsDashboard = require('./analytics/AnalyticsDashboard');
+        this.setState({dashboardComponent: AnalyticsDashboard.default});
+      });
+    }
+
+    return this.renderNotebook();
   }
 }
 
