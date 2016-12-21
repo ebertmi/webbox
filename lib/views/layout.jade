@@ -134,6 +134,9 @@ html(lang="de")
           .row
             .col-md-6.col-xs-12
               ul.wb-footer-links
+                if isDev
+                  li
+                    span.text-danger in Devmode
                 li
                   a(href="/impressum") Impressum & Kontakt
                 li

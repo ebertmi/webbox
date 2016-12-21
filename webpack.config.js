@@ -46,7 +46,7 @@ module.exports = {
 
           // Add all npm modules that need to be transpiled!
           // Include xterm module
-          /\bxterm\b/,
+          ///\bxterm\b/,
         ],
         loader: 'babel-loader',
         query: {
@@ -78,7 +78,10 @@ module.exports = {
         loader: "json-loader"
       }
     ],
-    noParse: /acorn\/dist\/acorn\.js$/
+    noParse: [
+      /acorn\/dist\/acorn\.js$/,
+      /xterm\/lib\/.*$/
+    ]
   },
   plugins: [
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
@@ -103,5 +106,5 @@ module.exports = {
     Buffer: true,
     fs: 'empty' // needed for term.js
   },
-  devtool: "eval-source-map"
+  devtool: "source-map"
 };

@@ -11,7 +11,7 @@
     "start:dev": "nodemon webbox.babel.js",
     "web:build": "webpack --config webpack.config.production.js -p --progress",
     "web:json:": "webpack --config webpack.config.production.js -p --progress --json > webox.stats.json",
-    "web:watch": "webpack -d --watch --display-modules"
+    "web:watch": "webpack --watch --display-modules"
   },
   "private": true,
   "engine": ">= node 7.0.0",

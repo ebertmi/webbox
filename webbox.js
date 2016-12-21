@@ -20,6 +20,7 @@ import isString from 'lodash/isString';
 import config from './config/webbox.config';
 import Package from './package.json';
 
+// The default context is available for every response (template)
 const defaultContext = {
   webboxVersion: Package.version,
   isProd: config.isProd,
