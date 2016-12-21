@@ -39,13 +39,10 @@ export default class InsightsPanel extends React.Component {
     this.props.item.on('change', this.onChange);
 
     require.ensure(['./EventDatesClusterChart', './ErrorView', './ErrorClusterView', './TestResultOverview'], require => {
-      console.log('before require DynamicComponents');
       const EventDatesClusterChart = require('./EventDatesClusterChart');
       const ErrorView = require('./ErrorView');
       const ErrorClusterView = require('./ErrorClusterView');
       const TestResultOverview = require('./TestResultOverview');
-
-      console.log('after', EventDatesClusterChart, ErrorView, ErrorClusterView, TestResultOverview);
 
       this.setState({
         components: {
