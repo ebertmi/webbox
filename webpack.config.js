@@ -15,7 +15,7 @@ module.exports = {
     index: './js/index.js',
     embed: './js/embed.js',
     notebook: './js/notebook.js',
-    presentation: './js/presentation'
+    presentation: './js/presentation',
   },
   output: {
     filename: '[name].bundle.js',
@@ -86,8 +86,9 @@ module.exports = {
   plugins: [
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'react-commons',
-      chunks: ['dashboard', 'embed', 'notebook', 'presentation']
+      name: 'commons',
+      chunks: ['dashboard', 'embed', 'notebook', 'presentation'],
+      minChunks: 2
     }),
     new webpack.DefinePlugin({
       'process.env': {

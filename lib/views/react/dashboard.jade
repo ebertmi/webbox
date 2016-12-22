@@ -7,8 +7,8 @@ block content
 block scripts
   script window.__INITIAL_STATE__ = !{initialState}
   if isProd
-    script(src="/public/js/react-commons.bundle.#{webboxVersion}.js")
+    script(src="/public/js/commons.bundle.#{webboxVersion}.js")
     script(src="/public/js/dashboard.bundle.#{webboxVersion}.js")
   else
-    script(src="/public/js/react-commons.bundle.js")
+    script(src="/public/js/commons.bundle.js")
     script(src="/public/js/dashboard.bundle.js")

@@ -12,6 +12,7 @@ var path = require('path');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var autoprefixer = require('autoprefixer');
+var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 process.env.NODE_ENV = '"production"';
 var VERSION = require('./package.json').version;
@@ -29,7 +30,7 @@ module.exports = {
   },
   output: {
     filename: '[name].bundle.' + VERSION + '.js',
-    chunkFilename: '[id].bundle.js',
+    chunkFilename: '[id].bundle.' + VERSION + '.js',
     path: __dirname + '/public/js',
     publicPath: '/public/js/'
   },
@@ -89,7 +90,10 @@ module.exports = {
         loader: "json-loader"
       }
     ],
-    noParse: /acorn\/dist\/acorn\.js$|xterm.js$/
+    noParse: [
+      /acorn\/dist\/acorn\.js$/,
+      /xterm\/lib\/.*$/
+    ]
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -113,8 +117,9 @@ module.exports = {
       });
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'react-commons',
-      chunks: ['dashboard', 'embed', 'notebook', 'presentation']
+      name: 'commons',
+      chunks: ['dashboard', 'embed', 'notebook', 'presentation'],
+      minChunks: 2
     }),
     new ExtractTextPlugin({
       filename: '../css/all.bundle.' + VERSION + '.css',
@@ -127,10 +132,12 @@ module.exports = {
         to: '../css/spectacle.css',
         copyUnmodified: true
       }
-    ])
+    ]),
+    //new BundleAnalyzerPlugin()
   ],
   node: {
     Buffer: true,
     fs: 'empty' // needed for xterm.js
   },
+  //devtool: '#source-map'
 };
