@@ -146,7 +146,7 @@
       }
     },
     "sourcebox": {
-      "url": "http://52.57.103.114",
+      "url": "http://sourcebox.trycoding.io/",
       "secret": "ItsASecretToEverybody!",
       "expiresIn": "10h",
       "supportedLanguages": [
