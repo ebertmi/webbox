@@ -27,6 +27,14 @@ const NETWORK_ERROR = new Error('Netzwerkfehler - die Anfrage konnte nicht abges
 const AUTHORISATION_ERROR = new Error('Nicht angemeldet - Anscheinend ist ihre Session abgelaufen. Bitte laden Sie die Seite neu.');
 const PERMISSION_ERROR = new Error('Sie besitzen anscheinend nicht die benötigten Rechte für diese Operation.');
 
+/**
+ * Checks the fetch response for error 401 and 403 and
+ * throws an exception. This allows users to use Promise chaining
+ * and error handling.
+ *
+ * @export
+ * @param {any} err
+ */
 export function commonErrorHandler(err) {
   console.log(err, '');
   // check if we need to redirect
