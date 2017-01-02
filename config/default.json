@@ -117,6 +117,14 @@
         "successMessage": "Das Passwort wurde zurückgesetzt. Sie können sich nun einloggen.",
         "resetErrorMessage": "Es ist ein Fehler aufgetreten.  Bitte versuchen Sie es erneut."
       },
+      "changePassword": {
+        "passwordsNotEqual": "Die neuen Passwörter sind nicht gleich. Haben Sie sich ggf. vertippt?",
+        "oldPasswordWrong": "Ihr altes/aktuelles Passwort ist nicht korrekt. Bitte versuchen Sie es erneut.",
+        "success": "Das Passwort wurde erfolgreich geändert. Sie wurden automatisch abgemeldet. Sie können sich nun mit Ihrem neuen Passwort anmelden.",
+        "error": "Es ist ein Fehler aufgetreten. Sie wurden aus Sicherheitsgründen abgemeldet.",
+        "missingFields": "Bitte füllen Sie alle erforderlichen Felder aus.",
+        "mailNotification": "Ihr Passwort wurde erfolgreich geändert. Sollten Sie dies nicht selbst getan haben, kontaktieren Sie uns bitte umgehend."
+      },
       "login": {
         "unknownError": "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
         "invalidCredentials": "Anmeldung fehlgeschlagen. Ungültiger Benutzername oder falsches Passwort.",
