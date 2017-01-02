@@ -1,0 +1,55 @@
+extends ./layout.jade
+
+block title
+  title Benutzereinstellungen - trycoding.io
+
+block content
+  main.site-content#content
+    .container
+      .row
+        section.col-xs-12
+          if infoMessage
+            div.alert.alert-info
+              p= infoMessage
+          if errorMessage
+            div.alert.alert-danger
+              p= errorMessage
+
+      if !user.isAnonymous
+        .row
+          h4 Benutzereinstellungen
+          form.col-xs-12
+            div.form-group
+              label E-Mail-Adresse:
+              input(disabled=true, type="email", value=user.email).disabled.form-control
+              small.text-muted An diese schicken wir die Nachrichten.
+            div.form-group
+              label Benutzername:
+              input(disabled=true, type="text", value=user.username).disabled.form-control
+
+          hr
+          h5 Passwort ändern
+          form.col-xs-12(action="/change-password", method="POST")
+            input(type="hidden", name="crumb", value=crumb)
+            p.
+              Sobald Sie das Passwort erfolgreich geändert haben, werden Sie automatisch ausgeloggt. Anschließend müssen Sie sich
+              mit Ihrem neuen Passwort anmelden.
+            div.from-group
+              label Altes Passwort
+              input(type="password", name="oldPassword", minlength=6, required).form-control
+              small.text-muted Bitte geben Sie hier ihr altes/aktuelles Passwort ein.
+            div.from-group
+              label Neues Passwort
+              input(type="password", name="newPassword", minlength=6, required).form-control
+            div.from-group
+              label Neues Passwort wiederholen
+              input(type="password", name="newPasswordRepeat", minlength=6, required).form-control
+              small.text-muted Wiederholen Sie ihr das neue Passwort.
+            button(type="submit").btn.btn-primary Passwort ändern
+
+  .container.second-entry
+    if user.isAnonymous
+      .row.auth
+        .col-xs-12
+          p.
+            Sie müssen angemeldet sein, um auf die Benutzereinstellungen zugreifen zu können.
