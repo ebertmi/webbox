@@ -52,10 +52,5 @@ public/css/*.css
 # Ignore development settings
 config/development.json
 
-<<<<<<< HEAD
-
 # JetBrains IDE Folder
-=======
-# IntelliJ Folder
->>>>>>> d2c2abdf9b9cca66f75d1d2b898ac7186288229c
 .idea
