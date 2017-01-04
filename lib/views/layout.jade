@@ -120,7 +120,8 @@ html(lang="de")
                   .pull-xs-right
                     a(class="nav-item btn btn-warning btn-sm", href="/logout") Ausloggen
                   .pull-xs-right
-                    span.text-muted.m-r-1=user.email
+                    a(href="/profile", alt="Benutzereinstellungen")
+                      span.text-muted.m-r-1=user.email
                 else
                   .pull-xs-right
                     - var nextQuery = "?next=" + (next || "");
@@ -134,6 +135,9 @@ html(lang="de")
           .row
             .col-md-6.col-xs-12
               ul.wb-footer-links
+                if isDev
+                  li
+                    span.text-danger in Devmode
                 li
                   a(href="/impressum") Impressum & Kontakt
                 li

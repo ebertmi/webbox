@@ -62,20 +62,20 @@ export class PaginationContainer extends Component {
       <div>
         {this.props.children}
         <Pagination
-        clickCallback={this.handlePageChange.bind(this)}
-        initialSelected={this.props.pagesQuery.page - 1 || 0}
-        pageNum={this.props.pages} />
+        onPageChange={this.handlePageChange.bind(this)}
+        initialPage={this.props.pagesQuery.page - 1 || 0}
+        pageCount={this.props.pages} />
       </div>
     );
   }
 }
 
 PaginationContainer.propTypes = {
-  changePage: React.PropTypes.func.isRequired,
-  requestPage: React.PropTypes.func.isRequired,
-  pages: React.PropTypes.number.isRequired,
+  changePage: React.PropTypes.func.isRequired, // callback for page changes
+  requestPage: React.PropTypes.func.isRequired, // callback for requesting new page
+  pages: React.PropTypes.number.isRequired, // total number of pages
   pagesQuery: React.PropTypes.shape({
-    page: React.PropTypes.number.isRequired,
-    limit: React.PropTypes.number.isRequired
+    page: React.PropTypes.number.isRequired, // current page
+    limit: React.PropTypes.number.isRequired // current number of entries per page (max)
   }).isRequired
 };

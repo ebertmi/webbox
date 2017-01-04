@@ -174,7 +174,7 @@ export default class CodeCell extends BaseCell {
     });
 
     return (
-      <div className={classes}>
+      <div className={classes} id={this.props.id}>
         <EditButtonGroup isVisible={isVisible} isEditModeActive={isEditModeActive} editing={editing} onToggleVisibility={this.onToggleVisibility} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
         {metadata}
         <Icon name="external-link" className="icon-control code-cell-run-btn hidden-print" onClick={this.onRun} title="IDE in neuem Fenster öffnen" />
@@ -193,7 +193,8 @@ CodeCell.propTypes = {
   cell: React.PropTypes.object.isRequired,
   isEditModeActive: React.PropTypes.bool.isRequired,
   editing: React.PropTypes.bool.isRequired,
-  cellIndex: React.PropTypes.number.isRequired
+  cellIndex: React.PropTypes.number.isRequired,
+  id: React.PropTypes.string.isRequired
 };
 
 CodeCell.defaultProps = {

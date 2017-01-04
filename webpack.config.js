@@ -15,12 +15,13 @@ module.exports = {
     index: './js/index.js',
     embed: './js/embed.js',
     notebook: './js/notebook.js',
-    presentation: './js/presentation'
+    presentation: './js/presentation',
   },
   output: {
     filename: '[name].bundle.js',
     chunkFilename: '[id].bundle.js',
-    path: __dirname + '/public/js'
+    path: __dirname + '/public/js',
+    publicPath: '/public/js/'
   },
   resolve: {
     extensions: ['.js', '.scss'],
@@ -45,7 +46,7 @@ module.exports = {
 
           // Add all npm modules that need to be transpiled!
           // Include xterm module
-          /\bxterm\b/,
+          ///\bxterm\b/,
         ],
         loader: 'babel-loader',
         query: {
@@ -77,13 +78,17 @@ module.exports = {
         loader: "json-loader"
       }
     ],
-    noParse: /acorn\/dist\/acorn\.js$/
+    noParse: [
+      /acorn\/dist\/acorn\.js$/,
+      /xterm\/lib\/.*$/
+    ]
   },
   plugins: [
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'react-commons',
-      chunks: ['dashboard', 'embed', 'notebook', 'presentation']
+      name: 'commons',
+      chunks: ['dashboard', 'embed', 'notebook', 'presentation'],
+      minChunks: 2
     }),
     new webpack.DefinePlugin({
       'process.env': {
@@ -102,5 +107,5 @@ module.exports = {
     Buffer: true,
     fs: 'empty' // needed for term.js
   },
-  devtool: "#inline-source-map"
+  devtool: "source-map"
 };

@@ -73,11 +73,11 @@ export default class AnalyticsDashboard extends Component {
         let uniqueUsers = value.userMap.size;
         let metadata = value.metadata != null ? value.metadata : {name: 'Lade Daten...'};
         children.push(<EventClusterChart key={key} series={value.dateClustersToSeries()} />);
-        children.push(<p className="text-muted">Beispiel: <strong>{metadata.name}</strong> (Events von {uniqueUsers} Benutzern) <small>{key}</small></p>);
+        children.push(<p key={key + "-description"}className="text-muted">Beispiel: <strong>{metadata.name}</strong> (Events von {uniqueUsers} Benutzern) <small>{key}</small></p>);
       });
 
       if (children.length === 0) {
-        children.push(<p>Das Dokument enthält keine auswertbaren Beispiele.</p>);
+        children.push(<p key="no-elements-message">Das Dokument enthält keine auswertbaren Beispiele.</p>);
       }
 
       return (
