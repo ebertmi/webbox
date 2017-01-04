@@ -1,38 +1,35 @@
 /**
  * @copyright 2015, Andrey Popp <8mayday@gmail.com>
  */
-
-import moment from 'moment';
-import 'moment/locale/de';
+import deLocale from 'date-fns/locale/de';
+import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
+import format from 'date-fns/format';
+import parse from 'date-fns/parse';
+import isDate from 'date-fns/is_date';
 import React, {PropTypes} from 'react';
-moment.locale('de');
 
 const ISO8601FORMAT = 'DD-MM-YYYYTHH:mm:ssZ';
 
 export function Time(props) {
-  let {value, locale, invalidDateString, relative, format, valueFormat, titleFormat, Component, ...rest} = props;
+  let {value, locale, invalidDateString, relative, dateFormat, titleFormat, Component, ...rest} = props;
 
   if (!value || value === null) {
     return <span>{invalidDateString}</span>;
   }
 
-  if (!moment.isMoment(value)) {
-    value = moment(value, valueFormat, true);
+  if (isDate(value)) {
+    value = parse(value);
   }
 
-  if (locale) {
-    value = value.locale(locale);
-  }
-
-  let machineReadable = value.format(ISO8601FORMAT);
+  let machineReadable = format(value, ISO8601FORMAT, { locale: deLocale});
 
   if (relative || format) {
-    let humanReadable = relative ? value.fromNow() : value.format(format);
+    let humanReadable = relative ? distanceInWordsToNow(value, { locale: deLocale, addSuffix: true }) : format(value, dateFormat, { locale: deLocale });
     return (
       <Component
         {...rest}
         dateTime={machineReadable}
-        title={relative ? value.format(titleFormat) : null}>
+        title={relative ? format(value, titleFormat, { locale: deLocale}) : null}>
         {humanReadable}
       </Component>
     );
@@ -46,7 +43,6 @@ Time.propTypes = {
    * Value.
    */
   value: PropTypes.oneOfType([
-    PropTypes.instanceOf(moment.fn.constructor),
     PropTypes.instanceOf(Date),
     PropTypes.number,
     PropTypes.string
@@ -61,7 +57,7 @@ Time.propTypes = {
   /**
    * Datetime format which is used to output date to DOM.
    */
-  format: PropTypes.string,
+  dateFormat: PropTypes.string,
 
   /**
    * Datetime format which is used to parse value if it's being a string.

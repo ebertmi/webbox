@@ -36,7 +36,7 @@ export default class Presentation extends React.Component {
   componentWillMount() {
     // Try to update the title
     if (this.props.notebook) {
-      replaceIdWithSlug(this.props.notebook);
+      replaceIdWithSlug(this.props.notebook.get('id'), this.props.notebook.get('slug'));
 
       const title = this.props.notebook.getIn(['metadata', 'title'], 'Ohne Titel');
 

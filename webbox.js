@@ -13,6 +13,7 @@ import CatboxMemory from 'catbox-memory';
 import CatboxRedis from 'catbox-redis';
 import Log from './lib/models/log';
 import HapiPM2 from './lib/util/hapi-pm2';
+import { hapiRequestingJson, isRequestingJson } from './lib/util/hapiUtils';
 
 import isString from 'lodash/isString';
 
@@ -20,6 +21,7 @@ import isString from 'lodash/isString';
 import config from './config/webbox.config';
 import Package from './package.json';
 
+// The default context is available for every response (template)
 const defaultContext = {
   webboxVersion: Package.version,
   isProd: config.isProd,

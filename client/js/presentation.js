@@ -6,10 +6,6 @@ require('../scss/index.scss');
 import 'babel-polyfill';
 import 'exports-loader?fetch!whatwg-fetch/fetch';
 
-import moment from 'moment';
-import 'moment/locale/de';
-moment.locale('de');
-
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';

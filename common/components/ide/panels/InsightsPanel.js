@@ -1,11 +1,7 @@
 import React from 'react';
 
 import throttle from 'lodash/throttle';
-import EventDatesClusterChart from './EventDatesClusterChart';
-import ErrorView from './ErrorView';
-import ErrorClusterView from './ErrorClusterView';
 import SubmissionView from './SubmissionView';
-import TestResultOverview from './TestResultOverview';
 
 export default class InsightsPanel extends React.Component {
   constructor(props) {
@@ -19,7 +15,8 @@ export default class InsightsPanel extends React.Component {
       dateClusters: [],
       events: this.props.item.events,
       errors: this.props.item.errors,
-      testResults: this.props.item.testResults
+      testResults: this.props.item.testResults,
+      components: null
     };
   }
 
@@ -40,6 +37,22 @@ export default class InsightsPanel extends React.Component {
     this.props.item.subscribeOnEvents();
 
     this.props.item.on('change', this.onChange);
+
+    require.ensure(['./EventDatesClusterChart', './ErrorView', './ErrorClusterView', './TestResultOverview'], require => {
+      const EventDatesClusterChart = require('./EventDatesClusterChart');
+      const ErrorView = require('./ErrorView');
+      const ErrorClusterView = require('./ErrorClusterView');
+      const TestResultOverview = require('./TestResultOverview');
+
+      this.setState({
+        components: {
+          EventDatesClusterChart: EventDatesClusterChart.default,
+          ErrorView: ErrorView.default,
+          ErrorClusterView: ErrorClusterView.default,
+          TestResultOverview: TestResultOverview.default,
+        }
+      });
+    });
   }
 
   componentWillUnmount() {
@@ -68,6 +81,30 @@ export default class InsightsPanel extends React.Component {
     this.props.item.changeDatesClusterSettings(start, end, resolution);
   }
 
+  renderOverview() {
+    if (this.state.components != null && this.state.components.TestResultOverview != null) {
+      return  <this.state.components.TestResultOverview testResults={this.props.item.testResultsOverview} />
+    }
+  }
+
+  renderTestResults() {
+    if (this.state.components != null && this.state.components.TestResultOverview != null) {
+      return  <this.state.components.TestResultOverview testResults={this.props.item.testResultsOverview} />
+    }
+  }
+
+  renderDatesCluster() {
+    if (this.state.components != null && this.state.components.EventDatesClusterChart != null) {
+      return  <this.state.components.EventDatesClusterChart onSettingsChange={this.onDateClusterSettingsChange} lineData={this.state.dateClusters} dateClusterResolution={this.props.item.dateClusterResolution} />
+    }
+  }
+
+  renderErrorView() {
+    if (this.state.components != null && this.state.components.ErrorView != null) {
+      return  <this.state.components.ErrorView insights={this.props.item} />
+    }
+  }
+
   render() {
     return (
       <div className="options-panel" onSubmit={e => e.preventDefault()}>
@@ -76,11 +113,10 @@ export default class InsightsPanel extends React.Component {
         <hr/>
 
         <h3>Daten <small className="text-muted">(von {this.state.uniqueUsers} Benutzern)</small></h3>
-        <TestResultOverview testResults={this.props.item.testResultsOverview} />
-        <EventDatesClusterChart onSettingsChange={this.onDateClusterSettingsChange} lineData={this.state.dateClusters} dateClusterResolution={this.props.item.dateClusterResolution} />
-        <ErrorClusterView errorClusters={this.props.item.errorClusters}/>
-
-        <ErrorView insights={this.props.item} />
+        { this.renderOverview() }
+        { this.renderTestResults() }
+        { this.renderDatesCluster() }
+        { this.renderErrorView() }
       </div>
     );
   }

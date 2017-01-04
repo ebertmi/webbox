@@ -17,7 +17,6 @@ import MDReactComponent from './MDReactComponent';
 import Math from './Math';
 import MarkdownHTMLElement from './MarkdownHTMLElement';
 import Highlight from './Highlight';
-import OrderedList from './OrderedList';
 import DefaultWrapper from './DefaultWrapper';
 
 const debug = Debug('webbox:presentation:markdownRenderer');
@@ -50,7 +49,7 @@ function regexIndexOf (str, regex, startpos=0) {
 /**
  * Transforms any inline HTML from text to real HTML (react)
  */
-function makeChildren(children, props) {
+function makeChildren(children, props, options) {
   let result = [];
   let keyCounter = 0;
   let openTags = 0;
@@ -77,6 +76,11 @@ function makeChildren(children, props) {
       let groups = /<([\w:]+)/.exec(child.content);
       let elementTag = groups && groups.length === 2 ? groups[1] : null;
       let isEmptyElement = EMPTY_HTML_ELEMENTS[elementTag] === true;
+
+      // Skip forbidden tags
+      if (elementTag &&  options.escapeTags[elementTag.lower()] === true) {
+        continue;
+      }
 
       // 1. Is opening Tag?
       if (regexIndexOf(child.content, /<\s*\/.*>/) < 0 && !isEmptyElement) {
@@ -115,7 +119,7 @@ function makeChildren(children, props) {
  * Markdown Options that are passed to MDReactComponent and then to markdown-it
  */
 export const mdOptions = {
-  onIterate: function onIterate(tag, props, children) {
+  onIterate: function onIterate(tag, props, children, options) {
     /**
      * The onIterate function is doing the actual work. It transforms the Mardown Nodes
      * to React Nodes and passes in the props and children.
@@ -145,7 +149,7 @@ export const mdOptions = {
 
     switch (tag) {
       case 'a':
-        content = makeChildren(children, props);
+        content = makeChildren(children, props, options.htmlOptions);
         return <Link href={props.href} target="_blank" {...props}>{content}</Link>;
 
       case 'code':
@@ -167,50 +171,49 @@ export const mdOptions = {
         return <Highlight lang={lang} source={source} {...props} />;
 
       case 'p':
-        content = makeChildren(children, props);
-        console.info('make tag p to Text with style:', props.style)
+        content = makeChildren(children, props, options.htmlOptions);
         return <Text lineHeight={1.2} {...props}>{content}</Text>;
 
       case 'img':
         return <Image src={props.src} {...props} />;
 
       case 'h1':
-        content = makeChildren(children, props);
+        content = makeChildren(children, props, options.htmlOptions);
         return <Heading size={1} {...props}>{content}</Heading>;
       case 'h2':
-        content = makeChildren(children, props);
+        content = makeChildren(children, props, options.htmlOptions);
         return <Heading size={2} {...props}>{content}</Heading>;
       case 'h3':
-        content = makeChildren(children, props);
+        content = makeChildren(children, props, options.htmlOptions);
         return <Heading size={3} {...props}>{content}</Heading>;
       case 'h4':
-        content = makeChildren(children, props);
+        content = makeChildren(children, props, options.htmlOptions);
         return <Heading size={4} {...props}>{content}</Heading>;
       case 'h5':
-        content = makeChildren(children, props);
+        content = makeChildren(children, props, options.htmlOptions);
         return <Heading size={5} {...props}>{content}</Heading>;
       case 'h6':
-        content = makeChildren(children, props);
+        content = makeChildren(children, props, options.htmlOptions);
         return <Heading size={6} {...props}>{content}</Heading>;
 
       case 'em':
-        content = makeChildren(children, props);
+        content = makeChildren(children, props, options.htmlOptions);
         return <S type='italic' {...props}>{content}</S>;
 
       case 'del':
-        content = makeChildren(children, props);
+        content = makeChildren(children, props, options.htmlOptions);
         return <S type='strikethrough' {...props}>{content}</S>;
 
       case 'strong':
-        content = makeChildren(children, props);
+        content = makeChildren(children, props, options.htmlOptions);
         return <S type='bold' {...props}>{content}</S>;
 
       case 'blockquote':
-        content = makeChildren(children, props);
+        content = makeChildren(children, props, options.htmlOptions);
         return <BlockQuote><Quote>{content}</Quote></BlockQuote>;
 
       case 'li':
-        content = makeChildren(children, props);
+        content = makeChildren(children, props, options.htmlOptions);
         return <ListItem {...props}>{content}</ListItem>;
 
       case 'ul':
@@ -274,6 +277,11 @@ export const mdOptions = {
   markdownOptions: {
     html: true,
     linkify: true
+  },
+  htmlOptions: {
+    escapeTags: {
+      script: true
+    }
   }
 };
 

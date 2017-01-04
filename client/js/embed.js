@@ -4,10 +4,6 @@ import 'exports-loader?fetch!whatwg-fetch/fetch';
 import React from 'react';
 import {render} from 'react-dom';
 
-import moment from 'moment';
-import 'moment/locale/de';
-moment.locale('de');
-
 import Ide from '../../common/components/ide/Ide';
 import SourceboxProject from '../../common/models/project/sourceboxProject';
 import SkulptProject from '../../common/models/project/skulptProject';
