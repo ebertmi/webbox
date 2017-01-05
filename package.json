@@ -116,7 +116,7 @@
     "uuid": "^3.0.1",
     "vision": "^4.1.1",
     "whatwg-fetch": "^2.0.1",
-    "xterm": "^2.2.3"
+    "xterm": "2.2.0"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
