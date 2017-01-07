@@ -13,7 +13,6 @@ import CatboxMemory from 'catbox-memory';
 import CatboxRedis from 'catbox-redis';
 import Log from './lib/models/log';
 import HapiPM2 from './lib/util/hapi-pm2';
-import { hapiRequestingJson, isRequestingJson } from './lib/util/hapiUtils';
 
 import isString from 'lodash/isString';
 
