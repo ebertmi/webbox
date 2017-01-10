@@ -23,6 +23,13 @@ var defaults = {
   html: true,
   linkify: true,
   highlight: function (str, lang) {
+    // ToDo: add proper ace mode to highlight js mode translation or abstract everything
+
+    // handle c/cpp case of ace editor
+    if (lang && lang === "c_cpp") {
+      lang = "cpp";
+    }
+
     if (lang && hljs.getLanguage(lang)) {
       try {
         return hljs.highlight(lang, str).value;

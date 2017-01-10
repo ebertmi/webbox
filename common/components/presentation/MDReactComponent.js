@@ -199,7 +199,7 @@ function mdReactFactory(options={}) {
     console.info('passed in styles: ', props.style, tag);
 
     if ((typeof onIterate === 'function')) {
-      let element = onIterate(tag, props, children, level);
+      let element = onIterate(tag, props, children, level, options);
       if (element) {
         return element;
       }

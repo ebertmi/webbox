@@ -13,7 +13,7 @@ import { RegexParser, PythonErrorParser } from './parser';
 const C = {
   compile(files) {
     files = files.filter(file => file.endsWith('.c'));
-    return ['gcc', '-lm', '-Wall'].concat(files);
+    return ['gcc', '-lm', '-Wall', '-std=c11'].concat(files);
   },
   exec: ['./a.out'],
   parser() {
@@ -22,7 +22,22 @@ const C = {
       labels: ['file', 'row', 'column', 'type', 'text']
     });
   },
-  displayName: 'C'
+  displayName: 'C (C11)'
+};
+
+const CPP = {
+  compile(files) {
+    files = files.filter(file => file.endsWith('.cpp'));
+    return ['g++', '-lm', '-Wall'].concat(files);
+  },
+  exec: ['./a.out'],
+  parser() {
+    return new RegexParser({
+      regex: /^(.+):(\d+):(\d+): (?:fatal )?(error|warning|note): (.*)$/,
+      labels: ['file', 'row', 'column', 'type', 'text']
+    });
+  },
+  displayName: 'C++'
 };
 
 const Java = {
@@ -82,7 +97,10 @@ const Python2 = {
  */
 export default {
   c: C,
+  c11: C,
   c13: C,
+
+  cpp: CPP,
 
   java: Java,
   java7: Java,

@@ -78,7 +78,7 @@ function makeChildren(children, props, options) {
       let isEmptyElement = EMPTY_HTML_ELEMENTS[elementTag] === true;
 
       // Skip forbidden tags
-      if (elementTag &&  options.escapeTags[elementTag.lower()] === true) {
+      if (isString(elementTag) &&  options.escapeTags[elementTag.toLowerCase()] === true) {
         continue;
       }
 
@@ -119,7 +119,7 @@ function makeChildren(children, props, options) {
  * Markdown Options that are passed to MDReactComponent and then to markdown-it
  */
 export const mdOptions = {
-  onIterate: function onIterate(tag, props, children, options) {
+  onIterate: function onIterate(tag, props, children, level, options) {
     /**
      * The onIterate function is doing the actual work. It transforms the Mardown Nodes
      * to React Nodes and passes in the props and children.
