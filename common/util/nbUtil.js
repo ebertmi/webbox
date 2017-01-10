@@ -18,6 +18,11 @@ export function getCodeEmbedsFromNotebook(notebookImmutable) {
  * @param {any} slug
  */
 export function replaceIdWithSlug(id, slug) {
+  // avoid renaming on course pages
+  if (window.location.pathname.includes("/course/")) {
+    return;
+  }
+
   if (slug == null || slug == '') {
     window.history.replaceState({}, document.title, id);
   } else {
