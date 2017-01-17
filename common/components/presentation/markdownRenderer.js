@@ -12,9 +12,11 @@ import mkitm from 'markdown-it-math';
 import isString from 'lodash/isString';
 import { S, Code, BlockQuote, Quote, Heading, Image, Link, Text, ListItem, List } from "spectacle/lib/index";
 import Decorate from 'markdown-it-decorate';
+import MarkdownContainer from '../../util/markdown-it-container';
 
 import MDReactComponent from './MDReactComponent';
 import Math from './Math';
+import Spoiler from './Spoiler';
 import MarkdownHTMLElement from './MarkdownHTMLElement';
 import Highlight from './Highlight';
 import DefaultWrapper from './DefaultWrapper';
@@ -128,6 +130,8 @@ export const mdOptions = {
     let content;
     let displayMode;
     let source;
+    let matches;
+    let summary;
 
     if (props.class != null) {
       props.className = props.class;
@@ -227,6 +231,20 @@ export const mdOptions = {
         children = Array.isArray(children) ? children.join('') : children;
         return <Math displayMode={displayMode} {...props}>{children}</Math>;
 
+      /* Spoiler (markdown-it container) rule */
+      case 'div':
+        matches = props['data-info'].trim().match(/^spoiler\s+(.*)$/);
+
+        if (matches != null && matches.length === 2) {
+          summary = matches[1];
+        } else {
+          // no matches, so just use createElement
+          return null;
+        }
+
+        content = makeChildren(children, props, options.htmlOptions);
+        return <Spoiler summary={summary} {...props}>{content}</Spoiler>;
+
       case 'htmlblock':
         content = Array.isArray(children) ? children.join('') : children;
         return <MarkdownHTMLElement content={content} {...props} />;
@@ -272,6 +290,31 @@ export const mdOptions = {
           });
         }
       }]
+    },
+    {
+      plugin: MarkdownContainer,
+      args: [
+        'spoiler',
+        {
+          validate: function(params) {
+            console.log('spoiler validate function', params);
+            return params.trim().match(/^spoiler\s+(.*)$/);
+          },
+          render: function (tokens, idx) {
+            console.log('spoiler render function');
+            var m = tokens[idx].info.trim().match(/^spoiler\s+(.*)$/);
+
+            if (tokens[idx].nesting === 1) {
+              // opening tag
+              return '<details><summary>' + m[1] + '</summary>\n';
+
+            } else {
+              // closing tag
+              return '</details>\n';
+            }
+          }
+        }
+      ]
     }
   ],
   markdownOptions: {

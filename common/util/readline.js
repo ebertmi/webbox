@@ -62,7 +62,7 @@ function inherits(ctor, superCtor) {
   Object.setPrototypeOf(ctor.prototype, superCtor.prototype);
 }
 
-exports.createInterface = function(input, output, completer, terminal) {
+export function createInterface(input, output, completer, terminal) {
   var rl;
   if (arguments.length === 1) {
     rl = new Interface(input);
@@ -70,9 +70,9 @@ exports.createInterface = function(input, output, completer, terminal) {
     rl = new Interface(input, output, completer, terminal);
   }
   return rl;
-};
+}
 
-function Interface(input, output, completer, terminal) {
+export function Interface(input, output, completer, terminal) {
   if (!(this instanceof Interface)) {
     // call the constructor preserving original number of arguments
     const self = Object.create(Interface.prototype);
@@ -337,13 +337,13 @@ Interface.prototype._refreshLine = function() {
   // first move to the bottom of the current line, based on cursor pos
   var prevRows = this.prevRows || 0;
   if (prevRows > 0) {
-    exports.moveCursor(this.output, 0, -prevRows);
+    moveCursor(this.output, 0, -prevRows);
   }
 
   // Cursor to left edge.
-  exports.cursorTo(this.output, 0);
+  cursorTo(this.output, 0);
   // erase data
-  exports.clearScreenDown(this.output);
+  clearScreenDown(this.output);
 
   // Write the prompt and the current buffer content.
   this._writeToOutput(line);
@@ -354,11 +354,11 @@ Interface.prototype._refreshLine = function() {
   }
 
   // Move cursor to original position.
-  exports.cursorTo(this.output, cursorPos.cols);
+  cursorTo(this.output, cursorPos.cols);
 
   var diff = lineRows - cursorPos.rows;
   if (diff > 0) {
-    exports.moveCursor(this.output, 0, -diff);
+    moveCursor(this.output, 0, -diff);
   }
 
   this.prevRows = cursorPos.rows;
@@ -742,8 +742,7 @@ Interface.prototype._moveCursor = function(dx) {
   // bounds check
   if (this.cursor < 0) {
     this.cursor = 0;
-  }
-  else if (this.cursor > this.line.length) {
+  } else if (this.cursor > this.line.length) {
     this.cursor = this.line.length;
   }
 
@@ -762,7 +761,7 @@ Interface.prototype._moveCursor = function(dx) {
           this.line.substring(this.cursor, oldcursor)
           );
     }
-    exports.moveCursor(this.output, diffWidth, 0);
+    moveCursor(this.output, diffWidth, 0);
     this.prevRows = newPos.rows;
   } else {
     this._refreshLine();
@@ -846,8 +845,8 @@ Interface.prototype._ttyWrite = function(s, key) {
         break;
 
       case 'l': // clear the whole screen
-        exports.cursorTo(this.output, 0, 0);
-        exports.clearScreenDown(this.output);
+        cursorTo(this.output, 0, 0);
+        clearScreenDown(this.output);
         this._refreshLine();
         break;
 
@@ -1011,10 +1010,6 @@ Interface.prototype._ttyWrite = function(s, key) {
   }
 };
 
-
-exports.Interface = Interface;
-
-
 /**
  * accepts a readable Stream instance and makes it emit "keypress" events
  */
@@ -1025,7 +1020,7 @@ const ESCAPE_DECODER = Symbol('escape-decoder');
 // GNU readline library - keyseq-timeout is 500ms (default)
 const ESCAPE_CODE_TIMEOUT = 500;
 
-function emitKeypressEvents(stream, iface) {
+export function emitKeypressEvents(stream, iface) {
   if (stream[KEYPRESS_DECODER]) {
     return;
   }
@@ -1093,14 +1088,13 @@ function emitKeypressEvents(stream, iface) {
     stream.on('newListener', onNewListener);
   }
 }
-exports.emitKeypressEvents = emitKeypressEvents;
 
 
 /**
  * moves the cursor to the x and y coordinate on the given stream
  */
 
-function cursorTo(stream, x, y) {
+export function cursorTo(stream, x, y) {
   if (stream === null || stream === undefined) {
     return;
   }
@@ -1119,14 +1113,13 @@ function cursorTo(stream, x, y) {
     stream.write('\x1b[' + (y + 1) + ';' + (x + 1) + 'H');
   }
 }
-exports.cursorTo = cursorTo;
 
 
 /**
  * moves the cursor relative to its current location
  */
 
-function moveCursor(stream, dx, dy) {
+export function moveCursor(stream, dx, dy) {
   if (stream === null || stream === undefined) {
     return;
   }
@@ -1143,7 +1136,6 @@ function moveCursor(stream, dx, dy) {
     stream.write('\x1b[' + dy + 'B');
   }
 }
-exports.moveCursor = moveCursor;
 
 
 /**
@@ -1153,7 +1145,7 @@ exports.moveCursor = moveCursor;
  *    0 for the entire line
  */
 
-function clearLine(stream, dir) {
+export function clearLine(stream, dir) {
   if (stream === null || stream === undefined) {
     return;
   }
@@ -1169,18 +1161,16 @@ function clearLine(stream, dir) {
     stream.write('\x1b[2K');
   }
 }
-exports.clearLine = clearLine;
 
 
 /**
  * clears the screen from the current position of the cursor down
  */
 
-function clearScreenDown(stream) {
+export function clearScreenDown(stream) {
   if (stream === null || stream === undefined) {
     return;
   }
 
   stream.write('\x1b[0J');
 }
-exports.clearScreenDown = clearScreenDown;

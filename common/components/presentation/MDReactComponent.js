@@ -196,7 +196,7 @@ function mdReactFactory(options={}) {
     }
 
     // MDReactComponent passed in styles
-    console.info('passed in styles: ', props.style, tag);
+    //console.info('passed in styles: ', props.style, tag);
 
     if ((typeof onIterate === 'function')) {
       let element = onIterate(tag, props, children, level, options);

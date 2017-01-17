@@ -11,6 +11,14 @@
   font-size: 1.9rem;
 }
 
+.spectacle-slide details:focus,
+.spectacle-slide details > summary:focus,
+.spectacle-slide details:active,
+.spectacle-slide details:hover {
+  outline: none;
+}
+
+
 .spectacle-slide pre {
   text-align: left;
 }
