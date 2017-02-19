@@ -123,7 +123,7 @@
         "success": "Das Passwort wurde erfolgreich geändert. Sie wurden automatisch abgemeldet. Sie können sich nun mit Ihrem neuen Passwort anmelden.",
         "error": "Es ist ein Fehler aufgetreten. Sie wurden aus Sicherheitsgründen abgemeldet.",
         "missingFields": "Bitte füllen Sie alle erforderlichen Felder aus.",
-        "mailNotification": "Ihr Passwort wurde erfolgreich geändert. Sollten Sie dies nicht selbst getan haben, kontaktieren Sie uns bitte umgehend."
+        "emailNotification": "Ihr Passwort wurde erfolgreich geändert. Sollten Sie dies nicht selbst getan haben, kontaktieren Sie uns bitte umgehend."
       },
       "login": {
         "unknownError": "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
