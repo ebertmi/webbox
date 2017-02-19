@@ -14,7 +14,7 @@ function loadedInIFrame () {
 export default class Ide extends React.Component {
   constructor(props) {
     super(props);
-
+    console.log(this.props);
     this.onDrop = this.onDrop.bind(this);
   }
 
@@ -110,6 +110,7 @@ export default class Ide extends React.Component {
         <TabBar project={this.props.project}/>
         <PanelArea project={this.props.project} messageList={this.props.messageList} />
         <StatusBar registry={this.props.project.statusBarRegistry}/>
+        <script dangerouslySetInnerHTML={{__html: 'var project =' + this.props.project}} />
       </div>
     );
   }

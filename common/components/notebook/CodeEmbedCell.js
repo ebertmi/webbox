@@ -11,6 +11,8 @@ import { EmbedTypes } from '../../constants/Embed';
 import { API } from '../../services';
 import { Severity } from '../../models/severity';
 
+import IdeWrapper from '../ide/IdeWrapper';
+
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
  */
@@ -250,7 +252,7 @@ export default class CodeEmbedCell extends BaseCell {
         <EditButtonGroup isVisible={isVisible} isEditModeActive={isEditModeActive} editing={editing} onToggleVisibility={this.onToggleVisibility} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
         {metadata}
         {content}
-        {frame}
+        <IdeWrapper className="col-xs-12" codeID={source} />
       </div>
     );
   }
