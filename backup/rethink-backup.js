@@ -5,26 +5,7 @@ var fs = require('fs');
 var zlib = require('zlib');
 var AWS = require('aws-sdk');
 var fmt = require('dateformat');
-var r = require('rethinkdb');
-
-/*
-function withRethink(callback) {
-  let opts = {host: 'rethink', port: 28015};
-  r.connect(opts, function(err, conn) {
-    if (err) {
-      throw err;
-    }
-    r.expr(1).run(conn, function(err, result) {
-      if (result != 1) {
-        throw new Error('ping failed');
-      }
-      else {
-        return callback();
-      }
-    });
-  });
-}
-*/
+var later = require('later');
 
 function getDate() {
   return fmt(Date.now(), 'dd.mm.yy-hh:MM-TT');
@@ -32,7 +13,7 @@ function getDate() {
 
 function backup() {
   console.log('starting dump', getDate());
-  let file = Date.now() + 'rethinkdb_dump.tar.gz';
+  let file = fmt(Date.now(), 'dd.mm.yy-hh.MM') + 'rethinkdb_dump.tar.gz';
   let s = spawn('rethinkdb-dump', ['--password-file', 'dbpass.txt', '-f', file]);
   s.stdout.pipe(process.stdout);
   s.stderr.pipe(process.stderr);
@@ -42,26 +23,27 @@ function backup() {
   });
 }
 
-
 function upload(file) {
-  console.log('Try to connect to S3 with: ', process.env.AWS_ACCESS_KEY_ID, process.env.AWS_SECRET_ACCESS_KEY, process.env.AWS_REGION);
+  console.log('Try to connect to S3: ');
 
   var body = fs.createReadStream(file).pipe(zlib.createGzip());
-  var s3obj = new AWS.S3({params: {Bucket: process.env.S3_BUCKET, Key: file}});
-  s3obj.upload({Body: body}).
-    on('httpUploadProgress', function() {
-      //console.log(evt);
+  var s3obj = new AWS.S3({ params: { Bucket: process.env.S3_BUCKET, Key: file } });
+  s3obj.upload({ Body: body }).
+    on('httpUploadProgress', function (evt) {
+      if (evt && evt.part && evt.key) {
+        console.log('Uploading ... part:%s file:%s', evt.part+"", evt.key);
+      }
     }).
-    send(function(err, data) {
-      console.log(err, data);
+    send(function (err, data) {
+      if (err != null) {
+        console.error('Error during upload', err);
+      } else {
+        console.info('Upload completed', data);
+      }
     });
 }
 
-//withRethink(() => {
-//console.log('rethinkdb connection established');
-//console.log('waiting to backup..');
-
-// Now start that thing
-//setInterval(backup, dayInMs);
+// Schedule the backup for every 12 hours
+var sched = later.parse.recur().every(12).hour();
+later.setInterval(backup, sched);
 backup();
-//});

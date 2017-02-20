@@ -7,20 +7,29 @@
 
 ## Install
 Upgrade the distro to the latest stretch release and then install the precompiled kernel options
+Please consult https://wiki.debian.org/DebianTesting for further information about the dist-upgrade process as it requires to change
+the `/etc/apt/sources.list`.
+
+
 ```bash
 sudo apt-get dist-upgrade
-sudo dpkg linux-image-4.5.0-rc5-sourcebox_4.5.0-rc5-11_amd64.deb linux-headers-4.5.0-rc5-sourcebox_4.5.0-rc5-1_amd64.deb
+sudo dpkg -i linux-image-4.5.0-rc5-sourcebox_4.5.0-rc5-11_amd64.deb linux-headers-4.5.0-rc5-sourcebox_4.5.0-rc5-1_amd64.deb
 ```
 
-Next we install a couple of required tools
+Next we install a couple of required tools...
 ```bash
 sudo apt-get install curl
-curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
 sudo apt-get update
-sudo apt-get update install nodejs git btrfs-tools libcap-dev build-essential lxc lxc-dev
+sudo apt-get install nodejs git btrfs-tools libcap-dev build-essential lxc lxc-dev
 sudo -E npm install -g git+ssh://git@github.io:waywaaard/sourcebox-sandbox
 ```
 
+**Hint:**
+Also try to update `npm` itself with `sudo npm install npm` and maybe you need to link the node binary `sudo ln -s /usr/bin/nodejs /usr/bin/node`.
+
+
+**Only for private repos:**
 For using the `sourcebox-sandbox` repository your public key must be added to the ssh config (`~/.ssh/config`).
 
 ## Experiences
