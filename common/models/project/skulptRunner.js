@@ -4,7 +4,7 @@ import { PassThrough } from 'stream';
 import Bluebird from 'bluebird';
 import { EventLog } from '../insights/remoteDispatcher';
 import { TerminalTransform } from '../../util/streamUtils';
-import readline from '../../util/readline';
+import { createInterface } from '../../util/readline';
 
 // Disable warnings in production
 let BLUEBIRD_WARNINGS = true;
@@ -158,7 +158,7 @@ export default class Runner extends EventEmitter {
       // terminate the program while waiting for user input
       this.stdoutTransform.write(prompt);
 
-      let rli = readline.createInterface({
+      let rli = createInterface({
         input: this.stdin,
         output: this.stdoutTransform,
         terminal: true

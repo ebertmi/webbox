@@ -5,6 +5,7 @@
 var webpack = require('webpack');
 var path = require('path');
 var autoprefixer = require('autoprefixer');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
@@ -95,6 +96,13 @@ module.exports = {
         'NODE_ENV': JSON.stringify('development')
       }
     }),
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, 'common/components/presentation/theme/theme.css'),
+        to: '../css/spectacle.css',
+        copyUnmodified: true
+      }
+    ])
     /*new webpack.SourceMapDevToolPlugin({
       filename: '[file].map',
       include: ['presentation.bundle.js', 'index.bundle.js', 'react-commons.bundle.js', 'dashboard.bundle.js'],

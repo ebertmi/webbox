@@ -10,6 +10,7 @@ import hljs from 'highlight.js';
 import Decorate from 'markdown-it-decorate';
 import MarkdownMath from 'markdown-it-math';
 import Anchor from './markdown-it-anchor';
+import MarkdownContainer from './markdown-it-container';
 
 const COPY_BUTTON = `<div class="course-clipboard">
 <span class="btn-clipboard" data-event="code.copy" title data-original-title="In die Zwischenablage legen.">Kopieren</span>
@@ -23,6 +24,13 @@ var defaults = {
   html: true,
   linkify: true,
   highlight: function (str, lang) {
+    // ToDo: add proper ace mode to highlight js mode translation or abstract everything
+
+    // handle c/cpp case of ace editor
+    if (lang && lang === "c_cpp") {
+      lang = "cpp";
+    }
+
     if (lang && hljs.getLanguage(lang)) {
       try {
         return hljs.highlight(lang, str).value;
@@ -90,6 +98,27 @@ markdownit.use(MarkdownMath, {
 });
 
 markdownit.renderer.rules.fence = FENCE;
+
+// Now add the spoiler container plugin
+markdownit.use(MarkdownContainer, 'spoiler', {
+
+  validate: function(params) {
+    return params.trim().match(/^spoiler\s+(.*)$/);
+  },
+
+  render: function (tokens, idx) {
+    var m = tokens[idx].info.trim().match(/^spoiler\s+(.*)$/);
+
+    if (tokens[idx].nesting === 1) {
+      // opening tag
+      return '<details><summary>' + markdownit.utils.escapeHtml(m[1]) + '</summary>\n';
+
+    } else {
+      // closing tag
+      return '</details>\n';
+    }
+  }
+});
 
 export default {
   render: function (str) {

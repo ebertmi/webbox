@@ -104,6 +104,10 @@ Use the rethinkdb `Data Explorer` to set the `authKey` with the following comman
 r.db('rethinkdb').table('cluster_config').get('auth').update({auth_key: 'newkey'})
 ```
 
+You can use the rethinkdb Python driver to **dump** and **restore** the webbox database aswell as to export tables as `csv`:
+
+
+
 ### CLI
 Use the cli to add a user or list all users:
 
