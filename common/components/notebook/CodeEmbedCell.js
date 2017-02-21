@@ -226,7 +226,7 @@ export default class CodeEmbedCell extends BaseCell {
 
   render() {
     const { cell, isEditModeActive, editing, dispatch } = this.props;
-    const width = this.props.cell.getIn(['metadata', 'width']);
+    //const width = this.props.cell.getIn(['metadata', 'width']);
     const height = this.props.cell.getIn(['metadata', 'height']);
     let content;
     let metadata = <CellMetadata className="col-xs-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
@@ -234,8 +234,10 @@ export default class CodeEmbedCell extends BaseCell {
     const isVisible = this.isVisible();
 
     let source = this.getSourceFromCell();
-    let frame = source !== '' ? <IFrame lazy={true} className="col-xs-12" width={width} height={height} src={`/embed/${source}`} allowFullScreen={true} frameBorder="0" /> : <p>Keine ID angegeben.</p>;
+    //let frame = source !== '' ? <IFrame lazy={true} className="col-xs-12" width={width} height={height} src={`/embed/${source}`} allowFullScreen={true} frameBorder="0" /> : <p>Keine ID angegeben.</p>;
 
+    // Add check for empty source
+    let wrapper = source !== '' ? <IdeWrapper className="col-xs-12" height={height} codeID={source} /> : <p>Keine ID angegeben.</p>;
 
     if (!(isEditModeActive && editing)) {
       content = null;
@@ -252,7 +254,7 @@ export default class CodeEmbedCell extends BaseCell {
         <EditButtonGroup isVisible={isVisible} isEditModeActive={isEditModeActive} editing={editing} onToggleVisibility={this.onToggleVisibility} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
         {metadata}
         {content}
-        <IdeWrapper className="col-xs-12" codeID={source} />
+        {wrapper}
       </div>
     );
   }
