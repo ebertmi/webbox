@@ -23,10 +23,13 @@ export default class CodeCell extends BaseCell {
     super(props);
 
     this.onRef = this.onRef.bind(this);
-    this.onRun = this.onRun.bind(this);
+    this.onRef = this.onRef.bind(this);
+    this.switchEditMode = this.switchEditMode.bind(this);
+    this.switchExecMode = this.switchExecMode.bind(this);
+    this.switchReadMode = this.switchReadMode.bind(this);
     this.saveCurrentSessionToState = this.saveCurrentSessionToState.bind(this);
 
-    this.state = { rendered: '' };
+    this.state = { rendered: '', mode: 'read' };
   }
 
   componentDidMount() {
@@ -55,12 +58,12 @@ export default class CodeCell extends BaseCell {
 
     const code = this.getSourceFromCell();
     let notebookLanguageInformation = this.props.cell.getIn(['metadata', 'executionLanguage'], this.props.executionLanguage.executionLanguage);
-
     let notebookEmbedType = this.props.embedType || EmbedTypes.Sourcebox;
     const embedType = this.props.cell.getIn(['metadata', 'embedType'], notebookEmbedType);
 
     // Experimental
     const id = this.props.cell.getIn(['metadata', 'runid'], RunModeDefaults.id);
+    console.log("id: " + id);
 
     const url = `${window.location.protocol}//${window.location.host}/run?language=${encodeURIComponent(notebookLanguageInformation)}&id=${encodeURIComponent(id)}&embedType=${encodeURIComponent(embedType)}&code=${encodeURIComponent(code)}`;
     const strWindowFeatures = "menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes";
@@ -80,7 +83,8 @@ export default class CodeCell extends BaseCell {
     Markdown.render(codeSource)
     .then((rendered) => {
       this.setState({
-        rendered: rendered
+        rendered: rendered,
+        mode: this.state.mode
       });
     });
   }
@@ -140,21 +144,69 @@ export default class CodeCell extends BaseCell {
     );
   }
 
+  // DEPRECATED, use renderReadMode()
   renderViewMode() {
     return <div className="col-xs-12" ref={this.onRef} dangerouslySetInnerHTML={{__html: this.state.rendered}}/>;
   }
 
-  switchEditMode() {
+  // ##################################################################################################################
+  // ##################################################################################################################
+  // ##################################################################################################################
+  // ##################################################################################################################
 
+  switchEditMode() {
+    this.setState({
+      rendered: this.state.rendered,
+      mode: "edit"
+    });
+  }
+  renderEditMode2() {
+    let minHeight = this.getWrapperHeightOrMin();
+    let source = this.getSourceFromCell();
+    let languageName = this.props.notebookLanguage || 'python';
+    let mode = this.props.cell.getIn(['metadata', 'mode'], languageName);
+
+    if (this.session) {
+      this.session.setValue(source);
+      this.session.setMode('ace/mode/' + mode);
+    } else {
+      this.session = new EditSession(source, 'ace/mode/' + mode);
+      this.session.setUndoManager(new UndoManager);
+    }
+
+    return (
+      <div className="col-xs-12" onKeyDown={this.onKeyDown}>
+        <strong>Editiermodus (Changes are only temporary)</strong>
+        <Editor fontSize="14px" minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />
+      </div>
+    );
   }
 
   switchReadMode() {
-
+    this.setState({
+      rendered: this.state.rendered,
+      mode: "read"
+    });
+    let content = this.session.getValue();
+    this.props.dispatch(updateCell(this.props.cell.get('id'), content));
+    this.renderMarkdown(content);
+  }
+  renderReadMode() {
+    return <div className="col-xs-12" ref={this.onRef} dangerouslySetInnerHTML={{__html: this.state.rendered}}/>;
   }
 
   switchExecMode() {
-
+    this.setState({
+      rendered: this.state.rendered,
+      mode: "exec"
+    });
   }
+
+
+  // ##################################################################################################################
+  // ##################################################################################################################
+  // ##################################################################################################################
+  // ##################################################################################################################
 
   render() {
     const { cell, isEditModeActive, editing, dispatch } = this.props;
@@ -164,7 +216,19 @@ export default class CodeCell extends BaseCell {
     const isVisible = this.isVisible();
 
     if (!(isEditModeActive && editing)) {
-      content = this.renderViewMode();
+      if(this.state.mode == "edit") {
+        content = this.renderEditMode2();
+      }
+      else if(this.state.mode == "read") {
+        content = this.renderReadMode();
+      }
+      else if(this.state.mode == "exec") {
+
+      }
+      else {
+        // IllegalState -> render default read view
+        content = this.renderReadMode();
+      }
     } else {
       content = this.renderEditMode();
     }
@@ -173,6 +237,7 @@ export default class CodeCell extends BaseCell {
       'cell-not-visible': !isVisible
     });
 
+    // TODO: Icons should be hidden, while in DocumentEditMode
     return (
       <div className={classes} id={this.props.id}>
         <EditButtonGroup isVisible={isVisible} isEditModeActive={isEditModeActive} editing={editing} onToggleVisibility={this.onToggleVisibility} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
@@ -182,7 +247,6 @@ export default class CodeCell extends BaseCell {
         <Icon name="book" className="icon-control code-cell-run-btn hidden-print" onClick={this.switchReadMode} title="Lesemodus" />
         <Icon name="code" className="icon-control code-cell-run-btn hidden-print" onClick={this.switchExecMode} title="Ausführmodus" />
         {content}
-        <div>This is a Testdiv, to see what will change :O</div>
       </div>
     );
   }
