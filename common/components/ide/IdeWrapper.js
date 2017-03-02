@@ -50,7 +50,7 @@ export default class IdeWrapper extends React.Component {
       });
     }
 
-    API.embed.getEmbed({ id: this.props.codeID }).then(data => {
+    API.embed.getEmbed({ id: this.props.codeIDgit  }).then(data => {
       if(!data.error) {
         this.setState({
           codeData: data,
@@ -77,7 +77,7 @@ export default class IdeWrapper extends React.Component {
       } else {
         // TODO: replace hardcoded text by preconfigured text
         toRender = <div className="alert alert-danger alert-dismissable col-xs-12">
-          <a href="#" onClick={this.onDownloadErrorNoticed} className="close" data-dismiss="alert" aria-label="close">&times;</a>
+          <a onClick={this.onDownloadErrorNoticed} className="close" data-dismiss="alert" aria-label="close">&times;</a>
           <strong>Fehler:</strong> {this.state.error}
         </div>
       }
