@@ -71,7 +71,8 @@ export default class IdeWrapper extends React.Component {
     if (this.state.codeData == null || this.state.IdeComponent == null) {
       if(this.state.error == null) {
         let image = (!this.state.isDownloading) ? "/public/img/download.png" : "/public/img/reload.svg"
-        toRender = <div className="container" onClick={this.onClick}>
+        let classNames = (!this.state.codeData) ? "downloadEmbed" : "";
+        toRender = <div className={"container " + classNames} onClick={this.onClick}>
           <img src={image} />
         </div>;
       } else {
