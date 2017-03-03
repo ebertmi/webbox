@@ -162,8 +162,7 @@ Steps:
 
 1. Upload current version with compiled client files (use `npm run web:build`)
 2. Install nodejs `>6` or `7` and `npm`
-3. (Install `sudo apt-get npm make gcc build-essential g++ lxc lxc-dev btrfs-tools libcap-dev`) required for sourcebox and not webbox
-4. Go to the `webbox`directory and run `npm install`
+3. Go to the `webbox`directory and run `npm install`
 
 If node-gyp is failing try to update nodejs and then run `npm rebuild`
 
