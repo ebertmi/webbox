@@ -154,7 +154,7 @@
       }
     },
     "sourcebox": {
-      "url": "http://sourcebox.trycoding.io/",
+      "url": "https://sandbox.trycoding.io/",
       "secret": "ItsASecretToEverybody!",
       "expiresIn": "10h",
       "supportedLanguages": [

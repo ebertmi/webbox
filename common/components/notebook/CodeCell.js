@@ -7,13 +7,16 @@ import Editor from '../Editor';
 import Icon from '../Icon';
 import CellMetadata from './CellMetadata';
 import { EditButtonGroup } from './EditButtonGroup';
-
+import Terminal from './../ide/Terminal';
 
 import { updateCell } from '../../actions/NotebookActions';
 
 import { EmbedTypes, RunModeDefaults } from '../../constants/Embed';
 import Markdown from '../../util/markdown';
 import  { notebookMetadataToSourceboxLanguage } from '../../util/nbUtil';
+
+import SourceboxProject from './../../models/project/sourceboxProject';
+import SkulptProject from './../../models/project/skulptProject';
 
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
@@ -25,11 +28,11 @@ export default class CodeCell extends BaseCell {
     this.onRef = this.onRef.bind(this);
     this.onRef = this.onRef.bind(this);
     this.switchEditMode = this.switchEditMode.bind(this);
-    this.switchExecMode = this.switchExecMode.bind(this);
+    this.executeCode = this.executeCode.bind(this);
     this.switchReadMode = this.switchReadMode.bind(this);
     this.saveCurrentSessionToState = this.saveCurrentSessionToState.bind(this);
 
-    this.state = { rendered: '', mode: 'read' };
+    this.state = { rendered: '', mode: 'read', showTerminal: false };
   }
 
   componentDidMount() {
@@ -82,10 +85,9 @@ export default class CodeCell extends BaseCell {
     const codeSource = '```' + mode + '\n' + source + '\n```';
     Markdown.render(codeSource)
     .then((rendered) => {
-      this.setState({
-        rendered: rendered,
-        mode: this.state.mode
-      });
+      this.setState(prevState => ({
+        rendered: rendered
+      }));
     });
   }
 
@@ -144,21 +146,15 @@ export default class CodeCell extends BaseCell {
     );
   }
 
-  // DEPRECATED, use renderReadMode()
-  renderViewMode() {
-    return <div className="col-xs-12" ref={this.onRef} dangerouslySetInnerHTML={{__html: this.state.rendered}}/>;
-  }
-
   // ##################################################################################################################
   // ##################################################################################################################
   // ##################################################################################################################
   // ##################################################################################################################
 
   switchEditMode() {
-    this.setState({
-      rendered: this.state.rendered,
-      mode: "edit"
-    });
+    this.setState(prevState => ({
+      mode: 'edit'
+    }));
   }
   renderEditMode2() {
     let minHeight = this.getWrapperHeightOrMin();
@@ -183,23 +179,47 @@ export default class CodeCell extends BaseCell {
   }
 
   switchReadMode() {
-    this.setState({
-      rendered: this.state.rendered,
-      mode: "read"
-    });
+    this.setState(prevState => ({
+      mode: 'read'
+    }));
     let content = this.session.getValue();
     this.props.dispatch(updateCell(this.props.cell.get('id'), content));
     this.renderMarkdown(content);
   }
   renderReadMode() {
+    console.log("RenderReadmode");
     return <div className="col-xs-12" ref={this.onRef} dangerouslySetInnerHTML={{__html: this.state.rendered}}/>;
   }
 
-  switchExecMode() {
-    this.setState({
-      rendered: this.state.rendered,
-      mode: "exec"
-    });
+  executeCode() {
+    let messageList = "";
+    let projectData = {
+      embed: window.INITIAL_DATA,
+      user: window.USER_DATA,
+      messageList: messageList,
+      communication: {
+        jwt: window.__WEBSOCKET__.authToken,
+        url: window.__WEBSOCKET__.server
+      }
+    };
+
+    let project;
+    if (window.__INITIAL_STATE__.embedType === EmbedTypes.Sourcebox) {
+      project = new SourceboxProject(projectData, {
+        auth: window.sourcebox.authToken,
+        server: window.sourcebox.server,
+        transports: window.sourcebox.transports || ['websocket']
+      });
+    } else if (window.__INITIAL_STATE__.embedType === EmbedTypes.Skulpt) {
+      project = new SkulptProject(projectData);
+    } else {
+      console.error('Unsupported embedType', window.__INITIAL_STATE__.embedType);
+    }
+
+    this.setState(prevState => ({
+      showTerminal: !prevState.showTerminal,
+      project: project
+    }));
   }
 
 
@@ -214,6 +234,12 @@ export default class CodeCell extends BaseCell {
     let metadata = <CellMetadata beforeChange={this.saveCurrentSessionToState} className="col-xs-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
     let editingClass = editing ? ' editing' : '';
     const isVisible = this.isVisible();
+    const icons = <div>
+      <Icon name="external-link" className="icon-control code-cell-run-btn hidden-print" onClick={this.onRun} title="IDE in neuem Fenster öffnen" />
+      <Icon name="edit" className="icon-control code-cell-run-btn hidden-print" onClick={this.switchEditMode} title="Editiermodus" />
+      <Icon name="book" className="icon-control code-cell-run-btn hidden-print" onClick={this.switchReadMode} title="Lesemodus" />
+      <Icon name="play" className="icon-control code-cell-run-btn hidden-print" onClick={this.executeCode} title="Ausführmodus" />
+    </div>;
 
     if (!(isEditModeActive && editing)) {
       if(this.state.mode == "edit") {
@@ -242,11 +268,9 @@ export default class CodeCell extends BaseCell {
       <div className={classes} id={this.props.id}>
         <EditButtonGroup isVisible={isVisible} isEditModeActive={isEditModeActive} editing={editing} onToggleVisibility={this.onToggleVisibility} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
         {metadata}
-        <Icon name="external-link" className="icon-control code-cell-run-btn hidden-print" onClick={this.onRun} title="IDE in neuem Fenster öffnen" />
-        <Icon name="edit" className="icon-control code-cell-run-btn hidden-print" onClick={this.switchEditMode} title="Editiermodus" />
-        <Icon name="book" className="icon-control code-cell-run-btn hidden-print" onClick={this.switchReadMode} title="Lesemodus" />
-        <Icon name="code" className="icon-control code-cell-run-btn hidden-print" onClick={this.switchExecMode} title="Ausführmodus" />
+        { (!(isEditModeActive && editing)) ? icons : null }
         {content}
+        <div style={{height: '200px'}}>{ this.state.showTerminal ? <Terminal process={this.state.project}/> : null }</div>
       </div>
     );
   }
