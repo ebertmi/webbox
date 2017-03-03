@@ -83,8 +83,8 @@ export class NavDropdown extends React.Component {
     });
 
     return (
-      <div href='#' className="nav-item dropdown">
-        <a className="nav-link" href="#" ref={a => this.a = a}>
+      <div href='#/' className="nav-item dropdown">
+        <a className="nav-link" href="#/" ref={a => this.a = a}>
           {this.props.title}
         </a>
         <nav className={menuClasses}>
