@@ -61,6 +61,18 @@ h1.notebook-title {
     -ms-filter: opacity(85%);
     filter: opacity(85%);
   }
+  .downloadEmbed {
+    background: url(/public/img/embed_overlay.jpg);
+    background-size: 100% 100%;
+    min-height: 500px;
+    background-origin: content-box;
+    background-repeat: no-repeat;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
 }
 
 .view-mode .cell-not-visible {

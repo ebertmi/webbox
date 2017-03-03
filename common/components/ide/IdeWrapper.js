@@ -50,7 +50,7 @@ export default class IdeWrapper extends React.Component {
       });
     }
 
-    API.embed.getEmbed({ id: this.props.codeID }).then(data => {
+    API.embed.getEmbed({ id: this.props.codeID  }).then(data => {
       if(!data.error) {
         this.setState({
           codeData: data,
@@ -71,13 +71,14 @@ export default class IdeWrapper extends React.Component {
     if (this.state.codeData == null || this.state.IdeComponent == null) {
       if(this.state.error == null) {
         let image = (!this.state.isDownloading) ? "/public/img/download.png" : "/public/img/reload.svg"
-        toRender = <div className="container" onClick={this.onClick}>
+        let classNames = (!this.state.codeData) ? "downloadEmbed" : "";
+        toRender = <div className={"container " + classNames} onClick={this.onClick}>
           <img src={image} />
         </div>;
       } else {
         // TODO: replace hardcoded text by preconfigured text
         toRender = <div className="alert alert-danger alert-dismissable col-xs-12">
-          <a href="#" onClick={this.onDownloadErrorNoticed} className="close" data-dismiss="alert" aria-label="close">&times;</a>
+          <a onClick={this.onDownloadErrorNoticed} className="close" data-dismiss="alert" aria-label="close">&times;</a>
           <strong>Fehler:</strong> {this.state.error}
         </div>
       }

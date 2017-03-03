@@ -14,7 +14,6 @@ function loadedInIFrame () {
 export default class Ide extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
     this.onDrop = this.onDrop.bind(this);
   }
 
