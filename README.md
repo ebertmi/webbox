@@ -1,7 +1,9 @@
 # webbox
+
 Webbased editor powered by sourcebox (secure remote-code-execution with bidirectional streams)
 
 ## Table of Contents
+
 * [Quick start](#quick-start)
 * [Architecture in 2 Minutes](#architecture-in-2-minutes)
 * [Start server](#start-server)
@@ -19,7 +21,9 @@ Webbased editor powered by sourcebox (secure remote-code-execution with bidirect
 * [Developing](#developing)
 
 ## Quick start
+
 Follow those steps to get webbox running on your system:
+
 1. Clone the repository locally
 2. Install node
 3. `npm install`  to download all dependencies, the `sourcebox` modules may require to be an collaborator on the repos (they are private)
@@ -31,7 +35,9 @@ Follow those steps to get webbox running on your system:
 You can find further details below.
 
 ## Architecture in 2 Minutes
+
 The below list summarizes the items of primary importance for this project:
+
 * Server: Webbox is basically a simple web application using an document data base (rethinkdb)
 * Server: We store documents in the IPYNB standard
 * Server: We store code examples as database documents (see `lib\models\codeEmbed.js`) and students' modifications in an additional document (see `lib\models\codeDocument.js`)
@@ -48,6 +54,7 @@ Read the following sections in order to get used to the system.
 ### Start server
 
 You can start a local dev server with: `$ NODE_ENV=development node webbox.babel.js` or on windows with:
+
 ```cmd
 set NODE_ENV=development
 node webbox.babel.js
@@ -62,7 +69,6 @@ npm run start // linux
 
 A good way for running the app with auto reload ist *nodemon*. We have included a nodemon config - just run `nodemon webbox.babel.js`.
 Or lastly, you can use `npm run start:dev`.
-
 
 ### Config
 
@@ -94,7 +100,6 @@ and requires to `.run()` a query. The `run()` method returns a chainable promise
 
 Currently, good is used to log any events. You can find the logs under `logs` and on the console.
 
-
 ### rethinkdb
 
 In order to use webbox you need to install [rethinkdb](https://www.rethinkdb.com/).
@@ -106,23 +111,23 @@ See http://rethinkdb.com/docs/security/#securing-the-driver-port for more inform
 You need to set the password then in the rethinkdb configuration.
 See https://rethinkdb.com/docs/permissions-and-accounts/ for information about creating users and setting permissions.
 
-
 **WARNING** This applies to RethinkDB 2.0
 Use the rethinkdb `Data Explorer` to set the `authKey` with the following command:
+
 ```javascript
 r.db('rethinkdb').table('cluster_config').get('auth').update({auth_key: 'newkey'})
 ```
 
 You can use the rethinkdb Python driver to **dump** and **restore** the webbox database aswell as to export tables as `csv`:
 
-
-
 ### CLI
+
 Use the cli to add a user or list all users:
 
 You can specify if the added user is an admin by setting the isAdmin argument to true
 `node ./bin/wb.js addUser username email password isAdmin`
 Example: `node ./bin/wb.js addUser foobar foo@bar.foo foobar true` which should result in
+
 ```bash
 Creating a pool connected to localhost:28015
 Trying to save encrypted password: foobar $2a$10$wYd78IZGAHPliuY.sVCYF.3GgwOq/6x4YSJckB4hdRW/2pF5vaqZ2
@@ -139,7 +144,6 @@ The IDE is a react-based UI for programming. See:
 * `common\components\ide\`
 * `common\models\project.js` and related files
 
-
 ### React
 
 The webbox appilcation is using a mix of server-side templating (Jade) and React for rendering the pages.
@@ -147,6 +151,7 @@ The webbox appilcation is using a mix of server-side templating (Jade) and React
 ## Versioning
 
 We are using Semantic Versioning (SemVer) *MAJOR.MINOR.PATCH*:
+
 * *MAJOR*: Breaking changes
 * *MINOR*: New features and fixes, but works with older versions
 * *PATCH*: Fixes that are backward compatible
@@ -163,8 +168,9 @@ Steps:
 If node-gyp is failing try to update nodejs and then run `npm rebuild`
 
 Then install RethinkDB:
-1. Either visit rethinkdb site and follow the instructions there or paste this:
-```
+Either visit rethinkdb site and follow the instructions there or paste this:
+
+```bash
 source /etc/lsb-release && echo "deb http://download.rethinkdb.com/apt $DISTRIB_CODENAME main" | sudo tee /etc/apt/sources.list.d/rethinkdb.list
 wget -qO- https://download.rethinkdb.com/apt/pubkey.gpg | sudo apt-key add -
 sudo apt-get update
