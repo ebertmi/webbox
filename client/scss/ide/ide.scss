@@ -62,7 +62,7 @@ body.ide,
     user-select: none;
   }
   @import "~xterm/src/xterm.css";
-  @import "_terminal";
+  @import "../includes/_terminal";
   @import "_tabbar";
   @import "_tablist";
   @import "../includes/_toolbar";
