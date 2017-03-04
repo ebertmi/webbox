@@ -35,7 +35,8 @@ html(lang="de")
       block scripts
         script.
           window.__INITIAL_STATE__ = !{INITIAL_DATA};
-          window.USER_DATA = !{USER_DATA};
+          window.__USER_DATA__ = !{USER_DATA};
+          window.__SOURCEBOX__ = !{sourcebox};
           window.__crumb__ = "!{crumb}";
         script(src="https://cdn.jsdelivr.net/ace/1.2.4/min/ace.js")
         script(src="https://cdn.jsdelivr.net/ace/1.2.4/min/ext-themelist.js")

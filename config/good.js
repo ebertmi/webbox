@@ -10,14 +10,22 @@ const options = {
     myFileLogReporter: [{
       module: 'good-squeeze',
       name: 'Squeeze',
-      args: [{ log: '*', response: '*', request: '*', error: '*'}]
+      args: [{ log: '*', response: '*', request: '*', error: '*' }]
     }, {
-      module: 'good-squeeze',
-      name: 'SafeJson'
+      module: 'good-console'
     }, {
+      module: 'rotating-file-stream',
+      args: [
+        'webbox.log',
+        {
+          interval: '1d',
+          path: './logs/'
+        }
+      ]
+    }/*,{
       module: 'good-file',
       args: ['./logs/webbox.log']
-    }],
+    }*/],
     myConsoleReporter: [{
       module: 'good-squeeze',
       name: 'Squeeze',
@@ -25,7 +33,7 @@ const options = {
     }, {
       module: 'good-console'
     }, 'stdout'],
-    myFileOpsReporter: [{
+    /*myFileOpsReporter: [{
       module: 'good-squeeze',
       name: 'Squeeze',
       args: [{ ops: '*'}]
@@ -35,7 +43,7 @@ const options = {
     }, {
       module: 'good-file',
       args: ['./logs/webbox_ops.log']
-    }],
+    }],*/
   }
 };
 

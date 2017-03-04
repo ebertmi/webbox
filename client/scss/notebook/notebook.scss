@@ -6,6 +6,9 @@
 @import "../includes/_messagelist.scss";
 @import "../includes/_display.scss";
 
+@import "~xterm/src/xterm.css";
+@import "../includes/_terminal";
+
 // Fonts
 @import url(https://fonts.googleapis.com/css?family=PT+Sans);
 @import url(https://fonts.googleapis.com/css?family=Oswald);

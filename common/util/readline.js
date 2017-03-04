@@ -509,7 +509,11 @@ Interface.prototype._tabComplete = function(lastKeypressWasTab) {
       }
 
       // If there is a common prefix to all matches, then apply that portion.
-      const f = completions.filter(function(e) { if (e) return e; });
+      const f = completions.filter(function(e) {
+        if (e) {
+          return e;
+        }
+      });
       const prefix = commonPrefix(f);
       if (prefix.length > completeOn.length) {
         self._insertString(prefix.slice(completeOn.length));
@@ -1137,7 +1141,6 @@ export function moveCursor(stream, dx, dy) {
   }
 }
 
-
 /**
  * clears the current line the cursor is on:
  *   -1 for left of the cursor
@@ -1161,7 +1164,6 @@ export function clearLine(stream, dir) {
     stream.write('\x1b[2K');
   }
 }
-
 
 /**
  * clears the screen from the current position of the cursor down
