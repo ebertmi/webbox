@@ -7,16 +7,18 @@ import Editor from '../Editor';
 import Icon from '../Icon';
 import CellMetadata from './CellMetadata';
 import { EditButtonGroup } from './EditButtonGroup';
-import Terminal from './../ide/Terminal';
+import Terminal from '../ide/Terminal';
 
 import { updateCell } from '../../actions/NotebookActions';
 
 import { EmbedTypes, RunModeDefaults } from '../../constants/Embed';
 import Markdown from '../../util/markdown';
-import  { notebookMetadataToSourceboxLanguage } from '../../util/nbUtil';
+import { createEmbedObject } from '../../util/embedUtils';
+import { MessageListModel } from '../../models/messages';
+import { usageConsole } from '../../util/usageLogger';
 
-import SourceboxProject from './../../models/project/sourceboxProject';
-import SkulptProject from './../../models/project/skulptProject';
+import SourceboxProject from '../../models/project/sourceboxProject';
+import SkulptProject from '../../models/project/skulptProject';
 
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
@@ -66,7 +68,6 @@ export default class CodeCell extends BaseCell {
 
     // Experimental
     const id = this.props.cell.getIn(['metadata', 'runid'], RunModeDefaults.id);
-    console.log("id: " + id);
 
     const url = `${window.location.protocol}//${window.location.host}/run?language=${encodeURIComponent(notebookLanguageInformation)}&id=${encodeURIComponent(id)}&embedType=${encodeURIComponent(embedType)}&code=${encodeURIComponent(code)}`;
     const strWindowFeatures = "menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes";
@@ -152,9 +153,10 @@ export default class CodeCell extends BaseCell {
   // ##################################################################################################################
 
   switchEditMode() {
-    this.setState(prevState => ({
+    // Change mode
+    this.setState({
       mode: 'edit'
-    }));
+    });
   }
   renderEditMode2() {
     let minHeight = this.getWrapperHeightOrMin();
@@ -179,9 +181,9 @@ export default class CodeCell extends BaseCell {
   }
 
   switchReadMode() {
-    this.setState(prevState => ({
+    this.setState({
       mode: 'read'
-    }));
+    });
     let content = this.session.getValue();
     this.props.dispatch(updateCell(this.props.cell.get('id'), content));
     this.renderMarkdown(content);
@@ -192,10 +194,24 @@ export default class CodeCell extends BaseCell {
   }
 
   executeCode() {
-    let messageList = "";
+    // Step 1: Get all relevant information, language, embed type and code
+    let language = this.props.cell.getIn(['metadata', 'executionLanguage'], this.props.executionLanguage.executionLanguage);
+    let notebookEmbedType = this.props.embedType || EmbedTypes.Sourcebox;
+    const embedType = this.props.cell.getIn(['metadata', 'embedType'], notebookEmbedType);
+
+    // I guess this should be either the original source or the changed source
+    let code = this.session != null ? this.session.getValue() : this.getSourceFromCell();
+
+    // Experimental
+    const id = this.props.cell.getIn(['metadata', 'runid'], RunModeDefaults.id);
+
+    // Create embed data object
+    let embedData = createEmbedObject(code, language, embedType, id);
+
+    let messageList = new MessageListModel(usageConsole);
     let projectData = {
-      embed: window.INITIAL_DATA,
-      user: window.USER_DATA,
+      embed: embedData,
+      user: window.__USER_DATA__,
       messageList: messageList,
       communication: {
         jwt: window.__WEBSOCKET__.authToken,
@@ -206,9 +222,9 @@ export default class CodeCell extends BaseCell {
     let project;
     if (window.__INITIAL_STATE__.embedType === EmbedTypes.Sourcebox) {
       project = new SourceboxProject(projectData, {
-        auth: window.sourcebox.authToken,
-        server: window.sourcebox.server,
-        transports: window.sourcebox.transports || ['websocket']
+        auth: window.__SOURCEBOX__.authToken,
+        server: window.__SOURCEBOX__.server,
+        transports: window.__SOURCEBOX__.transports || ['websocket']
       });
     } else if (window.__INITIAL_STATE__.embedType === EmbedTypes.Skulpt) {
       project = new SkulptProject(projectData);
@@ -216,10 +232,13 @@ export default class CodeCell extends BaseCell {
       console.error('Unsupported embedType', window.__INITIAL_STATE__.embedType);
     }
 
-    this.setState(prevState => ({
-      showTerminal: !prevState.showTerminal,
+    this.setState({
+      showTerminal: !this.state.showTerminal,
       project: project
-    }));
+    });
+
+    // execute the code
+    project.run(); 
   }
 
 
@@ -270,7 +289,7 @@ export default class CodeCell extends BaseCell {
         {metadata}
         { (!(isEditModeActive && editing)) ? icons : null }
         {content}
-        <div style={{height: '200px'}}>{ this.state.showTerminal ? <Terminal process={this.state.project}/> : null }</div>
+        <div className="ide-area" style={{height: '200px'}}>{ this.state.showTerminal ? <Terminal process={this.state.project.runner}/> : null }</div>
       </div>
     );
   }

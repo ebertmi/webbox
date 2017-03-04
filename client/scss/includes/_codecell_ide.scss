@@ -1,0 +1,18 @@
+.ide-area {
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: auto;
+
+  background: url('/public/img/sourcebox-bg.svg') no-repeat center center/contain;
+  display: flex;
+  flex-flow: row;
+  overflow: hidden;
+  border-top: #ddd solid 1px;
+  > * {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0px;
+
+    box-sizing: border-box;
+  }
+}
