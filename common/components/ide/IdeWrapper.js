@@ -1,5 +1,6 @@
 import React from 'react';
 
+import Loader from '../Loader';
 import Ide from './Ide';
 import SourceboxProject from '../../models/project/sourceboxProject';
 import { usageConsole } from '../../util/usageLogger';
@@ -21,17 +22,28 @@ export default class IdeWrapper extends React.Component {
     };
   }
 
+  componentWillMount() {
+    // Call API to get metadata for this embed
+    API.embed.getEmbedMetadata({ id: this.props.codeID }).then(data => {
+      // update state with the required meta data and then rerender and display the name...
+      console.info(data);
+    }).catch(err => {
+      // ToDo: handle connection/server errors
+      console.error(err);
+    });
+  }
+
   setErrorState(err) {
     this.setState({
       error: err,
       isDownloading: false
-    })
+    });
   }
 
   onDownloadErrorNoticed(e) {
     this.setState({
       error: null
-    })
+    });
   }
 
   onClick(e) {
@@ -70,17 +82,17 @@ export default class IdeWrapper extends React.Component {
     let toRender;
     if (this.state.codeData == null || this.state.IdeComponent == null) {
       if(this.state.error == null) {
-        let image = (!this.state.isDownloading) ? "/public/img/download.png" : "/public/img/reload.svg"
+        let stateIndicator = (!this.state.isDownloading) ? <img src="/public/img/download.png" /> : <Loader type="line-scale" />;
         let classNames = (!this.state.codeData) ? "downloadEmbed" : "";
         toRender = <div className={"container " + classNames} onClick={this.onClick}>
-          <img src={image} />
+          {stateIndicator}
         </div>;
       } else {
         // TODO: replace hardcoded text by preconfigured text
         toRender = <div className="alert alert-danger alert-dismissable col-xs-12">
           <a onClick={this.onDownloadErrorNoticed} className="close" data-dismiss="alert" aria-label="close">&times;</a>
           <strong>Fehler:</strong> {this.state.error}
-        </div>
+        </div>;
       }
     } else {
       let messageList = new MessageListModel(usageConsole);
