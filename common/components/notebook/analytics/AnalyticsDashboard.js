@@ -59,7 +59,7 @@ export default class AnalyticsDashboard extends Component {
   }
 
   shouldRender() {
-    return window.USER_DATA != null && window.USER_DATA.isAnonymous != null && window.USER_DATA.isAnonymous === false;
+    return window.__USER_DATA__ != null && window.__USER_DATA__.isAnonymous != null && window.__USER_DATA__.isAnonymous === false;
   }
 
   render() {

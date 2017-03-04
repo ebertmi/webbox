@@ -299,6 +299,11 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         margin: "1.5rem auto",
         textAlign: "left",
         lineHeight: 1.2
+      },
+      spoiler: {
+        textAlign: "left",
+        lineHeight: 1.2,
+        fontFamily: fonts.primary,
       }
     }
   };

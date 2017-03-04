@@ -95,10 +95,10 @@ html(lang="de")
     #ide-container
 
     script.
-      window.sourcebox = !{sourcebox};
-      window.websocket = !{websocket};
-      window.INITIAL_DATA = !{INITIAL_DATA};
-      window.USER_DATA = !{USER_DATA};
+      window.__WEBSOCKET__ = !{websocket};
+      window.__SOURCEBOX__ = !{sourcebox};
+      window.__INITIAL_DATA__ = !{INITIAL_DATA};
+      window.__USER_DATA__ = !{USER_DATA};
       window.__crumb__ = "!{crumb}";
 
     script(src="https://cdn.jsdelivr.net/ace/1.2.3/min/ace.js", defer)

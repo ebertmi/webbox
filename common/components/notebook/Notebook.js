@@ -18,6 +18,7 @@ import { addCellsFromJS, toggleViewMode, updateNotebookMetadata } from '../../ac
 
 import { API } from '../../services';
 
+
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
  */

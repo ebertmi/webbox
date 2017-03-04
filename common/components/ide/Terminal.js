@@ -132,6 +132,40 @@ export default class Terminal extends React.Component {
     this.terminal.focus();
   }
 
+  /**
+   * Some calculation for resizing the terminal. Fixes the height props introduced in version prior to 0.2.4
+   */
+  proposeGeometry () {
+    const parentElementStyle = window.getComputedStyle(this.terminal.element.parentElement);
+    const parentElementHeight = parseInt(parentElementStyle.getPropertyValue('height'));
+    const parentElementWidth = Math.max(0, parseInt(parentElementStyle.getPropertyValue('width')) - 17);
+    const elementStyle = window.getComputedStyle(this.terminal.element);
+    const elementPaddingVer = parseInt(elementStyle.getPropertyValue('padding-top')) + parseInt(elementStyle.getPropertyValue('padding-bottom'));
+    const elementPaddingHor = parseInt(elementStyle.getPropertyValue('padding-right')) + parseInt(elementStyle.getPropertyValue('padding-left'));
+    const availableHeight = parentElementHeight - elementPaddingVer;
+    const availableWidth = parentElementWidth - elementPaddingHor;
+    const subjectRow = this.terminal.rowContainer.firstElementChild;
+    const contentBuffer = subjectRow.innerHTML;
+    let characterHeight;
+    let rows;
+    let characterWidth;
+    let cols;
+    let geometry;
+
+    subjectRow.style.display = 'inline';
+    subjectRow.innerHTML = 'W'; // Common character for measuring width, although on monospace
+    characterWidth = subjectRow.getBoundingClientRect().width;
+    subjectRow.style.display = ''; // Revert style before calculating height, since they differ.
+    characterHeight = parseInt(subjectRow.offsetHeight);
+    subjectRow.innerHTML = contentBuffer;
+
+    rows = parseInt(availableHeight / characterHeight);
+    cols = parseInt(availableWidth / characterWidth);
+
+    geometry = {cols: cols, rows: rows};
+    return geometry;
+  }
+
   onResize() {
     if (this.props.hidden) {
       return;
@@ -146,7 +180,11 @@ export default class Terminal extends React.Component {
     let cols = x * this.terminal.cols | 0;
     let rows = y * this.terminal.rows | 0;
 
-    if (this.terminal.cols !== cols || this.terminal.rows != rows) {
+    const geometry = this.proposeGeometry();
+    cols = geometry.cols;
+    rows = geometry.rows;
+
+    if (this.terminal.cols !== cols || this.terminal.rows !== rows) {
       this.terminal.resize(cols, rows);
       if (this.props.onResize) {
         this.props.onResize(cols, rows);

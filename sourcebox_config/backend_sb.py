@@ -9,7 +9,7 @@ STARTIMAGE IMAGEDATA ENDIMAGE
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from matplotlib.externals import six
+#from matplotlib.externals import six
 
 import matplotlib
 from matplotlib.backends.backend_agg import new_figure_manager, FigureCanvasAgg
