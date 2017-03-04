@@ -47,6 +47,8 @@ class NotebookMetadata extends React.Component {
       } else {
         this.setState({ coursesInfo: resp.coursesInfo });
       }
+    }).catch(err => {
+      // happens when we are not logged in, we should check this
     });
   }
 

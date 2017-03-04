@@ -39,28 +39,28 @@ if (!Element.prototype.closest) {
 let messageList = new MessageListModel(usageConsole);
 
 let projectData = {
-  embed: window.INITIAL_DATA,
-  user: window.USER_DATA,
+  embed: window.__INITIAL_DATA__,
+  user: window.__USER_DATA__,
   messageList: messageList,
   communication: {
-    jwt: window.websocket.authToken,
-    url: window.websocket.server
+    jwt: window.__WEBSOCKET__.authToken,
+    url: window.__WEBSOCKET__.server
   }
 };
 
 // depending on the way we serve the embeds we can either just get the initial data from
 // window.INITIAL_DATA and then initialize the embed or some ajax request mechanism
 let project;
-if (window.INITIAL_DATA.meta.embedType === EmbedTypes.Sourcebox) {
+if (window.__INITIAL_DATA__.meta.embedType === EmbedTypes.Sourcebox) {
   project = new SourceboxProject(projectData, {
-    auth: window.sourcebox.authToken,
-    server: window.sourcebox.server,
-    transports: window.sourcebox.transports || ['websocket']
+    auth: window.__SOURCEBOX__.authToken,
+    server: window.__SOURCEBOX__.server,
+    transports: window.__SOURCEBOX__.transports || ['websocket']
   });
-} else if (window.INITIAL_DATA.meta.embedType === EmbedTypes.Skulpt) {
+} else if (window.__INITIAL_DATA__.meta.embedType === EmbedTypes.Skulpt) {
   project = new SkulptProject(projectData);
 } else {
-  console.error('Unsupported embedType', window.INITIAL_DATA);
+  console.error('Unsupported embedType', window.__INITIAL_DATA__);
 }
 
 render(
