@@ -16,6 +16,9 @@ export default class IdeWrapper extends React.Component {
 
     this.state = {
       codeData: null,
+      embedName: null,
+      embedLang: null,
+      embedType: null,
       isDownloading: false,
       IdeComponent: null,
       error: null
@@ -26,6 +29,11 @@ export default class IdeWrapper extends React.Component {
     // Call API to get metadata for this embed
     API.embed.getEmbedMetadata({ id: this.props.codeID }).then(data => {
       // update state with the required meta data and then rerender and display the name...
+      this.setState({
+        embedName: data.meta.name,
+        embedLang: data.meta.language,
+        embedType: data.meta.embedType
+      })
       console.info(data);
     }).catch(err => {
       // ToDo: handle connection/server errors
@@ -85,6 +93,7 @@ export default class IdeWrapper extends React.Component {
         let stateIndicator = (!this.state.isDownloading) ? <img src="/public/img/download.png" /> : <Loader type="line-scale" />;
         let classNames = (!this.state.codeData) ? "downloadEmbed" : "";
         toRender = <div className={"container " + classNames} onClick={this.onClick}>
+          <h3>{this.state.embedName} - {this.state.embedLang}</h3>
           {stateIndicator}
         </div>;
       } else {

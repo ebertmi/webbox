@@ -92,7 +92,7 @@ export default class TabBar extends React.Component {
   onToggleFullscreen(e) {
     if (screenfull.enabled) {
       // TODO: find a better solution for getting the ide element
-      screenfull.toggle(e.currentTarget.parentElement.parentElement.parentElement);
+      screenfull.toggle(e.currentTarget.closest(".ide"));
     }
   }
 
