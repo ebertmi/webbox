@@ -21,6 +21,23 @@ import { documentToState, copyText } from '../../common/util/nbUtil';
 // This has no effect in production mode
 require('expose-loader?Perf!react-addons-perf');
 
+// DOMNode closest polyfill
+if (!Element.prototype.matches) {
+  Element.prototype.matches = Element.prototype.msMatchesSelector;
+}
+
+if (!Element.prototype.closest) {
+  Element.prototype.closest = function (selector) {
+    var el = this;
+    while (el) {
+      if (el.matches(selector)) {
+        return el;
+      }
+      el = el.parentElement;
+    }
+  };
+}
+
 // Convert our database model into an immutable state model
 const notebookState = documentToState(window.__INITIAL_STATE__);
 
