@@ -57,11 +57,11 @@ function list (model) {
  */
 function addUser (username, email, password, isAdmin) {
   var User = require('../lib/models/user');
-  var roles = ['user', 'staff', 'admin'];
+  var roles = ['user'];
 
-  /*if (isAdmin && isAdmin === true) {
+  if (isAdmin && isAdmin === true) {
     roles.push('admin');
-  }*/
+  }
 
   User.findByEmailorUsername(username, email)
   .then((user) => {
