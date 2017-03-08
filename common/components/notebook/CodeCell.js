@@ -32,9 +32,10 @@ export default class CodeCell extends BaseCell {
     this.switchEditMode = this.switchEditMode.bind(this);
     this.executeCode = this.executeCode.bind(this);
     this.switchReadMode = this.switchReadMode.bind(this);
+    this.closeTerminal = this.closeTerminal.bind(this);
     this.saveCurrentSessionToState = this.saveCurrentSessionToState.bind(this);
 
-    this.state = { rendered: '', mode: 'read', showTerminal: false };
+    this.state = { rendered: '', editMode: false, showTerminal: false };
   }
 
   componentDidMount() {
@@ -155,11 +156,11 @@ export default class CodeCell extends BaseCell {
   switchEditMode() {
     // Change mode
     this.setState({
-      mode: 'edit'
+      editMode: true
     });
   }
   renderEditMode2() {
-    let minHeight = this.getWrapperHeightOrMin();
+    let minHeight = this.props.minHeight;
     let source = this.getSourceFromCell();
     let languageName = this.props.notebookLanguage || 'python';
     let mode = this.props.cell.getIn(['metadata', 'mode'], languageName);
@@ -182,14 +183,13 @@ export default class CodeCell extends BaseCell {
 
   switchReadMode() {
     this.setState({
-      mode: 'read'
+      editMode: false
     });
-    let content = this.session.getValue();
+    let content = this.session != null ? this.session.getValue() : this.getSourceFromCell();
     this.props.dispatch(updateCell(this.props.cell.get('id'), content));
     this.renderMarkdown(content);
   }
   renderReadMode() {
-    console.log("RenderReadmode");
     return <div className="col-xs-12" ref={this.onRef} dangerouslySetInnerHTML={{__html: this.state.rendered}}/>;
   }
 
@@ -201,6 +201,7 @@ export default class CodeCell extends BaseCell {
 
     // I guess this should be either the original source or the changed source
     let code = this.session != null ? this.session.getValue() : this.getSourceFromCell();
+    this.props.dispatch(updateCell(this.props.cell.get('id'), code));  // So changes, in Edit Mode will not be reset by execute
 
     // Experimental
     const id = this.props.cell.getIn(['metadata', 'runid'], RunModeDefaults.id);
@@ -232,13 +233,31 @@ export default class CodeCell extends BaseCell {
       console.error('Unsupported embedType', window.__INITIAL_STATE__.embedType);
     }
 
-    this.setState({
-      showTerminal: !this.state.showTerminal,
-      project: project
-    });
+    if(this.state.showTerminal) {  // There should be a easier Way than this?
+      this.setState({
+        showTerminal: false,
+        project: null
+      }, () => this.setState({
+        showTerminal: true,
+        project: project
+      }));
+    }
+    else {
+      this.setState({
+        showTerminal: true,
+        project: project
+      });
+    }
+
 
     // execute the code
-    project.run(); 
+    project.run();
+  }
+
+  closeTerminal() {
+    this.setState({
+      showTerminal: false
+    });
   }
 
 
@@ -253,27 +272,18 @@ export default class CodeCell extends BaseCell {
     let metadata = <CellMetadata beforeChange={this.saveCurrentSessionToState} className="col-xs-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
     let editingClass = editing ? ' editing' : '';
     const isVisible = this.isVisible();
-    const icons = <div>
+    const editIcon = <Icon name="edit" className="icon-control code-cell-run-btn hidden-print" onClick={this.switchEditMode} title="Zum Editiermodus wechseln" />;
+    const readIcon = <Icon name="book" className="icon-control code-cell-run-btn hidden-print" onClick={this.switchReadMode} title="Zum Lesemodus wechseln" />;
+    const closeTerminalIcon = <Icon name="close" className="icon-control code-cell-run-btn hidden-print" onClick={this.closeTerminal} title="Terminal schliessen" />;
+    let icons = <div>
       <Icon name="external-link" className="icon-control code-cell-run-btn hidden-print" onClick={this.onRun} title="IDE in neuem Fenster öffnen" />
-      <Icon name="edit" className="icon-control code-cell-run-btn hidden-print" onClick={this.switchEditMode} title="Editiermodus" />
-      <Icon name="book" className="icon-control code-cell-run-btn hidden-print" onClick={this.switchReadMode} title="Lesemodus" />
+      { this.state.editMode ? readIcon : editIcon}
       <Icon name="play" className="icon-control code-cell-run-btn hidden-print" onClick={this.executeCode} title="Ausführmodus" />
+      { this.state.showTerminal ? closeTerminalIcon : null }
     </div>;
 
     if (!(isEditModeActive && editing)) {
-      if(this.state.mode == "edit") {
-        content = this.renderEditMode2();
-      }
-      else if(this.state.mode == "read") {
-        content = this.renderReadMode();
-      }
-      else if(this.state.mode == "exec") {
-
-      }
-      else {
-        // IllegalState -> render default read view
-        content = this.renderReadMode();
-      }
+      this.state.editMode ? content = this.renderEditMode2() : content = this.renderReadMode();
     } else {
       content = this.renderEditMode();
     }
