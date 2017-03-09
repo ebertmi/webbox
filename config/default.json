@@ -155,6 +155,7 @@
     },
     "sourcebox": {
       "url": "https://sandbox.trycoding.io/",
+      "transports": ["polling", "websocket"],
       "secret": "ItsASecretToEverybody!",
       "expiresIn": "10h",
       "supportedLanguages": [

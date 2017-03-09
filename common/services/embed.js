@@ -32,6 +32,34 @@ function getEmbed(params) {
 }
 
 /**
+ * Retrieves the embed metadata for a given embed id or slug
+ *
+ * Here is a full example:
+ *
+    API.embed.getEmbedMetadata({ id: this.projectData.embed.id }).then(data => {
+      console.log('got ajax embed metadata', data);
+    }).catch(err => {
+      console.error(err);
+    });
+ * 
+ * @param {Object} params  - should contain an id e.g. { id: '1234-1234-1234-1234'}
+ * @returns 
+ */
+function getEmbedMetadata(params) {
+  return fetch(`/embed-metadata-ajax/${params.id}`, {
+    method: 'get',
+    credentials: 'same-origin',
+    headers: getDefaultHeaders()
+  })
+  .then(checkStatus)
+  .then(parseJSON)
+  .then(data => {
+    return data;
+  })
+  .catch(commonErrorHandler);
+}
+
+/**
  * Save the code/file changes to the embed. This call
  * will either save the authors version, if the current user is the author,
  * or create/update a new code document for any other users.
@@ -127,5 +155,6 @@ export const EmbedAPI = {
   updateEmbed,
   createEmbed,
   deleteEmbed,
-  getEmbed
+  getEmbed,
+  getEmbedMetadata
 };
