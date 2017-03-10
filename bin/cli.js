@@ -8,8 +8,36 @@ require('yargs').usage('webboxcli <cmd> [args]')
     list(argv.model);
   })
   .example('list User', 'list all users')
-  .command('addUser <username> <email> <password> <isAdmin>', 'adds/updates a user to the database', {}, function (argv) {
-    addUser(argv.username, argv.email, argv.password, argv.isAdmin);
+  .command({
+    command: 'addUser <username> <email> <password> [isAdmin]',
+    alias: 'aU',
+    desc: 'adds/updates a user',
+    builder: yargs => {
+      return yargs
+      .option('username', {
+        type: 'string',
+        describe: 'username to add/update',
+        demandOption: true
+      })
+      .option('email', {
+        type: 'string',
+        describe: 'email (unique) to add/update',
+        demandOption: true
+      })
+      .option('password', {
+        type: 'string',
+        describe: 'password',
+        demandOption: true
+      })
+      .option('isAdmin', {
+        type: 'boolean',
+        describe: 'give user admin role',
+        default: false
+      });
+    },
+    handler: argv => {
+      addUser(argv.username, argv.email, argv.password, argv.isAdmin);
+    }
   })
   .command('removeUser <id>', 'removes the user with <id>', {}, function (argv) {
     removeUser(argv.id);
@@ -26,7 +54,7 @@ require('yargs').usage('webboxcli <cmd> [args]')
   .command('removeEmbed <id>', 'Removes the embed', {}, function (argv) {
     removeEmbed(argv.id);
   })
-  .help('help')
+  .help()
   .argv;
 
 
