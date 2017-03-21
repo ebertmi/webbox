@@ -9,7 +9,7 @@ import * as AdminActions from '../../actions/AdminActions';
 
 function renderTable (props) {
   return (
-    <table className="table table-sm tabl-striped">
+    <table className="table table-sm table-striped table-hover">
       <thead className="thead-inverse">
         <tr>
           <th>Model</th>
