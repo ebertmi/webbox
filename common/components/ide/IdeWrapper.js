@@ -104,11 +104,16 @@ export default class IdeWrapper extends React.Component {
         </div>;
       }
     } else {
+      // Currently jwt and url will be set with every instance, maybe set default configuration, think token (per user) and url will be always equal
+      this.props.remoteDispatcher.jwt = this.state.codeData.websocket.authToken;
+      this.props.remoteDispatcher.url = this.state.codeData.websocket.server;
       let messageList = new MessageListModel(usageConsole);
       let projectData = {
         embed: this.state.codeData.INITIAL_DATA,
         user: this.state.codeData.USER_DATA,
         messageList: messageList,
+        remoteDispatcher: this.props.remoteDispatcher,
+        // might be removed
         communication: {
           jwt: this.state.codeData.websocket.authToken,
           url: this.state.codeData.websocket.server

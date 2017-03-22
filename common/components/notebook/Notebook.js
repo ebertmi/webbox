@@ -241,7 +241,7 @@ export default class Notebook extends React.Component {
           blocks.push(<CodeCell  embedType={embedType} course={course} executionLanguage={executionLanguage} notebookLanguage={notebookLanguage} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={index === activeBlock}/>);
           break;
         case 'codeembed':
-          blocks.push(<CodeEmbedCell course={course} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive}editing={index === activeBlock}/>);
+          blocks.push(<CodeEmbedCell remoteDispatcher={this.props.remoteDispatcher} course={course} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive}editing={index === activeBlock}/>);
           break;
         case 'raw':
           blocks.push(<RawCell dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={index === activeBlock}/>);
