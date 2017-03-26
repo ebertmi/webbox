@@ -3,12 +3,15 @@ import { connect } from 'react-redux';
 
 // own imports
 import Presentation from '../../components/presentation/Presentation';
-import {RemoteDispatcher} from '../../models/insights/remoteDispatcher';
 
 function PresentationApp(props) {
-  return <Presentation notebook={props.notebook} dispatch={props.dispatch} remoteDispatcher={new RemoteDispatcher()}></Presentation>;
+  return <Presentation notebook={props.notebook} dispatch={props.dispatch}></Presentation>;
 }
 
 export default connect(state => {
   return { notebook: state.notebook };
 })(PresentationApp);
+
+PresentationApp.childContextTypes = {
+  remoteDispatcher: React.PropTypes.object
+};

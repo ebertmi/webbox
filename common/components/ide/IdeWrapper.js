@@ -3,8 +3,10 @@ import React from 'react';
 import Loader from '../Loader';
 import Ide from './Ide';
 import SourceboxProject from '../../models/project/sourceboxProject';
+import SkulptProject from '../../models/project/skulptProject';
 import { usageConsole } from '../../util/usageLogger';
 import { MessageListModel } from '../../models/messages';
+import { EmbedTypes } from '../../constants/Embed';
 import { API } from '../../services';
 
 export default class IdeWrapper extends React.Component {
@@ -105,14 +107,14 @@ export default class IdeWrapper extends React.Component {
       }
     } else {
       // Currently jwt and url will be set with every instance, maybe set default configuration, think token (per user) and url will be always equal
-      this.props.remoteDispatcher.jwt = this.state.codeData.websocket.authToken;
-      this.props.remoteDispatcher.url = this.state.codeData.websocket.server;
+      this.context.remoteDispatcher.jwt = this.state.codeData.websocket.authToken;
+      this.context.remoteDispatcher.url = this.state.codeData.websocket.server;
       let messageList = new MessageListModel(usageConsole);
       let projectData = {
         embed: this.state.codeData.INITIAL_DATA,
         user: this.state.codeData.USER_DATA,
         messageList: messageList,
-        remoteDispatcher: this.props.remoteDispatcher,
+        remoteDispatcher: this.context.remoteDispatcher,
         // might be removed
         communication: {
           jwt: this.state.codeData.websocket.authToken,
@@ -120,12 +122,19 @@ export default class IdeWrapper extends React.Component {
         }
       };
 
-      // TODO add skulpt support
-      let project = new SourceboxProject(projectData, {
-        auth: this.state.codeData.sourcebox.authToken,
-        server: this.state.codeData.sourcebox.server,
-        transports: this.state.codeData.sourcebox.transports || ['websocket']
-      });
+      let project;
+      if(this.state.embedType === EmbedTypes.Sourcebox) {
+        project = new SourceboxProject(projectData, {
+          auth: this.state.codeData.sourcebox.authToken,
+          server: this.state.codeData.sourcebox.server,
+          transports: this.state.codeData.sourcebox.transports || ['websocket']
+        });
+      } else if(this.state.embedType === EmbedTypes.Skulpt) {
+        project = new SkulptProject(projectData);
+      } else {
+        console.error('Unsupported embedType', window.__INITIAL_DATA__);
+      }
+
 
       toRender = <div className="col-xs-12" id="ide-container" style={{ height: this.props.height + 'px' }}><Ide project={project} messageList={messageList} /></div>;
     }
@@ -146,4 +155,8 @@ IdeWrapper.propTypes = {
 
 IdeWrapper.defaultProps = {
   height: 500,
+};
+
+IdeWrapper.contextTypes = {
+  remoteDispatcher: React.PropTypes.object
 };

@@ -237,7 +237,7 @@ export default class CodeEmbedCell extends BaseCell {
     //let frame = source !== '' ? <IFrame lazy={true} className="col-xs-12" width={width} height={height} src={`/embed/${source}`} allowFullScreen={true} frameBorder="0" /> : <p>Keine ID angegeben.</p>;
 
     // Add check for empty source
-    let wrapper = source !== '' ? <IdeWrapper remoteDispatcher={this.props.remoteDispatcher} className="col-xs-12" height={height} codeID={source} /> : <p>Keine ID angegeben.</p>;
+    let wrapper = source !== '' ? <IdeWrapper className="col-xs-12" height={height} codeID={source} /> : <p>Keine ID angegeben.</p>;
 
     if (!(isEditModeActive && editing)) {
       content = null;

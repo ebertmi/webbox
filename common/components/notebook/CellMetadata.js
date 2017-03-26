@@ -198,5 +198,6 @@ CellMetadata.propTypes = {
 };
 
 CellMetadata.contextTypes = {
-  messageList: React.PropTypes.object
+  messageList: React.PropTypes.object,
+  remoteDispatcher: React.PropTypes.object
 };

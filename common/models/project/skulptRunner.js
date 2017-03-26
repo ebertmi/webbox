@@ -52,7 +52,7 @@ export default class Runner extends EventEmitter {
     if (file != null) {
       return file;
     }
-
+    
     if (Sk.builtinFiles === undefined || Sk.builtinFiles.files[x] === undefined) {
         throw new Error('File not found: \'' + x + '\'');
     }

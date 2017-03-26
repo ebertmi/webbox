@@ -523,7 +523,7 @@ export default class Project extends EventEmitter {
     console.log("project remoteDispatcher instance");
     console.log(this.projectData.remoteDispatcher);
     // this.socketConnection = new RemoteDispatcher(this.projectData.communication);
-    this.socketConnection = this.projectData.remoteDispatcher;
+    this.socketConnection = (this.projectData.remoteDispatcher) ? this.projectData.remoteDispatcher : new RemoteDispatcher(this.projectData.communication);
     this.socketConnection.on('reconnect_failed', this.onReconnectFailed.bind(this));
   }
 

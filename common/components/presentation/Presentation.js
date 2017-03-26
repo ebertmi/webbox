@@ -17,6 +17,7 @@ import { toMarkdownComponent } from './markdownRenderer';
 import createTheme from "./theme";
 import { sourceFromCell, replaceIdWithSlug, notebookMetadataToSourceboxLanguage } from '../../util/nbUtil';
 import RawCell from '../notebook/RawCell';
+import {RemoteDispatcher} from '../../models/insights/remoteDispatcher';
 
 // Create the Theme from our custom theme
 const theme = createTheme();
@@ -31,6 +32,15 @@ const maxWidth = 1200;
 export default class Presentation extends React.Component {
   constructor(props) {
     super(props);
+    // Create global websocket connection
+    this.RemoteDispatcher = new RemoteDispatcher();
+  }
+
+  // Make messageList available in the tree
+  getChildContext() {
+    return {
+      remoteDispatcher: this.remoteDispatcher
+    };
   }
 
   componentWillMount() {
@@ -174,3 +184,7 @@ export default class Presentation extends React.Component {
     }
   }
 }
+
+Presentation.childContextTypes = {
+  remoteDispatcher: React.PropTypes.object
+};
