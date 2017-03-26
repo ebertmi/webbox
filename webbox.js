@@ -22,7 +22,7 @@ import Package from './package.json';
 
 // The default context is available for every response (template)
 const defaultContext = {
-  webboxVersion: Package.version,
+  webboxVersion: JSON.stringify(Package.version),
   isProd: config.isProd,
   isDev: config.isDev,
   KEENIO_PROJECTID: JSON.stringify(config.keenio.projectId),

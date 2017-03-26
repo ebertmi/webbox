@@ -6,6 +6,7 @@ block content
 
 block scripts
   script window.__INITIAL_STATE__ = !{initialState}
+  script window.__WEBBOX_VERSION__ = !{webboxVersion}
   if isProd
     script(src="/public/js/commons.bundle.#{webboxVersion}.js")
     script(src="/public/js/dashboard.bundle.#{webboxVersion}.js")
