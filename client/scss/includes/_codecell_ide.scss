@@ -16,3 +16,14 @@
     box-sizing: border-box;
   }
 }
+
+.ide-area>:last-child {
+  width: 50%;
+  background-color: #F9f9f9;
+  background: #F9F9F9;
+  border: #F9F9F9 solid 5px;
+  border-left: #ddd solid 1px;
+  border-top: #ddd solid 1px;
+  padding-left: 0.5rem;
+  overflow: scroll;
+}

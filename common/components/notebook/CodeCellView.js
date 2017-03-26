@@ -2,20 +2,18 @@ import React from 'react';
 import { EditSession, UndoManager } from 'ace';
 import classnames from 'classnames';
 
-import BaseCell from './BaseCell';
 import Editor from '../Editor';
 import Icon from '../Icon';
-import CellMetadata from './CellMetadata';
-import { EditButtonGroup } from './EditButtonGroup';
 import Terminal from '../ide/Terminal';
+import TabBar from '../ide/TabBar';
+import PanelArea from '../ide/PanelArea';
+import MatplotlibPanel from '../ide/panels/MatplotlibPanel';
+import TurtlePanel from '../ide/panels/TurtlePanel';
 
-import { updateCell } from '../../actions/NotebookActions';
 
 import { EmbedTypes, RunModeDefaults } from '../../constants/Embed';
 import Markdown from '../../util/markdown';
 import { createEmbedObject } from '../../util/embedUtils';
-import { MessageListModel } from '../../models/messages';
-import { usageConsole } from '../../util/usageLogger';
 
 import SourceboxProject from '../../models/project/sourceboxProject';
 import SkulptProject from '../../models/project/skulptProject';
@@ -32,6 +30,7 @@ export default class CodeCellView extends React.PureComponent {
     this.closeTerminal = this.closeTerminal.bind(this);
     this.undoChanges = this.undoChanges.bind(this);
     this.onRun = this.onRun.bind(this);
+    this.projectStateChange = this.projectStateChange.bind(this);
 
     this.state = { rendered: '', editMode: false, showTerminal: false };
   }
@@ -39,7 +38,8 @@ export default class CodeCellView extends React.PureComponent {
   componentWillMount() {
     let project = this.createEmptyProject();
     project.on('change',() => this.projectStateChange());
-    this.setState({project: project});
+    project.tabManager.on('change', this.projectStateChange);
+    this.setState({project: project, tabs: project.tabManager.getTabs()});
   }
   componentDidMount() {
     this.renderMarkdown(this.props.code);
@@ -186,7 +186,10 @@ export default class CodeCellView extends React.PureComponent {
   }
 
   projectStateChange() {
-    this.setState({projectIsRunnning : this.state.project.isRunning()});  // To force a Rerender
+    this.setState({
+      projectIsRunnning : this.state.project.isRunning(),
+      tabs: this.state.project.tabManager.getTabs()
+    });  // To force a Rerender
   }
 
 
@@ -203,7 +206,7 @@ export default class CodeCellView extends React.PureComponent {
 
   render() {
     const { cell, id, code } = this.props;
-    const { editMode, showTerminal, project } = this.state;
+    const { editMode, showTerminal, project, tabs } = this.state;
     const classes = classnames("code-cell col-xs-12 row");
     const externalIcon = <Icon name="external-link" className="icon-control code-cell-run-btn hidden-print" onClick={this.onRun} title="IDE in neuem Fenster öffnen" />;
     const editIcon = <Icon name="edit" className="icon-control code-cell-run-btn hidden-print" onClick={this.switchMode} title="Zum Editiermodus wechseln" />;
@@ -213,6 +216,20 @@ export default class CodeCellView extends React.PureComponent {
     const undoIcon = <Icon name="undo" className="icon-control code-cell-run-btn hidden-print" onClick={this.undoChanges} title="Änderungen rückgängig machen" />;
     const closeTerminalIcon = <Icon name="close" className="icon-control code-cell-run-btn hidden-print" onClick={this.closeTerminal} title="Terminal schliessen" />;
 
+    let secondPanel;
+    for(let i in tabs) {
+      let tab = tabs[i];
+      console.log(tab);
+      if(tab.type === "turtle" || tab.type === "matplotlib") {
+        let PanelType = tab.type == "turtle" ? TurtlePanel : MatplotlibPanel;
+        secondPanel = <PanelType className="second-panel" key={tab.index} active={tab.active} item={tab.item}/>;
+      }
+    }
+
+    const ideArea = <div className="ide-area" style={{height: '400px'}}>
+      <Terminal process={project.runner}/>
+      { secondPanel }
+    </div>;
 
     return (
       <div className={classes} id={id}>
@@ -224,7 +241,7 @@ export default class CodeCellView extends React.PureComponent {
           { showTerminal ? closeTerminalIcon : null }
         </div>
         { editMode ? this.renderEditMode() : this.renderReadMode() }
-        <div className="ide-area" style={{height: '200px'}}>{ showTerminal ? <Terminal process={project.runner}/> : null }</div>
+        { showTerminal ? ideArea : null }
       </div>
     );
   }
