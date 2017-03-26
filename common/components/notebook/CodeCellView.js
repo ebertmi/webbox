@@ -37,10 +37,42 @@ export default class CodeCellView extends React.PureComponent {
   }
 
   componentWillMount() {
-    this.setState({project: this.createEmptyProject()});
+    let project = this.createEmptyProject();
+    project.on('change',() => this.projectStateChange());
+    this.setState({project: project});
   }
   componentDidMount() {
     this.renderMarkdown(this.props.code);
+  }
+
+  createEmptyProject() {
+    // Step 1: Get all relevant information, language, embed type and code
+    let language = this.props.cell.getIn(['metadata', 'executionLanguage'], this.props.executionLanguage.executionLanguage);
+    let notebookEmbedType = this.props.embedType || EmbedTypes.Sourcebox;
+    const id = this.props.cell.getIn(['metadata', 'runid'], RunModeDefaults.id);
+    const embedType = this.props.cell.getIn(['metadata', 'embedType'], notebookEmbedType);
+
+    let projectData = {
+      embed: createEmbedObject('', language, embedType, id),
+      user: window.__USER_DATA__,
+      messageList: this.context.messageList,
+      communication: {
+        jwt: window.__WEBSOCKET__.authToken,
+        url: window.__WEBSOCKET__.server
+      }
+    };
+
+    if (window.__INITIAL_STATE__.embedType === EmbedTypes.Sourcebox) {
+      return new SourceboxProject(projectData, {
+        auth: window.__SOURCEBOX__.authToken,
+        server: window.__SOURCEBOX__.server,
+        transports: window.__SOURCEBOX__.transports || ['websocket']
+      });
+    } else if (window.__INITIAL_STATE__.embedType === EmbedTypes.Skulpt) {
+      return new SkulptProject(projectData);
+    } else {
+      console.error('Unsupported embedType', window.__INITIAL_STATE__.embedType);
+    }
   }
 
   /**
@@ -140,6 +172,7 @@ export default class CodeCellView extends React.PureComponent {
     let project = this.state.project;
 
     if(project.isRunning()) {
+      console.log("stop");
       project.stop();
     }
     else {
@@ -148,40 +181,15 @@ export default class CodeCellView extends React.PureComponent {
         showTerminal: true,
         project: project
       });
-      project.addEventListener('change',() => {console.log(this.state.project)});
       project.run();      // execute the code
     }
   }
 
-  createEmptyProject() {
-    // Step 1: Get all relevant information, language, embed type and code
-    let language = this.props.cell.getIn(['metadata', 'executionLanguage'], this.props.executionLanguage.executionLanguage);
-    let notebookEmbedType = this.props.embedType || EmbedTypes.Sourcebox;
-    const id = this.props.cell.getIn(['metadata', 'runid'], RunModeDefaults.id);
-    const embedType = this.props.cell.getIn(['metadata', 'embedType'], notebookEmbedType);
-
-    let projectData = {
-      embed: createEmbedObject('', language, embedType, id),
-      user: window.__USER_DATA__,
-      messageList: this.context.messageList,
-      communication: {
-        jwt: window.__WEBSOCKET__.authToken,
-        url: window.__WEBSOCKET__.server
-      }
-    };
-
-    if (window.__INITIAL_STATE__.embedType === EmbedTypes.Sourcebox) {
-      return new SourceboxProject(projectData, {
-        auth: window.__SOURCEBOX__.authToken,
-        server: window.__SOURCEBOX__.server,
-        transports: window.__SOURCEBOX__.transports || ['websocket']
-      });
-    } else if (window.__INITIAL_STATE__.embedType === EmbedTypes.Skulpt) {
-      return new SkulptProject(projectData);
-    } else {
-      console.error('Unsupported embedType', window.__INITIAL_STATE__.embedType);
-    }
+  projectStateChange() {
+    this.setState({projectIsRunnning : this.state.project.isRunning()});  // To force a Rerender
   }
+
+
 
   closeTerminal() {
     this.setState({
