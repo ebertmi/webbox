@@ -171,6 +171,9 @@ export default class CodeCellView extends React.PureComponent {
     let code = this.session != null ? this.session.getValue() : this.props.code;
     let project = this.state.project;
 
+    this.state.project.tabManager.closeTabByType("turtle");
+    this.state.project.tabManager.closeTabByType("matplotlib");
+
     if(project.isRunning()) {
       console.log("stop");
       project.stop();
