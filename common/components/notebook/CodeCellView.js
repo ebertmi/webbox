@@ -27,17 +27,18 @@ export default class CodeCellView extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.switchEditMode = this.switchEditMode.bind(this);
-    this.executeCode = this.executeCode.bind(this);
-    this.switchReadMode = this.switchReadMode.bind(this);
+    this.startStopExecution = this.startStopExecution.bind(this);
+    this.switchMode = this.switchMode.bind(this);
     this.closeTerminal = this.closeTerminal.bind(this);
+    this.undoChanges = this.undoChanges.bind(this);
     this.onRun = this.onRun.bind(this);
 
     this.state = { rendered: '', editMode: false, showTerminal: false };
-
-    // Maybe its good enough to set props into the state at this point, since the Values will not change for the View
   }
 
+  componentWillMount() {
+    this.setState({project: this.createEmptyProject()});
+  }
   componentDidMount() {
     this.renderMarkdown(this.props.code);
   }
@@ -96,9 +97,17 @@ export default class CodeCellView extends React.PureComponent {
     }
   }
 
-  switchEditMode() {
-    this.setState( { editMode: true } );
+  switchMode() {
+    if(this.state.editMode) {
+      this.setState({ editMode: false });
+      let content = this.session != null ? this.session.getValue() : this.props.code;
+      this.renderMarkdown(content);
+    }
+    else {
+      this.setState( { editMode: true } );
+    }
   }
+
   renderEditMode() {
     let minHeight = this.props.minHeight;
     let source = this.session != null ? this.session.getValue() : this.props.code;
@@ -121,76 +130,57 @@ export default class CodeCellView extends React.PureComponent {
     );
   }
 
-  switchReadMode() {
-    this.setState({
-      editMode: false
-    });
-    let content = this.session != null ? this.session.getValue() : this.props.code;
-    this.renderMarkdown(content);
-  }
+
   renderReadMode() {
     return <div className="col-xs-12" ref={this.onRef} dangerouslySetInnerHTML={{__html: this.state.rendered}}/>;
   }
 
-  executeCode() {
+  startStopExecution() {
+    let code = this.session != null ? this.session.getValue() : this.props.code;
+    let project = this.state.project;
+
+    if(project.isRunning()) {
+      project.stop();
+    }
+    else {
+      project.getFiles()[0].setValue(code);  // Set Code into File // Maybe Errorcheck // TODO
+      this.setState({
+        showTerminal: true,
+        project: project
+      });
+      project.addEventListener('change',() => {console.log(this.state.project)});
+      project.run();      // execute the code
+    }
+  }
+
+  createEmptyProject() {
     // Step 1: Get all relevant information, language, embed type and code
     let language = this.props.cell.getIn(['metadata', 'executionLanguage'], this.props.executionLanguage.executionLanguage);
     let notebookEmbedType = this.props.embedType || EmbedTypes.Sourcebox;
+    const id = this.props.cell.getIn(['metadata', 'runid'], RunModeDefaults.id);
     const embedType = this.props.cell.getIn(['metadata', 'embedType'], notebookEmbedType);
 
-    // I guess this should be either the original source or the changed source
-    let code = this.session != null ? this.session.getValue() : this.props.code;
-    //this.props.dispatch(updateCell(this.props.cell.get('id'), code));  //TODO:  So changes, in Edit Mode will not be reset by execute
-
-    // Experimental
-    const id = this.props.cell.getIn(['metadata', 'runid'], RunModeDefaults.id);
-
-    // Create embed data object
-    let embedData = createEmbedObject(code, language, embedType, id);
-
-    let messageList = new MessageListModel(usageConsole);
     let projectData = {
-      embed: embedData,
+      embed: createEmbedObject('', language, embedType, id),
       user: window.__USER_DATA__,
-      messageList: messageList,
+      messageList: this.context.messageList,
       communication: {
         jwt: window.__WEBSOCKET__.authToken,
         url: window.__WEBSOCKET__.server
       }
     };
 
-    let project;
     if (window.__INITIAL_STATE__.embedType === EmbedTypes.Sourcebox) {
-      project = new SourceboxProject(projectData, {
+      return new SourceboxProject(projectData, {
         auth: window.__SOURCEBOX__.authToken,
         server: window.__SOURCEBOX__.server,
         transports: window.__SOURCEBOX__.transports || ['websocket']
       });
     } else if (window.__INITIAL_STATE__.embedType === EmbedTypes.Skulpt) {
-      project = new SkulptProject(projectData);
+      return new SkulptProject(projectData);
     } else {
       console.error('Unsupported embedType', window.__INITIAL_STATE__.embedType);
     }
-
-    if(this.state.showTerminal) {  // There should be a easier Way than this?
-      this.setState({
-        showTerminal: false,
-        project: null
-      }, () => this.setState({
-        showTerminal: true,
-        project: project
-      }));
-    }
-    else {
-      this.setState({
-        showTerminal: true,
-        project: project
-      });
-    }
-
-
-    // execute the code
-    project.run();
   }
 
   closeTerminal() {
@@ -199,22 +189,30 @@ export default class CodeCellView extends React.PureComponent {
     });
   }
 
+  undoChanges() {
+    this.session.setValue(this.props.code);
+  }
+
   render() {
     const { cell, id, code } = this.props;
     const { editMode, showTerminal, project } = this.state;
     const classes = classnames("code-cell col-xs-12 row");
     const externalIcon = <Icon name="external-link" className="icon-control code-cell-run-btn hidden-print" onClick={this.onRun} title="IDE in neuem Fenster öffnen" />;
-    const editIcon = <Icon name="edit" className="icon-control code-cell-run-btn hidden-print" onClick={this.switchEditMode} title="Zum Editiermodus wechseln" />;
-    const readIcon = <Icon name="book" className="icon-control code-cell-run-btn hidden-print" onClick={this.switchReadMode} title="Zum Lesemodus wechseln" />;
-    const playIcon = <Icon name="play" className="icon-control code-cell-run-btn hidden-print" onClick={this.executeCode} title="Ausführmodus" />;
+    const editIcon = <Icon name="edit" className="icon-control code-cell-run-btn hidden-print" onClick={this.switchMode} title="Zum Editiermodus wechseln" />;
+    const readIcon = <Icon name="book" className="icon-control code-cell-run-btn hidden-print" onClick={this.switchMode} title="Zum Lesemodus wechseln" />;
+    const playIcon = <Icon name="play" className="success icon-control code-cell-run-btn hidden-print" onClick={this.startStopExecution} title="Code ausführen" />;
+    const stopIcon = <Icon name="stop" className="danger icon-control code-cell-run-btn hidden-print" onClick={this.startStopExecution} title="Code stoppen" />;
+    const undoIcon = <Icon name="undo" className="icon-control code-cell-run-btn hidden-print" onClick={this.undoChanges} title="Änderungen rückgängig machen" />;
     const closeTerminalIcon = <Icon name="close" className="icon-control code-cell-run-btn hidden-print" onClick={this.closeTerminal} title="Terminal schliessen" />;
+
 
     return (
       <div className={classes} id={id}>
         <div>
           { externalIcon }
           { editMode ? readIcon : editIcon}
-          { playIcon }
+          { project.isRunning() ? stopIcon : playIcon}
+          { undoIcon }
           { showTerminal ? closeTerminalIcon : null }
         </div>
         { editMode ? this.renderEditMode() : this.renderReadMode() }
@@ -224,3 +222,7 @@ export default class CodeCellView extends React.PureComponent {
   }
 }
 
+
+CodeCellView.contextTypes = {
+  messageList: React.PropTypes.object
+};
