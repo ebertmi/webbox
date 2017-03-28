@@ -17,6 +17,7 @@ import { createEmbedObject } from '../../util/embedUtils';
 
 import SourceboxProject from '../../models/project/sourceboxProject';
 import SkulptProject from '../../models/project/skulptProject';
+import {Severity} from "../../models/severity";
 
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
@@ -175,7 +176,6 @@ export default class CodeCellView extends React.PureComponent {
     this.state.project.tabManager.closeTabByType("matplotlib");
 
     if(project.isRunning()) {
-      console.log("stop");
       project.stop();
     }
     else {
@@ -207,6 +207,23 @@ export default class CodeCellView extends React.PureComponent {
     this.session.setValue(this.props.code);
   }
 
+  handleAdditionalPanels(tabs, project) {
+    let additionalTabCount = 0;
+    return tabs.map(({active, item, type}, index) => {
+      if(type === "turtle" || type === "matplotlib") {
+        if(additionalTabCount === 0)
+          additionalTabCount++
+        else {
+          this.context.messageList.showMessage(Severity.Error, new Error("Innerhalb dieser Komponente nur eine Turtle bzw. Matplotlib möglich."));
+          this.closeTerminal();
+          project.stop();
+        }
+        let PanelType = type == "turtle" ? TurtlePanel : MatplotlibPanel;
+        return <PanelType className="second-panel" key={index} active={active} item={item}/>;
+      }
+    });
+  }
+
   render() {
     const { cell, id, code } = this.props;
     const { editMode, showTerminal, project, tabs } = this.state;
@@ -218,20 +235,11 @@ export default class CodeCellView extends React.PureComponent {
     const stopIcon = <Icon name="stop" className="danger icon-control code-cell-run-btn hidden-print" onClick={this.startStopExecution} title="Code stoppen" />;
     const undoIcon = <Icon name="undo" className="icon-control code-cell-run-btn hidden-print" onClick={this.undoChanges} title="Änderungen rückgängig machen" />;
     const closeTerminalIcon = <Icon name="close" className="icon-control code-cell-run-btn hidden-print" onClick={this.closeTerminal} title="Terminal schliessen" />;
-
-    let secondPanel;
-    for(let i in tabs) {
-      let tab = tabs[i];
-      console.log(tab);
-      if(tab.type === "turtle" || tab.type === "matplotlib") {
-        let PanelType = tab.type == "turtle" ? TurtlePanel : MatplotlibPanel;
-        secondPanel = <PanelType className="second-panel" key={tab.index} active={tab.active} item={tab.item}/>;
-      }
-    }
+    let additionalPanels = showTerminal ? this.handleAdditionalPanels(tabs, project) : null;
 
     const ideArea = <div className="ide-area" style={{height: '400px'}}>
       <Terminal process={project.runner}/>
-      { secondPanel }
+      { additionalPanels }
     </div>;
 
     return (

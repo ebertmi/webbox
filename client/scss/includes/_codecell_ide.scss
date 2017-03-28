@@ -17,13 +17,19 @@
   }
 }
 
-.ide-area>:last-child {
+.ide-area>:last-child:not(:first-child) {
   width: 50%;
-  background-color: #F9f9f9;
-  background: #F9F9F9;
+  background-color: #F9F9F9;
   border: #F9F9F9 solid 5px;
   border-left: #ddd solid 1px;
   border-top: #ddd solid 1px;
   padding-left: 0.5rem;
-  overflow: scroll;
+  //overflow: scroll;
+}
+
+// Responsive Img for Matplotlib Images
+.math-panel img {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
