@@ -5,9 +5,12 @@ import {
   XYPlot,
   XAxis,
   YAxis,
+  makeWidthFlexible,
   VerticalGridLines,
   HorizontalGridLines,
   VerticalBarSeries} from 'react-vis';
+
+const FlexibleXYPlot = makeWidthFlexible(XYPlot);
 
 const debug = Debug('webbox:ErrorClusterView');
 
@@ -55,23 +58,23 @@ export default class ErrorClusterView extends React.Component {
   }
 
   render() {
-    debug('render with state:', this.state);
+   // debug('render with state:', this.state);
     return (
         <div className="container-fluid">
           <div className="row">
             <div className="col-xs-12">
               <h4>Häufige Fehler</h4>
-              <XYPlot
+              <FlexibleXYPlot
                 margin={{bottom: 70}}
                 xType="ordinal"
-                width={800}
-                height={500}>
+                
+                height={300}>
                 <VerticalGridLines />
                 <HorizontalGridLines />
                 <XAxis tickPadding={65} tickLabelAngle={45} title="Typ" />
                 <YAxis title="Anzahl" tickFormat={this.formatYAxisTicks} />
                 <VerticalBarSeries data={this.state.data}/>
-              </XYPlot>
+              </FlexibleXYPlot>
             </div>
           </div>
         </div>

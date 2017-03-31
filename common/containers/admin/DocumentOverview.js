@@ -35,7 +35,7 @@ class DocumentOverview extends Component {
   }
 
   renderTable() {
-    return (<table className="table table-sm tabl-striped">
+    return (<table className="table table-sm table-striped table-hover">
       <thead className="thead-inverse">
         <tr>
           <th>Id</th>

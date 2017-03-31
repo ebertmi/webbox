@@ -28,6 +28,7 @@ server {
 server {
 	listen 1443;
 	listen [::]:1443 default_server ipv6only=on;
+  ssl_protocols TLSv1.1 TLSv1.2;
   client_max_body_size 5M;
 
 
