@@ -83,13 +83,13 @@ export default class InsightsPanel extends React.Component {
 
   renderOverview() {
     if (this.state.components != null && this.state.components.TestResultOverview != null) {
-      return  <this.state.components.TestResultOverview testResults={this.props.item.testResultsOverview} />
+      return  <this.state.components.TestResultOverview testResults={this.props.item.testResultsOverview} />;
     }
   }
 
   renderTestResults() {
     if (this.state.components != null && this.state.components.TestResultOverview != null) {
-      return  <this.state.components.TestResultOverview testResults={this.props.item.testResultsOverview} />
+      return  <this.state.components.TestResultOverview testResults={this.props.item.testResultsOverview} />;
     }
   }
 
@@ -99,9 +99,15 @@ export default class InsightsPanel extends React.Component {
     }
   }
 
+  renderErrorClusters() {
+    if (this.state.components != null && this.state.components.ErrorClusterView != null) {
+      return <this.state.components.ErrorClusterView errorClusters={this.props.item.errorClusters} />;
+    }
+  }
+
   renderErrorView() {
     if (this.state.components != null && this.state.components.ErrorView != null) {
-      return  <this.state.components.ErrorView insights={this.props.item} />
+      return  <this.state.components.ErrorView insights={this.props.item} />;
     }
   }
 
@@ -116,6 +122,7 @@ export default class InsightsPanel extends React.Component {
         { this.renderOverview() }
         { this.renderTestResults() }
         { this.renderDatesCluster() }
+        { this.renderErrorClusters() }
         { this.renderErrorView() }
       </div>
     );

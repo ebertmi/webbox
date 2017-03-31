@@ -134,7 +134,7 @@ Trying to save encrypted password: foobar $2a$10$wYd78IZGAHPliuY.sVCYF.3GgwOq/6x
 Saved User:  foobar 2f6e1442-359b-4242-a885-401cbbd6932e
 ```
 
-Running the CLI on a production server requires to start it as follows: `NODE_ENV=production node ./bin/wb.js`
+Running the CLI on a production server requires to start it as follows: `NODE_ENV=production node ./bin/wb.js` or `sudo env NODE_ENV=production node ./bin/wb.js --help`
 
 ### IDE
 

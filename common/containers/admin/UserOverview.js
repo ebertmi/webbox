@@ -16,7 +16,7 @@ class UserOverview extends Component {
 
   renderTable () {
     return (
-      <table className="table table-sm tabl-striped">
+      <table className="table table-sm table-striped table-hover">
         <thead className="thead-inverse">
           <tr>
             <th>Id</th>

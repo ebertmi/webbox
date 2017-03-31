@@ -10,12 +10,20 @@ function renderMessage(props) {
   return props.message != null ? <Alert type={props.message.type} message={props.message.content} /> : null;
 }
 
+function getWebboxVersion() {
+  if (typeof window != "undefined") {
+    return window.__WEBBOX_VERSION__;
+  } else {
+    'Version not available';
+  }
+}
+
 function AdminApp(props) {
   return (
     <div className="dashboard container-fluid">
       <div className="row">
         <div className="col-md-12">
-          <h1>Verwaltung</h1>
+          <h1>Verwaltung <small style={{fontSize: "50%", float: "right"}}>Version: {getWebboxVersion()}</small></h1>
           <hr />
         </div>
       </div>

@@ -191,7 +191,9 @@ function mdReactFactory(options={}) {
       props.style = zipObject(
         props.style.split(';')
         .map(prop => prop.split(':'))
-        .map(keyVal => [camelCase(keyVal[0].trim()), keyVal[1].trim()])
+        .map(keyVal => {
+          return [camelCase(keyVal[0].trim()), keyVal.length > 1 ? keyVal[1].trim() : ''];
+        })
       );
     }
 
