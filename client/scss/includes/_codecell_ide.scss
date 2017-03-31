@@ -2,29 +2,35 @@
   flex-grow: 1;
   flex-shrink: 1;
   flex-basis: auto;
-
   background: url('/public/img/sourcebox-bg.svg') no-repeat center center/contain;
   display: flex;
   flex-flow: row;
   overflow: hidden;
-  border-top: #ddd solid 1px;
+  border: 1px solid #DDD;
+  margin-left: 15px;
+  margin-right: 15px;
+  position: relative;
   > * {
     flex-grow: 1;
     flex-shrink: 1;
-    flex-basis: 0px;
+    flex-basis: 0;
 
     box-sizing: border-box;
   }
 }
 
-.ide-area>:last-child:not(:first-child) {
+.terminal-wrapper {
+  border-width: 0;
+}
+
+.editor-wrapper {
+  margin-bottom: 5px;
+}
+
+.ide-area .turtle-panel, .ide-area .math-panel{
   width: 50%;
   background-color: #F9F9F9;
-  border: #F9F9F9 solid 5px;
   border-left: #ddd solid 1px;
-  border-top: #ddd solid 1px;
-  padding-left: 0.5rem;
-  //overflow: scroll;
 }
 
 // Responsive Img for Matplotlib Images
@@ -32,4 +38,46 @@
   display: block;
   max-width: 100%;
   height: auto;
+}
+
+.turtle-panel {
+  background-color: white;
+  >h1 {
+    display: none;
+  }
+}
+
+// Buttons
+.close-btn {   // Close Button shall float top right of the Output Area of the CodeCellView
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  color: #777;
+  font-size: 25px;
+  padding: 0.2rem 0.3rem 0.2rem 0.3rem;
+}
+
+.code-cell-btn {
+  border: 1px solid #DDD;
+  padding: 0 3px 0 3px;
+}
+
+.btn-area {
+  padding-left: 15px;
+  width: 100%;
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.success {
+  color: green;
+}
+
+.danger {
+  color: red;
+}
+
+.read-view figure {
+  margin-bottom: 5px;
 }
