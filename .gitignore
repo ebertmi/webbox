@@ -44,7 +44,13 @@ media
 
 # ignore bundled files
 public/js/*.bundle.js
+public/js/*.bundle.*.js
 public/js/*.bundle.js.map
+public/css/*.css
+
 
 # Ignore development settings
 config/development.json
+
+# JetBrains IDE Folder
+.idea
