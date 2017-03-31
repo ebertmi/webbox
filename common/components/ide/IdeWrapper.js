@@ -35,8 +35,7 @@ export default class IdeWrapper extends React.Component {
         embedName: data.meta.name,
         embedLang: data.meta.language,
         embedType: data.meta.embedType
-      })
-      console.info(data);
+      });
     }).catch(err => {
       // ToDo: handle connection/server errors
       console.error(err);
@@ -53,6 +52,13 @@ export default class IdeWrapper extends React.Component {
   onDownloadErrorNoticed(e) {
     this.setState({
       error: null
+    });
+  }
+
+  onProjectLoaded(data) {
+    this.setState({
+      codeData: data,
+      isDownloading: false
     });
   }
 
@@ -73,15 +79,21 @@ export default class IdeWrapper extends React.Component {
     }
 
     API.embed.getEmbed({ id: this.props.codeID  }).then(data => {
+      console.log(data.error);
       if(!data.error) {
-        this.setState({
-          codeData: data,
-          isDownloading: false
-        });
+        if(typeof Sk === "undefined") {
+          console.log("skulpt has not been loaded yet")
+          require.ensure([], require => {
+            require('exports-loader?Sk!../../../public/skulpt/skulpt.min.js');
+            require('exports-loader?Sk!../../../public/skulpt/skulpt-stdlib.js');
+            this.onProjectLoaded(data);
+          });
+        } else {
+          this.onProjectLoaded(data);
+        }
       } else {
         this.setErrorState(data.error.title);
       }
-
     }).catch(err => {
       this.setErrorState(err);
       console.log(err);
