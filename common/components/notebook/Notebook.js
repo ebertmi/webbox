@@ -12,6 +12,7 @@ import { MessageListModel, MessageWithAction } from '../../models/messages';
 import { Action } from '../../models/actions';
 import { Severity } from '../../models/severity';
 import { MessageList } from '../messagelist/messageList';
+import {RemoteDispatcher} from '../../models/insights/remoteDispatcher';
 
 import { loadCellsFromIPYNB, stateToJS, replaceIdWithSlug, notebookMetadataToSourceboxLanguage } from '../../util/nbUtil';
 import { addCellsFromJS, toggleViewMode, updateNotebookMetadata } from '../../actions/NotebookActions';
@@ -29,6 +30,9 @@ export default class Notebook extends React.Component {
     // Create global message list
     this.messageList = new MessageListModel();
 
+    // Create global websocket connection
+    this.remoteDispatcher = new RemoteDispatcher();
+
     this.onDrop = this.onDrop.bind(this);
     this.onDragOver = this.onDragOver.bind(this);
     this.onSave = this.onSave.bind(this);
@@ -45,7 +49,8 @@ export default class Notebook extends React.Component {
   // Make messageList available in the tree
   getChildContext() {
     return {
-      messageList: this.messageList
+      messageList: this.messageList,
+      remoteDispatcher: this.remoteDispatcher
     };
   }
 
@@ -309,7 +314,6 @@ export default class Notebook extends React.Component {
   }
 
   render() {
-
     // Init dynamic loading of AnalyticsDashboard to reduce initial load
     if (this.props.notebook.get('showAnalytics') && this.state.dashboardComponent == null) {
       require.ensure('./analytics/AnalyticsDashboard', require => {
@@ -323,5 +327,6 @@ export default class Notebook extends React.Component {
 }
 
 Notebook.childContextTypes = {
-  messageList: React.PropTypes.object
+  messageList: React.PropTypes.object,
+  remoteDispatcher: React.PropTypes.object
 };

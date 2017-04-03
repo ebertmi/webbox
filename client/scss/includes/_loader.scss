@@ -1,0 +1,23 @@
+@import '~loaders.css/src/animations/line-scale.scss';
+
+.loader {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: 25%;
+  max-width: 25%;
+  height: 200px;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-hidden {
+  display: none;
+}
+
+.loader-active {
+  display: flex;
+  align-items: center;
+}
