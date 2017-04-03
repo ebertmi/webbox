@@ -1,7 +1,13 @@
+.code-cell {
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  padding-left: 0;
+
+}
+
 .ide-area {
-  flex-grow: 1;
-  flex-shrink: 1;
-  flex-basis: auto;
+  flex: 1 1 100%;
   background: url('/public/img/sourcebox-bg.svg') no-repeat center center/contain;
   display: flex;
   flex-flow: row;
@@ -19,18 +25,35 @@
   }
 }
 
-.terminal-wrapper {
-  border-width: 0;
+
+ // CODE AREA
+.edit-view,.read-view {
+  flex: 1 0 auto;
+  width: auto;
+  max-width: none;
+  padding-left: 0;
 }
 
-.editor-wrapper {
+.edit-view {
   margin-bottom: 5px;
+  .ace_editor {
+    border: 1px solid #DDD;
+  }
+}
+
+.read-view figure {
+    min-height: 100px;
 }
 
 .ide-area .turtle-panel, .ide-area .math-panel{
   width: 50%;
   background-color: #F9F9F9;
   border-left: #ddd solid 1px;
+}
+
+// OUTPUT AREA
+.terminal-wrapper {
+  border-width: 0;
 }
 
 // Responsive Img for Matplotlib Images
@@ -47,7 +70,17 @@
   }
 }
 
-// Buttons
+// BUTTONS
+.action-btn-group {
+  padding-top: 4px;
+  display: flex;
+  flex-direction: column;
+  margin: 0 0 16px 15px;
+  .icon-control {
+    padding: 0 4px 4px 4px;
+  }
+}
+
 .close-btn {   // Close Button shall float top right of the Output Area of the CodeCellView
   position: absolute;
   z-index: 1;
@@ -78,6 +111,3 @@
   color: red;
 }
 
-.read-view figure {
-  margin-bottom: 5px;
-}

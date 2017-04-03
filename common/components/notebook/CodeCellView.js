@@ -30,6 +30,7 @@ export default class CodeCellView extends React.PureComponent {
     this.undoChanges = this.undoChanges.bind(this);
     this.onRun = this.onRun.bind(this);
     this.projectStateChange = this.projectStateChange.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
 
     this.state = { rendered: '', editMode: false, showTerminal: false };
   }
@@ -44,7 +45,19 @@ export default class CodeCellView extends React.PureComponent {
     this.renderMarkdown(this.props.code);
   }
 
-  onKeyDown() {
+  onKeyDown(e) {
+    // Shift + Enter -> Execute Code
+    if((e.metaKey || (e.shiftKey && !e.altKey && !e.ctrlKey)) && e.key === "Enter") {
+      this.startStopExecution();
+      e.preventDefault();
+    }
+
+      console.log(e.key);
+    // Escape -> ReadMode
+    if(!e.metaKey && !e.shiftKey && !e.altKey && !e.ctrlKey && e.key === "Escape" && this.state.editMode) {
+      this.switchMode();
+      e.preventDefault();
+    }
 
   }
 
@@ -74,6 +87,7 @@ export default class CodeCellView extends React.PureComponent {
     } else if (embedType === EmbedTypes.Skulpt) {
       return new SkulptProject(projectData);
     } else {
+      this.context.messageList.showMessage(Severity.Error, new Error("Innerhalb dieser Komponente nur eine Turtle bzw. Matplotlib möglich."));
       console.error('Unsupported embedType', window.embedType);
     }
   }
@@ -144,7 +158,7 @@ export default class CodeCellView extends React.PureComponent {
   }
 
   renderEditMode() {
-    let minHeight = this.props.minHeight;
+    let minHeight = 100;
     let source = this.session != null ? this.session.getValue() : this.props.code;
     let languageName = this.props.notebookLanguage || 'python';
     let mode = this.props.cell.getIn(['metadata', 'mode'], languageName);
@@ -158,8 +172,7 @@ export default class CodeCellView extends React.PureComponent {
     }
 
     return (
-      <div className="editor-wrapper col-xs-12" onKeyDown={this.onKeyDown}>
-        <strong>Editiermodus (Änderungen nur temporär)</strong>
+      <div className="edit-view col-xs-12" onKeyDown={this.onKeyDown}>
         <Editor fontSize="14px" minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />
       </div>
     );
@@ -174,7 +187,6 @@ export default class CodeCellView extends React.PureComponent {
     let code = this.session != null ? this.session.getValue() : this.props.code;
     let project = this.state.project;
 
-    //this.state.project.tabManager.closeTabByType("turtle");
     this.state.project.tabManager.closeTabByType("matplotlib");
 
     if(project.isRunning()) {
@@ -207,13 +219,15 @@ export default class CodeCellView extends React.PureComponent {
 
   undoChanges() {
     this.session.setValue(this.props.code);
+    this.setState({
+      change: true
+    });
   }
 
   handleAdditionalPanels(tabs, project) {
     let additionalTabCount = 0;
     return tabs.map(({active, item, type}, index) => {
       if(type === "turtle" || type === "matplotlib") {
-        console.log(tabs[index]);
         if(additionalTabCount === 0) {
           additionalTabCount++;
           let PanelType = type == "turtle" ? TurtlePanel : MatplotlibPanel;
@@ -234,8 +248,8 @@ export default class CodeCellView extends React.PureComponent {
     const classes = classnames("code-cell col-xs-12 row");
     const externalIcon = <Icon name="external-link" className="icon-control hidden-print" onClick={this.onRun} title="IDE in neuem Fenster öffnen" />;
     const editIcon = <Icon name="edit" className="icon-control hidden-print" onClick={this.switchMode} title="Zum Editiermodus wechseln" />;
-    const readIcon = <Icon name="book" className="icon-control hidden-print" onClick={this.switchMode} title="Zum Lesemodus wechseln" />;
-    const playIcon = <Icon name="play" className="success icon-control hidden-print" onClick={this.startStopExecution} title="Code ausführen" />;
+    const readIcon = <Icon name="book" className="icon-control hidden-print" onClick={this.switchMode} title="Zum Lesemodus wechseln (Escape)" />;
+    const playIcon = <Icon name="play" className="success icon-control hidden-print" onClick={this.startStopExecution} title="Code ausführen (Shift + Enter)" />;
     const stopIcon = <Icon name="stop" className="danger icon-control hidden-print" onClick={this.startStopExecution} title="Code stoppen" />;
     const undoIcon = <Icon name="undo" className="danger icon-control hidden-print" onClick={this.undoChanges} title="Änderungen rückgängig machen" />;
     const closeTerminalIcon = <Icon name="close" className="close-btn icon-control hidden-print" onClick={this.closeTerminal} title="Terminal schliessen" />;
@@ -252,16 +266,17 @@ export default class CodeCellView extends React.PureComponent {
       { additionalPanels }
     </div>;
 
+    //<div className="btn-area"> {playStopBtn} </div>
     return (
       <div className={classes} id={id}>
-        <div>
+        <div className="action-btn-group">
           { externalIcon }
           { editMode ? readIcon : editIcon}
           { project.isRunning() ? stopIcon : playIcon}
           { this.session ? (this.session.getValue() === code ? null : undoIcon) : null }
         </div>
         { editMode ? this.renderEditMode() : this.renderReadMode() }
-        <div className="btn-area"> {playStopBtn} </div>
+
         { showTerminal ? ideArea : null }
       </div>
     );
