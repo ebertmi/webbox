@@ -90,9 +90,8 @@ export default class Presentation extends React.Component {
 
         embedType = cell.getIn(['metadata', 'embedType'], notebook.getIn(['metadata', 'embedType']));
         runId = cell.getIn(['metadata', 'runid']);
-        return <Highlight showRunButton={true} embedType={embedType} runId={runId} source={source} executionLanguage={executionLanguage} lang={lang}></Highlight>;
-        //return <CodeCellView code={source} cell={cell} executionLanguage={executionLanguage}
-                             notebookLanguage={lang} embedType={embedType}/>;
+        //return <Highlight showRunButton={true} embedType={embedType} runId={runId} source={source} executionLanguage={executionLanguage} lang={lang}></Highlight>;
+        return <CodeCellView code={source} cell={cell} executionLanguage={executionLanguage} notebookLanguage={lang} embedType={embedType}/>;
       case 'codeembed':
         //return <Text>{source}</Text>;
         height = parseInt(cell.getIn(['metadata', 'height'], 350));
