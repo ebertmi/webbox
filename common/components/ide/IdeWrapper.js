@@ -11,6 +11,10 @@ import { API } from '../../services';
 import Debug from 'debug';
 const debug = Debug('webbox:IdeWrapper');
 
+const ErrorTypes = {
+  EmbedLoadingError: "embedLoadingError",
+  AuthentificationError: "authentificationError"
+};
 
 /**
  * Class represents wrapper for an instance of an ide component
@@ -30,12 +34,13 @@ export default class IdeWrapper extends React.Component {
 
     this.state = {
       codeData: null,
-      embedName: null,
-      embedLang: null,
-      embedType: null,
+      embedName: "",
+      embedLang: "",
+      embedType: "",
       isDownloading: false,
       IdeComponent: null,
-      error: null
+      error: null,
+      errorType: null
     };
   }
 
@@ -52,10 +57,12 @@ export default class IdeWrapper extends React.Component {
    * Resets the isDownloading state if the error occurred while downloading embed
    * 
    * @param {string} err specific message of occurred error
+   * @param {ErrorTypes} type type of the error to set
    */
-  setErrorState(err) {
+  setErrorState(err, type) {
     this.setState({
       error: err,
+      errorType: type,
       isDownloading: false
     });
   }
@@ -65,7 +72,8 @@ export default class IdeWrapper extends React.Component {
    */
   onDownloadErrorNoticed() {
     this.setState({
-      error: null
+      error: null,
+      errorType: null
     });
   }
 
@@ -142,9 +150,38 @@ export default class IdeWrapper extends React.Component {
         embedType: data.meta.embedType,
       });
     }).catch(err => {
-      this.setErrorState(err);
+      this.setErrorState("embed_loading_error", ErrorTypes.EmbedLoadingError);
       debug(err);
     });
+  }
+
+  /**
+   * Generates embed window to render. Content depens on the current state
+   */
+  generateEmbedWindowByState() {
+    let stateIndicator = "";
+    let classNames = "";
+    let headlineMessage = "";
+    let clickEvent = null;
+    classNames = (!this.state.codeData) ? "downloadEmbed" : "";
+    if(this.state.error == null) {
+      stateIndicator = (!this.state.isDownloading) ? <img src="/public/img/download.png" /> : <Loader type="line-scale" />;
+      headlineMessage = this.state.embedName + " - " + this.state.embedLang;
+      clickEvent = this.onClick;
+    } else if(this.state.errorType == ErrorTypes.EmbedLoadingError) {
+      stateIndicator = (!this.state.isDownloading) ? <i className="fa fa-3x fa-repeat" aria-hidden="true"></i> : <Loader type="line-scale" />;
+      headlineMessage = this.state.error;
+      clickEvent = this.getAndSetEmbedMetadata;
+    } else {
+      stateIndicator = <span className="lead">Ok</span>;
+      headlineMessage = this.state.error;
+      clickEvent = this.onDownloadErrorNoticed;
+    }
+
+    return <div className={"container " + classNames} onClick={clickEvent}>
+              <h3>{headlineMessage}</h3>
+              {stateIndicator}
+          </div>;
   }
 
   /**
@@ -153,45 +190,14 @@ export default class IdeWrapper extends React.Component {
   renderIdeWrapper() {
     let toRender;
     if ((this.state.codeData == null || this.state.IdeComponent == null) || this.state.error != null) { // check if embed data has been loaded
-      if(this.state.error == null) { // meta data could successfully loaded, render download button for embed data
-        let stateIndicator = (!this.state.isDownloading) ? <img src="/public/img/download.png" /> : <Loader type="line-scale" />;
-        let classNames = (!this.state.codeData) ? "downloadEmbed" : "";
-        toRender = <div className={"container " + classNames} onClick={this.onClick}>
-          <h3>{this.state.embedName} - {this.state.embedLang}</h3>
-          {stateIndicator}
-        </div>;
-      } else {
-        if(this.state.embedName == null) {  // embed data could not be loaded, render error message with reload button
-          let stateIndicator = (!this.state.isDownloading) ? <i className="fa fa-3x fa-repeat" aria-hidden="true"></i> : <Loader type="line-scale" />;
-          let classNames = (!this.state.codeData) ? "downloadEmbed" : "";
-          // TODO: replace hardcoded text by preconfigured
-          toRender = <div className={"container " + classNames} onClick={this.getAndSetEmbedMetadata}>
-            <h3>Fehler beim Laden der Informationsdaten.</h3>
-            {stateIndicator}
-          </div>;
-        } else { // an other error occurred, render error panel with error message
-          // TODO: replace hardcoded text by preconfigured text
-          toRender = <div className="alert alert-danger alert-dismissable col-xs-12">
-            <a onClick={this.onDownloadErrorNoticed} className="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <strong>Fehler:</strong> {this.state.error}
-          </div>;
-        }
-      }
+      return this.generateEmbedWindowByState();
     } else {
-      // Currently jwt and url will be set with every instance, maybe set default configuration, think token (per user) and url will be always equal
-      this.context.remoteDispatcher.jwt = this.state.codeData.websocket.authToken;
-      this.context.remoteDispatcher.url = this.state.codeData.websocket.server;
       let messageList = new MessageListModel(usageConsole);
       let projectData = {
         embed: this.state.codeData.INITIAL_DATA,
         user: this.state.codeData.USER_DATA,
         messageList: messageList,
         remoteDispatcher: this.context.remoteDispatcher,
-        // still necessary for bare embed view
-        communication: {
-          jwt: this.state.codeData.websocket.authToken,
-          url: this.state.codeData.websocket.server
-        }
       };
 
       let project;
