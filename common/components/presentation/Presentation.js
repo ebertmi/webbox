@@ -13,6 +13,7 @@ import {
 
 // Custom Modules
 import Highlight from './Highlight';
+import CodeCellView from '../notebook/CodeCellView';
 import { toMarkdownComponent } from './markdownRenderer';
 import createTheme from "./theme";
 import { sourceFromCell, replaceIdWithSlug, notebookMetadataToSourceboxLanguage } from '../../util/nbUtil';
@@ -90,6 +91,8 @@ export default class Presentation extends React.Component {
         embedType = cell.getIn(['metadata', 'embedType'], notebook.getIn(['metadata', 'embedType']));
         runId = cell.getIn(['metadata', 'runid']);
         return <Highlight showRunButton={true} embedType={embedType} runId={runId} source={source} executionLanguage={executionLanguage} lang={lang}></Highlight>;
+        //return <CodeCellView code={source} cell={cell} executionLanguage={executionLanguage}
+                             notebookLanguage={lang} embedType={embedType}/>;
       case 'codeembed':
         //return <Text>{source}</Text>;
         height = parseInt(cell.getIn(['metadata', 'height'], 350));

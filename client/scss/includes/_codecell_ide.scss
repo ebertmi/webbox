@@ -11,11 +11,12 @@
   background: url('/public/img/sourcebox-bg.svg') no-repeat center center/contain;
   display: flex;
   flex-flow: row;
-  overflow: hidden;
+  overflow: scroll;
   border: 1px solid #DDD;
   margin-left: 15px;
   margin-right: 15px;
   position: relative;
+  resize: vertical;
   > * {
     flex-grow: 1;
     flex-shrink: 1;

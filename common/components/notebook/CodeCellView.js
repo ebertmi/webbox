@@ -37,9 +37,11 @@ export default class CodeCellView extends React.PureComponent {
 
   componentWillMount() {
     let project = this.createEmptyProject();
-    project.tabManager.on('change', this.projectStateChange);
-    project.on('change',() => this.projectStateChange());
-    this.setState({project: project, tabs: project.tabManager.getTabs()});
+    if(project) {
+      project.tabManager.on('change', this.projectStateChange);
+      project.on('change',() => this.projectStateChange());
+      this.setState({project: project, tabs: project.tabManager.getTabs()});
+    }
   }
   componentDidMount() {
     this.renderMarkdown(this.props.code);
@@ -72,10 +74,7 @@ export default class CodeCellView extends React.PureComponent {
       embed: createEmbedObject('', language, embedType, id),
       user: window.__USER_DATA__,
       messageList: this.context.messageList,
-      communication: {
-        jwt: window.__WEBSOCKET__.authToken,
-        url: window.__WEBSOCKET__.server
-      }
+      remoteDispatcher: this.context.remoteDispatcher,
     };
 
     if (embedType === EmbedTypes.Sourcebox) {
@@ -87,15 +86,11 @@ export default class CodeCellView extends React.PureComponent {
     } else if (embedType === EmbedTypes.Skulpt) {
       return new SkulptProject(projectData);
     } else {
-      this.context.messageList.showMessage(Severity.Error, new Error("Innerhalb dieser Komponente nur eine Turtle bzw. Matplotlib möglich."));
-      console.error('Unsupported embedType', window.embedType);
+      this.context.messageList.showMessage(Severity.Error, new Error("Ungültiger oder nicht unterstützter 'embedType' wurde eingestellt. Wenden Sie sich zur Lösung an den Autor!"));
+      return null;
     }
   }
 
-  /**
-   * Clicked the run button. Should we enable postMessage communication with the new window?
-   * Maybe at some point later
-   */
   onRun() {
     /**
      * Running an unnamed example:
@@ -225,21 +220,27 @@ export default class CodeCellView extends React.PureComponent {
   }
 
   handleAdditionalPanels(tabs, project) {
-    let additionalTabCount = 0;
+    let additionalPanel = false;
     return tabs.map(({active, item, type}, index) => {
-      if(type === "turtle" || type === "matplotlib") {
-        if(additionalTabCount === 0) {
-          additionalTabCount++;
-          let PanelType = type == "turtle" ? TurtlePanel : MatplotlibPanel;
-          return <PanelType className="second-panel" key={index} active={active} item={item}/>;
-        }
-        else {
-          this.context.messageList.showMessage(Severity.Error, new Error("Innerhalb dieser Komponente nur eine Turtle bzw. Matplotlib möglich."));
-          this.closeTerminal();
-          project.stop();
-        }
+      let PanelType;
+      switch(type) {
+        case "turtle":
+          PanelType = TurtlePanel;
+          break;
+        case "matplotlib":
+          PanelType = MatplotlibPanel;
+          break;
+        default:
       }
-    });
+
+      if(PanelType && !additionalPanel) {
+        additionalPanel = true;
+        return <PanelType className="second-panel" key={index} active={active} item={item}/>;
+      }
+      else if(PanelType && additionalPanel) {
+        this.context.messageList.showMessage(Severity.Warning, new Error("Anzeige mehrere Turtle- bzw. Matplotlib-Graphen wird nicht unterstützt!"));
+      }
+    })
   }
 
   render() {
@@ -254,36 +255,32 @@ export default class CodeCellView extends React.PureComponent {
     const undoIcon = <Icon name="undo" className="danger icon-control hidden-print" onClick={this.undoChanges} title="Änderungen rückgängig machen" />;
     const closeTerminalIcon = <Icon name="close" className="close-btn icon-control hidden-print" onClick={this.closeTerminal} title="Terminal schliessen" />;
     let additionalPanels = showTerminal ? this.handleAdditionalPanels(tabs, project, code) : null;
+    const missingEmbed = <div className="col-lg-12 col-md-12 col-xs-12 alert alert-danger">Ungültiger embedType. Wenden Sie sich an den Autor!</div>;
 
-    const playStopBtn = <div className="code-cell-btn" onClick={this.startStopExecution}>
-      { project.isRunning() ? stopIcon : playIcon }
-      { project.isRunning() ? "Stoppen" : "Ausführen" }
-    </div>;
-
-    const ideArea = <div className="ide-area" style={{height: '400px'}}>
+    const ideArea = <div className="ide-area" style={{height: '200px'}}>
       { showTerminal ? closeTerminalIcon : null }
-      <Terminal process={project.runner}/>
+      { project ? <Terminal process={project.runner}/> : null}
       { additionalPanels }
     </div>;
 
-    //<div className="btn-area"> {playStopBtn} </div>
     return (
-      <div className={classes} id={id}>
-        <div className="action-btn-group">
-          { externalIcon }
-          { editMode ? readIcon : editIcon}
-          { project.isRunning() ? stopIcon : playIcon}
-          { this.session ? (this.session.getValue() === code ? null : undoIcon) : null }
+        <div className={classes} id={id}>
+          { !project ? missingEmbed : null}
+          <div className="action-btn-group">
+            { externalIcon }
+            { editMode ? readIcon : editIcon}
+            { project ? (project.isRunning() ? stopIcon : playIcon) : null}
+            { this.session ? (this.session.getValue() === code ? null : undoIcon) : null }
+          </div>
+          { editMode ? this.renderEditMode() : this.renderReadMode() }
+          { showTerminal ? ideArea : null }
         </div>
-        { editMode ? this.renderEditMode() : this.renderReadMode() }
-
-        { showTerminal ? ideArea : null }
-      </div>
     );
   }
 }
 
 
 CodeCellView.contextTypes = {
-  messageList: React.PropTypes.object
+  messageList: React.PropTypes.object,
+  remoteDispatcher: React.PropTypes.object
 };
