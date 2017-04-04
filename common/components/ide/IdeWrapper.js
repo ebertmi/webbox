@@ -8,13 +8,25 @@ import { usageConsole } from '../../util/usageLogger';
 import { MessageListModel } from '../../models/messages';
 import { EmbedTypes } from '../../constants/Embed';
 import { API } from '../../services';
+import Debug from 'debug';
+const debug = Debug('webbox:IdeWrapper');
 
+
+/**
+ * Class represents wrapper for an instance of an ide component
+ */
 export default class IdeWrapper extends React.Component {
+  /**
+   * 
+   * @param {object} props properties of component
+   */
   constructor(props) {
     super(props);
 
     this.onClick = this.onClick.bind(this);
     this.onDownloadErrorNoticed = this.onDownloadErrorNoticed.bind(this);
+    this.getAndSetEmbedMetadata = this.getAndSetEmbedMetadata.bind(this);
+    this.onClick = this.onClick.bind(this);
 
     this.state = {
       codeData: null,
@@ -27,21 +39,20 @@ export default class IdeWrapper extends React.Component {
     };
   }
 
+  /**
+   * Will be executed before rendering component. State changes won't trigger a re-rendering.
+   * IdeWrapper use it to get meta data of embed for showing it without loading the whole.
+   */
   componentWillMount() {
-    // Call API to get metadata for this embed
-    API.embed.getEmbedMetadata({ id: this.props.codeID }).then(data => {
-      // update state with the required meta data and then rerender and display the name...
-      this.setState({
-        embedName: data.meta.name,
-        embedLang: data.meta.language,
-        embedType: data.meta.embedType
-      });
-    }).catch(err => {
-      // ToDo: handle connection/server errors
-      console.error(err);
-    });
+    this.getAndSetEmbedMetadata();
   }
 
+  /**
+   * Sets the error state with given error message.
+   * Resets the isDownloading state if the error occurred while downloading embed
+   * 
+   * @param {string} err specific message of occurred error
+   */
   setErrorState(err) {
     this.setState({
       error: err,
@@ -49,12 +60,21 @@ export default class IdeWrapper extends React.Component {
     });
   }
 
-  onDownloadErrorNoticed(e) {
+  /**
+   * Resets the error state
+   */
+  onDownloadErrorNoticed() {
     this.setState({
       error: null
     });
   }
 
+  /**
+   * Sets the embed data by given data.
+   * Also it resets the isDownloading state.
+   * 
+   * @param {object} data date of loaded embed
+   */
   onProjectLoaded(data) {
     this.setState({
       codeData: data,
@@ -62,7 +82,11 @@ export default class IdeWrapper extends React.Component {
     });
   }
 
-  onClick(e) {
+  /**
+   * Sets the isDownloading state, loads the ide component as well the embed data.
+   * Sets the embed data automatically after downloading them.
+   */
+  onClick() {
     this.setState({
       codeData: null,
       isDownloading: true
@@ -79,10 +103,12 @@ export default class IdeWrapper extends React.Component {
     }
 
     API.embed.getEmbed({ id: this.props.codeID  }).then(data => {
-      console.log(data.error);
       if(!data.error) {
+        if(data.INITIAL_DATA.meta.embedType != EmbedTypes.Sourcebox && data.INITIAL_DATA.meta.embedType != EmbedTypes.Skulpt) {
+          console.log(data.INITIAL_DATA.meta.embedType);
+          this.setErrorState("Nicht unterstütztes Beispielformat.");
+        }
         if(typeof Sk === "undefined") {
-          console.log("skulpt has not been loaded yet")
           require.ensure([], require => {
             require('exports-loader?Sk!../../../public/skulpt/skulpt.min.js');
             require('exports-loader?Sk!../../../public/skulpt/skulpt-stdlib.js');
@@ -96,14 +122,38 @@ export default class IdeWrapper extends React.Component {
       }
     }).catch(err => {
       this.setErrorState(err);
-      console.log(err);
+      debug(err);
     });
   }
 
+  getAndSetEmbedMetadata() {
+    // check if reloading meta data
+    if(this.state.error != null) {
+      this.setState({
+        isDownloading: true
+      });
+    }
+
+    // Call API to get metadata for this embed
+    API.embed.getEmbedMetadata({ id: this.props.codeID }).then(data => {
+      this.setState({
+        embedName: data.meta.name,
+        embedLang: data.meta.language,
+        embedType: data.meta.embedType,
+      });
+    }).catch(err => {
+      this.setErrorState(err);
+      debug(err);
+    });
+  }
+
+  /**
+   * Creates html code to render depending on current state.
+   */
   renderIdeWrapper() {
     let toRender;
-    if (this.state.codeData == null || this.state.IdeComponent == null) {
-      if(this.state.error == null) {
+    if ((this.state.codeData == null || this.state.IdeComponent == null) || this.state.error != null) { // check if embed data has been loaded
+      if(this.state.error == null) { // meta data could successfully loaded, render download button for embed data
         let stateIndicator = (!this.state.isDownloading) ? <img src="/public/img/download.png" /> : <Loader type="line-scale" />;
         let classNames = (!this.state.codeData) ? "downloadEmbed" : "";
         toRender = <div className={"container " + classNames} onClick={this.onClick}>
@@ -111,11 +161,21 @@ export default class IdeWrapper extends React.Component {
           {stateIndicator}
         </div>;
       } else {
-        // TODO: replace hardcoded text by preconfigured text
-        toRender = <div className="alert alert-danger alert-dismissable col-xs-12">
-          <a onClick={this.onDownloadErrorNoticed} className="close" data-dismiss="alert" aria-label="close">&times;</a>
-          <strong>Fehler:</strong> {this.state.error}
-        </div>;
+        if(this.state.embedName == null) {  // embed data could not be loaded, render error message with reload button
+          let stateIndicator = (!this.state.isDownloading) ? <i className="fa fa-3x fa-repeat" aria-hidden="true"></i> : <Loader type="line-scale" />;
+          let classNames = (!this.state.codeData) ? "downloadEmbed" : "";
+          // TODO: replace hardcoded text by preconfigured
+          toRender = <div className={"container " + classNames} onClick={this.getAndSetEmbedMetadata}>
+            <h3>Fehler beim Laden der Informationsdaten.</h3>
+            {stateIndicator}
+          </div>;
+        } else { // an other error occurred, render error panel with error message
+          // TODO: replace hardcoded text by preconfigured text
+          toRender = <div className="alert alert-danger alert-dismissable col-xs-12">
+            <a onClick={this.onDownloadErrorNoticed} className="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Fehler:</strong> {this.state.error}
+          </div>;
+        }
       }
     } else {
       // Currently jwt and url will be set with every instance, maybe set default configuration, think token (per user) and url will be always equal
@@ -127,7 +187,7 @@ export default class IdeWrapper extends React.Component {
         user: this.state.codeData.USER_DATA,
         messageList: messageList,
         remoteDispatcher: this.context.remoteDispatcher,
-        // might be removed
+        // still necessary for bare embed view
         communication: {
           jwt: this.state.codeData.websocket.authToken,
           url: this.state.codeData.websocket.server
@@ -143,10 +203,7 @@ export default class IdeWrapper extends React.Component {
         });
       } else if(this.state.embedType === EmbedTypes.Skulpt) {
         project = new SkulptProject(projectData);
-      } else {
-        console.error('Unsupported embedType', window.__INITIAL_DATA__);
       }
-
 
       toRender = <div className="col-xs-12" id="ide-container" style={{ height: this.props.height + 'px' }}><Ide project={project} messageList={messageList} /></div>;
     }
@@ -154,21 +211,27 @@ export default class IdeWrapper extends React.Component {
     return toRender;
   }
 
+  /**
+   * Renders component
+   */
   render() {
     return this.renderIdeWrapper();
   }
 }
 
+/** Contains typchecking rules for specific members*/
 IdeWrapper.propTypes = {
   codeID: React.PropTypes.string.isRequired,
   width: React.PropTypes.oneOfType([React.PropTypes.number, React.PropTypes.string]),
   height: React.PropTypes.oneOfType([React.PropTypes.number, React.PropTypes.string]),
 };
 
+/** Sets default values for specific properties */
 IdeWrapper.defaultProps = {
   height: 500,
 };
 
+/** Sets accessability of context variables */
 IdeWrapper.contextTypes = {
   remoteDispatcher: React.PropTypes.object
 };

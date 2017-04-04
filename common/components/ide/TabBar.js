@@ -66,7 +66,6 @@ export default class TabBar extends React.Component {
     this.onChange();
 
     // Add screenfull listener
-    // currently not used after changing fullsize, might be removed
     if (screenfull.enabled) {
       document.addEventListener(screenfull.raw.fullscreenchange, () => {
         // Force rerendering, otherwise the icon does not change
@@ -91,7 +90,6 @@ export default class TabBar extends React.Component {
    */
   onToggleFullscreen(e) {
     if (screenfull.enabled) {
-      // TODO: find a better solution for getting the ide element
       screenfull.toggle(e.currentTarget.closest(".ide"));
     }
   }
