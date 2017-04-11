@@ -1,11 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
 // own imports
 import Presentation from '../../components/presentation/Presentation';
 
-function PresentationApp(props) {
-  return <Presentation notebook={props.notebook} dispatch={props.dispatch}></Presentation>;
+class PresentationApp  extends React.PureComponent {
+
+  render() {
+    return <Presentation notebook={this.props.notebook} dispatch={this.props.dispatch}></Presentation>;
+  }
 }
 
 export default connect(state => {

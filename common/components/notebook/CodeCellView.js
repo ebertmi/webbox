@@ -7,10 +7,10 @@ import Icon from '../Icon';
 import Terminal from '../ide/Terminal';
 import MatplotlibPanel from '../ide/panels/MatplotlibPanel';
 import TurtlePanel from '../ide/panels/TurtlePanel';
-
+import CodeBlock from './CodeBlock';
 
 import { EmbedTypes, RunModeDefaults } from '../../constants/Embed';
-import Markdown from '../../util/markdown';
+
 import { createEmbedObject } from '../../util/embedUtils';
 
 import SourceboxProject from '../../models/project/sourceboxProject';
@@ -32,19 +32,24 @@ export default class CodeCellView extends React.PureComponent {
     this.projectStateChange = this.projectStateChange.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
 
-    this.state = { rendered: '', editMode: false, showTerminal: false };
+    this.state = { editMode: false, showTerminal: false };
   }
 
   componentWillMount() {
     let project = this.createEmptyProject();
-    if(project) {
+    if (project) {
       project.tabManager.on('change', this.projectStateChange);
-      project.on('change',() => this.projectStateChange());
+      project.on('change', this.projectStateChange);
       this.setState({project: project, tabs: project.tabManager.getTabs()});
     }
   }
-  componentDidMount() {
-    this.renderMarkdown(this.props.code);
+
+  componentWillUnmount() {
+    // Dispose listeners to avoid leaks
+    if (this.state.project != null) {
+      this.state.project.tabManager.removeListener('change', this.projectStateChange);
+      this.state.project.on('change', this.projectStateChange);
+    }
   }
 
   onKeyDown(e) {
@@ -54,7 +59,7 @@ export default class CodeCellView extends React.PureComponent {
       e.preventDefault();
     }
 
-      console.log(e.key);
+    console.log(e.key);
     // Escape -> ReadMode
     if(!e.metaKey && !e.shiftKey && !e.altKey && !e.ctrlKey && e.key === "Escape" && this.state.editMode) {
       this.switchMode();
@@ -114,23 +119,6 @@ export default class CodeCellView extends React.PureComponent {
   }
 
   /**
-   * Renders marks down and sets the returned markup as state when finished.
-   */
-  renderMarkdown(source) {
-    // Get default language from notebook if mode is not available
-    let language = this.props.notebookLanguage || 'python';
-    let mode = this.props.cell.getIn(['metadata', 'mode'], language);
-
-    const codeSource = '```' + mode + '\n' + source + '\n```';
-    Markdown.render(codeSource)
-      .then((rendered) => {
-        this.setState({
-          rendered: rendered
-        });
-      });
-  }
-
-  /**
    * Helper to determine the height of the rendered markdown to set the ace editor size accordingly
    */
   getWrapperHeightOrMin() {
@@ -144,10 +132,7 @@ export default class CodeCellView extends React.PureComponent {
   switchMode() {
     if(this.state.editMode) {
       this.setState({ editMode: false });
-      let content = this.session != null ? this.session.getValue() : this.props.code;
-      this.renderMarkdown(content);
-    }
-    else {
+    } else {
       this.setState( { editMode: true } );
     }
   }
@@ -173,9 +158,11 @@ export default class CodeCellView extends React.PureComponent {
     );
   }
 
-
   renderReadMode() {
-    return <div className="col-xs-12 read-view" ref={this.onRef} dangerouslySetInnerHTML={{__html: this.state.rendered}}/>;
+    let code = this.session != null ? this.session.getValue() : this.props.code;
+    let executionLanguage = this.props.cell.getIn(['metadata', 'executionLanguage'], this.props.executionLanguage.executionLanguage);
+    let mode = this.props.cell.getIn(['metadata', 'mode'], (this.props.notebookLanguage || 'python'));
+    return <this.props.viewComponent code={code} executionLanguage={executionLanguage} mode={mode}/>;
   }
 
   startStopExecution() {
@@ -186,8 +173,7 @@ export default class CodeCellView extends React.PureComponent {
 
     if(project.isRunning()) {
       project.stop();
-    }
-    else {
+    } else {
       project.getFiles()[0].setValue(code);
       this.setState({
         showTerminal: true,
@@ -219,7 +205,7 @@ export default class CodeCellView extends React.PureComponent {
     });
   }
 
-  handleAdditionalPanels(tabs, project) {
+  handleAdditionalPanels(tabs) {
     let additionalPanel = false;
     return tabs.map(({active, item, type}, index) => {
       let PanelType;
@@ -236,15 +222,14 @@ export default class CodeCellView extends React.PureComponent {
       if(PanelType && !additionalPanel) {
         additionalPanel = true;
         return <PanelType className="second-panel" key={index} active={active} item={item}/>;
-      }
-      else if(PanelType && additionalPanel) {
+      } else if(PanelType && additionalPanel) {
         this.context.messageList.showMessage(Severity.Warning, new Error("Anzeige mehrere Turtle- bzw. Matplotlib-Graphen wird nicht unterstützt!"));
       }
-    })
+    });
   }
 
   render() {
-    const { cell, id, code } = this.props;
+    const { id, code } = this.props;
     const { editMode, showTerminal, project, tabs } = this.state;
     const classes = classnames("code-cell col-xs-12 row");
     const externalIcon = <Icon name="external-link" className="icon-control hidden-print" onClick={this.onRun} title="IDE in neuem Fenster öffnen" />;
@@ -279,6 +264,21 @@ export default class CodeCellView extends React.PureComponent {
   }
 }
 
+CodeCellView.propTypes = {
+  viewComponent: React.PropTypes.oneOfType([
+    React.PropTypes.func,
+    React.PropTypes.element
+  ]), /* use this instead of markdown-it */
+  code: React.PropTypes.string.isRequired,
+  cell: React.PropTypes.object.isRequired,
+  executionLanguage: React.PropTypes.object.isRequired,
+  notebookLanguage: React.PropTypes.string.isRequired,
+  embedType: React.PropTypes.string.isRequired
+};
+
+CodeCellView.defaultProps = {
+  viewComponent: CodeBlock
+};
 
 CodeCellView.contextTypes = {
   messageList: React.PropTypes.object,
