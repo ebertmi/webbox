@@ -81,7 +81,7 @@ class Highlight extends React.Component {
     const lang = `language-${this.props.mode}`;
     const runBtn = this.props.showRunButton ? <Icon style={runBtnStyles} name="play-circle-o" className="icon-control" onClick={this.onRun} title="Code Ausführen" /> : null;
     return (
-      <div style={{position: "relative"}}>
+      <div className="highlight-view" style={{position: "relative"}}>
         <pre className="hljs" ref={this.onRef} style={[this.context.styles.components.codePane.pre, getStyles.call(this), this.props.style]}>
           <code className={lang} style={this.context.styles.components.codePane.code}>{this.props.code}</code>
         </pre>

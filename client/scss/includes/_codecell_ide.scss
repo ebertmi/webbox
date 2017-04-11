@@ -1,3 +1,7 @@
+.present-mode {
+  // TODO:
+}
+
 .code-cell {
   display: flex;
   flex-direction: row;
@@ -12,6 +16,7 @@
   display: flex;
   flex-flow: row;
   overflow: scroll;
+  overflow-y: auto;
   border: 1px solid #DDD;
   margin-left: 15px;
   margin-right: 15px;
@@ -28,7 +33,7 @@
 
 
  // CODE AREA
-.edit-view,.read-view {
+.edit-view,.read-view,.highlight-view {
   flex: 1 0 auto;
   width: auto;
   max-width: none;

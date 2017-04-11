@@ -230,9 +230,9 @@ export default class CodeCellView extends React.PureComponent {
   }
 
   render() {
-    const { id, code } = this.props;
+    const { id, code, className} = this.props;
     const { editMode, showTerminal, project, tabs } = this.state;
-    const classes = classnames("code-cell col-xs-12 row");
+    const classes = classnames(`code-cell col-xs-12 row ${className}`);
     const externalIcon = <Icon name="external-link" className="icon-control hidden-print" onClick={this.onRun} title="IDE in neuem Fenster öffnen" />;
     const editIcon = <Icon name="edit" className="icon-control hidden-print" onClick={this.switchMode} title="Zum Editiermodus wechseln" />;
     const readIcon = <Icon name="book" className="icon-control hidden-print" onClick={this.switchMode} title="Zum Lesemodus wechseln (Escape)" />;
