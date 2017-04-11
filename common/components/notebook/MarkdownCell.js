@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { EditSession, UndoManager } from 'ace';
 import classnames from 'classnames';
 import cloneDeep from 'lodash/cloneDeep';
@@ -256,13 +257,13 @@ export default class MarkdownCell extends BaseCell {
 }
 
 MarkdownCell.propTypes = {
-  minHeight: React.PropTypes.number,
-  cell: React.PropTypes.object.isRequired,
-  isEditModeActive: React.PropTypes.bool.isRequired,
-  editing: React.PropTypes.bool.isRequired,
-  cellIndex: React.PropTypes.number.isRequired,
-  course: React.PropTypes.string,
-  document: React.PropTypes.string
+  minHeight: PropTypes.number,
+  cell: PropTypes.object.isRequired,
+  isEditModeActive: PropTypes.bool.isRequired,
+  editing: PropTypes.bool.isRequired,
+  cellIndex: PropTypes.number.isRequired,
+  course: PropTypes.string,
+  document: PropTypes.string
 };
 
 MarkdownCell.defaultProps = {

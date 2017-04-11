@@ -1,5 +1,5 @@
 import React from 'react';
-
+import PropTypes from 'prop-types';
 import Modal from '../Modal';
 import ModalBody from '../ModalBody';
 import ModalFooter from '../ModalFooter';
@@ -60,7 +60,7 @@ export default class SendToTeacherModal extends React.Component {
 }
 
 SendToTeacherModal.propTypes = {
-  toggle: React.PropTypes.func.isRequired,
-  callback: React.PropTypes.func.isRequired,
-  isOpen: React.PropTypes.bool.isRequired
+  toggle: PropTypes.func.isRequired,
+  callback: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool.isRequired
 };

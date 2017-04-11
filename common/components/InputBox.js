@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import uniqueId from 'lodash/uniqueId';
 
@@ -109,16 +110,16 @@ export class InputBox extends React.Component {
 }
 
 InputBox.propTypes = {
-  value: React.PropTypes.string.isRequired,
-  type: React.PropTypes.string,
-  flexibleHeight: React.PropTypes.bool,
-  autoFocus: React.PropTypes.bool,
-  autoSelect: React.PropTypes.bool,
-  children: React.PropTypes.node,
-  placeholder: React.PropTypes.string,
-  className: React.PropTypes.string,
-  id: React.PropTypes.string,
-  bsStyle: React.PropTypes.oneOf(['success', 'warning', 'error'])
+  value: PropTypes.string.isRequired,
+  type: PropTypes.string,
+  flexibleHeight: PropTypes.bool,
+  autoFocus: PropTypes.bool,
+  autoSelect: PropTypes.bool,
+  children: PropTypes.node,
+  placeholder: PropTypes.string,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  bsStyle: PropTypes.oneOf(['success', 'warning', 'error'])
 };
 
 InputBox.defaultProps = {

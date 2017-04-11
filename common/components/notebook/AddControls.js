@@ -1,11 +1,10 @@
-import React, { Component } from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import React, { PureComponent } from 'react';
 
 import { addCodeEmbedCell, addMarkdownCell, addRawCell, addCodeCell } from '../../actions/NotebookActions';
 import Icon from '../Icon';
 import { Toolbar, ActionItem } from '../Toolbar';
 
-export default class AddControls extends Component {
+export default class AddControls extends PureComponent {
 
   constructor(props) {
     super(props);
@@ -13,7 +12,6 @@ export default class AddControls extends Component {
     this.addMarkdownCell = this.addMarkdownCell.bind(this);
     this.addRawCell = this.addRawCell.bind(this);
     this.addCodeCell = this.addCodeCell.bind(this);
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   addCodeEmbedCell() {

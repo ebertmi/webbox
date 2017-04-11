@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { EditSession, UndoManager } from 'ace';
 import classnames from 'classnames';
 
@@ -9,6 +10,7 @@ import { EditButtonGroup } from './EditButtonGroup';
 import CodeCellView from './CodeCellView';
 import { updateCell } from '../../actions/NotebookActions'
 import Markdown from '../../util/markdown';
+
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
  */
@@ -133,12 +135,12 @@ export default class CodeCell extends BaseCell {
 }
 
 CodeCell.propTypes = {
-  minHeight: React.PropTypes.number,
-  cell: React.PropTypes.object.isRequired,
-  isEditModeActive: React.PropTypes.bool.isRequired,
-  editing: React.PropTypes.bool.isRequired,
-  cellIndex: React.PropTypes.number.isRequired,
-  id: React.PropTypes.string.isRequired
+  minHeight: PropTypes.number,
+  cell: PropTypes.object.isRequired,
+  isEditModeActive: PropTypes.bool.isRequired,
+  editing: PropTypes.bool.isRequired,
+  cellIndex: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired
 };
 
 CodeCell.defaultProps = {

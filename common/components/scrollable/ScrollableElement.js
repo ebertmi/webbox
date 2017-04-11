@@ -21,7 +21,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.*/
 // Taken from https://github.com/BosNaufal/react-scrollbar and modified for our use cases.
 import React from 'react';
-
+import PropTypes from 'prop-types';
 import VerticalScrollbar from './VerticalScrollbar.js';
 import HorizontalScrollbar from './HorizontalScrollbar.js';
 
@@ -358,11 +358,11 @@ class ScrollableElement extends React.Component {
 
 // The Props
 ScrollableElement.propTypes = {
-  speed: React.PropTypes.number,
-  className: React.PropTypes.string,
-  style: React.PropTypes.object,
-  scrollYToX: React.PropTypes.bool,
-  onScroll: React.PropTypes.func.isRequired
+  speed: PropTypes.number,
+  className: PropTypes.string,
+  style: PropTypes.object,
+  scrollYToX: PropTypes.bool,
+  onScroll: PropTypes.func.isRequired
 };
 
 ScrollableElement.defaultProps = {

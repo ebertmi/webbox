@@ -1,17 +1,16 @@
 import React from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import PropTypes from 'prop-types';
 import LazyLoad from 'react-lazyload';
 
 /**
  */
-export default class IFrame extends React.Component {
+export default class IFrame extends React.PureComponent {
   constructor(props) {
     super(props);
     this.iframe = null;
     this.onRef = this.onRef.bind(this);
     this.onFocus = this.onFocus.bind(this);
     this.initIFrame = this.initIFrame.bind(this);
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   initIFrame() {
@@ -64,13 +63,13 @@ export default class IFrame extends React.Component {
 }
 
 IFrame.propTypes = {
-  src: React.PropTypes.string.isRequired,
-  width: React.PropTypes.oneOfType([React.PropTypes.number, React.PropTypes.string]),
-  height: React.PropTypes.oneOfType([React.PropTypes.number, React.PropTypes.string]),
-  resizable: React.PropTypes.bool,
-  frameBorder: React.PropTypes.string,
-  lazy: React.PropTypes.bool,
-  noFocus: React.PropTypes.bool
+  src: PropTypes.string.isRequired,
+  width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  resizable: PropTypes.bool,
+  frameBorder: PropTypes.string,
+  lazy: PropTypes.bool,
+  noFocus: PropTypes.bool
 };
 
 IFrame.defaultProps = {

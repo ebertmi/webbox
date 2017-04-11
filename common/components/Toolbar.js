@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 const STANDARD_CSS_CLASS = "webbox-action-bar";
@@ -22,7 +23,7 @@ export function Toolbar (props) {
 }
 
 Toolbar.propTypes = {
-  animated: React.PropTypes.bool
+  animated: PropTypes.bool
 };
 
 Toolbar.defaultProps = {
@@ -47,8 +48,8 @@ export function ActionItem (props) {
 }
 
 ActionItem.propTypes = {
-  isIcon: React.PropTypes.bool,
-  title: React.PropTypes.string
+  isIcon: PropTypes.bool,
+  title: PropTypes.string
 };
 
 ActionItem.defaultProps = {

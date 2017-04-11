@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 export class SearchBar extends Component {
 
@@ -61,11 +62,11 @@ export class SearchBar extends Component {
 }
 
 SearchBar.propTypes = {
-  searchQuery: React.PropTypes.string.isRequired,
-  changeSearchQuery: React.PropTypes.func.isRequired,
-  searchClickHandler: React.PropTypes.func.isRequired,
-  resetSearchHandler: React.PropTypes.func.isRequired,
-  placeholderText: React.PropTypes.string
+  searchQuery: PropTypes.string.isRequired,
+  changeSearchQuery: PropTypes.func.isRequired,
+  searchClickHandler: PropTypes.func.isRequired,
+  resetSearchHandler: PropTypes.func.isRequired,
+  placeholderText: PropTypes.string
 };
 
 SearchBar.defaultProps = {

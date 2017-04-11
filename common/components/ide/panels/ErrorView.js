@@ -1,5 +1,5 @@
 import React from 'react';
-
+import PropTypes from 'prop-types';
 import Ace, {EditSession} from 'ace';
 
 import Editor from '../../Editor';
@@ -243,8 +243,8 @@ export default class ErrorView extends React.Component {
 }
 
 ErrorView.propTypes = {
-  errors: React.PropTypes.array,
-  n: React.PropTypes.number
+  errors: PropTypes.array,
+  n: PropTypes.number
 };
 
 ErrorView.defaultProps = {
