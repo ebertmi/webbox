@@ -1,5 +1,5 @@
 import React from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import PropTypes from 'prop-types';
 
 import Dropzone from 'react-dropzone';
 
@@ -12,7 +12,7 @@ const MAX_WIDTH = 200;
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
  */
-export default class ImageUpload extends React.Component {
+export default class ImageUpload extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -21,7 +21,6 @@ export default class ImageUpload extends React.Component {
     this.onDone = this.onDone.bind(this);
     this.onError = this.onError.bind(this);
     this.onImageClick = this.onImageClick.bind(this);
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   componentWillMount() {
@@ -116,5 +115,5 @@ ImageUpload.defaultProps = {
 };
 
 ImageUpload.contextTypes = {
-  messageList: React.PropTypes.object
+  messageList: PropTypes.object
 };

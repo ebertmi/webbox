@@ -6,7 +6,8 @@ import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
 import format from 'date-fns/format';
 import parse from 'date-fns/parse';
 import isDate from 'date-fns/is_date';
-import React, {PropTypes} from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 const ISO8601FORMAT = 'DD-MM-YYYYTHH:mm:ssZ';
 

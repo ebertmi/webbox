@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Markdown from '../../util/markdown';
 
 export default class CodeBlock extends React.PureComponent {
@@ -37,7 +38,7 @@ export default class CodeBlock extends React.PureComponent {
 }
 
 CodeBlock.propTypes = {
-  code: React.PropTypes.string.isRequired,
-  executionLanguage: React.PropTypes.string.isRequired,
-  mode: React.PropTypes.string.isRequired
+  code: PropTypes.string.isRequired,
+  executionLanguage: PropTypes.string.isRequired,
+  mode: PropTypes.string.isRequired
 };

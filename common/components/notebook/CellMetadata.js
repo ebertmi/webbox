@@ -1,5 +1,5 @@
 import React from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import PropTypes from 'prop-types';
 
 import Icon from '../Icon';
 import { updateCellSlideType, updateCellMetadata } from '../../actions/NotebookActions';
@@ -19,7 +19,7 @@ const METAKEY_INVALID = 'has-danger';
  *  - name (str) A name for the cell. Should be unique
  *  - tags (list of str) A list of string tags on the cell. Commas are not allowed in a tag
  */
-export default class CellMetadata extends React.Component {
+export default class CellMetadata extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -28,7 +28,6 @@ export default class CellMetadata extends React.Component {
     this.onAddMetadata = this.onAddMetadata.bind(this);
     this.onNewMetadataChange = this.onNewMetadataChange.bind(this);
     this.onDelete = this.onDelete.bind(this);
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   componentWillMount() {
@@ -193,11 +192,11 @@ export default class CellMetadata extends React.Component {
 }
 
 CellMetadata.propTypes = {
-  metadata: React.PropTypes.object.isRequired,
-  cellId: React.PropTypes.string.isRequired
+  metadata: PropTypes.object.isRequired,
+  cellId: PropTypes.string.isRequired
 };
 
 CellMetadata.contextTypes = {
-  messageList: React.PropTypes.object,
-  remoteDispatcher: React.PropTypes.object
+  messageList: PropTypes.object,
+  remoteDispatcher: PropTypes.object
 };

@@ -1,5 +1,6 @@
 // Library Imports
 import React from 'react';
+import PropTypes from 'prop-types';
 import LazyLoad from 'react-lazyload';
 
 // Spectacle Presentation Framework Imports
@@ -187,5 +188,5 @@ export default class Presentation extends React.Component {
 }
 
 Presentation.childContextTypes = {
-  remoteDispatcher: React.PropTypes.object
+  remoteDispatcher: PropTypes.object
 };

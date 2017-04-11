@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import {
   XYPlot,
@@ -107,5 +108,5 @@ export default class EventClusterChart extends React.Component {
 }
 
 EventClusterChart.propTypes = {
-  series: React.PropTypes.array.isRequired
+  series: PropTypes.array.isRequired
 };

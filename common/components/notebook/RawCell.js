@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { EditSession, UndoManager } from 'ace';
 import classnames from 'classnames';
 
@@ -121,11 +122,11 @@ export default class RawCell extends BaseCell {
 }
 
 RawCell.propTypes = {
-  minHeight: React.PropTypes.number,
-  cell: React.PropTypes.object.isRequired,
-  isEditModeActive: React.PropTypes.bool.isRequired,
-  editing: React.PropTypes.bool.isRequired,
-  cellIndex: React.PropTypes.number.isRequired
+  minHeight: PropTypes.number,
+  cell: PropTypes.object.isRequired,
+  isEditModeActive: PropTypes.bool.isRequired,
+  editing: PropTypes.bool.isRequired,
+  cellIndex: PropTypes.number.isRequired
 };
 
 RawCell.defaultProps = {

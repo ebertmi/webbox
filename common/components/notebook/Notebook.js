@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import MarkdownCell from './MarkdownCell';
@@ -327,6 +328,6 @@ export default class Notebook extends React.Component {
 }
 
 Notebook.childContextTypes = {
-  messageList: React.PropTypes.object,
-  remoteDispatcher: React.PropTypes.object
+  messageList: PropTypes.object,
+  remoteDispatcher: PropTypes.object
 };

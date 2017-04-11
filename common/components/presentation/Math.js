@@ -1,5 +1,6 @@
 import React from "react";
 import katex from "katex";
+import PropTypes from 'prop-types';
 
 export class Math extends React.Component {
   constructor(props) {
@@ -42,8 +43,8 @@ export class Math extends React.Component {
 }
 
 Math.propTypes = {
-  children: React.PropTypes.string,
-  displayMode: React.PropTypes.bool
+  children: PropTypes.string,
+  displayMode: PropTypes.bool
 };
 
 Math.defaultProps = {

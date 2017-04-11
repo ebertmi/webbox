@@ -1,5 +1,5 @@
 import React from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import PropTypes from 'prop-types';
 
 import { Severity } from '../../models/severity';
 import ImagePreview from './ImagePreview';
@@ -11,12 +11,11 @@ const MAX_WIDTH = 200;
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
  */
-export default class ImageGallery extends React.Component {
+export default class ImageGallery extends React.PureComponent {
   constructor(props) {
     super(props);
 
     this.onImageClick = this.onImageClick.bind(this);
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   componentWillMount() {
@@ -94,14 +93,14 @@ export default class ImageGallery extends React.Component {
 }
 
 ImageGallery.propTypes = {
-  onInsertImage: React.PropTypes.func.isRequired,
-  course: React.PropTypes.string,
-  document: React.PropTypes.string
+  onInsertImage: PropTypes.func.isRequired,
+  course: PropTypes.string,
+  document: PropTypes.string
 };
 
 ImageGallery.defaultProps = {
 };
 
 ImageGallery.contextTypes = {
-  messageList: React.PropTypes.object
+  messageList: PropTypes.object
 };

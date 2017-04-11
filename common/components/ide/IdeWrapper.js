@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Loader from '../Loader';
 import Ide from './Ide';
@@ -21,7 +22,7 @@ const ErrorTypes = {
  */
 export default class IdeWrapper extends React.Component {
   /**
-   * 
+   *
    * @param {object} props properties of component
    */
   constructor(props) {
@@ -55,7 +56,7 @@ export default class IdeWrapper extends React.Component {
   /**
    * Sets the error state with given error message.
    * Resets the isDownloading state if the error occurred while downloading embed
-   * 
+   *
    * @param {string} err specific message of occurred error
    * @param {ErrorTypes} type type of the error to set
    */
@@ -80,7 +81,7 @@ export default class IdeWrapper extends React.Component {
   /**
    * Sets the embed data by given data.
    * Also it resets the isDownloading state.
-   * 
+   *
    * @param {object} data date of loaded embed
    */
   onProjectLoaded(data) {
@@ -227,9 +228,9 @@ export default class IdeWrapper extends React.Component {
 
 /** Contains typchecking rules for specific members*/
 IdeWrapper.propTypes = {
-  codeID: React.PropTypes.string.isRequired,
-  width: React.PropTypes.oneOfType([React.PropTypes.number, React.PropTypes.string]),
-  height: React.PropTypes.oneOfType([React.PropTypes.number, React.PropTypes.string]),
+  codeID: PropTypes.string.isRequired,
+  width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 
 /** Sets default values for specific properties */
@@ -239,5 +240,5 @@ IdeWrapper.defaultProps = {
 
 /** Sets accessability of context variables */
 IdeWrapper.contextTypes = {
-  remoteDispatcher: React.PropTypes.object
+  remoteDispatcher: PropTypes.object
 };

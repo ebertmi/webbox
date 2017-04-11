@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 function renderDiv(n) {
@@ -69,9 +70,9 @@ export var Types = {
 };
 
 Loader.propTypes = {
-  type: React.PropTypes.string,
-  size: React.PropTypes.string,
-  active: React.PropTypes.bool
+  type: PropTypes.string,
+  size: PropTypes.string,
+  active: PropTypes.bool
 };
 
 Loader.defaultProps = {

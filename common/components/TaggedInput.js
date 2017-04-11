@@ -1,5 +1,6 @@
 import React from 'react';
-
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 var KEY_CODES = {
   ENTER: 13,
   BACKSPACE: 8
@@ -18,30 +19,30 @@ function DefaultTagComponent(props) {
   );
 }
 
-export default React.createClass({
+export default createReactClass({
   displayName: 'TaggedInput',
 
   propTypes: {
-    onBeforeAddTag: React.PropTypes.func,
-    onAddTag: React.PropTypes.func,
-    onBeforeRemoveTag: React.PropTypes.func,
-    onRemoveTag: React.PropTypes.func,
-    onEnter: React.PropTypes.func,
-    unique: React.PropTypes.oneOfType([React.PropTypes.bool, React.PropTypes.func]),
-    autofocus: React.PropTypes.bool,
-    backspaceDeletesWord: React.PropTypes.bool,
-    placeholder: React.PropTypes.string,
-    tags: React.PropTypes.arrayOf(React.PropTypes.any),
-    removeTagLabel: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.object]),
-    delimiters: React.PropTypes.arrayOf(function (props, propName, componentName) {
+    onBeforeAddTag: PropTypes.func,
+    onAddTag: PropTypes.func,
+    onBeforeRemoveTag: PropTypes.func,
+    onRemoveTag: PropTypes.func,
+    onEnter: PropTypes.func,
+    unique: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+    autofocus: PropTypes.bool,
+    backspaceDeletesWord: PropTypes.bool,
+    placeholder: PropTypes.string,
+    tags: PropTypes.arrayOf(PropTypes.any),
+    removeTagLabel: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    delimiters: PropTypes.arrayOf(function (props, propName, componentName) {
       if (typeof props[propName] !== 'string' || props[propName].length !== 1) {
         return new Error('TaggedInput prop delimiters must be an array of 1 character strings')
       }
     }),
-    tagOnBlur: React.PropTypes.bool,
-    tabIndex: React.PropTypes.number,
-    clickTagToEdit: React.PropTypes.bool,
-    inputClassName: React.PropTypes.string
+    tagOnBlur: PropTypes.bool,
+    tabIndex: PropTypes.number,
+    clickTagToEdit: PropTypes.bool,
+    inputClassName: PropTypes.string
   },
 
   getDefaultProps: function () {

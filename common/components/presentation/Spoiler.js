@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import { getStyles } from "spectacle/lib/utils/base";
 import Radium from "radium";
 
@@ -16,12 +17,12 @@ export class Spoiler extends React.Component {
 }
 
 Spoiler.propTypes = {
-  children: React.PropTypes.node,
-  style: React.PropTypes.object
+  children: PropTypes.node,
+  style: PropTypes.object
 };
 
 Spoiler.contextTypes = {
-  styles: React.PropTypes.object
+  styles: PropTypes.object
 };
 
 export default Radium(Spoiler);

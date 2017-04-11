@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 // own imports
@@ -16,5 +17,5 @@ export default connect(state => {
 })(PresentationApp);
 
 PresentationApp.childContextTypes = {
-  remoteDispatcher: React.PropTypes.object
+  remoteDispatcher: PropTypes.object
 };

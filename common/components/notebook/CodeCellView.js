@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { EditSession, UndoManager } from 'ace';
 import classnames from 'classnames';
 
@@ -265,15 +266,15 @@ export default class CodeCellView extends React.PureComponent {
 }
 
 CodeCellView.propTypes = {
-  viewComponent: React.PropTypes.oneOfType([
-    React.PropTypes.func,
-    React.PropTypes.element
+  viewComponent: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.element
   ]), /* use this instead of markdown-it */
-  code: React.PropTypes.string.isRequired,
-  cell: React.PropTypes.object.isRequired,
-  executionLanguage: React.PropTypes.object.isRequired,
-  notebookLanguage: React.PropTypes.string.isRequired,
-  embedType: React.PropTypes.string.isRequired
+  code: PropTypes.string.isRequired,
+  cell: PropTypes.object.isRequired,
+  executionLanguage: PropTypes.object.isRequired,
+  notebookLanguage: PropTypes.string.isRequired,
+  embedType: PropTypes.string.isRequired
 };
 
 CodeCellView.defaultProps = {
@@ -281,6 +282,6 @@ CodeCellView.defaultProps = {
 };
 
 CodeCellView.contextTypes = {
-  messageList: React.PropTypes.object,
-  remoteDispatcher: React.PropTypes.object
+  messageList: PropTypes.object,
+  remoteDispatcher: PropTypes.object
 };
