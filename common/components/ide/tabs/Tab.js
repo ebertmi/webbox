@@ -1,10 +1,9 @@
 import React from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
 import classNames from 'classnames';
 
 import { calculateTouchMovement, getTouchDataFromEvent, touchDeltaWithinThreshold, TOUCH_DURATION_THRESHOLD, TOUCH_PRESS_DURATION_THRESHOLD } from '../../../util/touchUtils';
 
-export default class Tab extends React.Component {
+export default class Tab extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -22,8 +21,6 @@ export default class Tab extends React.Component {
     this._initialTouch = null;
     this._lastTouch = null;
     this._canPress = false;
-
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   clearTimer() {

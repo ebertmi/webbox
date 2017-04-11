@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import hljs from 'highlight.js';
 import { getStyles } from "spectacle/lib/utils/base";
 import Radium from "radium";
@@ -91,7 +92,7 @@ class Highlight extends React.Component {
 }
 
 Highlight.contextTypes = {
-  styles: React.PropTypes.object
+  styles: PropTypes.object
 };
 
 Highlight.defaultProps = {

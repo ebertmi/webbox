@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Autosuggest from 'react-autosuggest';
 
@@ -257,11 +258,11 @@ export default class CodeEmbedCell extends BaseCell {
 }
 
 CodeEmbedCell.propTypes = {
-  cell: React.PropTypes.object.isRequired,
-  isEditModeActive: React.PropTypes.bool.isRequired,
-  editing: React.PropTypes.bool.isRequired,
-  lazy: React.PropTypes.bool,
-  cellIndex: React.PropTypes.number.isRequired
+  cell: PropTypes.object.isRequired,
+  isEditModeActive: PropTypes.bool.isRequired,
+  editing: PropTypes.bool.isRequired,
+  lazy: PropTypes.bool,
+  cellIndex: PropTypes.number.isRequired
 };
 
 CodeEmbedCell.defaultProps = {

@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import { browserHistory } from 'react-router';
 
 import { Pagination } from '../components/Pagination';
@@ -71,11 +72,11 @@ export class PaginationContainer extends Component {
 }
 
 PaginationContainer.propTypes = {
-  changePage: React.PropTypes.func.isRequired, // callback for page changes
-  requestPage: React.PropTypes.func.isRequired, // callback for requesting new page
-  pages: React.PropTypes.number.isRequired, // total number of pages
-  pagesQuery: React.PropTypes.shape({
-    page: React.PropTypes.number.isRequired, // current page
-    limit: React.PropTypes.number.isRequired // current number of entries per page (max)
+  changePage: PropTypes.func.isRequired, // callback for page changes
+  requestPage: PropTypes.func.isRequired, // callback for requesting new page
+  pages: PropTypes.number.isRequired, // total number of pages
+  pagesQuery: PropTypes.shape({
+    page: PropTypes.number.isRequired, // current page
+    limit: PropTypes.number.isRequired // current number of entries per page (max)
   }).isRequired
 };

@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import {
   XYPlot,
   XAxis,
@@ -194,11 +196,11 @@ export default class EventDatesClusterChart extends React.Component {
 }
 
 EventDatesClusterChart.propTypes = {
-  lineData: React.PropTypes.array,
-  dateClusterResolution: React.PropTypes.string,
-  dateClusterStart: React.PropTypes.object,
-  dateClusterEnd: React.PropTypes.object,
-  onSettingsChange: React.PropTypes.func
+  lineData: PropTypes.array,
+  dateClusterResolution: PropTypes.string,
+  dateClusterStart: PropTypes.object,
+  dateClusterEnd: PropTypes.object,
+  onSettingsChange: PropTypes.func
 };
 
 EventDatesClusterChart.defaultProps = {

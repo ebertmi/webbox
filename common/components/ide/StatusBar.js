@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { AnyIcon } from '../Icon';
@@ -95,5 +96,5 @@ export class StatusBarEntryItem extends React.Component {
 }
 
 StatusBarEntryItem.propTypes = {
-  item: React.PropTypes.object
+  item: PropTypes.object
 };

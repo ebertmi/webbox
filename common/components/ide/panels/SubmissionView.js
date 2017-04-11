@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Time } from '../../Time';
 
 export default class SubmissionView extends React.Component {
@@ -81,5 +82,5 @@ export default class SubmissionView extends React.Component {
 }
 
 SubmissionView.propTypes = {
-  submissions: React.PropTypes.object.isRequired
+  submissions: PropTypes.object.isRequired
 };

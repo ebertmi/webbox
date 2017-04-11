@@ -1,6 +1,7 @@
 // a few wrapper components around common bootstrap elements
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import uniqueId from 'lodash/uniqueId';
 
@@ -173,14 +174,14 @@ export class Input extends React.Component {
 }
 
 Input.propTypes = {
-  type: React.PropTypes.string.isRequired,
-  children: React.PropTypes.node,
-  label: React.PropTypes.node,
-  className: React.PropTypes.string,
-  id: React.PropTypes.string,
-  muted: React.PropTypes.string,
-  mutedParagraph: React.PropTypes.string,
-  bsStyle: React.PropTypes.oneOf(['success', 'warning', 'error'])
+  type: PropTypes.string.isRequired,
+  children: PropTypes.node,
+  label: PropTypes.node,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  muted: PropTypes.string,
+  mutedParagraph: PropTypes.string,
+  bsStyle: PropTypes.oneOf(['success', 'warning', 'error'])
 };
 
 export function Button(props) {

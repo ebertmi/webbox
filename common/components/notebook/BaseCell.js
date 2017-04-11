@@ -1,5 +1,6 @@
 import React from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import PropTypes from 'prop-types';
+import shallowCompare from 'react-addons-shallow-compare';
 import { editCell, deleteCell, stopEditCell, moveCellUp, moveCellDown, toggleCellVisibility } from '../../actions/NotebookActions';
 
 import { sourceFromCell } from '../../util/nbUtil';
@@ -23,9 +24,6 @@ export default class BaseCell extends React.PureComponent {
     this.onCellDown = this.onCellDown.bind(this);
     this.onToggleVisibility = this.onToggleVisibility.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
-
-    // PureRenderMixin.shouldComponentUpdate, makes a shallow compare on state and props
-    this.fastShouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   /**
@@ -43,7 +41,7 @@ export default class BaseCell extends React.PureComponent {
       this.onUpdateCell();
     }
 
-    return this.fastShouldComponentUpdate(nextProps, nextState);
+    return shallowCompare(this, nextProps, nextState);
   }
 
 
@@ -125,15 +123,15 @@ export default class BaseCell extends React.PureComponent {
 }
 
 BaseCell.propTypes = {
-  cell: React.PropTypes.object.isRequired,
-  isEditModeActive: React.PropTypes.bool.isRequired, // shows edit icons and actions, e.g. adding new cells
-  editing: React.PropTypes.bool.isRequired, // current cell is active for editing
-  cellIndex: React.PropTypes.number.isRequired,
-  course: React.PropTypes.string
+  cell: PropTypes.object.isRequired,
+  isEditModeActive: PropTypes.bool.isRequired, // shows edit icons and actions, e.g. adding new cells
+  editing: PropTypes.bool.isRequired, // current cell is active for editing
+  cellIndex: PropTypes.number.isRequired,
+  course: PropTypes.string
 };
 
 BaseCell.MAX_EDITOR_HEIGHT = 400;
 
 BaseCell.contextTypes = {
-  messageList: React.PropTypes.object
+  messageList: PropTypes.object
 };

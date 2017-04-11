@@ -1,17 +1,15 @@
 import React from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
-
+import PropTypes from 'prop-types';
 
 /**
  * Renders a image preview for the given image src. Clicking the image allows to make an operation.
  */
-export default class ImagePreview extends React.Component {
+export default class ImagePreview extends React.PureComponent {
   constructor(props) {
     super(props);
 
     this.onImageClick = this.onImageClick.bind(this);
     this.onEnlarge = this.onEnlarge.bind(this);
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
   onImageClick(e) {
@@ -54,11 +52,11 @@ export default class ImagePreview extends React.Component {
 }
 
 ImagePreview.propTypes = {
-  filename: React.PropTypes.string.isRequired,
-  src: React.PropTypes.string.isRequired,
-  onClick: React.PropTypes.func,
-  height: React.PropTypes.number,
-  width: React.PropTypes.number
+  filename: PropTypes.string.isRequired,
+  src: PropTypes.string.isRequired,
+  onClick: PropTypes.func,
+  height: PropTypes.number,
+  width: PropTypes.number
 };
 
 ImagePreview.defaultProps = {
