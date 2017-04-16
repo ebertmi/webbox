@@ -226,7 +226,7 @@ export default class CodeEmbedCell extends BaseCell {
   }
 
   render() {
-    const { cell, isEditModeActive, editing, dispatch } = this.props;
+    const { cell, isEditModeActive, editing, dispatch, className } = this.props;
     //const width = this.props.cell.getIn(['metadata', 'width']);
     const height = this.props.cell.getIn(['metadata', 'height']);
     let content;
@@ -246,7 +246,7 @@ export default class CodeEmbedCell extends BaseCell {
       content = this.renderEditMode();
     }
 
-    const classes = classnames("codeembed-cell col-xs-12 row", editingClass, {
+    const classes = classnames(`codeembed-cell col-xs-12 row ${className}`, editingClass, {
       'cell-not-visible': !isVisible
     });
 

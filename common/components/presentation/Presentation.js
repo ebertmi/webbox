@@ -15,6 +15,7 @@ import {
 // Custom Modules
 import Highlight from './Highlight';
 import CodeCellView from '../notebook/CodeCellView';
+import CodeEmbedCell from '../notebook/CodeEmbedCell';
 import { toMarkdownComponent } from './markdownRenderer';
 import createTheme from "./theme";
 import { sourceFromCell, replaceIdWithSlug, notebookMetadataToSourceboxLanguage } from '../../util/nbUtil';
@@ -96,11 +97,7 @@ export default class Presentation extends React.Component {
         //return <Text>{source}</Text>;
         height = parseInt(cell.getIn(['metadata', 'height'], 350));
         height = isNaN(height) ? 350 : height;
-        return (
-          <LazyLoad height={height} once>
-            <iframe className={this.props.className} width={cell.getIn(['metadata', 'width'], 800)} height={cell.getIn(['metadata', 'height'], 400)} src={`/embed/${source}`} seamless={true} allowFullScreen={true} frameBorder="0" />
-          </LazyLoad>
-        );
+        return <CodeEmbedCell /*course={course}*/ className='present-mode' dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={index === activeBlock}/>;
       case 'raw':
         return <RawCell dispatch={dispatch} cellIndex={index} key={id} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={id === activeBlock}/>;
       default:
