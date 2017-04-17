@@ -33,6 +33,7 @@ export default class Notebook extends React.Component {
 
     // Create global websocket connection
     this.remoteDispatcher = new RemoteDispatcher();
+    this.remoteDispatcher.on('reconnect_failed', this.onReconnectFailed.bind(this));
 
     this.onDrop = this.onDrop.bind(this);
     this.onDragOver = this.onDragOver.bind(this);
@@ -61,6 +62,22 @@ export default class Notebook extends React.Component {
 
     // Try to update url
     replaceIdWithSlug(this.props.notebook.get('id'), this.props.notebook.get('slug'));
+  }
+
+  /**
+   * Callback which will be invoked if reconnect failed
+   */
+  onReconnectFailed() {
+    this.showMessage(Severity.Warning, 'Derzeit konnte keine Verbindung zum Server hergestellt werden. Sind sie offline?');
+  }
+
+  /**
+   * Show a message as a box
+   */
+  showMessage(severity, message) {
+    if (this.messageList) {
+      this.messageList.showMessage(severity, message);
+    }
   }
 
   /**
