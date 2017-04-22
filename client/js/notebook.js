@@ -19,7 +19,7 @@ import NotebookApp from '../../common/containers/notebook/NotebookApp';
 import { documentToState, copyText } from '../../common/util/nbUtil';
 
 // This has no effect in production mode
-require('expose-loader?Perf!react-addons-perf');
+//require('expose-loader?Perf!react-addons-perf');
 
 // Convert our database model into an immutable state model
 const notebookState = documentToState(window.__INITIAL_STATE__);
