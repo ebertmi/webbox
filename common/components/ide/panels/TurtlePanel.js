@@ -54,6 +54,10 @@ export default class TurtlePanel extends React.Component {
     let canvasWidth = this.props.item.canvas.width;
     let canvasHeight = this.props.item.canvas.height;
 
+    if (canvasWidth == null || canvasHeight == null) {
+      return;
+    }
+
     let wFactor = width / canvasWidth;
     let hFactor = height / canvasHeight;
     let factor;

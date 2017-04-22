@@ -4,7 +4,6 @@ import classnames from 'classnames';
 import Autosuggest from 'react-autosuggest';
 
 import BaseCell from './BaseCell';
-import IFrame from './IFrame';
 import { EditButtonGroup } from './EditButtonGroup';
 import CellMetadata from './CellMetadata';
 import { updateCell } from '../../actions/NotebookActions';
