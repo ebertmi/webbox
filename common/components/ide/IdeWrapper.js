@@ -156,6 +156,62 @@ export default class IdeWrapper extends React.Component {
     });
   }
 
+  generatePattern(xOffset, yOffset, patternHeight, patternMulti) {
+    let pattern = [];
+    let offset = patternMulti * patternHeight + yOffset;
+    pattern.push(<rect x={0 + xOffset} y={0 + offset} width="67.0175439" height="11.9298746" rx="2"></rect>);
+    pattern.push(<rect x={76.8421053 + xOffset} y={0 + offset} width="140.350877" height="11.9298746" rx="2"></rect>);
+    pattern.push(<rect x={18.9473684 + xOffset} y={47.7194983 + offset} width="100.701754" height="11.9298746" rx="2"></rect>);
+    pattern.push(<rect x={0 + xOffset} y={71.930126 + offset} width="37.8947368" height="11.9298746" rx="2"></rect>);
+    pattern.push(<rect x={127.017544 + xOffset} y={48.0703769 + offset} width="53.3333333" height="11.9298746" rx="2"></rect>);
+    pattern.push(<rect x={187.719298 + xOffset} y={48.0703769 + offset} width="72.9824561" height="11.9298746" rx="2"></rect>);
+    pattern.push(<rect x={17.8947368 + xOffset} y={23.8597491 + offset} width="140.350877" height="11.9298746" rx="2"></rect>);
+    pattern.push(<rect x={166.315789 + xOffset} y={23.8597491 + offset} width="173.684211" height="11.9298746" rx="2"></rect>);
+    return pattern;
+  }
+
+  generateSVGOverlay(height, headline, headlineColor, fontColor, state) {
+    let draw = [];
+    let lineHeight = 24;
+    let gapSize = 9;
+    let maxWidth = 340;
+    let patternHeight = 96;
+    let stateDraw;
+    console.log(state);
+    switch(state) {
+      case "downloading": {
+        stateDraw = "";
+        break;
+      }
+      case "notLoaded": {
+        stateDraw = <image xlinkHref="/public/img/download.png" x="50%" y="50%" height="75" width="75" transform="translate(-37.5,-37.5)"/>;
+        break;
+      }
+      default: {
+        stateDraw = "";
+        break;
+      }
+    }
+    headlineColor = (headlineColor) ? headlineColor : "#ececec";
+    fontColor = (fontColor) ? fontColor : "#000";
+
+    for(let i = 0; i < ((height - 58) / patternHeight) - 1; i++) {
+      draw.push(this.generatePattern(55, 40, patternHeight, i));
+    }
+    let svg = <svg aria-hidden="true" width="100%" height={height} version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" className="diff-placeholder-svg position-absolute bottom-0">
+      <rect className="js-diff-placeholder" x="0" y="0" width="100%" height="35" fill={headlineColor} fillRule="evenodd" />
+      <text x="50%" y="25" fill={fontColor} fontSize="18" fontWeight="700" textAnchor="middle">{headline}</text>
+      <rect className="js-diff-placeholder" x="0" y="35" width="44" height={height - 58} fill="#e8e8e8" fillRule="evenodd"></rect>
+      <rect className="js-diff-placeholder" x="0" y={height - 24} width="100%" height={23} fill="#007ACC" fillRule="evenodd"></rect>
+      <path className="js-diff-placeholder" clipPath="url(#diff-placeholder)" d={`M0 0h1200v${height}H0z`} fill="#ccc" fillRule="evenodd"></path>
+        <clipPath id="diff-placeholder">
+          {draw}
+        </clipPath>   
+      {stateDraw} 
+    </svg>;
+    return svg;
+  }
+
   /**
    * Generates embed window to render. Content depens on the current state
    */
@@ -163,25 +219,29 @@ export default class IdeWrapper extends React.Component {
     let stateIndicator = "";
     let classNames = "";
     let headlineMessage = "";
+    let overlay = "";
     let clickEvent = null;
     classNames = (!this.state.codeData) ? "downloadEmbed" : "";
     if(this.state.error == null) {
-      stateIndicator = (!this.state.isDownloading) ? <img src="/public/img/download.png" /> : <Loader type="line-scale" />;
+      stateIndicator = (!this.state.isDownloading) ? "" : <Loader type="line-scale" />;
       headlineMessage = this.state.embedName + " - " + this.state.embedLang;
       clickEvent = this.onClick;
+      overlay = this.generateSVGOverlay(this.props.height, headlineMessage, null, null, (!this.state.isDownloading) ? "notLoaded" : "downloading");
     } else if(this.state.errorType == ErrorTypes.EmbedLoadingError) {
       stateIndicator = (!this.state.isDownloading) ? <i className="fa fa-3x fa-repeat" aria-hidden="true"></i> : <Loader type="line-scale" />;
       headlineMessage = this.state.error;
       clickEvent = this.getAndSetEmbedMetadata;
+      overlay = this.generateSVGOverlay(this.props.height, headlineMessage, "#f00", "#fff");
     } else {
       stateIndicator = <span className="lead">Ok</span>;
       headlineMessage = this.state.error;
       clickEvent = this.onDownloadErrorNoticed;
+      overlay = this.generateSVGOverlay(this.props.height, headlineMessage, "#f00", "#fff");
     }
 
     return <div className={"container " + classNames} onClick={clickEvent}>
-              <h3>{headlineMessage}</h3>
               {stateIndicator}
+              {overlay}
           </div>;
   }
 
@@ -225,6 +285,8 @@ export default class IdeWrapper extends React.Component {
     return this.renderIdeWrapper();
   }
 }
+
+
 
 /** Contains typchecking rules for specific members*/
 IdeWrapper.propTypes = {

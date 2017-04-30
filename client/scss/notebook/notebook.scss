@@ -68,7 +68,7 @@ h1.notebook-title {
     filter: opacity(85%);
   }
   .downloadEmbed {
-    background: url(/public/img/embed_overlay.jpg);
+    // background: url(/public/img/embed_overlay.jpg);
     background-size: 100% 100%;
     min-height: 500px;
     background-origin: content-box;
@@ -84,6 +84,20 @@ h1.notebook-title {
   .downloadEmbed > * {
     flex-grow: 0;
     flex-basis: 10%;
+  }
+
+  .downloadEmbed {
+    & > svg {
+      flex-grow: 1;
+    }
+
+    & .loader {
+      position: absolute;
+    }
+
+    & span.lead {
+      position: absolute;
+    }
   }
 }
 
