@@ -202,11 +202,11 @@ export default class IdeWrapper extends React.Component {
       <rect className="js-diff-placeholder" x="0" y="0" width="100%" height="35" fill={headlineColor} fillRule="evenodd" />
       <text x="50%" y="25" fill={fontColor} fontSize="18" fontWeight="700" textAnchor="middle">{headline}</text>
       <rect className="js-diff-placeholder" x="0" y="35" width="44" height={height - 58} fill="#e8e8e8" fillRule="evenodd"></rect>
-      <rect className="js-diff-placeholder" x="0" y={height - 24} width="100%" height={23} fill="#007ACC" fillRule="evenodd"></rect>
       <path className="js-diff-placeholder" clipPath="url(#diff-placeholder)" d={`M0 0h1200v${height}H0z`} fill="#ccc" fillRule="evenodd"></path>
         <clipPath id="diff-placeholder">
           {draw}
-        </clipPath>   
+        </clipPath>  
+      <rect className="js-diff-placeholder" x="0" y={height - 24} width="100%" height={24} fill="#007ACC" fillRule="evenodd"></rect> 
       {stateDraw} 
     </svg>;
     return svg;
