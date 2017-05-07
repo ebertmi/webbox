@@ -30,11 +30,12 @@
   background: url('/public/img/sourcebox-bg.svg') no-repeat center center/contain;
   display: flex;
   flex-flow: row;
-  overflow: auto;    // TODO: Remove, since the additional Panel shall only scrolls
-  //overflow-y: auto;
+  overflow: auto;
   border: 1px solid #DDD;
-  margin-left: 15px;
-  margin-right: 15px;
+  margin: 0 15px 0 15px;
+  padding-bottom: 8px;
+  box-sizing: content-box;
+  background-color: #F9F9F9;
   position: relative;
   resize: vertical;
   > * {
