@@ -21,7 +21,7 @@ export default class CodeBlock extends React.PureComponent {
   renderMarkdown(source) {
     // Get default language from notebook if mode is not available
     let language = this.props.executionLanguage;
-    let mode = mode || language;
+    let mode = this.props.mode || language;
 
     const codeSource = '```' + mode + '\n' + source + '\n```';
     Markdown.render(codeSource)
