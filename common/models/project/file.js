@@ -23,7 +23,7 @@ export default class File extends EditSession {
    *
    * @memberOf File
    */
-  onDocumentChange(event) {
+  onDocumentChange() {
     // Skip if document is already dirty
     if (this.hasChanges === true) {
       return;

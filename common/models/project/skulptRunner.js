@@ -5,6 +5,8 @@ import Bluebird from 'bluebird';
 import { EventLog } from '../insights/remoteDispatcher';
 import { TerminalTransform } from '../../util/streamUtils';
 import { createInterface } from '../../util/readline';
+import Debug from 'debug';
+const debug = Debug('webbox:skulptRunner');
 
 // Disable warnings in production
 let BLUEBIRD_WARNINGS = true;
@@ -182,7 +184,7 @@ export default class Runner extends EventEmitter {
       });
 
       rli.on('error', err => {
-        console.log(err);
+        debug.log(err);
 
         reject();
         rli.close();
@@ -390,10 +392,10 @@ export default class Runner extends EventEmitter {
         return Sk.importMainWithBody(mainFile.name.replace('.py',''), false, mainFile.code, true);
       }, {'*': this.handleInterrupt.bind(this)})
       .then((res) => {
-        console.info('resolving skulpt execution', res);
+        debug('resolving skulpt execution', res);
         resolve();
       }, err => {
-        console.info('rejecting skulpt execution', err);
+        debug('rejecting skulpt execution', err);
         reject(err);
       });
     });
@@ -434,9 +436,9 @@ export default class Runner extends EventEmitter {
   /**
    * Stub implementation, otherwise the ProcessPanel would fail
    *
-   * @param {any} cols
-   * @param {any} rows
-   * @returns
+   * @param {Number} cols Number of columns
+   * @param {Number} rows Number of rows
+   * @returns {Object} Updated (Column, Row) pair after resize
    */
   resize(cols, rows) {
     return {

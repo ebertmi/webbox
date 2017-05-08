@@ -1,13 +1,13 @@
 import Sourcebox from '@sourcebox/web';
 import isString from 'lodash/isString';
 import pathModule from 'path';
-import Bluebird from 'bluebird';
+//import Bluebird from 'bluebird';
 
 import { Severity } from './../severity';
 
 import Project from './project';
 import Runner from './sourceboxRunner';
-import { EventLog } from '../insights/remoteDispatcher';
+//import { EventLog } from '../insights/remoteDispatcher';
 
 const PROCESS_DEFAULTS = {
   term: true
@@ -171,7 +171,7 @@ export default class SourceboxProject extends Project {
     let path = this.name || '.';
     path = pathModule.join(path, filename);
 
-    return this.sourcebox.rm([path], { term: false }, e => {
+    return this.sourcebox.rm([path], { term: false }, () => {
       // ignore this
     }); // call rm method
   }

@@ -18,6 +18,9 @@ import SourceboxProject from '../../models/project/sourceboxProject';
 import SkulptProject from '../../models/project/skulptProject';
 import {Severity} from "../../models/severity";
 
+import Debug from 'debug';
+const debug = Debug('webbox:CodeCellView');
+
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
  */
@@ -25,79 +28,41 @@ export default class CodeCellView extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.startStopExecution = this.startStopExecution.bind(this);
-    this.switchMode = this.switchMode.bind(this);
-    this.closeTerminal = this.closeTerminal.bind(this);
-    this.undoChanges = this.undoChanges.bind(this);
-    this.onRun = this.onRun.bind(this);
-    this.projectStateChange = this.projectStateChange.bind(this);
+    this.onStartStopExecution = this.onStartStopExecution.bind(this);
+    this.onSwitchMode = this.onSwitchMode.bind(this);
+    this.onCloseTerminal = this.onCloseTerminal.bind(this);
+    this.onUndoChanges = this.onUndoChanges.bind(this);
+    this.onOpenInExternalWindow = this.onOpenInExternalWindow.bind(this);
+    this.onProjectStateChange = this.onProjectStateChange.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
 
     this.state = { editMode: false, showTerminal: false };
   }
 
-  componentWillMount() {
-    let project = this.createEmptyProject();
-    if (project) {
-      project.tabManager.on('change', this.projectStateChange);
-      project.on('change', this.projectStateChange);
-      this.setState({project: project, tabs: project.tabManager.getTabs()});
-    }
-  }
-
   componentWillUnmount() {
     // Dispose listeners to avoid leaks
     if (this.state.project != null) {
-      this.state.project.tabManager.removeListener('change', this.projectStateChange);
-      this.state.project.on('change', this.projectStateChange);
+      this.state.project.tabManager.removeListener('change', this.onProjectStateChange);
+      this.state.project.on('change', this.onProjectStateChange);
     }
   }
 
   onKeyDown(e) {
     // Shift + Enter -> Execute Code
-    if((e.metaKey || (e.shiftKey && !e.altKey && !e.ctrlKey)) && e.key === "Enter") {
+    if ((e.metaKey || (e.shiftKey && !e.altKey && !e.ctrlKey)) && e.key === "Enter") {
       this.startStopExecution();
       e.preventDefault();
     }
 
-    console.log(e.key);
     // Escape -> ReadMode
-    if(!e.metaKey && !e.shiftKey && !e.altKey && !e.ctrlKey && e.key === "Escape" && this.state.editMode) {
+    if (!e.metaKey && !e.shiftKey && !e.altKey && !e.ctrlKey && e.key === "Escape" && this.state.editMode) {
       this.switchMode();
       e.preventDefault();
     }
 
   }
 
-  createEmptyProject() {
-    // Step 1: Get all relevant information, language, embed type and code
-    let language = this.props.cell.getIn(['metadata', 'executionLanguage'], this.props.executionLanguage.executionLanguage);
-    let notebookEmbedType = this.props.embedType || EmbedTypes.Sourcebox;
-    const id = this.props.cell.getIn(['metadata', 'runid'], RunModeDefaults.id);
-    const embedType = this.props.cell.getIn(['metadata', 'embedType'], notebookEmbedType);
-
-    let projectData = {
-      embed: createEmbedObject('', language, embedType, id),
-      user: window.__USER_DATA__,
-      messageList: this.context.messageList,
-      remoteDispatcher: this.context.remoteDispatcher,
-    };
-
-    if (embedType === EmbedTypes.Sourcebox) {
-      return new SourceboxProject(projectData, {
-        auth: window.__SOURCEBOX__.authToken,
-        server: window.__SOURCEBOX__.server,
-        transports: window.__SOURCEBOX__.transports || ['websocket']
-      });
-    } else if (embedType === EmbedTypes.Skulpt) {
-      return new SkulptProject(projectData);
-    } else {
-      this.context.messageList.showMessage(Severity.Error, new Error("Ungültiger oder nicht unterstützter 'embedType' wurde eingestellt. Wenden Sie sich zur Lösung an den Autor!"));
-      return null;
-    }
-  }
-
-  onRun() {
+  onOpenInExternalWindow() {
     /**
      * Running an unnamed example:
      *  - Get the current code
@@ -119,8 +84,68 @@ export default class CodeCellView extends React.PureComponent {
     window.open(url, "Beispiel Ausführen", strWindowFeatures);
   }
 
+  onCloseTerminal() {
+    this.setState({
+      showTerminal: false
+    });
+  }
+
+  onUndoChanges() {
+    this.session.setValue(this.props.code);
+    this.setState({
+      change: true
+    });
+  }
+
+  onSwitchMode() {
+    if (this.state.editMode) {
+      this.setState({ editMode: false });
+    } else {
+      this.setState( { editMode: true } );
+    }
+  }
+
+  onStartStopExecution() {
+    // Lazy creation of the project and binding of listeners
+    if (this.state.project == null) {
+      this.initialize().then(success => {
+        console.info("after init in onStartStopExecution", success);
+        // Only retry the start of the execution if the project has been successfully created
+        if (success) {
+          this.onStartStopExecution();
+        }
+      });
+
+      return;
+    }
+
+    let code = this.session != null ? this.session.getValue() : this.props.code;
+    let project = this.state.project;
+
+    this.state.project.tabManager.closeTabByType("matplotlib");
+
+    if (project.isRunning()) {
+      project.stop();
+    } else {
+      project.getFiles()[0].setValue(code);
+      this.setState({
+        showTerminal: true,
+        project: project,
+        tabs: this.state.project.tabManager.getTabs()
+      });
+      project.run();      // execute the code
+    }
+  }
+
+  onProjectStateChange() {
+    this.setState({
+      tabs: this.state.project.tabManager.getTabs()
+    }, this.forceUpdate());  // To force a Rerender
+  }
+
   /**
    * Helper to determine the height of the rendered markdown to set the ace editor size accordingly
+   * @returns {Number} ace editor wrappers height or minimum
    */
   getWrapperHeightOrMin() {
     if (this.wrapperNode) {
@@ -130,12 +155,91 @@ export default class CodeCellView extends React.PureComponent {
     }
   }
 
-  switchMode() {
-    if(this.state.editMode) {
-      this.setState({ editMode: false });
-    } else {
-      this.setState( { editMode: true } );
-    }
+
+  initialize() {
+    return this.createEmptyProject().then(project => {
+      project.tabManager.on('change', this.onProjectStateChange);
+      project.on('change', this.onProjectStateChange);
+      this.setState({
+        project: project, 
+        tabs: project.tabManager.getTabs()
+      });  
+
+      return true; 
+    }).catch(err => {
+      this.context.messageList.showMessage(Severity.Warning, err);
+      debug("Failed to create empty project", err);
+      return false;
+    });
+  }
+
+  createEmptyProject() {
+    // Step 1: Get all relevant information, language, embed type and code
+    let language = this.props.cell.getIn(['metadata', 'executionLanguage'], this.props.executionLanguage.executionLanguage);
+    let notebookEmbedType = this.props.embedType || EmbedTypes.Sourcebox;
+    const id = this.props.cell.getIn(['metadata', 'runid'], RunModeDefaults.id);
+    const embedType = this.props.cell.getIn(['metadata', 'embedType'], notebookEmbedType);
+
+    let projectData = {
+      embed: createEmbedObject('', language, embedType, id),
+      user: window.__USER_DATA__,
+      messageList: this.context.messageList,
+      remoteDispatcher: this.context.remoteDispatcher,
+    };
+
+    // Defer project creation to the point where all resources are available
+    const promise = new Promise((resolve, reject) => {
+      if (embedType === EmbedTypes.Sourcebox) {
+        // Check if user is authenticated and/or show error
+        if (window.__SOURCEBOX__.authToken == null || window.__SOURCEBOX__.authToken === "") {
+          reject(new Error("Sie müssen zum Verwenden dieser Funktion angemeldet sein."));
+        } else {
+          resolve(new SourceboxProject(projectData, {
+            auth: window.__SOURCEBOX__.authToken,
+            server: window.__SOURCEBOX__.server,
+            transports: window.__SOURCEBOX__.transports || ['websocket']
+          }));
+        }
+      } else if (embedType === EmbedTypes.Skulpt) {
+        // Check if skulpt is available, otherwise load the libs
+        if (typeof Sk === "undefined") {
+          require.ensure([], require => {
+            require('exports-loader?Sk!../../../public/skulpt/skulpt.min.js');
+            require('exports-loader?Sk!../../../public/skulpt/skulpt-stdlib.js');
+            resolve(new SkulptProject(projectData));
+          });
+        } else {
+          resolve(new SkulptProject(projectData));
+        }
+      } else {
+        reject(new Error("Ungültiger oder nicht unterstützter 'embedType' wurde eingestellt. Wenden Sie sich zur Lösung an den Autor!"));
+      }
+    });
+
+    return promise;
+  }
+
+  handleAdditionalPanels(tabs) {
+    let additionalPanel = false;
+    return tabs.map(({active, item, type}, index) => {
+      let PanelType;
+      switch (type) {
+        case "turtle":
+          PanelType = TurtlePanel;
+          break;
+        case "matplotlib":
+          PanelType = MatplotlibPanel;
+          break;
+        default:
+      }
+
+      if (PanelType && !additionalPanel) {
+        additionalPanel = true;
+        return <PanelType className="second-panel" key={index} active={active} item={item}/>;
+      } else if (PanelType && additionalPanel) {
+        this.context.messageList.showMessage(Severity.Warning, new Error("Anzeige mehrere Turtle- bzw. Matplotlib-Graphen wird nicht unterstützt!"));
+      }
+    });
   }
 
   renderEditMode() {
@@ -144,12 +248,20 @@ export default class CodeCellView extends React.PureComponent {
     let languageName = this.props.notebookLanguage || 'python';
     let mode = this.props.cell.getIn(['metadata', 'mode'], languageName);
 
+    // Reuse existing session if possible
     if (this.session) {
       this.session.setValue(source);
       this.session.setMode('ace/mode/' + mode);
     } else {
       this.session = new EditSession(source, 'ace/mode/' + mode);
       this.session.setUndoManager(new UndoManager);
+
+      // Register change listener on the editor to know when to update
+      this.session.on('change', () => {
+        this.setState({
+          change: true
+        });
+      });
     }
 
     return (
@@ -163,100 +275,39 @@ export default class CodeCellView extends React.PureComponent {
     let code = this.session != null ? this.session.getValue() : this.props.code;
     let executionLanguage = this.props.cell.getIn(['metadata', 'executionLanguage'], this.props.executionLanguage.executionLanguage);
     let mode = this.props.cell.getIn(['metadata', 'mode'], (this.props.notebookLanguage || 'python'));
+
+    // Render the read mode depending on the given viewComponent 
     return <this.props.viewComponent code={code} executionLanguage={executionLanguage} mode={mode}/>;
   }
 
-  startStopExecution() {
-    let code = this.session != null ? this.session.getValue() : this.props.code;
-    let project = this.state.project;
-
-    this.state.project.tabManager.closeTabByType("matplotlib");
-
-    if(project.isRunning()) {
-      project.stop();
-    } else {
-      project.getFiles()[0].setValue(code);
-      this.setState({
-        showTerminal: true,
-        project: project,
-        tabs: this.state.project.tabManager.getTabs()
-      });
-      project.run();      // execute the code
-    }
-  }
-
-  projectStateChange() {
-    this.setState({
-      tabs: this.state.project.tabManager.getTabs()
-    }, this.forceUpdate());  // To force a Rerender
-  }
-
-
-
-  closeTerminal() {
-    this.setState({
-      showTerminal: false
-    });
-  }
-
-  undoChanges() {
-    this.session.setValue(this.props.code);
-    this.setState({
-      change: true
-    });
-  }
-
-  handleAdditionalPanels(tabs) {
-    let additionalPanel = false;
-    return tabs.map(({active, item, type}, index) => {
-      let PanelType;
-      switch(type) {
-        case "turtle":
-          PanelType = TurtlePanel;
-          break;
-        case "matplotlib":
-          PanelType = MatplotlibPanel;
-          break;
-        default:
-      }
-
-      if(PanelType && !additionalPanel) {
-        additionalPanel = true;
-        return <PanelType className="second-panel" key={index} active={active} item={item}/>;
-      } else if(PanelType && additionalPanel) {
-        this.context.messageList.showMessage(Severity.Warning, new Error("Anzeige mehrere Turtle- bzw. Matplotlib-Graphen wird nicht unterstützt!"));
-      }
-    });
-  }
-
   render() {
-    const { id, code, className} = this.props;
+    const { code, className} = this.props;
     const { editMode, showTerminal, project, tabs } = this.state;
     const classes = classnames(`code-cell col-xs-12 row ${className}`);
-    const externalIcon = <Icon name="external-link" className="icon-control hidden-print" onClick={this.onRun} title="IDE in neuem Fenster öffnen" />;
-    const editIcon = <Icon name="edit" className="icon-control hidden-print" onClick={this.switchMode} title="Zum Editiermodus wechseln" />;
-    const readIcon = <Icon name="book" className="icon-control hidden-print" onClick={this.switchMode} title="Zum Lesemodus wechseln (Escape)" />;
-    const playIcon = <Icon name="play" className="success icon-control hidden-print" onClick={this.startStopExecution} title="Code ausführen (Shift + Enter)" />;
-    const stopIcon = <Icon name="stop" className="danger icon-control hidden-print" onClick={this.startStopExecution} title="Code stoppen" />;
-    const undoIcon = <Icon name="undo" className="danger icon-control hidden-print" onClick={this.undoChanges} title="Änderungen rückgängig machen" />;
-    const closeTerminalIcon = <Icon name="close" className="close-btn icon-control hidden-print" onClick={this.closeTerminal} title="Terminal schliessen" />;
+    const externalIcon = <Icon name="external-link" className="icon-control hidden-print" onClick={this.onOpenInExternalWindow} title="IDE in neuem Fenster öffnen" />;
+    const editIcon = <Icon name="edit" className="icon-control hidden-print" onClick={this.onSwitchMode} title="Zum Editiermodus wechseln" />;
+    const readIcon = <Icon name="book" className="icon-control hidden-print" onClick={this.onSwitchMode} title="Zum Lesemodus wechseln (Escape)" />;
+    const playIcon = <Icon name="play" className="success icon-control hidden-print" onClick={this.onStartStopExecution} title="Code ausführen (Shift + Enter)" />;
+    const stopIcon = <Icon name="stop" className="danger icon-control hidden-print" onClick={this.onStartStopExecution} title="Code stoppen" />;
+    const undoIcon = <Icon name="undo" className="danger icon-control hidden-print" onClick={this.onUndoChanges} title="Änderungen rückgängig machen" />;
+    const closeTerminalIcon = <Icon name="close" className="close-btn icon-control hidden-print" onClick={this.onCloseTerminal} title="Terminal schliessen" />;
     let additionalPanels = showTerminal ? this.handleAdditionalPanels(tabs, project, code) : null;
-    const missingEmbed = <div className="col-lg-12 col-md-12 col-xs-12 alert alert-danger">Ungültiger embedType. Wenden Sie sich an den Autor!</div>;
+    //const missingEmbed = <div className="col-lg-12 col-md-12 col-xs-12 alert alert-danger">Ungültiger embedType. Wenden Sie sich an den Autor!</div>;
 
     const ideArea = <div className="ide-area" style={{height: '200px'}}>
       { showTerminal ? closeTerminalIcon : null }
-      { project ? <Terminal process={project.runner}/> : null}
+      { (project && project.runner) ? <Terminal process={project.runner}/> : null}
       { additionalPanels }
     </div>;
 
     return (
-        <div className={classes} id={id}>
-          { !project ? missingEmbed : null}
+        <div className={classes}>
+          { /*!project ? missingEmbed : null*/}
           <div className="action-btn-group">
             { externalIcon }
             { editMode ? readIcon : editIcon}
-            { project ? (project.isRunning() ? stopIcon : playIcon) : null}
-            { this.session ? (this.session.getValue() === code ? null : undoIcon) : null }
+            { project ? (project.isRunning() ? stopIcon : playIcon) : playIcon}
+            { this.session ? (this.session.getUndoManager().hasUndo() ? null : undoIcon) : null }
           </div>
           { editMode ? this.renderEditMode() : this.renderReadMode() }
           { showTerminal ? ideArea : null }
@@ -274,11 +325,15 @@ CodeCellView.propTypes = {
   cell: PropTypes.object.isRequired,
   executionLanguage: PropTypes.object.isRequired,
   notebookLanguage: PropTypes.string.isRequired,
-  embedType: PropTypes.string.isRequired
+  embedType: PropTypes.string.isRequired,
+  className: PropTypes.string,
+  minHeight: PropTypes.number
 };
 
 CodeCellView.defaultProps = {
-  viewComponent: CodeBlock
+  viewComponent: CodeBlock,
+  className: "",
+  minHeight: 100
 };
 
 CodeCellView.contextTypes = {
