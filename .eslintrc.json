@@ -1,0 +1,94 @@
+{
+  "root": true,
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
+      "restParams": true,
+      "arrowFunctions": true,
+      "binaryLiterals": true,
+      "blockBindings": true,
+      "classes": true,
+      "defaultParams": true,
+      "destructuring": true,
+      "forOf": true,
+      "generators": true,
+      "modules": true,
+      "objectLiteralComputedProperties": true,
+      "objectLiteralDuplicateProperties": true,
+      "objectLiteralShorthandMethods": true,
+      "objectLiteralShorthandProperties": true,
+      "octalLiterals": true,
+      "regexUFlag": true,
+      "regexYFlag": true,
+      "spread": true,
+      "superInFunctions": true,
+      "templateStrings": true,
+      "unicodeCodePointEscapes": true,
+      "globalReturn": true,
+      "jsx": true,
+      "no-danger": false
+    }
+  },
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "rules": {
+    "semi": 2,
+    "indent": [2, 2, { "SwitchCase": 1 }],
+    "no-unused-vars": 2,
+    "no-console": "warn",
+    "curly": 2,
+    "default-case": 2,
+    "brace-style": 1,
+    "arrow-spacing": "error",
+    "space-before-blocks": "error",
+    "keyword-spacing": "error",
+    "valid-jsdoc": "error",
+    "no-extra-bind": "warn",
+    "react/jsx-handler-names": ["warn", {
+      "eventHandlerPrefix": "on",
+      "eventHandlerPropPrefix": "on"
+    }],
+    "react/jsx-indent-props": ["error", 2],
+    "react/jsx-no-bind": ["error", {
+      "ignoreRefs": true,
+      "allowArrowFunctions": true,
+      "allowBind": false
+    }],
+    "react/jsx-no-duplicate-props": ["error", { "ignoreCase": true }],
+    "react/jsx-no-undef": "error",
+    "react/jsx-pascal-case": ["error", {
+      "allowAllCaps": true,
+      "ignore": []
+    }],
+    "react/no-deprecated": ["error"],
+    "react/no-is-mounted": "error",
+    "react/no-string-refs": "warn",
+    "react/prefer-es6-class": ["error", "always"],
+    "react/prefer-stateless-function": ["error", { "ignorePureComponents": true }],
+    "react/prop-types": ["warn", { "ignore": [], "customValidators": [], "skipUndeclared": false }],
+    "react/sort-comp": ["error", {
+      "order": [
+        "static-methods",
+        "lifecycle",
+        "/^on.+$/",
+        "/^(get|set)(?!(InitialState$|DefaultProps$|ChildContext$)).+$/",
+        "everything-else",
+        "/^render.+$/",
+        "render"
+      ]
+    }],
+  "react/jsx-first-prop-new-line": ["warn", "multiline-multiprop"],
+  "react/jsx-no-comment-textnodes": "error",
+  "react/style-prop-object": "error",
+  "react/no-unescaped-entities": "warn",
+  "react/require-default-props": "warn"
+  },
+  "plugins": ["react"],
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true,
+    "mocha": true
+  }
+}
