@@ -13,7 +13,7 @@ import { EmbedTypes } from '../../common/constants/Embed';
 
 import { disableBackspace } from '../../common/util/backspaceDisabler';
 
-import 'expose-loader?Perf!react-addons-perf';
+//import 'expose-loader?Perf!react-addons-perf';
 
 // Try to disable backspace to avoid page backward and forward actions while working in an editor.
 disableBackspace();

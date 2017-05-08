@@ -172,7 +172,7 @@ export const mdOptions = {
         }
 
         lang = children[0].props['data-language'] || null;
-        return <Highlight lang={lang} source={source} {...props} />;
+        return <Highlight mode={lang} code={source} {...props} />;
 
       case 'p':
         content = makeChildren(children, props, options.htmlOptions);

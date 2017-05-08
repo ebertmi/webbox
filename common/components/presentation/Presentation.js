@@ -3,6 +3,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import LazyLoad from 'react-lazyload';
 
+import { MessageListModel, MessageWithAction } from '../../models/messages';
+import { MessageList } from '../messagelist/messageList';
+
 // Spectacle Presentation Framework Imports
 import {
   Appear,
@@ -35,16 +38,22 @@ const maxWidth = 1200;
 export default class Presentation extends React.Component {
   constructor(props) {
     super(props);
+
+    // Create global message list
+    this.messageList = new MessageListModel();
+
     // Create global websocket connection
-    this.RemoteDispatcher = new RemoteDispatcher();
+    this.remoteDispatcher = new RemoteDispatcher();
   }
 
   // Make messageList available in the tree
   getChildContext() {
     return {
-      remoteDispatcher: this.remoteDispatcher
+      remoteDispatcher: this.remoteDispatcher,
+      messageList: this.messageList,
     };
   }
+
 
   componentWillMount() {
     // Try to update the title
@@ -171,12 +180,18 @@ export default class Presentation extends React.Component {
     const slides = this.renderSlides();
 
     if (slides.length > 0) {
+
       return (
-        <Spectacle theme={theme} onRef={s => this.spectacle = s}>
-          <Deck progress="number" transition={[]} transitionDuration={200}>
-            { slides }
-          </Deck>
-        </Spectacle>
+        <div>
+          <div className="global-message-list">
+            <MessageList messageList={this.messageList} />
+          </div>
+          <Spectacle theme={theme} onRef={s => this.spectacle = s}>
+            <Deck progress="number" transition={[]} transitionDuration={200}>
+              { slides }
+            </Deck>
+          </Spectacle>
+        </div>
       );
     } else {
       return <p>Keine Folien vorhanden. Sie müssen ggf. die Metadaten der ersten Zelle bearbeiten.</p>;
@@ -185,5 +200,6 @@ export default class Presentation extends React.Component {
 }
 
 Presentation.childContextTypes = {
+  messageList: PropTypes.object,
   remoteDispatcher: PropTypes.object
 };
