@@ -7,12 +7,10 @@ import uniqueId from 'lodash/uniqueId';
 
 import Dropdown from '../util/dropdown.native';
 
-console.info(Dropdown);
-
 export function Label(props) {
-  let style = props.bsStyle || 'default';
+  const style = props.bsStyle || 'default';
 
-  let classes = classNames('label', `label-${style}`, {
+  const classes = classNames('label', `label-${style}`, {
     'label-pill': props.pill
   });
 
@@ -26,7 +24,7 @@ export function Label(props) {
 // navs and menus
 
 export function Nav(props) {
-  let classes = classNames('nav', {
+  const classes = classNames('nav', {
     [`nav-${props.bsStyle}`]: props.bsStyle
   }, props.className);
 
@@ -38,9 +36,9 @@ export function Nav(props) {
 }
 
 export function NavItem(props) {
-  let { useHref, active, ...rest } = props;
+  const { useHref, active, ...rest } = props;
 
-  let classes = classNames('nav-item nav-link', props.className, {
+  const classes = classNames('nav-item nav-link', props.className, {
     active: active
   });
 
@@ -60,7 +58,7 @@ export function NavItem(props) {
 }
 
 export function DropdownItem(props) {
-  let classes = classNames('dropdown-item', props.className, {
+  const classes = classNames('dropdown-item', props.className, {
     disabled: props.disabled
   });
 
@@ -81,7 +79,7 @@ export class NavDropdown extends React.Component {
   }
 
   render() {
-    let menuClasses = classNames('dropdown-menu', {
+    const menuClasses = classNames('dropdown-menu', {
       'dropdown-menu-right': this.props.right
     });
 
@@ -106,7 +104,7 @@ export class Input extends React.Component {
   }
 
   getStyleClass() {
-    let bsStyle = this.props.bsStyle;
+    const bsStyle = this.props.bsStyle;
 
     return classNames({
       'has-success': bsStyle === 'success',
@@ -116,7 +114,7 @@ export class Input extends React.Component {
   }
 
   renderNormalInput() {
-    let classes = classNames(this.getStyleClass(), 'form-group');
+    const classes = classNames(this.getStyleClass(), 'form-group');
     let element;
 
     switch (this.props.type) {
@@ -145,9 +143,9 @@ export class Input extends React.Component {
   }
 
   renderCheckboxRadio() {
-    let classes = classNames(this.props.type, this.getStyleClass());
+    const classes = classNames(this.props.type, this.getStyleClass());
 
-    let {label, muted, mutedParagraph, ...rest} = this.props;
+    const {label, muted, mutedParagraph, ...rest} = this.props;
 
     return (
       <div className={classes}>
@@ -168,6 +166,8 @@ export class Input extends React.Component {
     if (this.props.mutedParagraph) {
       return <p className="text-muted">{this.props.mutedParagraph}</p>;
     }
+
+    return null;
   }
 
   render() {
@@ -187,9 +187,9 @@ Input.propTypes = {
 };
 
 export function Button(props) {
-  let { inputClassName, className, bsStyle, ...rest } = props;
+  const { inputClassName, className, bsStyle, ...rest } = props;
 
-  let classes = classNames('btn', {
+  const classes = classNames('btn', {
     ['btn-' + bsStyle]: bsStyle
   }, className);
 

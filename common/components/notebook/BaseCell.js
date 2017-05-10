@@ -27,11 +27,9 @@ export default class BaseCell extends React.PureComponent {
   }
 
   /**
-   *
-   *
-   * @param {any} nextProps
-   * @param {any} nextState
-   * @returns
+   * @param {any} nextProps - next props
+   * @param {any} nextState - next state
+   * @returns {Boolean} true if component should update
    *
    * @memberOf BaseCell
    */
@@ -85,14 +83,6 @@ export default class BaseCell extends React.PureComponent {
     this.scrollToId();
   }
 
-  scrollToId() {
-    const element = document.getElementById(this.props.id);
-
-    if (element && element.scrollIntoView) {
-      element.scrollIntoView();
-    }
-  }
-
   // Dummpy impl.
   onUpdateCell() {
     // Do nothing
@@ -111,6 +101,14 @@ export default class BaseCell extends React.PureComponent {
 
   getSourceFromCell() {
     return sourceFromCell(this.props.cell);
+  }
+
+  scrollToId() {
+    const element = document.getElementById(this.props.id);
+
+    if (element && element.scrollIntoView) {
+      element.scrollIntoView();
+    }
   }
 
   isVisible() {

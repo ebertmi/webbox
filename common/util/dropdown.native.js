@@ -62,12 +62,15 @@ class Dropdown {
 
 // DROPDOWN DATA API
 // =================
-const Dropdowns = document.querySelectorAll('[data-toggle=dropdown]');
-let i = 0;
-const ddl = Dropdowns.length;
+if (typeof document != 'undefined') {
+  const Dropdowns = document.querySelectorAll('[data-toggle=dropdown]');
+  let i = 0;
+  const ddl = Dropdowns.length;
 
-for (i; i < ddl; i++) {
-  new Dropdown(Dropdowns[i]);
+  for (i; i < ddl; i++) {
+    new Dropdown(Dropdowns[i]);
+  }
 }
+
 
 export default Dropdown;

@@ -97,28 +97,29 @@ export const ExtendedFormat = '<!-- {} -->';
  * Inserts the item in the Ace Editor Session.
  *
  * @export
- * @param {Object} item
- * @param {EditSession} session
+ * @param {Object} item - item to insert
+ * @param {EditSession} session - session to use
+ * @returns {void}
  */
 export function insert(item, session) {
   let str;
   let lineNumber = 1;
-  let clonedItem = cloneDeep(item); // Clone Item to prevent object manipulation
+  const clonedItem = cloneDeep(item); // Clone Item to prevent object manipulation
 
   let selection = session.doc.getTextRange(session.selection.getRange());
-  let openBlockWith = clonedItem.openBlockWith;
-  let closeBlockWith = clonedItem.closeBlockWith;
+  const openBlockWith = clonedItem.openBlockWith;
+  const closeBlockWith = clonedItem.closeBlockWith;
 
   // If item is multiline and user has selected something
   if (clonedItem.multiline === true && selection) {
-    let lines = selection.split(/\r?\n/);
+    const lines = selection.split(/\r?\n/);
 
     for (let l = 0; l < lines.length; l++) {
       lineNumber = l + 1;
       lines[l] = buildBlock(lines[l], clonedItem, lineNumber).block;
     }
 
-    selection = lines.join("\n");
+    selection = lines.join('\n');
 
     // Reset open and close
     clonedItem.openWith = '';
@@ -139,18 +140,19 @@ export function insert(item, session) {
  * Append the given string at the end of the current line (cursor position)
  *
  * @export
- * @param {String} str
- * @param {EditSession} session
+ * @param {String} str - string to insert
+ * @param {EditSession} session - session to use
+ * @returns {void}
  */
 export function appendAtEndOfLine(str, session) {
-  let cursor = session.selection.getCursor();
-  let currline = cursor.row;
-  let wholelinetext = session.getLine(currline);
-  let lineLength = wholelinetext != null ? wholelinetext.length : 0;
+  const cursor = session.selection.getCursor();
+  const currline = cursor.row;
+  const wholelinetext = session.getLine(currline);
+  const lineLength = wholelinetext != null ? wholelinetext.length : 0;
 
   cursor.column += lineLength;
   session.insert(cursor, str);
-  let position = session.selection.getCursor();
+  const position = session.selection.getCursor();
 
   // Apply new position
   session.selection.moveCursorToPosition(position);
@@ -159,19 +161,20 @@ export function appendAtEndOfLine(str, session) {
 /**
  * Inserts the item in the edit session.
  *
- * @param {Object} strItem
- * @param {EditSession} session
+ * @param {Object} strItem - string to insert
+ * @param {EditSession} session - session to use
+ * @returns {void}
  */
 function doInsert(strItem, session) {
-  let selection = session.doc.getTextRange(session.selection.getRange());
+  const selection = session.doc.getTextRange(session.selection.getRange());
 
   if (selection) {
     session.replace(session.selection.getRange(), strItem.block);
   } else {
     session.insert(session.selection.getCursor(), strItem.block);
 
-    let position = session.selection.getCursor();
-    let backOffset = strItem.closeWith.length;
+    const position = session.selection.getCursor();
+    const backOffset = strItem.closeWith.length;
 
     // Alter position
     position.column -= backOffset;
@@ -182,24 +185,25 @@ function doInsert(strItem, session) {
 }
 
 function buildBlock(str, item, lineNumber) {
-  var multiline = item.multiline;
-  var block;
-  let openWith = `${item.prependLineNumbers ? lineNumber : ''}${item.openWith}`;
+  const multiline = item.multiline;
+  let block;
+  const openWith = `${item.prependLineNumbers ? lineNumber : ''}${item.openWith}`;
 
-  if (item.replaceWith !== "") {
+  if (item.replaceWith !== '') {
     block = openWith + item.replaceWith + item.closeWith;
   } else if (str === '' && item.placeHolder !== '') {
     block = openWith + item.placeHolder + item.closeWith;
   } else {
-    var lines = [str], blocks = [];
+    let lines = [str];
+    const blocks = [];
 
     if (multiline === true) {
       lines = str.split(/\r?\n/);
     }
 
-    for (var l = 0; l < lines.length; l++) {
-      var line = lines[l];
-      var trailingSpaces = line.match(/ *$/);
+    for (let l = 0; l < lines.length; l++) {
+      const line = lines[l];
+      const trailingSpaces = line.match(/ *$/);
 
       if (trailingSpaces) {
         blocks.push(openWith + line.replace(/ *$/g, '') + item.closeWith + trailingSpaces);
@@ -208,7 +212,7 @@ function buildBlock(str, item, lineNumber) {
       }
     }
 
-    block = blocks.join("\n");
+    block = blocks.join('\n');
   }
 
   return {

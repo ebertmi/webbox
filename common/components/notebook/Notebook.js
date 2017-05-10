@@ -66,6 +66,7 @@ export default class Notebook extends React.Component {
 
   /**
    * Callback which will be invoked if reconnect failed
+   * @returns{void}
    */
   onReconnectFailed() {
     this.showMessage(Severity.Warning, 'Derzeit konnte keine Verbindung zum Server hergestellt werden. Sind sie offline?');
@@ -73,6 +74,7 @@ export default class Notebook extends React.Component {
 
   /**
    * Show a message as a box
+   * @returns{void}
    */
   showMessage(severity, message) {
     if (this.messageList) {
@@ -82,9 +84,10 @@ export default class Notebook extends React.Component {
 
   /**
    * Check for Ctrl+S and try to save the document if possible
+   * @returns{void}
    */
   onKeyDown(e) {
-    let key = e.which || e.keyCode;
+    const key = e.which || e.keyCode;
     if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 83) {
       // Pressed Ctrl-S for saving
       if (this.props.notebook.get('isAuthor', false)) {
@@ -123,7 +126,6 @@ export default class Notebook extends React.Component {
         // Update current url with slug from the server and update the notebook slug here
         replaceIdWithSlug(this.props.notebook.get('id'), res.document.slug);
       } else {
-        console.log(res);
         this.messageList.showMessage(Severity.Error, res.error);
       }
     }).catch(err => {
@@ -137,13 +139,12 @@ export default class Notebook extends React.Component {
   onDelete() {
     const id = this.props.notebook.get('id');
     let messageObj;
-    let deleteAction = new Action('delete.delete.action', 'Löschen', '', true, () => {
+    const deleteAction = new Action('delete.delete.action', 'Löschen', '', true, () => {
       API.document.delete({ id: id }).then(res => {
         if (!res.error) {
           // Redirect to main page
           window.location.replace(`${window.location.protocol}//${window.location.host}`);
         } else {
-          console.log(res);
           this.messageList.showMessage(Severity.Error, res.error);
         }
       }).catch(err => {
@@ -154,7 +155,7 @@ export default class Notebook extends React.Component {
       this.messageList.hideMessage(messageObj);
     });
 
-    let cancelAction = new Action('cancel.delete.document', 'Abbrechen', '', true, () => {
+    const cancelAction = new Action('cancel.delete.document', 'Abbrechen', '', true, () => {
       this.messageList.hideMessage(messageObj);
     });
 
@@ -166,7 +167,7 @@ export default class Notebook extends React.Component {
 
   onDrop(e) {
     e.preventDefault();
-    let target = e.target;
+    const target = e.target;
 
     // Stop image upload drops bubbling up, here
     if (target.getAttribute('data-name') === 'image-upload') {
@@ -174,18 +175,18 @@ export default class Notebook extends React.Component {
     }
 
     // handle uploading
-    let files = e.dataTransfer.files;
+    const files = e.dataTransfer.files;
 
     for (let i = 0; i < files.length; i++) {
-      let file = files[i];
+      const file = files[i];
 
       // notebook format
       if (file.name && file.name.endsWith('.ipynb')) {
         this.messageList.showMessage(Severity.Ignore, `Importiere ${file.name}... Dies kann einen Moment dauern.`);
-        let reader = new FileReader();
+        const reader = new FileReader();
 
         reader.onload = () => {
-          let result = loadCellsFromIPYNB(reader.result);
+          const result = loadCellsFromIPYNB(reader.result);
 
           // Check if an error as occured during parsing the file!
           if (result instanceof Error) {
@@ -193,7 +194,7 @@ export default class Notebook extends React.Component {
             return;
           }
 
-          let {cells, language} = result;
+          const {cells, language} = result;
 
           this.props.dispatch(addCellsFromJS(cells, language, false, () => {
             this.messageList.showMessage(Severity.Ignore, 'Daten wurden importiert.');
@@ -215,7 +216,7 @@ export default class Notebook extends React.Component {
 
   onDragEnter(e) {
     e.preventDefault();
-    console.log('onDragEnter', e.target);
+
     this.setState({
       isDragging: true
     });
@@ -241,17 +242,17 @@ export default class Notebook extends React.Component {
     const notebookLanguage = this.props.notebook.getIn(['metadata', 'language_info', 'name'], 'plain');
     const executionLanguage = notebookMetadataToSourceboxLanguage(this.props.notebook.get('metadata'));
 
-    let blocks = [];
-    let dispatch = this.props.dispatch;
+    const blocks = [];
+    const dispatch = this.props.dispatch;
 
     // iterate over the list mapping of index->cellId
     cellOrder.map((cellId, index) => {
-      let cell = cells.get(cellId);
+      const cell = cells.get(cellId);
       const id = cell.get('id');
 
       if (isEditModeActive) {
         blocks.push(
-          <AddControls dispatch={dispatch} key={'add' + id}  cellIndex={index} id={id} isEditModeActive={isEditModeActive} />
+          <AddControls dispatch={dispatch} key={'add' + id} cellIndex={index} id={id} isEditModeActive={isEditModeActive} />
         );
       }
 
@@ -261,7 +262,7 @@ export default class Notebook extends React.Component {
           blocks.push(<MarkdownCell document={notebookId} course={course} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={index === activeBlock}/>);
           break;
         case 'code':
-          blocks.push(<CodeCell  embedType={embedType} course={course} executionLanguage={executionLanguage} notebookLanguage={notebookLanguage} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={index === activeBlock}/>);
+          blocks.push(<CodeCell embedType={embedType} course={course} executionLanguage={executionLanguage} notebookLanguage={notebookLanguage} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={index === activeBlock}/>);
           break;
         case 'codeembed':
           blocks.push(<CodeEmbedCell course={course} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive}editing={index === activeBlock}/>);
@@ -313,18 +314,18 @@ export default class Notebook extends React.Component {
           <MessageList messageList={this.messageList} />
         </div>
         <NotebookMetadata
-        isAuthor={this.props.notebook.get('isAuthor')}
-        authors={this.props.notebook.get('authors')}
-        isEditModeActive={isEditModeActive}
-        onSave={this.onSave}
-        onDelete={this.onDelete}
-        redoStackSize={redoStackSize}
-        undoStackSize={undoStackSize}
-        editable={editable}
-        slug={this.props.notebook.get('slug')}
-        course={course}
-        embedType={embedType}
-        id={id} />
+          isAuthor={this.props.notebook.get('isAuthor')}
+          authors={this.props.notebook.get('authors')}
+          isEditModeActive={isEditModeActive}
+          onSave={this.onSave}
+          onDelete={this.onDelete}
+          redoStackSize={redoStackSize}
+          undoStackSize={undoStackSize}
+          editable={editable}
+          slug={this.props.notebook.get('slug')}
+          course={course}
+          embedType={embedType}
+          id={id} />
         { dashboard }
         { this.renderCells() }
       </div>

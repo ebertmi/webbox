@@ -75,6 +75,8 @@ export default class Ide extends React.Component {
 
   /**
    * Check for global key codes and bindings for commands
+   * @param {Event} e - Key Event
+   * @returns {void}
    */
   onKeyDown(e) {
     let key = e.which || e.keyCode;

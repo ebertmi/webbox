@@ -48,6 +48,8 @@ export default class IdeWrapper extends React.Component {
   /**
    * Will be executed before rendering component. State changes won't trigger a re-rendering.
    * IdeWrapper use it to get meta data of embed for showing it without loading the whole.
+   *
+   * @returns {void}
    */
   componentWillMount() {
     this.getAndSetEmbedMetadata();
@@ -55,6 +57,8 @@ export default class IdeWrapper extends React.Component {
 
   /**
    * Resets the error state
+   *
+   * @returns {void}
    */
   onDownloadErrorNoticed() {
     this.setState({
@@ -68,6 +72,7 @@ export default class IdeWrapper extends React.Component {
    * Also it resets the isDownloading state.
    *
    * @param {object} data date of loaded embed
+   * @returns {void}
    */
   onProjectLoaded(data) {
     this.setState({
@@ -79,6 +84,8 @@ export default class IdeWrapper extends React.Component {
   /**
    * Sets the isDownloading state, loads the ide component as well the embed data.
    * Sets the embed data automatically after downloading them.
+   *
+   * @returns {void}
    */
   onClick() {
     this.setState({
@@ -124,7 +131,7 @@ export default class IdeWrapper extends React.Component {
    *
    * @param {string} err specific message of occurred error
    * @param {ErrorTypes} type type of the error to set
-   * @returns {undefined}
+   * @returns {void}
    */
   setErrorState(err, type) {
     this.setState({
@@ -199,8 +206,8 @@ export default class IdeWrapper extends React.Component {
       <rect className="js-diff-placeholder" x="0" y="0" width="100%" height="35" fill={headlineColor} fillRule="evenodd" />
       <text x="50%" y="25" fill={fontColor} fontSize="18" fontWeight="700" textAnchor="middle">{headline}</text>
       <rect className="js-diff-placeholder" x="0" y="35" width="44" height={height - 58} fill="#e8e8e8" fillRule="evenodd"></rect>
-      <path className="js-diff-placeholder" clipPath="url(#diff-placeholder)" d={`M0 0h1200v${height}H0z`} fill="#ccc" fillRule="evenodd"></path>
-        <clipPath id="diff-placeholder">
+      <path className="js-diff-placeholder" clipPath={`url(#diff-placeholder-${this.props.codeID})`} d={`M0 0h1200v${height}H0z`} fill="#ccc" fillRule="evenodd"></path>
+        <clipPath id={`diff-placeholder-${this.props.codeID}`}>
           {draw}
         </clipPath>
       <rect className="js-diff-placeholder" x="0" y={height - 24} width="100%" height={24} fill="#007ACC" fillRule="evenodd"></rect>

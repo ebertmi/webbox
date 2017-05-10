@@ -51,20 +51,6 @@ export default class TabBar extends React.Component {
     };
   }
 
-  onToggleSendToTeacherModal() {
-    this.setState({
-      showSendToTeacherModal: !this.state.showSendToTeacherModal
-    });
-  }
-
-  onShareWithTeacher(message) {
-    this.props.project.shareWithTeacher(message);
-  }
-
-  onScreenfullChange() {
-    this.forceUpdate();
-  }
-
   componentWillMount() {
     this.props.project.on('change', this.onChange);
     this.props.project.tabManager.on('change', this.onChange);
@@ -86,6 +72,20 @@ export default class TabBar extends React.Component {
       // Remove listener (cleanup)
       document.removeEventListener(screenfull.raw.fullscreenchange, this.onScreenfullChange);
     }
+  }
+
+  onToggleSendToTeacherModal() {
+    this.setState({
+      showSendToTeacherModal: !this.state.showSendToTeacherModal
+    });
+  }
+
+  onShareWithTeacher(message) {
+    this.props.project.shareWithTeacher(message);
+  }
+
+  onScreenfullChange() {
+    this.forceUpdate();
   }
 
   onChange() {

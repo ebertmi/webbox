@@ -11,9 +11,9 @@ const events = [
 ];
 
 export function pipeXterm(src, dest) {
-  var ondata;
-  var onerror;
-  var onend;
+  let ondata;
+  let onerror;
+  let onend;
 
   function unbind() {
     src.removeListener('data', ondata);
@@ -85,15 +85,6 @@ export default class Terminal extends React.Component {
     this.onStreamChange();
   }
 
-  componentWillUnmount() {
-    if (this.props.process) {
-      this.props.process.removeListener('streamsChanged', this.onStreamChange);
-    }
-
-    window.removeEventListener('resize', this.onResize);
-    this.terminal.destroy();
-  }
-
   componentDidUpdate(prevProps) {
     if (!this.props.hidden) {
       this.onResize();
@@ -104,8 +95,17 @@ export default class Terminal extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    if (this.props.process) {
+      this.props.process.removeListener('streamsChanged', this.onStreamChange);
+    }
+
+    window.removeEventListener('resize', this.onResize);
+    this.terminal.destroy();
+  }
+
   onStreamChange() {
-    let process = this.props.process;
+    const process = this.props.process;
 
     // Reset the terminal and delete old lines!
     this.terminal.clear();
@@ -132,8 +132,35 @@ export default class Terminal extends React.Component {
     this.terminal.focus();
   }
 
+  onResize() {
+    if (this.props.hidden) {
+      return;
+    }
+
+    const { clientWidth: parentWidth, clientHeight: parentHeight } = this.container;
+    const { clientWidth, clientHeight, offsetWidth, offsetHeight, scrollWidth, scrollHeight } = this.terminal.element;
+
+    const x = (parentWidth - (offsetWidth - clientWidth)) / scrollWidth;
+    const y = (parentHeight - (offsetHeight - clientHeight)) / scrollHeight;
+
+    let cols = x * this.terminal.cols | 0;
+    let rows = y * this.terminal.rows | 0;
+
+    const geometry = this.proposeGeometry();
+    cols = geometry.cols;
+    rows = geometry.rows;
+
+    if (this.terminal.cols !== cols || this.terminal.rows !== rows) {
+      this.terminal.resize(cols, rows);
+      if (this.props.onResize) {
+        this.props.onResize(cols, rows);
+      }
+    }
+  }
+
   /**
    * Some calculation for resizing the terminal. Fixes the height props introduced in version prior to 0.2.4
+   * @returns {Object} - rows and cols object
    */
   proposeGeometry () {
     const parentElementStyle = window.getComputedStyle(this.terminal.element.parentElement);
@@ -164,32 +191,6 @@ export default class Terminal extends React.Component {
 
     geometry = {cols: cols, rows: rows};
     return geometry;
-  }
-
-  onResize() {
-    if (this.props.hidden) {
-      return;
-    }
-
-    let { clientWidth: parentWidth, clientHeight: parentHeight } = this.container;
-    let { clientWidth, clientHeight, offsetWidth, offsetHeight, scrollWidth, scrollHeight } = this.terminal.element;
-
-    let x = (parentWidth - (offsetWidth - clientWidth)) / scrollWidth;
-    let y = (parentHeight - (offsetHeight - clientHeight)) / scrollHeight;
-
-    let cols = x * this.terminal.cols | 0;
-    let rows = y * this.terminal.rows | 0;
-
-    const geometry = this.proposeGeometry();
-    cols = geometry.cols;
-    rows = geometry.rows;
-
-    if (this.terminal.cols !== cols || this.terminal.rows !== rows) {
-      this.terminal.resize(cols, rows);
-      if (this.props.onResize) {
-        this.props.onResize(cols, rows);
-      }
-    }
   }
 
   render() {

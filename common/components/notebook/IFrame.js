@@ -13,18 +13,6 @@ export default class IFrame extends React.PureComponent {
     this.initIFrame = this.initIFrame.bind(this);
   }
 
-  initIFrame() {
-    return;
-
-    // dynamic resizing disabled for now, seems to work without
-    /*
-    if (this.iframe) {
-      const height = Math.max( this.iframe.contentWindow.document.body.scrollHeight,  this.iframe.contentWindow.document.body.offsetHeight,  this.iframe.contentWindow.document.documentElement.clientHeight,  this.iframe.contentWindow.document.documentElement.scrollHeight,  this.iframe.contentWindow.document.documentElement.offsetHeight);
-      this.iframe.style.height = height + 'px';
-    }
-    */
-  }
-
   onRef(ref) {
     this.iframe = ref;
   }
@@ -35,6 +23,16 @@ export default class IFrame extends React.PureComponent {
         this.iframe.parent.focus();
       }
     }
+  }
+
+  initIFrame() {
+    // dynamic resizing disabled for now, seems to work without
+    /*
+    if (this.iframe) {
+      const height = Math.max( this.iframe.contentWindow.document.body.scrollHeight,  this.iframe.contentWindow.document.body.offsetHeight,  this.iframe.contentWindow.document.documentElement.clientHeight,  this.iframe.contentWindow.document.documentElement.scrollHeight,  this.iframe.contentWindow.document.documentElement.offsetHeight);
+      this.iframe.style.height = height + 'px';
+    }
+    */
   }
 
   renderIFrame() {
@@ -76,7 +74,7 @@ IFrame.defaultProps = {
   width: 900,
   height: 500,
   resizable: true,
-  frameBorder: "0",
+  frameBorder: '0',
   lazy: false,
   noFocus: false
 };
