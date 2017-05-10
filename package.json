@@ -1,6 +1,6 @@
 {
   "name": "webbox",
-  "version": "0.2.9",
+  "version": "0.3.0",
   "description": "Webbased course editor powered by sourcebox",
   "main": "webbox.js",
   "scripts": {
@@ -26,7 +26,9 @@
   ],
   "author": "Michael Ebert",
   "contributors": [
-    "Johannes Henninger"
+    "Johannes Henninger",
+    "Roman Balzer",
+    "Markus Hülß"
   ],
   "license": "MIT",
   "bugs": {
