@@ -197,5 +197,6 @@ CellMetadata.propTypes = {
 };
 
 CellMetadata.contextTypes = {
-  messageList: PropTypes.object
+  messageList: PropTypes.object,
+  remoteDispatcher: PropTypes.object
 };

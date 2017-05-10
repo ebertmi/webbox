@@ -42,6 +42,7 @@ export default class TabBar extends React.Component {
     this.onShareWithTeacher = this.onShareWithTeacher.bind(this);
     this.onSave = this.onSave.bind(this);
     this.onToggleFullscreen = this.onToggleFullscreen.bind(this);
+    this.onScreenfullChange = this.onScreenfullChange.bind(this);
     this.onTabListScroll = this.onTabListScroll.bind(this);
     this.onToggleSendToTeacherModal = this.onToggleSendToTeacherModal.bind(this);
 
@@ -60,23 +61,31 @@ export default class TabBar extends React.Component {
     this.props.project.shareWithTeacher(message);
   }
 
+  onScreenfullChange() {
+    this.forceUpdate();
+  }
+
   componentWillMount() {
     this.props.project.on('change', this.onChange);
     this.props.project.tabManager.on('change', this.onChange);
     this.onChange();
+  }
 
+  componentDidMount() {
     // Add screenfull listener
     if (screenfull.enabled) {
-      document.addEventListener(screenfull.raw.fullscreenchange, () => {
-        // Force rerendering, otherwise the icon does not change
-        this.forceUpdate();
-      });
+      document.addEventListener(screenfull.raw.fullscreenchange, this.onScreenfullChange);
     }
   }
 
   componentWillUnmount() {
     this.props.project.removeListener('change', this.onChange);
     this.props.project.tabManager.removeListener('change', this.onChange);
+
+    if (screenfull.enabled) {
+      // Remove listener (cleanup)
+      document.removeEventListener(screenfull.raw.fullscreenchange, this.onScreenfullChange);
+    }
   }
 
   onChange() {
@@ -88,9 +97,9 @@ export default class TabBar extends React.Component {
   /**
    * Toggles between fullscreen and normal, if supported
    */
-  onToggleFullscreen() {
+  onToggleFullscreen(e) {
     if (screenfull.enabled) {
-      screenfull.toggle();
+      screenfull.toggle(e.currentTarget.closest(".ide"));
     }
   }
 

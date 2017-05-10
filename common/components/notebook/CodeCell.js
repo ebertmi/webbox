@@ -5,14 +5,10 @@ import classnames from 'classnames';
 
 import BaseCell from './BaseCell';
 import Editor from '../Editor';
-import Icon from '../Icon';
 import CellMetadata from './CellMetadata';
 import { EditButtonGroup } from './EditButtonGroup';
-
-
+import CodeCellView from './CodeCellView';
 import { updateCell } from '../../actions/NotebookActions';
-
-import { EmbedTypes, RunModeDefaults } from '../../constants/Embed';
 import Markdown from '../../util/markdown';
 
 /**
@@ -23,7 +19,6 @@ export default class CodeCell extends BaseCell {
     super(props);
 
     this.onRef = this.onRef.bind(this);
-    this.onRun = this.onRun.bind(this);
     this.saveCurrentSessionToState = this.saveCurrentSessionToState.bind(this);
 
     this.state = { rendered: '' };
@@ -38,34 +33,6 @@ export default class CodeCell extends BaseCell {
       let content = this.session.getValue();
       this.props.dispatch(updateCell(this.props.cell.get('id'), content));
     }
-  }
-
-  /**
-   * Clicked the run button. Should we enable postMessage communication with the new window?
-   * Maybe at some point later
-   */
-  onRun() {
-    /**
-     * Running an unnamed example:
-     *  - Get the current code
-     *  - Get the set language (we need to know how to run the code)
-     *  - Either use the set id for statistics or generate a new one
-     *  - Current course/chapter (for statistics)
-     */
-
-    const code = this.getSourceFromCell();
-    let notebookLanguageInformation = this.props.cell.getIn(['metadata', 'executionLanguage'], this.props.executionLanguage.executionLanguage);
-
-    let notebookEmbedType = this.props.embedType || EmbedTypes.Sourcebox;
-    const embedType = this.props.cell.getIn(['metadata', 'embedType'], notebookEmbedType);
-
-    // Experimental
-    const id = this.props.cell.getIn(['metadata', 'runid'], RunModeDefaults.id);
-
-    const url = `${window.location.protocol}//${window.location.host}/run?language=${encodeURIComponent(notebookLanguageInformation)}&id=${encodeURIComponent(id)}&embedType=${encodeURIComponent(embedType)}&code=${encodeURIComponent(code)}`;
-    const strWindowFeatures = "menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes";
-
-    window.open(url, "Beispiel Ausführen", strWindowFeatures);
   }
 
   /**
@@ -140,21 +107,18 @@ export default class CodeCell extends BaseCell {
     );
   }
 
-  renderViewMode() {
-    return <div className="col-xs-12" ref={this.onRef} dangerouslySetInnerHTML={{__html: this.state.rendered}}/>;
-  }
-
   render() {
-    const { cell, isEditModeActive, editing, dispatch } = this.props;
+    const { cell, isEditModeActive, editing, dispatch, id, executionLanguage, notebookLanguage, embedType } = this.props;
     let content;
     let metadata = <CellMetadata beforeChange={this.saveCurrentSessionToState} className="col-xs-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
     let editingClass = editing ? ' editing' : '';
     const isVisible = this.isVisible();
 
-    if (!(isEditModeActive && editing)) {
-      content = this.renderViewMode();
-    } else {
+    if (isEditModeActive && editing) {
       content = this.renderEditMode();
+    } else {
+      content = <CodeCellView code={this.getSourceFromCell()} cell={cell} executionLanguage={executionLanguage}
+                              notebookLanguage={notebookLanguage} embedType={embedType}/>;
     }
 
     const classes = classnames("code-cell col-xs-12 row", editingClass, {
@@ -162,10 +126,9 @@ export default class CodeCell extends BaseCell {
     });
 
     return (
-      <div className={classes} id={this.props.id}>
+      <div className={classes} id={id}>
         <EditButtonGroup isVisible={isVisible} isEditModeActive={isEditModeActive} editing={editing} onToggleVisibility={this.onToggleVisibility} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
         {metadata}
-        <Icon name="play-circle-o" className="icon-control code-cell-run-btn hidden-print" onClick={this.onRun} title="Code Ausführen" />
         {content}
       </div>
     );

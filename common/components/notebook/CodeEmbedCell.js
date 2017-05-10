@@ -4,13 +4,14 @@ import classnames from 'classnames';
 import Autosuggest from 'react-autosuggest';
 
 import BaseCell from './BaseCell';
-import IFrame from './IFrame';
 import { EditButtonGroup } from './EditButtonGroup';
 import CellMetadata from './CellMetadata';
 import { updateCell } from '../../actions/NotebookActions';
 import { EmbedTypes } from '../../constants/Embed';
 import { API } from '../../services';
 import { Severity } from '../../models/severity';
+
+import IdeWrapper from '../ide/IdeWrapper';
 
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
@@ -224,8 +225,8 @@ export default class CodeEmbedCell extends BaseCell {
   }
 
   render() {
-    const { cell, isEditModeActive, editing, dispatch } = this.props;
-    const width = this.props.cell.getIn(['metadata', 'width']);
+    const { cell, isEditModeActive, editing, dispatch, className } = this.props;
+    //const width = this.props.cell.getIn(['metadata', 'width']);
     const height = this.props.cell.getIn(['metadata', 'height']);
     let content;
     let metadata = <CellMetadata className="col-xs-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
@@ -233,8 +234,10 @@ export default class CodeEmbedCell extends BaseCell {
     const isVisible = this.isVisible();
 
     let source = this.getSourceFromCell();
-    let frame = source !== '' ? <IFrame lazy={true} className="col-xs-12" width={width} height={height} src={`/embed/${source}`} allowFullScreen={true} frameBorder="0" /> : <p>Keine ID angegeben.</p>;
+    //let frame = source !== '' ? <IFrame lazy={true} className="col-xs-12" width={width} height={height} src={`/embed/${source}`} allowFullScreen={true} frameBorder="0" /> : <p>Keine ID angegeben.</p>;
 
+    // Add check for empty source
+    let wrapper = source !== '' ? <IdeWrapper className="col-xs-12" height={height} codeID={source} /> : <p>Keine ID angegeben.</p>;
 
     if (!(isEditModeActive && editing)) {
       content = null;
@@ -242,7 +245,7 @@ export default class CodeEmbedCell extends BaseCell {
       content = this.renderEditMode();
     }
 
-    const classes = classnames("codeembed-cell col-xs-12 row", editingClass, {
+    const classes = classnames(`codeembed-cell col-xs-12 row ${className}`, editingClass, {
       'cell-not-visible': !isVisible
     });
 
@@ -251,7 +254,7 @@ export default class CodeEmbedCell extends BaseCell {
         <EditButtonGroup isVisible={isVisible} isEditModeActive={isEditModeActive} editing={editing} onToggleVisibility={this.onToggleVisibility} onCellDown={this.onCellDown} onCellUp={this.onCellUp} onStopEdit={this.onStopEdit} onEdit={this.onEdit} onDelete={this.onDelete} />
         {metadata}
         {content}
-        {frame}
+        {wrapper}
       </div>
     );
   }

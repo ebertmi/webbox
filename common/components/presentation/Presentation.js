@@ -1,6 +1,10 @@
 // Library Imports
 import React from 'react';
+import PropTypes from 'prop-types';
 import LazyLoad from 'react-lazyload';
+
+import { MessageListModel, MessageWithAction } from '../../models/messages';
+import { MessageList } from '../messagelist/messageList';
 
 // Spectacle Presentation Framework Imports
 import {
@@ -13,10 +17,13 @@ import {
 
 // Custom Modules
 import Highlight from './Highlight';
+import CodeCellView from '../notebook/CodeCellView';
+import CodeEmbedCell from '../notebook/CodeEmbedCell';
 import { toMarkdownComponent } from './markdownRenderer';
 import createTheme from "./theme";
 import { sourceFromCell, replaceIdWithSlug, notebookMetadataToSourceboxLanguage } from '../../util/nbUtil';
 import RawCell from '../notebook/RawCell';
+import {RemoteDispatcher} from '../../models/insights/remoteDispatcher';
 
 // Create the Theme from our custom theme
 const theme = createTheme();
@@ -31,7 +38,22 @@ const maxWidth = 1200;
 export default class Presentation extends React.Component {
   constructor(props) {
     super(props);
+
+    // Create global message list
+    this.messageList = new MessageListModel();
+
+    // Create global websocket connection
+    this.remoteDispatcher = new RemoteDispatcher();
   }
+
+  // Make messageList available in the tree
+  getChildContext() {
+    return {
+      remoteDispatcher: this.remoteDispatcher,
+      messageList: this.messageList,
+    };
+  }
+
 
   componentWillMount() {
     // Try to update the title
@@ -59,7 +81,6 @@ export default class Presentation extends React.Component {
     let executionLanguage;
     let notebookLanguageInformation;
     let embedType;
-    let runId;
     let source = sourceFromCell(cell);
 
     // Do not render the cell, if it is hidden!
@@ -77,18 +98,15 @@ export default class Presentation extends React.Component {
 
         executionLanguage = cell.getIn(['metadata', 'executionLanguage'], notebookLanguageInformation.executionLanguage);
 
-        embedType = cell.getIn(['metadata', 'embedType'], notebook.getIn(['metadata', 'embedType']));
-        runId = cell.getIn(['metadata', 'runid']);
-        return <Highlight showRunButton={true} embedType={embedType} runId={runId} source={source} executionLanguage={executionLanguage} lang={lang}></Highlight>;
+        embedType = cell.getIn(['metadata', 'embedType'], notebook.get('embedType'));
+        //runId = cell.getIn(['metadata', 'runid']);
+        //return <Highlight showRunButton={true} embedType={embedType} runId={runId} code={source} executionLanguage={executionLanguage} notebookLanguage={lang}></Highlight>;
+        return <CodeCellView className='present-mode' viewComponent={Highlight} code={source} cell={cell} executionLanguage={{executionLanguage: executionLanguage}} notebookLanguage={lang} embedType={embedType}/>;
       case 'codeembed':
         //return <Text>{source}</Text>;
         height = parseInt(cell.getIn(['metadata', 'height'], 350));
         height = isNaN(height) ? 350 : height;
-        return (
-          <LazyLoad height={height} once>
-            <iframe className={this.props.className} width={cell.getIn(['metadata', 'width'], 800)} height={cell.getIn(['metadata', 'height'], 400)} src={`/embed/${source}`} seamless={true} allowFullScreen={true} frameBorder="0" />
-          </LazyLoad>
-        );
+        return <CodeEmbedCell /*course={course}*/ className='present-mode' dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={index === activeBlock}/>;
       case 'raw':
         return <RawCell dispatch={dispatch} cellIndex={index} key={id} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={id === activeBlock}/>;
       default:
@@ -162,15 +180,26 @@ export default class Presentation extends React.Component {
     const slides = this.renderSlides();
 
     if (slides.length > 0) {
+
       return (
-        <Spectacle theme={theme} onRef={s => this.spectacle = s}>
-          <Deck progress="number" transition={[]} transitionDuration={200}>
-            { slides }
-          </Deck>
-        </Spectacle>
+        <div>
+          <div className="global-message-list">
+            <MessageList messageList={this.messageList} />
+          </div>
+          <Spectacle theme={theme} onRef={s => this.spectacle = s}>
+            <Deck progress="number" transition={[]} transitionDuration={200}>
+              { slides }
+            </Deck>
+          </Spectacle>
+        </div>
       );
     } else {
       return <p>Keine Folien vorhanden. Sie müssen ggf. die Metadaten der ersten Zelle bearbeiten.</p>;
     }
   }
 }
+
+Presentation.childContextTypes = {
+  messageList: PropTypes.object,
+  remoteDispatcher: PropTypes.object
+};

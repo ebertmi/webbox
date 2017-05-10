@@ -1,0 +1,136 @@
+.present-mode {
+
+  .action-btn-group {
+    padding-top: 12px;
+    > .fa {
+      font-size: 18px;
+    }
+  }
+
+  .terminal-container {
+    font-size: 18px;
+  }
+
+  .ide-area {
+    margin-right: 0;
+  }
+
+}
+
+.code-cell {
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  padding-left: 0;
+
+}
+
+.ide-area {
+  flex: 1 1 100%;
+  background: url('/public/img/sourcebox-bg.svg') no-repeat center center/contain;
+  display: flex;
+  flex-flow: row;
+  overflow: auto;
+  border: 1px solid #DDD;
+  margin: 0 15px 0 15px;
+  padding-bottom: 8px;
+  box-sizing: content-box;
+  background-color: #F9F9F9;
+  position: relative;
+  resize: vertical;
+  > * {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+
+    box-sizing: border-box;
+  }
+}
+
+
+ // CODE AREA
+.edit-view,.read-view,.highlight-view {
+  flex: 1 0 auto;
+  width: auto;
+  max-width: none;
+  padding-left: 0;
+}
+
+.edit-view {
+  margin-bottom: 5px;
+  .ace_editor {
+    border: 1px solid #DDD;
+  }
+}
+
+.read-view figure {
+    min-height: 100px;
+}
+
+.ide-area .turtle-panel, .ide-area .math-panel{
+  width: 50%;
+  background-color: #F9F9F9;
+  border-left: #ddd solid 1px;
+  overflow: auto;
+}
+
+// OUTPUT AREA
+.terminal-wrapper {
+  border-width: 0;
+}
+
+// Responsive Img for Matplotlib Images
+.math-panel img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.turtle-panel {
+  background-color: white;
+  >h1 {
+    display: none;
+  }
+}
+
+// BUTTONS
+.action-btn-group {
+  padding-top: 4px;
+  display: flex;
+  flex-direction: column;
+  margin: 0 0 16px 15px;
+  .icon-control {
+    padding: 0 4px 4px 4px;
+  }
+}
+
+.close-btn {   // Close Button shall float top right of the Output Area of the CodeCellView
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 1rem;
+  color: #777;
+  font-size: 25px;
+  padding: 0.2rem 0.3rem 0.2rem 0.3rem;
+}
+
+.code-cell-btn {
+  border: 1px solid #DDD;
+  padding: 0 3px 0 3px;
+}
+
+.btn-area {
+  padding-left: 15px;
+  width: 100%;
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.success {
+  color: green;
+}
+
+.danger {
+  color: red;
+}
+

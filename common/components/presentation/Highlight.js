@@ -44,7 +44,7 @@ class Highlight extends React.Component {
      *  - Current course/chapter (for statistics)
      */
     // short test
-    const code = this.props.source;
+    const code = this.props.code;
     const language = this.props.executionLanguage;
     const embedType = this.props.embedType || EmbedTypes.Sourcebox;
     const id = this.props.runId || RunModeDefaults.id;
@@ -78,16 +78,16 @@ class Highlight extends React.Component {
       left: "-1em",
       top: "0em"
     };
-    const lang = `language-${this.props.lang}`;
+    const lang = `language-${this.props.mode}`;
     const runBtn = this.props.showRunButton ? <Icon style={runBtnStyles} name="play-circle-o" className="icon-control" onClick={this.onRun} title="Code Ausführen" /> : null;
     return (
-      <div style={{position: "relative"}}>
+      <div className="highlight-view" style={{position: "relative"}}>
         <pre className="hljs" ref={this.onRef} style={[this.context.styles.components.codePane.pre, getStyles.call(this), this.props.style]}>
-          <code className={lang} style={this.context.styles.components.codePane.code}>{this.props.source}</code>
+          <code className={lang} style={this.context.styles.components.codePane.code}>{this.props.code}</code>
         </pre>
         {runBtn}
       </div>
-      );
+    );
   }
 }
 
@@ -96,9 +96,9 @@ Highlight.contextTypes = {
 };
 
 Highlight.defaultProps = {
-  lang: '',
+  mode: '',
   executionLanguage: '',
-  source: '',
+  code: '',
   showRunButton: false
 };
 

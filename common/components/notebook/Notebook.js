@@ -13,6 +13,7 @@ import { MessageListModel, MessageWithAction } from '../../models/messages';
 import { Action } from '../../models/actions';
 import { Severity } from '../../models/severity';
 import { MessageList } from '../messagelist/messageList';
+import {RemoteDispatcher} from '../../models/insights/remoteDispatcher';
 
 import { loadCellsFromIPYNB, stateToJS, replaceIdWithSlug, notebookMetadataToSourceboxLanguage } from '../../util/nbUtil';
 import { addCellsFromJS, toggleViewMode, updateNotebookMetadata } from '../../actions/NotebookActions';
@@ -30,6 +31,10 @@ export default class Notebook extends React.Component {
     // Create global message list
     this.messageList = new MessageListModel();
 
+    // Create global websocket connection
+    this.remoteDispatcher = new RemoteDispatcher();
+    this.remoteDispatcher.on('reconnect_failed', this.onReconnectFailed.bind(this));
+
     this.onDrop = this.onDrop.bind(this);
     this.onDragOver = this.onDragOver.bind(this);
     this.onSave = this.onSave.bind(this);
@@ -46,7 +51,8 @@ export default class Notebook extends React.Component {
   // Make messageList available in the tree
   getChildContext() {
     return {
-      messageList: this.messageList
+      messageList: this.messageList,
+      remoteDispatcher: this.remoteDispatcher
     };
   }
 
@@ -56,6 +62,22 @@ export default class Notebook extends React.Component {
 
     // Try to update url
     replaceIdWithSlug(this.props.notebook.get('id'), this.props.notebook.get('slug'));
+  }
+
+  /**
+   * Callback which will be invoked if reconnect failed
+   */
+  onReconnectFailed() {
+    this.showMessage(Severity.Warning, 'Derzeit konnte keine Verbindung zum Server hergestellt werden. Sind sie offline?');
+  }
+
+  /**
+   * Show a message as a box
+   */
+  showMessage(severity, message) {
+    if (this.messageList) {
+      this.messageList.showMessage(severity, message);
+    }
   }
 
   /**
@@ -310,7 +332,6 @@ export default class Notebook extends React.Component {
   }
 
   render() {
-
     // Init dynamic loading of AnalyticsDashboard to reduce initial load
     if (this.props.notebook.get('showAnalytics') && this.state.dashboardComponent == null) {
       require.ensure('./analytics/AnalyticsDashboard', require => {
@@ -324,5 +345,6 @@ export default class Notebook extends React.Component {
 }
 
 Notebook.childContextTypes = {
-  messageList: PropTypes.object
+  messageList: PropTypes.object,
+  remoteDispatcher: PropTypes.object
 };

@@ -109,6 +109,7 @@ export function documentToState(document) {
   newState = newState.set('nbformat_minor', document.nbformat_minor || 0);
   newState = newState.set('course', document.course);
   newState = newState.set('authors', new Immutable.List(document.authors));
+  newState = newState.set('embedType', document.embedType);
 
   // ToDo: We should really rename the isAuthor thing and then just call it isNotebookEditable
   //newState = newState.set('isAuthor', false/*document.isAuthor*/);

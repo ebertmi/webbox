@@ -8,6 +8,9 @@
 
 @import "~xterm/src/xterm.css";
 @import "../includes/_terminal";
+@import "includes/_loader";
+
+@import "../includes/_codecell_ide.scss";
 
 // Fonts
 @import url(https://fonts.googleapis.com/css?family=PT+Sans);
@@ -64,10 +67,46 @@ h1.notebook-title {
     -ms-filter: opacity(85%);
     filter: opacity(85%);
   }
+  .downloadEmbed {
+    // background: url(/public/img/embed_overlay.jpg);
+    background-size: 100% 100%;
+    // min-height: 500px;
+    background-origin: content-box;
+    background-repeat: no-repeat;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .downloadEmbed > * {
+    flex-grow: 0;
+    flex-basis: 10%;
+  }
+
+  .downloadEmbed {
+    & > svg {
+      flex-grow: 1;
+    }
+
+    & .loader {
+      position: absolute;
+    }
+
+    & span.lead {
+      position: absolute;
+    }
+  }
 }
 
 .view-mode .cell-not-visible {
   display: none;
+}
+
+.codeembed-cell.present-mode {
+  font-size: 18px; /* set new base size for relative units */
 }
 
 /*
