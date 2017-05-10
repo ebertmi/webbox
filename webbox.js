@@ -50,7 +50,7 @@ if (config.isDev) {
   cache = { engine: CatboxMemory };
 }
 
-var server = new Hapi.Server({
+const server = new Hapi.Server({
   cache: cache
 });
 
@@ -106,6 +106,7 @@ server.register({
   }
 });
 
+
 // add vision template engine support
 server.register(Vision, (err) => {
   if (err) {
@@ -115,7 +116,7 @@ server.register(Vision, (err) => {
       engines: {
         jade: Jade
       },
-      path: __dirname + '/lib/views',
+      path: Path.join(__dirname, '/lib/views/'),
       compileOptions: {
         cache: true,
         pretty: true,
@@ -128,7 +129,7 @@ server.register(Vision, (err) => {
 });
 
 // register better error pages
-server.ext('onPreResponse', function (request, reply) {
+server.ext('onPreResponse', function onPreResponse(request, reply) {
   let user;
 
   if (request.pre.user === undefined) {
@@ -146,7 +147,7 @@ server.ext('onPreResponse', function (request, reply) {
 
   if (request.response.output.statusCode >= 500) {
     console.info('Server error 500', 500);
-    let errorMessage = isString(request.response) ? request.repsonse : 'Server Error 500';
+    const errorMessage = isString(request.response) ? request.repsonse : 'Server Error 500';
     Log.createLog('Server.Error', errorMessage, {
       path: request.path,
       user: request.pre.user || {},
@@ -174,7 +175,7 @@ server.ext('onPreResponse', function (request, reply) {
     errName = 'Fehler';
     statusCode = request.response.output.statusCode;
   } else {
-    err = "Wir kümmern ums darum.";
+    err = 'Wir kümmern ums darum.';
     errName = 'Fehler';
     statusCode = request.response.output.statusCode;
   }
@@ -194,7 +195,7 @@ server.ext('onPreResponse', function (request, reply) {
 
 server.on('request-error', function (event) {
   try {
-    let error = event.response.source || {};
+    const error = event.response.source || {};
     error._error = event.response. _error.toString();
     error.stack = event.response._error.stack || '';
 

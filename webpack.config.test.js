@@ -1,8 +1,8 @@
 /* global __dirname */
 // see http://stackoverflow.com/questions/32385219/mocha-tests-dont-run-with-webpack-and-mocha-loader
 
-var webpack = require('webpack');
-var path = require('path');
+const webpack = require('webpack');
+const path = require('path');
 module.exports = {
   entry: './test-client/all.js',
   output: {
@@ -22,9 +22,9 @@ module.exports = {
         include: [
           // We explicitly include all directory, otherwise, this will break
           // as 'exclude' has a higher priority than include
-          path.resolve(__dirname, 'common'),
-          path.resolve(__dirname, 'client'),
-          path.resolve(__dirname, 'test-client'),
+          path.join(__dirname, 'common'),
+          path.join(__dirname, 'client'),
+          path.join(__dirname, 'test-client'),
 
           // Add all npm modules that need to be transpiled!
           // Include xterm module
@@ -32,8 +32,8 @@ module.exports = {
         ],
         loader: 'babel-loader',
         query: {
-          presets: ['es2015', 'react'],
-          plugins: ["transform-object-rest-spread"]
+          presets: [['es2015', { modules: false }], 'react', 'stage-2', 'stage-3'],
+          plugins: ['transform-runtime', 'syntax-dynamic-import']
         }
       },
       {

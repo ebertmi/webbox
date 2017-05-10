@@ -2,15 +2,15 @@
 
 'use strict';
 
-var webpack = require('webpack');
-var path = require('path');
-var autoprefixer = require('autoprefixer');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
-var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const webpack = require('webpack');
+const path = require('path');
+const autoprefixer = require('autoprefixer');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   target: 'web',
-  context: path.resolve(__dirname, 'client'),
+  context: path.join(__dirname, 'client'),
   entry: {
     dashboard: './js/dashboard.js',
     index: './js/index.js',
@@ -21,7 +21,7 @@ module.exports = {
   output: {
     filename: '[name].bundle.js',
     chunkFilename: '[id].bundle.js',
-    path: __dirname + '/public/js',
+    path: path.join(__dirname, '/public/js'),
     publicPath: '/public/js/'
   },
   resolve: {
@@ -42,8 +42,8 @@ module.exports = {
         include: [
           // We explicitly include all directory, otherwise, this will break
           // as 'exclude' has a higher priority than include
-          path.resolve(__dirname, 'common'),
-          path.resolve(__dirname, 'client'),
+          path.join(__dirname, 'common'),
+          path.join(__dirname, 'client'),
 
           // Add all npm modules that need to be transpiled!
           // Include xterm module
@@ -51,8 +51,8 @@ module.exports = {
         ],
         loader: 'babel-loader',
         query: {
-          presets: [['es2015', { modules: false }], 'react'],
-          plugins: ["transform-object-rest-spread"]
+          presets: [['es2015', { modules: false }], 'react', 'stage-2', 'stage-3'],
+          plugins: ['transform-runtime', 'syntax-dynamic-import']
         },
       },
       {
@@ -66,7 +66,7 @@ module.exports = {
           {
             loader: 'postcss-loader',
             options: {
-              plugins: function () {
+              plugins: function prefixConfig() {
                 return [ autoprefixer({ browsers: ['last 2 versions'] }) ];
               }
             }
@@ -76,7 +76,7 @@ module.exports = {
       },
       {
         test: /\.json$/,
-        loader: "json-loader"
+        loader: 'json-loader'
       }
     ],
     noParse: [
@@ -98,7 +98,7 @@ module.exports = {
     }),
     new CopyWebpackPlugin([
       {
-        from: path.resolve(__dirname, 'common/components/presentation/theme/theme.css'),
+        from: path.join(__dirname, 'common/components/presentation/theme/theme.css'),
         to: '../css/spectacle.css',
         copyUnmodified: true
       }
@@ -115,5 +115,5 @@ module.exports = {
     Buffer: true,
     fs: 'empty' // needed for term.js
   },
-  devtool: "source-map"
+  devtool: 'source-map'
 };

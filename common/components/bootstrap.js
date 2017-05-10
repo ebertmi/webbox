@@ -7,6 +7,8 @@ import uniqueId from 'lodash/uniqueId';
 
 import Dropdown from '../util/dropdown.native';
 
+console.info(Dropdown);
+
 export function Label(props) {
   let style = props.bsStyle || 'default';
 

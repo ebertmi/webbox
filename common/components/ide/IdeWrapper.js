@@ -13,8 +13,8 @@ import Debug from 'debug';
 const debug = Debug('webbox:IdeWrapper');
 
 const ErrorTypes = {
-  EmbedLoadingError: "embedLoadingError",
-  AuthentificationError: "authentificationError"
+  EmbedLoadingError: 'embedLoadingError',
+  AuthentificationError: 'authentificationError'
 };
 
 /**
@@ -35,9 +35,9 @@ export default class IdeWrapper extends React.Component {
 
     this.state = {
       codeData: null,
-      embedName: "",
-      embedLang: "",
-      embedType: "",
+      embedName: '',
+      embedLang: '',
+      embedType: '',
       isDownloading: false,
       IdeComponent: null,
       error: null,
@@ -51,21 +51,6 @@ export default class IdeWrapper extends React.Component {
    */
   componentWillMount() {
     this.getAndSetEmbedMetadata();
-  }
-
-  /**
-   * Sets the error state with given error message.
-   * Resets the isDownloading state if the error occurred while downloading embed
-   *
-   * @param {string} err specific message of occurred error
-   * @param {ErrorTypes} type type of the error to set
-   */
-  setErrorState(err, type) {
-    this.setState({
-      error: err,
-      errorType: type,
-      isDownloading: false
-    });
   }
 
   /**
@@ -102,22 +87,20 @@ export default class IdeWrapper extends React.Component {
     });
 
     if (this.state.IdeComponent === null) {
-      require.ensure('./Ide', require => {
-        const Ide = require('./Ide');
-
-        this.setState({
-          IdeComponent: Ide.default
-        });
+      import('./Ide').then(Ide => {
+        this.setState({ IdeComponent: Ide.default });
+      }).catch(err => {
+        debug('Failed to load Ide component', err);
       });
     }
 
-    API.embed.getEmbed({ id: this.props.codeID  }).then(data => {
-      if(!data.error) {
-        if(data.INITIAL_DATA.meta.embedType != EmbedTypes.Sourcebox && data.INITIAL_DATA.meta.embedType != EmbedTypes.Skulpt) {
-          console.log(data.INITIAL_DATA.meta.embedType);
-          this.setErrorState("Nicht unterstütztes Beispielformat.");
+    API.embed.getEmbed({ id: this.props.codeID }).then(data => {
+      if (!data.error) {
+        if (data.INITIAL_DATA.meta.embedType != EmbedTypes.Sourcebox && data.INITIAL_DATA.meta.embedType != EmbedTypes.Skulpt) {
+          debug(data.INITIAL_DATA.meta.embedType);
+          this.setErrorState('Nicht unterstütztes Beispielformat.');
         }
-        if(typeof Sk === "undefined") {
+        if (typeof Sk === 'undefined') {
           require.ensure([], require => {
             require('exports-loader?Sk!../../../public/skulpt/skulpt.min.js');
             require('exports-loader?Sk!../../../public/skulpt/skulpt-stdlib.js');
@@ -135,9 +118,25 @@ export default class IdeWrapper extends React.Component {
     });
   }
 
+  /**
+   * Sets the error state with given error message.
+   * Resets the isDownloading state if the error occurred while downloading embed
+   *
+   * @param {string} err specific message of occurred error
+   * @param {ErrorTypes} type type of the error to set
+   * @returns {undefined}
+   */
+  setErrorState(err, type) {
+    this.setState({
+      error: err,
+      errorType: type,
+      isDownloading: false
+    });
+  }
+
   getAndSetEmbedMetadata() {
     // check if reloading meta data
-    if(this.state.error != null) {
+    if (this.state.error != null) {
       this.setState({
         isDownloading: true
       });
@@ -151,14 +150,14 @@ export default class IdeWrapper extends React.Component {
         embedType: data.meta.embedType,
       });
     }).catch(err => {
-      this.setErrorState("embed_loading_error", ErrorTypes.EmbedLoadingError);
+      this.setErrorState('embed_loading_error', ErrorTypes.EmbedLoadingError);
       debug(err);
     });
   }
 
   generatePattern(xOffset, yOffset, patternHeight, patternMulti) {
-    let pattern = [];
-    let offset = patternMulti * patternHeight + yOffset;
+    const pattern = [];
+    const offset = patternMulti * patternHeight + yOffset;
     pattern.push(<rect x={0 + xOffset} y={0 + offset} width="67.0175439" height="11.9298746" rx="2"></rect>);
     pattern.push(<rect x={76.8421053 + xOffset} y={0 + offset} width="140.350877" height="11.9298746" rx="2"></rect>);
     pattern.push(<rect x={18.9473684 + xOffset} y={47.7194983 + offset} width="100.701754" height="11.9298746" rx="2"></rect>);
@@ -171,75 +170,74 @@ export default class IdeWrapper extends React.Component {
   }
 
   generateSVGOverlay(height, headline, headlineColor, fontColor, state) {
-    let draw = [];
-    let lineHeight = 24;
-    let gapSize = 9;
-    let maxWidth = 340;
-    let patternHeight = 96;
+    const draw = [];
+    const patternHeight = 96;
     let stateDraw;
-    console.log(state);
-    switch(state) {
-      case "downloading": {
-        stateDraw = "";
+
+    switch (state) {
+      case 'downloading': {
+        stateDraw = '';
         break;
       }
-      case "notLoaded": {
+      case 'notLoaded': {
         stateDraw = <image xlinkHref="/public/img/download.png" x="50%" y="50%" height="75" width="75" transform="translate(-37.5,-37.5)"/>;
         break;
       }
       default: {
-        stateDraw = "";
+        stateDraw = '';
         break;
       }
     }
-    headlineColor = (headlineColor) ? headlineColor : "#ececec";
-    fontColor = (fontColor) ? fontColor : "#000";
+    headlineColor = (headlineColor) ? headlineColor : '#ececec';
+    fontColor = (fontColor) ? fontColor : '#000';
 
-    for(let i = 0; i < ((height - 58) / patternHeight) - 1; i++) {
+    for (let i = 0; i < ((height - 58) / patternHeight) - 1; i++) {
       draw.push(this.generatePattern(55, 40, patternHeight, i));
     }
-    let svg = <svg aria-hidden="true" width="100%" height={height} version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" className="diff-placeholder-svg position-absolute bottom-0">
+
+    const svg = <svg aria-hidden="true" width="100%" height={height} version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" className="diff-placeholder-svg position-absolute bottom-0">
       <rect className="js-diff-placeholder" x="0" y="0" width="100%" height="35" fill={headlineColor} fillRule="evenodd" />
       <text x="50%" y="25" fill={fontColor} fontSize="18" fontWeight="700" textAnchor="middle">{headline}</text>
       <rect className="js-diff-placeholder" x="0" y="35" width="44" height={height - 58} fill="#e8e8e8" fillRule="evenodd"></rect>
       <path className="js-diff-placeholder" clipPath="url(#diff-placeholder)" d={`M0 0h1200v${height}H0z`} fill="#ccc" fillRule="evenodd"></path>
         <clipPath id="diff-placeholder">
           {draw}
-        </clipPath>  
-      <rect className="js-diff-placeholder" x="0" y={height - 24} width="100%" height={24} fill="#007ACC" fillRule="evenodd"></rect> 
-      {stateDraw} 
+        </clipPath>
+      <rect className="js-diff-placeholder" x="0" y={height - 24} width="100%" height={24} fill="#007ACC" fillRule="evenodd"></rect>
+      {stateDraw}
     </svg>;
     return svg;
   }
 
   /**
    * Generates embed window to render. Content depens on the current state
+   * @returns {React.Node} embed window
    */
   generateEmbedWindowByState() {
-    let stateIndicator = "";
-    let classNames = "";
-    let headlineMessage = "";
-    let overlay = "";
+    let stateIndicator = '';
+    let classNames = '';
+    let headlineMessage = '';
+    let overlay = '';
     let clickEvent = null;
-    classNames = (!this.state.codeData) ? "downloadEmbed" : "";
-    if(this.state.error == null) {
-      stateIndicator = (!this.state.isDownloading) ? "" : <Loader type="line-scale" />;
-      headlineMessage = this.state.embedName + " - " + this.state.embedLang;
+    classNames = (!this.state.codeData) ? 'downloadEmbed' : '';
+    if (this.state.error == null) {
+      stateIndicator = (!this.state.isDownloading) ? '' : <Loader type="line-scale" />;
+      headlineMessage = this.state.embedName + ' - ' + this.state.embedLang;
       clickEvent = this.onClick;
-      overlay = this.generateSVGOverlay(this.props.height, headlineMessage, null, null, (!this.state.isDownloading) ? "notLoaded" : "downloading");
-    } else if(this.state.errorType == ErrorTypes.EmbedLoadingError) {
+      overlay = this.generateSVGOverlay(this.props.height, headlineMessage, null, null, (!this.state.isDownloading) ? 'notLoaded' : 'downloading');
+    } else if (this.state.errorType == ErrorTypes.EmbedLoadingError) {
       stateIndicator = (!this.state.isDownloading) ? <i className="fa fa-3x fa-repeat" aria-hidden="true"></i> : <Loader type="line-scale" />;
       headlineMessage = this.state.error;
       clickEvent = this.getAndSetEmbedMetadata;
-      overlay = this.generateSVGOverlay(this.props.height, headlineMessage, "#f00", "#fff");
+      overlay = this.generateSVGOverlay(this.props.height, headlineMessage, '#f00', '#fff');
     } else {
       stateIndicator = <span className="lead">Ok</span>;
       headlineMessage = this.state.error;
       clickEvent = this.onDownloadErrorNoticed;
-      overlay = this.generateSVGOverlay(this.props.height, headlineMessage, "#f00", "#fff");
+      overlay = this.generateSVGOverlay(this.props.height, headlineMessage, '#f00', '#fff');
     }
 
-    return <div className={"container " + classNames} onClick={clickEvent}>
+    return <div className={`container ${classNames}`} onClick={clickEvent}>
               {stateIndicator}
               {overlay}
           </div>;
@@ -247,14 +245,16 @@ export default class IdeWrapper extends React.Component {
 
   /**
    * Creates html code to render depending on current state.
+   * 
+   * @returns {React.Node} IdeWrapper Node
    */
   renderIdeWrapper() {
     let toRender;
     if ((this.state.codeData == null || this.state.IdeComponent == null) || this.state.error != null) { // check if embed data has been loaded
       return this.generateEmbedWindowByState();
     } else {
-      let messageList = new MessageListModel(usageConsole);
-      let projectData = {
+      const messageList = new MessageListModel(usageConsole);
+      const projectData = {
         embed: this.state.codeData.INITIAL_DATA,
         user: this.state.codeData.USER_DATA,
         messageList: messageList,
@@ -262,17 +262,17 @@ export default class IdeWrapper extends React.Component {
       };
 
       let project;
-      if(this.state.embedType === EmbedTypes.Sourcebox) {
+      if (this.state.embedType === EmbedTypes.Sourcebox) {
         project = new SourceboxProject(projectData, {
           auth: this.state.codeData.sourcebox.authToken,
           server: this.state.codeData.sourcebox.server,
           transports: this.state.codeData.sourcebox.transports || ['websocket']
         });
-      } else if(this.state.embedType === EmbedTypes.Skulpt) {
+      } else if (this.state.embedType === EmbedTypes.Skulpt) {
         project = new SkulptProject(projectData);
       }
 
-      toRender = <div className="col-xs-12" id="ide-container" style={{ height: this.props.height + 'px' }}><Ide project={project} messageList={messageList} /></div>;
+      toRender = <div className="col-xs-12" id="ide-container" style={{ height: `${this.props.height}px` }}><Ide project={project} messageList={messageList} /></div>;
     }
 
     return toRender;
@@ -280,6 +280,8 @@ export default class IdeWrapper extends React.Component {
 
   /**
    * Renders component
+   *
+   * @returns {React.Node} rendered node
    */
   render() {
     return this.renderIdeWrapper();

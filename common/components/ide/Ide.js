@@ -8,7 +8,7 @@ import Debug from 'debug';
 const debug = Debug('webbox:ide');
 
 function loadedInIFrame () {
-  return window.frameElement && window.frameElement.nodeName == "IFRAME";
+  return window.frameElement && window.frameElement.nodeName == 'IFRAME';
 }
 
 export default class Ide extends React.Component {
@@ -58,12 +58,12 @@ export default class Ide extends React.Component {
   onDrop(e) {
     e.preventDefault();
 
-    let files = e.dataTransfer.files;
-    let project = this.props.project;
+    const files = e.dataTransfer.files;
+    const project = this.props.project;
 
     for (let i = 0; i < files.length; i++) {
-      let file = files[i];
-      let reader = new FileReader();
+      const file = files[i];
+      const reader = new FileReader();
 
       reader.onload = () => {
         project.addFile(file.name, reader.result);
@@ -86,7 +86,7 @@ export default class Ide extends React.Component {
       e.preventDefault();
     } else if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 66) {
       // Run/Stop current programm Ctrl+E
-      let project = this.props.project;
+      const project = this.props.project;
 
       if (project.isRunning()) {
         project.stop();

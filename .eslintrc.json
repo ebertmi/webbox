@@ -1,8 +1,10 @@
 {
   "root": true,
+  "parser": "babel-eslint",
   "parserOptions": {
     "ecmaVersion": 6,
     "sourceType": "module",
+    "allowImportExportEverywhere": true,
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true,
       "restParams": true,
@@ -82,7 +84,88 @@
   "react/jsx-no-comment-textnodes": "error",
   "react/style-prop-object": "error",
   "react/no-unescaped-entities": "warn",
-  "react/require-default-props": "warn"
+  "react/require-default-props": "warn",
+  "block-scoped-var": "error",
+  "array-callback-return": "warn",
+  "consistent-return": "error",
+  "no-case-declarations": "error",
+    "no-empty-function": ["error", {
+      "allow": [
+        "arrowFunctions",
+        "functions",
+        "methods"
+      ]
+    }],
+    "no-empty-pattern": "error",
+    "no-extend-native": "warn",
+    "no-extra-label": "error",
+    "no-lone-blocks": "error",
+    "no-loop-func": "error",
+    "no-multi-spaces": "error",
+    "no-new-wrappers": "error",
+    "no-proto": "error",
+    "no-restricted-properties": ["error", {
+      "object": "arguments",
+      "property": "callee",
+      "message": "arguments.callee is deprecated"
+    }, {
+      "property": "__defineGetter__",
+      "message": "Please use Object.defineProperty instead."
+    }, {
+      "property": "__defineSetter__",
+      "message": "Please use Object.defineProperty instead."
+    }, {
+      "object": "Math",
+      "property": "pow",
+      "message": "Use the exponentiation operator (**) instead."
+    }],
+    "no-return-assign": "error",
+    "no-return-await": "error",
+    "no-script-url": "error",
+    "no-self-assign": "error",
+    "no-self-compare": "error",
+    "no-sequences": "error",
+    "no-throw-literal": "error",
+    "no-unmodified-loop-condition": "off",
+    "no-useless-concat": "error",
+    "no-useless-escape": "error",
+    "no-useless-return": "error",
+    "no-void": "error",
+    "no-var": "warn",
+    "no-with": "error",
+    "radix": "warn",
+    "vars-on-top": "warn",
+    "yoda": "error",
+    "no-mixed-spaces-and-tabs": "error",
+    "no-duplicate-imports": "error",
+    "import/order": ["off", {
+      "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
+      "newlines-between": "never"
+    }],
+    "func-names": "warn",
+    "block-spacing": ["error", "always"],
+    "camelcase": "error",
+    "no-array-constructor": "error",
+    "no-tabs": "warn",
+    "no-trailing-spaces": "error",
+    "jsx-quotes": ["error", "prefer-double"],
+    "quotes": ["error", "single", { "allowTemplateLiterals": true, "avoidEscape": true }],
+    "no-path-concat": "error",
+    "constructor-super": "error",
+    "generator-star-spacing": ["error", {"before": false, "after": false}],
+    "no-class-assign": "error",
+    "no-const-assign": "error",
+    "no-dupe-class-members": "error",
+    "no-useless-constructor": "error",
+    "no-this-before-super": "error",
+    "no-useless-computed-key": "error",
+    "prefer-arrow-callback": "warn",
+    "prefer-const": "warn",
+    "prefer-numeric-literals": "warn",
+    "prefer-rest-params": "warn",
+    "prefer-spread": "warn",
+    "prefer-template": "warn",
+    "require-yield": "error"
   },
   "plugins": ["react"],
   "env": {

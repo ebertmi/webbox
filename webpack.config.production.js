@@ -7,20 +7,20 @@
 
 /* global __dirname */
 
-var webpack = require('webpack');
-var path = require('path');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
-var CopyWebpackPlugin = require('copy-webpack-plugin');
-var autoprefixer = require('autoprefixer');
-var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const webpack = require('webpack');
+const path = require('path');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const autoprefixer = require('autoprefixer');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 process.env.NODE_ENV = '"production"';
-var VERSION = require('./package.json').version;
+const VERSION = require('./package.json').version;
 console.info('Building with package version:', VERSION);
 
 module.exports = {
   target: 'web',
-  context: path.resolve(__dirname, 'client'),
+  context: path.join(__dirname, 'client'),
   entry: {
     dashboard: './js/dashboard.js',
     index: './js/index.js',
@@ -31,7 +31,7 @@ module.exports = {
   output: {
     filename: '[name].bundle.' + VERSION + '.js',
     chunkFilename: '[id].bundle.' + VERSION + '.js',
-    path: __dirname + '/public/js',
+    path: path.join(__dirname, '/public/js'),
     publicPath: '/public/js/'
   },
   resolve: {
@@ -51,8 +51,8 @@ module.exports = {
         include: [
           // We explicitly include all directory, otherwise, this will break
           // as 'exclude' has a higher priority than include
-          path.resolve(__dirname, 'common'),
-          path.resolve(__dirname, 'client'),
+          path.join(__dirname, 'common'),
+          path.join(__dirname, 'client'),
 
           // Add all npm modules that need to be transpiled!
           // Include xterm module
@@ -60,8 +60,8 @@ module.exports = {
         ],
         loader: 'babel-loader',
         query: {
-          presets: [['es2015', { modules: false }], 'react'],
-          plugins: ["transform-object-rest-spread"]
+          presets: [['es2015', { modules: false }], 'react', 'stage-2', 'stage-3'],
+          plugins: ['transform-runtime', 'syntax-dynamic-import']
         }
       },
       {
@@ -87,7 +87,7 @@ module.exports = {
       },
       {
         test: /\.json$/,
-        loader: "json-loader"
+        loader: 'json-loader'
       }
     ],
     noParse: [
@@ -97,8 +97,8 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      "process.env": {
-        NODE_ENV: JSON.stringify("production")
+      'process.env': {
+        NODE_ENV: JSON.stringify('production')
       }
     }),
     new webpack.ContextReplacementPlugin(/^\.\/locale$/, context => {
@@ -128,7 +128,7 @@ module.exports = {
     }),
     new CopyWebpackPlugin([
       {
-        from: path.resolve(__dirname, 'common/components/presentation/theme/theme.css'),
+        from: path.join(__dirname, 'common/components/presentation/theme/theme.css'),
         to: '../css/spectacle.css',
         copyUnmodified: true
       }

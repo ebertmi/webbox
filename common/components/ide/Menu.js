@@ -42,7 +42,7 @@ export default class Menu extends React.Component {
   }
 
   componentWillMount() {
-    let input = document.createElement('input');
+    const input = document.createElement('input');
     input.type = 'file';
     input.multiple = true;
     input.addEventListener('change', this.onImport);
@@ -178,7 +178,6 @@ export default class Menu extends React.Component {
 
     if (files.length === 0) {
       // Show Message
-      return;
     } else if (files.length > 1) {
       const zipFile = generateZip(name, files);
       saveZipAsFile(name, zipFile);
