@@ -8,7 +8,7 @@ import throttle from 'lodash/throttle';
 import assert from '../../util/assert';
 import languages from './languages';
 import { copyText } from '../../util/nbUtil';
-import { RemoteActions } from '../../constants/Embed';
+import { RemoteActions, MODES, TESTS_KEY } from '../../constants/Embed';
 import { getFileExtensionByLanguage } from '../../util/languageUtils';
 import { loadFromData } from './dataUtils';
 import { API } from '../../services';
@@ -16,12 +16,13 @@ import { StatusBarRegistry, StatusBarAlignment, StatusBarItem, StatusBarColor } 
 import File from './file';
 import Test from './test';
 import { MessageWithAction } from '../messages';
-import { Severity  } from './../severity';
+import { Severity } from './../severity';
 import { Action } from '../actions';
-import { MODES, TESTS_KEY } from '../../constants/Embed';
 import { RemoteDispatcher, Action as RemoteAction } from '../insights/remoteDispatcher';
 import { Insights } from '../insights/insights';
 import TabManager from '../tabManager';
+
+const debug = Debug('webbox:Project');
 
 /**
  * User Rights limit the operations:
@@ -96,6 +97,7 @@ export default class Project extends EventEmitter {
 
   /**
    * Tries to set the language configuration for the embed.
+   * @returns {void}
    */
   checkProjectConfiguration() {
     if (isString(this.projectData.embed.meta.language)) {
@@ -110,6 +112,7 @@ export default class Project extends EventEmitter {
    * @param {String} [icon=null] - Additional icon class or icon path
    * @param {any} [color=StatusBarColor.Default] - Any {StatusBarColor}
    * @param {Function} [command=null] - Optional command that is executed when the user clicks on the message
+   * @returns {void}
    */
   setStatusMessage(msg, icon=null, color=StatusBarColor.Default, command=null) {
     this.status.message.setLabel(msg);
@@ -129,6 +132,7 @@ export default class Project extends EventEmitter {
 
   /**
    * Create the status bar items and add them to the status bar registry
+   * @returns {void}
    */
   createStatusBarItems() {
     // Clear previous entries, may be required if we reset a project
@@ -146,7 +150,7 @@ export default class Project extends EventEmitter {
 
     // user name
     const name = this.projectData.user.email || this.projectData.user.username;
-    const sbrUserInfo =  new StatusBarItem(name, 'user', 'Benutzername');
+    const sbrUserInfo = new StatusBarItem(name, 'user', 'Benutzername');
     this.statusBarRegistry.registerStatusbarItem(sbrUserInfo, StatusBarAlignment.Left, 80);
 
     // conditional log off or log on button
@@ -154,7 +158,7 @@ export default class Project extends EventEmitter {
     let logOnOffLabel;
     let logOnOffCommand = null;
     if (this.projectData.user.isAnonymous) {
-      let url = window.location.href;
+      const url = window.location.href;
       logOnOffUrl = `/login?next=${encodeURI(url)}`;
       logOnOffLabel = 'Anmelden';
     } else {
@@ -165,7 +169,7 @@ export default class Project extends EventEmitter {
         let logOutAction;
         let closeAction;
 
-        var closeMessage = () => {
+        let closeMessage = () => {
           this.messageList.hideMessage(logOutMessage);
         };
 
@@ -204,7 +208,7 @@ export default class Project extends EventEmitter {
 
     if (this.mode != MODES.RunMode) {
       // Zum original
-      const sbrToOriginal =  new StatusBarItem('Zum Original', null, 'Zeigt das unveränderte Original an', null, (e) => {
+      const sbrToOriginal = new StatusBarItem('Zum Original', null, 'Zeigt das unveränderte Original an', null, (e) => {
         if (e && e.preventDefault()) {
           e.preventDefault();
         }
@@ -248,6 +252,9 @@ export default class Project extends EventEmitter {
 
   /**
    * Show a message as a box
+   * @param {Severity} severity - severity of the message
+   * @param {MessageWithAction} message - message object
+   * @returns {void}
    */
   showMessage(severity, message) {
     if (this.messageList) {
@@ -257,6 +264,8 @@ export default class Project extends EventEmitter {
 
   /**
    * Hide a specific message from the message list
+   * @param {MessageWithAction} obj - the message to hide/close
+   * @returns {void}
    */
   hideMessage(obj) {
     if (this.messageList) {
@@ -267,12 +276,12 @@ export default class Project extends EventEmitter {
   /**
    * Displays the insights in a tab
    *
-   * @returns
+   * @returns {void}
    */
   showInsights() {
     // Check rights
     if (this.mode !== MODES.Default) {
-      console.warn('Project.showInsights called within wrong mode', this.mode);
+      debug('Project.showInsights called within wrong mode', this.mode);
       return;
     }
 
@@ -288,6 +297,8 @@ export default class Project extends EventEmitter {
 
   /**
    * Set internal project consistency. Are there any weird files, etc?
+   * @param {Boolean} val - internal consistency
+   * @returns {void}
    */
   setConsistency(val) {
     this.isConsistent = val;
@@ -297,7 +308,7 @@ export default class Project extends EventEmitter {
   /**
    * Returns the current consistency of the project
    *
-   * @returns {Boolean}
+   * @returns {Boolean} - true if project is consistent
    *
    * @memberOf Project
    */
@@ -307,25 +318,27 @@ export default class Project extends EventEmitter {
 
   /**
    * Handles renaming of files and filters out duplicates and shows a message with possible actions
+   * @param {Event} e - changed filename event
+   * @returns {void}
    */
   onChangedFileName(e) {
     let messageObj;
     let duplicateTab;
-    let tab = this.getTabForFileOrNull(e.file);
+    const tab = this.getTabForFileOrNull(e.file);
 
     // update the syntax highlighting for this tab
     tab.item.autoDetectMode();
 
     // later on we could do this on the file system maybe and just scan on dir
-    let duplicates = this.getFiles().filter(file => file.getName() === e.newName && file !== e.file);
+    const duplicates = this.getFiles().filter(file => file.getName() === e.newName && file !== e.file);
 
     // Currently, we do handle only one duplicate file and prevent more
     if (duplicates.length > 0) {
       this.setConsistency(false); // inconsisten project state
       // get the tab
       duplicateTab = this.getTabForFileOrNull(duplicates[0]);
-      let index = this.tabManager.getTabs().findIndex(tab => tab === duplicateTab);
-      let replaceAction = new Action('replace.message.action', 'Ersetzen', null, true, () => {
+      const index = this.tabManager.getTabs().findIndex(tab => tab === duplicateTab);
+      const replaceAction = new Action('replace.message.action', 'Ersetzen', null, true, () => {
         // remove old file & tab
         this.tabManager.removeTab(duplicateTab, index);
 
@@ -335,7 +348,7 @@ export default class Project extends EventEmitter {
         this.setUnsavedChanges(true);
       });
 
-      let renameAction = new Action('rename.message.action', 'Umbenennen', null, true, () => {
+      const renameAction = new Action('rename.message.action', 'Umbenennen', null, true, () => {
         // enable renaming mode again
         tab.item.setNameEdtiable(true);
 
@@ -359,7 +372,7 @@ export default class Project extends EventEmitter {
     let filename = name;
 
     if (name == null) {
-      filename = 'Unbenannt' + this.tabManager.unnamedTabCounter++ + '.txt';
+      filename = `Unbenannt${  this.tabManager.unnamedTabCounter++  }.txt`;
       file = new File(filename, text, mode);
       file.setNameEdtiable(true); // enable file renaming immediatelly
     } else {
@@ -413,7 +426,7 @@ export default class Project extends EventEmitter {
    */
   getTabForFileOrNull(file) {
     let tab = null;
-    let matchingTabs = this.tabManager.getTabs().filter(tab => tab.type === 'file').filter(tab => tab.item === file);
+    const matchingTabs = this.tabManager.getTabs().filter(tab => tab.type === 'file').filter(tab => tab.item === file);
     if (matchingTabs.length === 1) {
       // found a tab (there should be only one now)
       tab = matchingTabs[0];
@@ -430,7 +443,7 @@ export default class Project extends EventEmitter {
    */
   getTabForFilenameOrNull(name) {
     let tab = null;
-    let matchingTabs = this.tabManager.getTabs().filter(tab => tab.type === 'file').filter(tab => tab.item.getName() === name);
+    const matchingTabs = this.tabManager.getTabs().filter(tab => tab.type === 'file').filter(tab => tab.item.getName() === name);
     if (matchingTabs.length === 1) {
       // found a tab
       tab = matchingTabs[0];
@@ -450,7 +463,7 @@ export default class Project extends EventEmitter {
    * @return {Number|undefined} Returns the index of tab for the file name
    */
   getIndexForFilename(name) {
-    let index = this.tabManager.getTabs().findIndex(tab => {
+    const index = this.tabManager.getTabs().findIndex(tab => {
       return tab.type === 'file' && tab.item.getName() === name;
     });
 
@@ -466,7 +479,7 @@ export default class Project extends EventEmitter {
    * @memberOf Project
    */
   getFileForName(name) {
-    let index = this.getIndexForFilename(name);
+    const index = this.getIndexForFilename(name);
 
     if (index < 0 || index == null) {
       return undefined;
@@ -520,10 +533,8 @@ export default class Project extends EventEmitter {
    * @param {String} url The url for the websocket connection
    */
   initCommunication() {
-    console.log("project remoteDispatcher instance");
-    console.log(this.projectData.remoteDispatcher);
     this.socketConnection = (this.projectData.remoteDispatcher) ? this.projectData.remoteDispatcher : new RemoteDispatcher(this.projectData.communication);
-    if(!this.socketConnection._events.reconnect_failed) {
+    if (!this.socketConnection._events.reconnect_failed) {
       this.socketConnection.on('reconnect_failed', this.onReconnectFailed.bind(this));
     }
   }
@@ -549,7 +560,7 @@ export default class Project extends EventEmitter {
       eventLog.setContext(this.getContextData());
       this.socketConnection.sendEvent(eventLog, eventLog);
     } else {
-      console.warn('Project.socketConnection not configured. Cannot send events.');
+      debug('Project.socketConnection not configured. Cannot send events.');
     }
   }
 
@@ -564,7 +575,7 @@ export default class Project extends EventEmitter {
       action.setContext(this.getContextData());
       this.socketConnection.sendAction(action, useQueue);
     } else {
-      console.warn('Project.socketConnection not configured. Cannot send events.');
+      debug('Project.socketConnection not configured. Cannot send events.');
     }
   }
 
@@ -626,8 +637,8 @@ export default class Project extends EventEmitter {
    * @returns
    */
   getTestCodeFromData() {
-    let assets = this.getAssets();
-    let testEntries = assets.filter(elem => elem.type === TESTS_KEY);
+    const assets = this.getAssets();
+    const testEntries = assets.filter(elem => elem.type === TESTS_KEY);
     let test;
 
     if (testEntries.length > 0 && testEntries[0].data && testEntries[0].data !== '') {
@@ -712,7 +723,7 @@ export default class Project extends EventEmitter {
       res => {
         if (res.error) {
           this.showMessage(Severity.Error, 'Das Senden ist fehlgeschlagen :/');
-          console.error(res.error);
+          debug(res.error);
         }
       }
     );
@@ -729,7 +740,7 @@ export default class Project extends EventEmitter {
     const link = this.getSharableLink();
 
     copyAction = new Action('copy.sharablelink.action', 'Kopieren', null, true, () => {
-      let succeeded = copyText(null, link);
+      const succeeded = copyText(null, link);
       if (succeeded) {
         copyAction.setLabel('Kopiert');
       } else {
@@ -815,7 +826,7 @@ export default class Project extends EventEmitter {
       return false;
     }
 
-    let userData = this.getUserData();
+    const userData = this.getUserData();
     if (userData.isAnonymous === true) {
       if (showWarnings) {
         this.showMessage(Severity.Warning, 'Sie können dieses Beispiel nicht speichern, da Sie nicht angemeldet sind.');
@@ -879,7 +890,7 @@ export default class Project extends EventEmitter {
     }).catch(err => {
       this.showMessage(Severity.Error, 'Speichern fehlgeschlagen!', null, StatusBarColor.Danger);
       this.setStatusMessage('', null, StatusBarColor.Default);
-      console.error(err);
+      debug(err);
     }).then(() => {
       this.pendingSave = false;
     });
@@ -892,19 +903,19 @@ export default class Project extends EventEmitter {
    */
   saveTests() {
     // Get data from file
-    let file = this.getTestCode();
+    const file = this.getTestCode();
     if (file == null) {
       // FIXME: this should not happen
       return;
     }
 
-    let testAsset = {
+    const testAsset = {
       type: TESTS_KEY,
       data: file.getValue(),
       metadata: file.getMetadata()
     };
 
-    let assets = this.getAssets();
+    const assets = this.getAssets();
     // Clear all previous test assets
     let idx = assets.findIndex(elem => elem.type === TESTS_KEY);
     while (idx != -1) {
@@ -914,7 +925,7 @@ export default class Project extends EventEmitter {
 
     assets.push(testAsset);
 
-    let embed = clone(this.projectData.embed);
+    const embed = clone(this.projectData.embed);
     embed.assets = assets;
 
     this.updateEmbed(embed);
@@ -926,11 +937,11 @@ export default class Project extends EventEmitter {
    * @param {any} embed
    */
   updateEmbed(embed) {
-    let params = {
+    const params = {
       id: this.getEmbedId()
     };
 
-    let payload = {
+    const payload = {
       data: embed
     };
 
@@ -943,7 +954,7 @@ export default class Project extends EventEmitter {
       }
     }).catch(err => {
       this.showMessage(Severity.Error, 'Aktualisieren fehlgeschlagen!');
-      console.error(err);
+      debug(err);
     });
   }
 
@@ -955,13 +966,13 @@ export default class Project extends EventEmitter {
   deleteEmbed() {
     const id = this.getEmbedId();
     let messageObj;
-    let deleteAction = new Action('delete.delete.action', 'Löschen', '', true, () => {
+    const deleteAction = new Action('delete.delete.action', 'Löschen', '', true, () => {
       API.embed.deleteEmbed({ id: id }).then(res => {
         if (!res.error) {
           // Redirect to main page
           window.location.replace(`${window.location.protocol}//${window.location.host}`);
         } else {
-          console.log(res);
+          debug(res);
           this.messageList.showMessage(Severity.Error, res.error);
         }
       }).catch(err => {
@@ -972,7 +983,7 @@ export default class Project extends EventEmitter {
       this.messageList.hideMessage(messageObj);
     });
 
-    let cancelAction = new Action('cancel.delete.document', 'Abbrechen', '', true, () => {
+    const cancelAction = new Action('cancel.delete.document', 'Abbrechen', '', true, () => {
       this.messageList.hideMessage(messageObj);
     });
 
@@ -983,7 +994,7 @@ export default class Project extends EventEmitter {
 
   toCodeDocument() {
     // Return all files (altered by an user [not owner]) to be saved
-    let code = { };
+    const code = { };
     this.getFiles().map((item) => {
       code[item.getName()] = item.getValue();
     });
@@ -993,6 +1004,7 @@ export default class Project extends EventEmitter {
 
   /**
    * Resets the project ot the original data loaded from the server.
+   * @returns {void}
    */
   reset() {
     // All changes are not saved to the internal embed.code, rather they are stored in the this.tabs->element.item

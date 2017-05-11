@@ -1,10 +1,7 @@
-import { Severity  } from './../severity';
+import { Severity } from './../severity';
 
 import Project from './project';
 import Runner from './skulptRunner';
-import { EventLog } from '../insights/remoteDispatcher';
-
-
 
 export default class SkulptProject extends Project {
   constructor(projectData) {
@@ -13,6 +10,8 @@ export default class SkulptProject extends Project {
 
   /**
    * Shows Error Messages that come from sourcebox
+   * @param {Error} error - error to display
+   * @returns {void}
    */
   onError(error) {
     this.showMessage(Severity.Error, error);
@@ -42,7 +41,7 @@ export default class SkulptProject extends Project {
       });
     }
 
-    let index = this.tabManager.getTabs().findIndex(tab => tab.item === this.runner);
+    const index = this.tabManager.getTabs().findIndex(tab => tab.item === this.runner);
 
     // open terminal as split view
     if (!this.tabManager.getTabs()[index].active) {
@@ -52,9 +51,9 @@ export default class SkulptProject extends Project {
     this.runner.run();
   }
 
-  readFile(name){
+  readFile(name) {
     // ToDo: is this the right way of handling files on the same hierarchy?
-    let file = this.getFileForName(name.replace('./', ''));
+    const file = this.getFileForName(name.replace('./', ''));
 
     if (file != null) {
       return file.getValue();
@@ -64,7 +63,7 @@ export default class SkulptProject extends Project {
   }
 
   writeFile(name, mode) {
-
+    // ToDo
   }
 
   stop() {

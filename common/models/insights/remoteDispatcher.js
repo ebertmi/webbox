@@ -285,7 +285,7 @@ export class RemoteDispatcher extends EventEmitter {
       this._socket.emit('embed-event', eventObj, res => {
         // ToDo:
         if (res && res.error) {
-          console.error(res.error);
+          debug.error(res.error);
         }
       });
     } else {
