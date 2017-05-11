@@ -21,6 +21,7 @@ import { Action } from '../actions';
 import { RemoteDispatcher, Action as RemoteAction } from '../insights/remoteDispatcher';
 import { Insights } from '../insights/insights';
 import TabManager from '../tabManager';
+import Debug from 'debug';
 
 const debug = Debug('webbox:Project');
 
