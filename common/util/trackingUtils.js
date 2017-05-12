@@ -7,8 +7,9 @@ const debug = Debug('webbox:trackingUtils');
  * our external event tracking data base.
  *
  * @export
- * @param {any} event
- * @param {any} data
+ * @param {any} event - event
+ * @param {any} data - data to track
+ * @returns {void}
  */
 export function trackUserInteraction(event, data) {
   // Record an event

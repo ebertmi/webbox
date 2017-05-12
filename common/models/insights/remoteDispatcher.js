@@ -26,6 +26,21 @@ export const RemoteEventTypes = {
   TestResult: 'user-testresult'
 };
 
+export function getConnectionConfiguration() {
+  const connection = {
+    jwt: '',
+    url: '',
+    port: 80
+  };
+
+  if (window.__WEBSOCKET__) {
+    connection.jwt = window.__WEBSOCKET__.authToken;
+    connection.url = window.__WEBSOCKET__.server;
+  }
+
+  return connection;
+}
+
 /**
  * Encapsulates a simple event log entry.
  */
@@ -172,7 +187,7 @@ export class RemoteDispatcher extends EventEmitter {
     }
 
     // Defer the connection until we receive our first message or event
-    this._socket = io(this._url,  {query : `Authorization=${this._jwt}&crumb=${crumb}`});
+    this._socket = io(this._url, {query : `Authorization=${this._jwt}&crumb=${crumb}`});
 
     this._socket.on('connect', this.onConnect.bind(this));
     this._socket.on('disconnect', this.onDisconnect.bind(this));

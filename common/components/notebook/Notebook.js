@@ -13,7 +13,7 @@ import { MessageListModel, MessageWithAction } from '../../models/messages';
 import { Action } from '../../models/actions';
 import { Severity } from '../../models/severity';
 import { MessageList } from '../messagelist/messageList';
-import {RemoteDispatcher} from '../../models/insights/remoteDispatcher';
+import { RemoteDispatcher, getConnectionConfiguration } from '../../models/insights/remoteDispatcher';
 
 import { loadCellsFromIPYNB, stateToJS, replaceIdWithSlug, notebookMetadataToSourceboxLanguage } from '../../util/nbUtil';
 import { addCellsFromJS, toggleViewMode, updateNotebookMetadata } from '../../actions/NotebookActions';
@@ -32,7 +32,7 @@ export default class Notebook extends React.Component {
     this.messageList = new MessageListModel();
 
     // Create global websocket connection
-    this.remoteDispatcher = new RemoteDispatcher();
+    this.remoteDispatcher = new RemoteDispatcher(getConnectionConfiguration());
     this.remoteDispatcher.on('reconnect_failed', this.onReconnectFailed.bind(this));
 
     this.onDrop = this.onDrop.bind(this);

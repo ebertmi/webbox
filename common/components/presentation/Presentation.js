@@ -23,7 +23,7 @@ import { toMarkdownComponent } from './markdownRenderer';
 import createTheme from "./theme";
 import { sourceFromCell, replaceIdWithSlug, notebookMetadataToSourceboxLanguage } from '../../util/nbUtil';
 import RawCell from '../notebook/RawCell';
-import {RemoteDispatcher} from '../../models/insights/remoteDispatcher';
+import { RemoteDispatcher, getConnectionConfiguration } from '../../models/insights/remoteDispatcher';
 
 // Create the Theme from our custom theme
 const theme = createTheme();
@@ -43,7 +43,7 @@ export default class Presentation extends React.Component {
     this.messageList = new MessageListModel();
 
     // Create global websocket connection
-    this.remoteDispatcher = new RemoteDispatcher();
+    this.remoteDispatcher = new RemoteDispatcher((getConnectionConfiguration()));
   }
 
   // Make messageList available in the tree
