@@ -4,6 +4,7 @@ import { EditSession, UndoManager } from 'ace';
 import classnames from 'classnames';
 
 import Editor from '../Editor';
+import optionManager from '../../models/options';
 import Icon from '../Icon';
 import Terminal from '../ide/Terminal';
 import MatplotlibPanel from '../ide/panels/MatplotlibPanel';
@@ -16,7 +17,7 @@ import { createEmbedObject } from '../../util/embedUtils';
 
 import SourceboxProject from '../../models/project/sourceboxProject';
 import SkulptProject from '../../models/project/skulptProject';
-import {Severity} from "../../models/severity";
+import {Severity} from '../../models/severity';
 
 import Debug from 'debug';
 const debug = Debug('webbox:CodeCellView');
@@ -35,8 +36,17 @@ export default class CodeCellView extends React.PureComponent {
     this.onOpenInExternalWindow = this.onOpenInExternalWindow.bind(this);
     this.onProjectStateChange = this.onProjectStateChange.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
+    this.onChangeOption = this.onChangeOption.bind(this);
 
-    this.state = { editMode: false, showTerminal: false };
+    this.state = {
+      editMode: false,
+      showTerminal: false,
+      options: optionManager.getOptions()
+    };
+  }
+
+  componentWillMount() {
+    optionManager.on('change', this.onChangeOption);
   }
 
   componentWillUnmount() {
@@ -45,17 +55,25 @@ export default class CodeCellView extends React.PureComponent {
       this.state.project.tabManager.removeListener('change', this.onProjectStateChange);
       this.state.project.on('change', this.onProjectStateChange);
     }
+
+    optionManager.removeListener('change', this.onChangeOption);
+  }
+
+  onChangeOption() {
+    this.setState({
+      options: optionManager.getOptions()
+    });
   }
 
   onKeyDown(e) {
     // Shift + Enter -> Execute Code
-    if ((e.metaKey || (e.shiftKey && !e.altKey && !e.ctrlKey)) && e.key === "Enter") {
+    if ((e.metaKey || (e.shiftKey && !e.altKey && !e.ctrlKey)) && e.key === 'Enter') {
       this.startStopExecution();
       e.preventDefault();
     }
 
     // Escape -> ReadMode
-    if (!e.metaKey && !e.shiftKey && !e.altKey && !e.ctrlKey && e.key === "Escape" && this.state.editMode) {
+    if (!e.metaKey && !e.shiftKey && !e.altKey && !e.ctrlKey && e.key === 'Escape' && this.state.editMode) {
       this.switchMode();
       e.preventDefault();
     }
@@ -71,17 +89,17 @@ export default class CodeCellView extends React.PureComponent {
      *  - Current course/chapter (for statistics)
      */
     const code = this.session != null ? this.session.getValue() : this.props.code;
-    let notebookLanguageInformation = this.props.cell.getIn(['metadata', 'executionLanguage'], this.props.executionLanguage.executionLanguage);
-    let notebookEmbedType = this.props.embedType || EmbedTypes.Sourcebox;
+    const notebookLanguageInformation = this.props.cell.getIn(['metadata', 'executionLanguage'], this.props.executionLanguage.executionLanguage);
+    const notebookEmbedType = this.props.embedType || EmbedTypes.Sourcebox;
     const embedType = this.props.cell.getIn(['metadata', 'embedType'], notebookEmbedType);
 
     // Experimental
     const id = this.props.cell.getIn(['metadata', 'runid'], RunModeDefaults.id);
 
     const url = `${window.location.protocol}//${window.location.host}/run?language=${encodeURIComponent(notebookLanguageInformation)}&id=${encodeURIComponent(id)}&embedType=${encodeURIComponent(embedType)}&code=${encodeURIComponent(code)}`;
-    const strWindowFeatures = "menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes";
+    const strWindowFeatures = 'menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes';
 
-    window.open(url, "Beispiel Ausführen", strWindowFeatures);
+    window.open(url, 'Beispiel Ausführen', strWindowFeatures);
   }
 
   onCloseTerminal() {
@@ -109,7 +127,7 @@ export default class CodeCellView extends React.PureComponent {
     // Lazy creation of the project and binding of listeners
     if (this.state.project == null) {
       this.initialize().then(success => {
-        console.info("after init in onStartStopExecution", success);
+        debug('after init in onStartStopExecution', success);
         // Only retry the start of the execution if the project has been successfully created
         if (success) {
           this.onStartStopExecution();
@@ -119,10 +137,10 @@ export default class CodeCellView extends React.PureComponent {
       return;
     }
 
-    let code = this.session != null ? this.session.getValue() : this.props.code;
-    let project = this.state.project;
+    const code = this.session != null ? this.session.getValue() : this.props.code;
+    const project = this.state.project;
 
-    this.state.project.tabManager.closeTabByType("matplotlib");
+    this.state.project.tabManager.closeTabByType('matplotlib');
 
     if (project.isRunning()) {
       project.stop();
@@ -149,7 +167,7 @@ export default class CodeCellView extends React.PureComponent {
    */
   getWrapperHeightOrMin() {
     if (this.wrapperNode) {
-      return Math.max(this.wrapperNode.offsetHeight,  this.wrapperNode.scrollHeight,  this.wrapperNode.clientHeight, this.props.minHeight);
+      return Math.max(this.wrapperNode.offsetHeight, this.wrapperNode.scrollHeight, this.wrapperNode.clientHeight, this.props.minHeight);
     } else {
       return this.props.minHeight;
     }
@@ -161,26 +179,26 @@ export default class CodeCellView extends React.PureComponent {
       project.tabManager.on('change', this.onProjectStateChange);
       project.on('change', this.onProjectStateChange);
       this.setState({
-        project: project, 
+        project: project,
         tabs: project.tabManager.getTabs()
-      });  
+      });
 
-      return true; 
+      return true;
     }).catch(err => {
       this.context.messageList.showMessage(Severity.Warning, err);
-      debug("Failed to create empty project", err);
+      debug('Failed to create empty project', err);
       return false;
     });
   }
 
   createEmptyProject() {
     // Step 1: Get all relevant information, language, embed type and code
-    let language = this.props.cell.getIn(['metadata', 'executionLanguage'], this.props.executionLanguage.executionLanguage);
-    let notebookEmbedType = this.props.embedType || EmbedTypes.Sourcebox;
+    const language = this.props.cell.getIn(['metadata', 'executionLanguage'], this.props.executionLanguage.executionLanguage);
+    const notebookEmbedType = this.props.embedType || EmbedTypes.Sourcebox;
     const id = this.props.cell.getIn(['metadata', 'runid'], RunModeDefaults.id);
     const embedType = this.props.cell.getIn(['metadata', 'embedType'], notebookEmbedType);
 
-    let projectData = {
+    const projectData = {
       embed: createEmbedObject('', language, embedType, id),
       user: window.__USER_DATA__,
       messageList: this.context.messageList,
@@ -191,8 +209,8 @@ export default class CodeCellView extends React.PureComponent {
     const promise = new Promise((resolve, reject) => {
       if (embedType === EmbedTypes.Sourcebox) {
         // Check if user is authenticated and/or show error
-        if (window.__SOURCEBOX__.authToken == null || window.__SOURCEBOX__.authToken === "") {
-          reject(new Error("Sie müssen zum Verwenden dieser Funktion angemeldet sein."));
+        if (window.__SOURCEBOX__.authToken == null || window.__SOURCEBOX__.authToken === '') {
+          reject(new Error('Sie müssen zum Verwenden dieser Funktion angemeldet sein.'));
         } else {
           resolve(new SourceboxProject(projectData, {
             auth: window.__SOURCEBOX__.authToken,
@@ -202,7 +220,7 @@ export default class CodeCellView extends React.PureComponent {
         }
       } else if (embedType === EmbedTypes.Skulpt) {
         // Check if skulpt is available, otherwise load the libs
-        if (typeof Sk === "undefined") {
+        if (typeof Sk === 'undefined') {
           require.ensure([], require => {
             require('exports-loader?Sk!../../../public/skulpt/skulpt.min.js');
             require('exports-loader?Sk!../../../public/skulpt/skulpt-stdlib.js');
@@ -224,10 +242,10 @@ export default class CodeCellView extends React.PureComponent {
     return tabs.map(({active, item, type}, index) => {
       let PanelType;
       switch (type) {
-        case "turtle":
+        case 'turtle':
           PanelType = TurtlePanel;
           break;
-        case "matplotlib":
+        case 'matplotlib':
           PanelType = MatplotlibPanel;
           break;
         default:
@@ -237,16 +255,17 @@ export default class CodeCellView extends React.PureComponent {
         additionalPanel = true;
         return <PanelType className="second-panel" key={index} active={active} item={item}/>;
       } else if (PanelType && additionalPanel) {
-        this.context.messageList.showMessage(Severity.Warning, new Error("Anzeige mehrere Turtle- bzw. Matplotlib-Graphen wird nicht unterstützt!"));
+        this.context.messageList.showMessage(Severity.Warning, new Error('Anzeige mehrere Turtle- bzw. Matplotlib-Graphen wird nicht unterstützt!'));
       }
     });
   }
 
   renderEditMode() {
-    let minHeight = 100;
-    let source = this.session != null ? this.session.getValue() : this.props.code;
-    let languageName = this.props.notebookLanguage || 'python';
-    let mode = this.props.cell.getIn(['metadata', 'mode'], languageName);
+    const minHeight = 100;
+    const source = this.session != null ? this.session.getValue() : this.props.code;
+    const languageName = this.props.notebookLanguage || 'python';
+    const mode = this.props.cell.getIn(['metadata', 'mode'], languageName);
+    const {font, fontSize, ace: aceOptions} = this.state.options;
 
     // Reuse existing session if possible
     if (this.session) {
@@ -266,15 +285,22 @@ export default class CodeCellView extends React.PureComponent {
 
     return (
       <div className="edit-view col-xs-12" onKeyDown={this.onKeyDown}>
-        <Editor fontSize="14px" minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />
+        <Editor
+          fontFamily={`${font}, monospace`}
+          fontSize={`${fontSize}pt`}
+          {...aceOptions}
+          minHeight={minHeight}
+          maxLines={100}
+          session={this.session}
+          ref={editor => { this.editor = editor; }} />
       </div>
     );
   }
 
   renderReadMode() {
-    let code = this.session != null ? this.session.getValue() : this.props.code;
-    let executionLanguage = this.props.cell.getIn(['metadata', 'executionLanguage'], this.props.executionLanguage.executionLanguage);
-    let mode = this.props.cell.getIn(['metadata', 'mode'], (this.props.notebookLanguage || 'python'));
+    const code = this.session != null ? this.session.getValue() : this.props.code;
+    const executionLanguage = this.props.cell.getIn(['metadata', 'executionLanguage'], this.props.executionLanguage.executionLanguage);
+    const mode = this.props.cell.getIn(['metadata', 'mode'], (this.props.notebookLanguage || 'python'));
 
     // Render the read mode depending on the given viewComponent 
     return <this.props.viewComponent code={code} executionLanguage={executionLanguage} mode={mode}/>;
@@ -291,7 +317,7 @@ export default class CodeCellView extends React.PureComponent {
     const stopIcon = <Icon name="stop" className="danger icon-control hidden-print" onClick={this.onStartStopExecution} title="Code stoppen" />;
     const undoIcon = <Icon name="undo" className="danger icon-control hidden-print" onClick={this.onUndoChanges} title="Änderungen rückgängig machen" />;
     const closeTerminalIcon = <Icon name="close" className="close-btn icon-control hidden-print" onClick={this.onCloseTerminal} title="Terminal schliessen" />;
-    let additionalPanels = showTerminal ? this.handleAdditionalPanels(tabs, project, code) : null;
+    const additionalPanels = showTerminal ? this.handleAdditionalPanels(tabs, project, code) : null;
     //const missingEmbed = <div className="col-lg-12 col-md-12 col-xs-12 alert alert-danger">Ungültiger embedType. Wenden Sie sich an den Autor!</div>;
 
     const ideArea = <div className="ide-area" style={{height: '200px'}}>
@@ -332,7 +358,7 @@ CodeCellView.propTypes = {
 
 CodeCellView.defaultProps = {
   viewComponent: CodeBlock,
-  className: "",
+  className: '',
   minHeight: 100
 };
 
