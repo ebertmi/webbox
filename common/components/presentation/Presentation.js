@@ -5,6 +5,7 @@ import LazyLoad from 'react-lazyload';
 
 import { MessageListModel, MessageWithAction } from '../../models/messages';
 import { MessageList } from '../messagelist/messageList';
+import Window from './Window';
 
 // Spectacle Presentation Framework Imports
 import {
@@ -101,12 +102,16 @@ export default class Presentation extends React.Component {
         embedType = cell.getIn(['metadata', 'embedType'], notebook.get('embedType'));
         //runId = cell.getIn(['metadata', 'runid']);
         //return <Highlight showRunButton={true} embedType={embedType} runId={runId} code={source} executionLanguage={executionLanguage} notebookLanguage={lang}></Highlight>;
-        return <CodeCellView className='present-mode' viewComponent={Highlight} code={source} cell={cell} executionLanguage={{executionLanguage: executionLanguage}} notebookLanguage={lang} embedType={embedType}/>;
+        return (
+          <Window title={lang}>
+            <CodeCellView className="present-mode" viewComponent={Highlight} code={source} cell={cell} executionLanguage={{executionLanguage: executionLanguage}} notebookLanguage={lang} embedType={embedType}/>
+          </Window>
+        );
       case 'codeembed':
         //return <Text>{source}</Text>;
-        height = parseInt(cell.getIn(['metadata', 'height'], 350));
+        height = parseInt(cell.getIn(['metadata', 'height'], 350), 10);
         height = isNaN(height) ? 350 : height;
-        return <CodeEmbedCell /*course={course}*/ className='present-mode' dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={index === activeBlock}/>;
+        return <CodeEmbedCell /*course={course}*/ className="present-mode" dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={index === activeBlock}/>;
       case 'raw':
         return <RawCell dispatch={dispatch} cellIndex={index} key={id} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={id === activeBlock}/>;
       default:

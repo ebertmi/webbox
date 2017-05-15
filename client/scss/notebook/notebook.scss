@@ -109,6 +109,24 @@ h1.notebook-title {
   font-size: 18px; /* set new base size for relative units */
 }
 
+.code-cell.present-mode {
+  & .highlight-view pre.hljs {
+    max-width: inherit;
+    background-color: transparent!important;
+    border-left: none!important;
+    margin: 0!important;
+
+    & code.hljs {
+      padding: 0!important;
+    }
+  }
+
+  & .ide-area {
+    border: none;
+    border-top: 1px solid #DDD;
+  }
+}
+
 /*
   font-family: "PT Sans",Tahoma,Verdana,sans-serif
   font-size: 18px;

@@ -257,6 +257,8 @@ export default class CodeCellView extends React.PureComponent {
       } else if (PanelType && additionalPanel) {
         this.context.messageList.showMessage(Severity.Warning, new Error('Anzeige mehrere Turtle- bzw. Matplotlib-Graphen wird nicht unterstützt!'));
       }
+
+      return null;
     });
   }
 
@@ -270,9 +272,9 @@ export default class CodeCellView extends React.PureComponent {
     // Reuse existing session if possible
     if (this.session) {
       this.session.setValue(source);
-      this.session.setMode('ace/mode/' + mode);
+      this.session.setMode(`ace/mode/${mode}`);
     } else {
-      this.session = new EditSession(source, 'ace/mode/' + mode);
+      this.session = new EditSession(source, `ace/mode/${mode}`);
       this.session.setUndoManager(new UndoManager);
 
       // Register change listener on the editor to know when to update
@@ -302,7 +304,7 @@ export default class CodeCellView extends React.PureComponent {
     const executionLanguage = this.props.cell.getIn(['metadata', 'executionLanguage'], this.props.executionLanguage.executionLanguage);
     const mode = this.props.cell.getIn(['metadata', 'mode'], (this.props.notebookLanguage || 'python'));
 
-    // Render the read mode depending on the given viewComponent 
+    // Render the read mode depending on the given viewComponent
     return <this.props.viewComponent code={code} executionLanguage={executionLanguage} mode={mode}/>;
   }
 
