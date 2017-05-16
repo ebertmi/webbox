@@ -214,7 +214,7 @@ export const mdOptions = {
 
       case 'blockquote':
         content = makeChildren(children, props, options.htmlOptions);
-        return <BlockQuote><Quote>{content}</Quote></BlockQuote>;
+        return <BlockQuote {...props}><Quote>{content}</Quote></BlockQuote>;
 
       case 'li':
         content = makeChildren(children, props, options.htmlOptions);

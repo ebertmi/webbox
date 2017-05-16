@@ -11,7 +11,6 @@ import {
   Appear,
   Deck,
   Slide,
-  Spectacle,
   Text
 } from 'spectacle/lib/index';
 
@@ -186,11 +185,9 @@ export default class Presentation extends React.Component {
           <div className="global-message-list">
             <MessageList messageList={this.messageList} />
           </div>
-          <Spectacle theme={theme} onRef={s => this.spectacle = s}>
-            <Deck progress="number" transition={[]} transitionDuration={200}>
-              { slides }
-            </Deck>
-          </Spectacle>
+          <Deck theme={theme} progress="number" transition={[]} transitionDuration={200}>
+            { slides }
+          </Deck>
         </div>
       );
     } else {
