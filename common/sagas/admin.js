@@ -4,8 +4,7 @@
  *
  * The functions here are called by the saga middleware when the actions are triggered by the action dispatcher.
  */
-import { takeLatest } from 'redux-saga';
-import { call, put, fork } from 'redux-saga/effects';
+import { call, put, fork, takeLatest, all } from 'redux-saga/effects';
 import * as adminTypes from '../constants/AdminActionTypes';
 import { API } from '../services';
 

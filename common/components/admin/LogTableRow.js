@@ -16,8 +16,8 @@ function getTagClassForEventType (eventType) {
 const theme = {
   scheme: 'monokai',
   author: 'wimer hazenberg (http://www.monokai.nl)',
-  /*base00: '#272822',*/
-  base00: 'transparent', /* use the background of the current row*/
+  base00: 'rgba(0, 0, 0, 0)',
+  /*base00: 'transparent', /* use the background of the current row*/
   base01: '#383830',
   base02: '#49483e',
   base03: '#75715e',
