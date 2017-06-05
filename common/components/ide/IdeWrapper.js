@@ -117,6 +117,8 @@ export default class IdeWrapper extends React.Component {
           this.onProjectLoaded(data);
         }
       } else {
+        //quick fix for englisch error message
+        data.error.title = (data.error.title === "Unauthorized") ? "Keine Berechtigung" : data.error.title;
         this.setErrorState(data.error.title);
       }
     }).catch(err => {
@@ -141,6 +143,10 @@ export default class IdeWrapper extends React.Component {
     });
   }
 
+  /**
+   * Receives and set meta data
+   * @returns {void}
+   */
   getAndSetEmbedMetadata() {
     // check if reloading meta data
     if (this.state.error != null) {
@@ -157,11 +163,19 @@ export default class IdeWrapper extends React.Component {
         embedType: data.meta.embedType,
       });
     }).catch(err => {
-      this.setErrorState('embed_loading_error', ErrorTypes.EmbedLoadingError);
+      this.setErrorState('Fehler beim Laden der Metadaten', ErrorTypes.EmbedLoadingError);
       debug(err);
     });
   }
 
+  /**
+   * Generates svg of code line pattern
+   * @param {number} xOffset horizontal offset of code lines
+   * @param {number} yOffset vertical offset of code lines
+   * @param {number} patternHeight for additional vertical offset (currently used for creating multiple patterns in a loop). Might be replaced by yOffset
+   * @param {number} patternMulti multiplicator of patternHeight. Will be removed if patternHeight is removed
+   * @returns {Array} containing svg code elements of pattern
+   */
   generatePattern(xOffset, yOffset, patternHeight, patternMulti) {
     const pattern = [];
     const offset = patternMulti * patternHeight + yOffset;
@@ -176,6 +190,15 @@ export default class IdeWrapper extends React.Component {
     return pattern;
   }
 
+  /**
+   * Generates svg Overlay
+   * @param {number} height height of the whole svg graphic
+   * @param {string} headline text which shall be showed in the headline
+   * @param {string} headlineColor background color of the headline text in form of #rrggbb
+   * @param {string} fontColor font color of the headline text in form of #rrggbb
+   * @param {string} state state of the overlay to render things like loader
+   * @return {void}
+   */
   generateSVGOverlay(height, headline, headlineColor, fontColor, state) {
     const draw = [];
     const patternHeight = 96;
@@ -252,7 +275,6 @@ export default class IdeWrapper extends React.Component {
 
   /**
    * Creates html code to render depending on current state.
-   * 
    * @returns {React.Node} IdeWrapper Node
    */
   renderIdeWrapper() {
