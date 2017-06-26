@@ -22,7 +22,7 @@ sudo apt-get install curl
 curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
 sudo apt-get update
 sudo apt-get install nodejs git btrfs-tools libcap-dev build-essential lxc lxc-dev
-sudo -E npm install -g git+ssh://git@github.io:waywaaard/sourcebox-sandbox
+sudo -E npm install -g git+ssh://git@github.io:ebertmi/sourcebox-sandbox
 ```
 
 **Hint:**

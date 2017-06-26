@@ -156,7 +156,7 @@
 
 
 /**
-	Made by Michael Ebert for skulpt, see this modules at https://github.com/waywaaard/skulpt
+  Made by Michael Ebert for skulpt, see this modules at https://github.com/ebertmi/skulpt
 
 	matplotlib.pyplot inspired by https://github.com/rameshvs/jsplotlib, though heavily modified.
 
