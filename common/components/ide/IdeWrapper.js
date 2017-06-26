@@ -207,9 +207,9 @@ export default class IdeWrapper extends React.Component {
       <text x="50%" y="25" fill={fontColor} fontSize="18" fontWeight="700" textAnchor="middle">{headline}</text>
       <rect className="js-diff-placeholder" x="0" y="35" width="44" height={height - 58} fill="#e8e8e8" fillRule="evenodd"></rect>
       <path className="js-diff-placeholder" clipPath={`url(#diff-placeholder-${this.props.codeID})`} d={`M0 0h1200v${height}H0z`} fill="#ccc" fillRule="evenodd"></path>
-        <clipPath id={`diff-placeholder-${this.props.codeID}`}>
-          {draw}
-        </clipPath>
+      <clipPath id={`diff-placeholder-${this.props.codeID}`}>
+        {draw}
+      </clipPath>
       <rect className="js-diff-placeholder" x="0" y={height - 24} width="100%" height={24} fill="#007ACC" fillRule="evenodd"></rect>
       {stateDraw}
     </svg>;
@@ -245,9 +245,9 @@ export default class IdeWrapper extends React.Component {
     }
 
     return <div className={`container ${classNames}`} onClick={clickEvent}>
-              {stateIndicator}
-              {overlay}
-          </div>;
+      {stateIndicator}
+      {overlay}
+    </div>;
   }
 
   /**
@@ -279,7 +279,7 @@ export default class IdeWrapper extends React.Component {
         project = new SkulptProject(projectData);
       }
 
-      toRender = <div className="col-xs-12" id="ide-container" style={{ height: `${this.props.height}px` }}><Ide project={project} messageList={messageList} /></div>;
+      toRender = <div className="col-xs-12" id="ide-container" style={{ height: `${this.props.height}px` }}><Ide project={project} messageList={messageList} noWindowHandlers={true}/></div>;
     }
 
     return toRender;
