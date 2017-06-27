@@ -75,11 +75,18 @@ export default class Notebook extends React.Component {
     this.showMessage(Severity.Warning, 'Derzeit konnte keine Verbindung zum Server hergestellt werden. Sind sie offline?');
   }
 
+  /**
+   * Reset maintained focused if user leaves the IDE
+   * 
+   * @param {React.SyntheticEvent} e - blur event
+   * @memberof Notebook
+   * @returns {undefined}
+   */
   onBlur(e) {
     e.persist();
 
     this._timeoutID = setTimeout(() => {
-      if (this.state.hasEditorFocus && e.target && e.target.className.includes('ace')) {
+      if (this.state.hasEditorFocus) {
         this.setState({
           hasEditorFocus: false,
         });
@@ -87,11 +94,19 @@ export default class Notebook extends React.Component {
     }, 0);
   }
 
+  /**
+   * Update the current maintained focus to determine if we need to handle CTRL+S on the notebook or
+   * inside the IDE.
+   * 
+   * @param {React.SyntheticEvent} e - e focus event 
+   * @memberof Notebook
+   * @returns {undefined}
+   */
   onFocus(e) {
     e.persist();
 
     clearTimeout(this._timeoutID);
-    if (!this.state.hasEditorFocus && e.target && e.target.className.includes('ace')) {
+    if (!this.state.hasEditorFocus && e.target && e.target.closest('.codeembed-cell') != null) {
       this.setState({
         hasEditorFocus: true,
       });
@@ -137,16 +152,34 @@ export default class Notebook extends React.Component {
     }
   }
 
+  /**
+   * Toggles between view and edit mode
+   * 
+   * @memberof Notebook
+   * @returns {undefined}
+   */
   onToggleViewMode() {
     this.props.dispatch(toggleViewMode());
   }
 
+  /**
+   * Opens the document as a presentation in a new window
+   * 
+   * @memberof Notebook
+   * @returns {undefined}
+   */
   onPresentationMode() {
     const linkToPresentation = `/p/${this.props.notebook.get('id')}`;
 
     window.open(linkToPresentation);
   }
 
+  /**
+   * Saves the current document (if possible)
+   * 
+   * @memberof Notebook
+   * @returns {undefined}
+   */
   onSave() {
     const documentObj = stateToJS(this.props.notebook);
     API.document.save({ id: documentObj.id }, { document: documentObj }).then(res => {
@@ -167,6 +200,12 @@ export default class Notebook extends React.Component {
     });
   }
 
+  /**
+   * Deletes the document after being verified again by the user
+   * 
+   * @memberof Notebook
+   * @returns {undefined}
+   */
   onDelete() {
     const id = this.props.notebook.get('id');
     let messageObj;
@@ -196,6 +235,13 @@ export default class Notebook extends React.Component {
   }
 
 
+  /**
+   * Handles drop events, e. g. imports a dropped jupyter notebook to the current document
+   * 
+   * @param {any} e - the drop event
+   * @returns {undefined}
+   * @memberof Notebook
+   */
   onDrop(e) {
     e.preventDefault();
     const target = e.target;
@@ -274,6 +320,13 @@ export default class Notebook extends React.Component {
     }
   }
 
+  /**
+   * Render each individual cell depeding on its type.
+   * If the edit mode is active this will also add a controls between each cell
+   * 
+   * @returns {Array} - array of rendered cells
+   * @memberof Notebook
+   */
   renderCells() {
     const activeBlock = this.props.notebook.get('activeBlock');
     const isEditModeActive = this.props.notebook.get('isEditModeActive');
