@@ -102,7 +102,8 @@ module.exports = {
         to: '../css/spectacle.css',
         copyUnmodified: true
       }
-    ])
+    ]),
+    new webpack.optimize.ModuleConcatenationPlugin()
     /*new webpack.SourceMapDevToolPlugin({
       filename: '[file].map',
       include: ['presentation.bundle.js', 'index.bundle.js', 'react-commons.bundle.js', 'dashboard.bundle.js'],

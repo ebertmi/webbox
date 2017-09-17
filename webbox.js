@@ -157,7 +157,7 @@ server.ext('onPreResponse', function onPreResponse(request, reply) {
     }, 'Error');
     console.error(`Repsonse is Error`, request.response.stack);
   } else {
-    console.log(`Repsonse is Error with status ${request.response.output.statusCode}`);
+    console.log(`Repsonse is Error with status ${request.response.output.statusCode}`, request.response.stack);
   }
 
   // We should try to do some useful logging

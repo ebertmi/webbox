@@ -15,6 +15,7 @@ export class UserForm extends Component {
     this.addRole = this.addRole.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleRoleChange = this.handleRoleChange.bind(this);
+    this.handleResetUserPasswordManually = this.handleResetUserPasswordManually.bind(this);
 
     this.state = UserForm.getInitialState();
   }
@@ -129,6 +130,11 @@ export class UserForm extends Component {
     this.props.resendConfirmationEmail(this.props.user);
   }
 
+  handleResetUserPasswordManually (event) {
+    event.preventDefault();
+    this.props.resetUserPasswordManually(this.props.user);
+  }
+
   handleConfirmUser (event) {
     event.preventDefault();
 
@@ -171,9 +177,10 @@ export class UserForm extends Component {
         <button type="submit" onClick={this.handleSave.bind(this)} disabled={!isDirty} className="btn btn-success btn-sm">Speichern</button>
         <button type="submit" onClick={this.handleDelete.bind(this)} className="btn btn-danger btn-sm">Löschen</button>
         <button type="submit" onClick={this.handleResendConfirmationEmail.bind(this)} className="btn btn-warning btn-sm">Aktivierungs-E-Mail erneut schicken</button>
-        <button type="submit" onClick={this.handleUnblock.bind(this)} className="btn btn-default btn-sm">Anmeldung wieder erlauben</button>
-        <button type="submit" onClick={this.handleConfirmUser.bind(this)} className="btn btn-default btn-sm">Benutzer freischalten</button>
-        <Link to="/admin/mail" onClick={this.handleSendMail.bind(this)} className="btn btn-info btn-sm">Mail schicken</Link>
+        <button type="submit" onClick={this.handleUnblock.bind(this)} className="btn btn-default btn-sm" title="Setzt die Anmeldesperre zurück, sodass sich der Benutzer wieder anmelden kann.">Anmeldung wieder erlauben</button>
+        <button type="submit" onClick={this.handleResetUserPasswordManually} className="btn btn-default btn-sm" title="Setzt ein neues Passwort und schickt dieses in einer E-Mail dem Benutzer zu.">Neues Passwort zuschicken</button>
+        <button type="submit" onClick={this.handleConfirmUser.bind(this)} className="btn btn-default btn-sm" title="Schaltet den Benutzer frei, ohne das dieser den Aktivierungslink anklicken muss.">Benutzer freischalten</button>
+        <Link to="/admin/mail" onClick={this.handleSendMail.bind(this)} className="btn btn-info btn-sm" title="Neue E-Mail an den Benutzer schicken">Mail schicken</Link>
       </div>
     );
   }

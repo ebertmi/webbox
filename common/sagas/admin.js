@@ -9,7 +9,7 @@ import * as adminTypes from '../constants/AdminActionTypes';
 import { API } from '../services';
 
 // worker Saga : will be fired on GET_USERS_REQUEST actions
-function* fetchUsers (action) {
+function*fetchUsers (action) {
   try {
     // reset notification message
     yield put({ type: adminTypes.RESET_MESSAGE });
@@ -27,7 +27,7 @@ function* fetchUsers (action) {
 }
 
 // worker Saga : will be fired on GET_USERS_REQUEST actions
-function* fetchUser (action) {
+function*fetchUser (action) {
   try {
     // reset notification message
     yield put({ type: adminTypes.RESET_MESSAGE });
@@ -44,7 +44,7 @@ function* fetchUser (action) {
   }
 }
 
-function* deleteUser (action) {
+function*deleteUser (action) {
   try {
     // reset notification message
     yield put({ type: adminTypes.RESET_MESSAGE });
@@ -61,7 +61,7 @@ function* deleteUser (action) {
   }
 }
 
-function* saveUser (action) {
+function*saveUser (action) {
   try {
     // reset notification message
     yield put({ type: adminTypes.RESET_MESSAGE });
@@ -78,7 +78,7 @@ function* saveUser (action) {
   }
 }
 
-function* confirmUser (action) {
+function*confirmUser (action) {
   try {
     // reset notification message
     yield put({ type: adminTypes.RESET_MESSAGE });
@@ -95,7 +95,24 @@ function* confirmUser (action) {
   }
 }
 
-function* resendConfirmationEmail (action) {
+function*resetUserPasswordManually (action) {
+  try {
+    // reset notification message
+    yield put({ type: adminTypes.RESET_MESSAGE });
+
+    const data = yield call(API.admin.resetUserPasswordManually, action.params);
+
+    if (data.error) {
+      yield put({type: adminTypes.RESET_USER_PASSWORD_MANUALLY_FAILURE, message: data.error.message});
+    } else {
+      yield put({type: adminTypes.RESET_USER_PASSWORD_MANUALLY_SUCCESS});
+    }
+  } catch (e) {
+    yield put({type: adminTypes.RESET_USER_PASSWORD_MANUALLY_FAILURE, message: e.message});
+  }
+}
+
+function*resendConfirmationEmail (action) {
   try {
     // reset notification message
     yield put({ type: adminTypes.RESET_MESSAGE });
@@ -112,7 +129,7 @@ function* resendConfirmationEmail (action) {
   }
 }
 
-function* unblockUser (action) {
+function*unblockUser (action) {
   try {
     // reset notification message
     yield put({ type: adminTypes.RESET_MESSAGE });
@@ -132,7 +149,7 @@ function* unblockUser (action) {
 /**
  * Course fetching...
  */
-function* fetchCourses (action) {
+function*fetchCourses (action) {
   try {
     // reset notification message
     yield put({ type: adminTypes.RESET_MESSAGE });
@@ -150,7 +167,7 @@ function* fetchCourses (action) {
 }
 
 // worker Saga : will be fired on GET_USERS_REQUEST actions
-function* fetchCourse (action) {
+function*fetchCourse (action) {
   try {
     // reset notification message
     yield put({ type: adminTypes.RESET_MESSAGE });
@@ -167,7 +184,7 @@ function* fetchCourse (action) {
   }
 }
 
-function* deleteCourse (action) {
+function*deleteCourse (action) {
   try {
     // reset notification message
     yield put({ type: adminTypes.RESET_MESSAGE });
@@ -184,7 +201,7 @@ function* deleteCourse (action) {
   }
 }
 
-function* saveCourse (action) {
+function*saveCourse (action) {
   try {
     // reset notification message
     yield put({ type: adminTypes.RESET_MESSAGE });
@@ -204,7 +221,7 @@ function* saveCourse (action) {
 /**
  * Embed fetching...
  */
-function* fetchEmbeds (action) {
+function*fetchEmbeds (action) {
   try {
     // reset notification message
     yield put({ type: adminTypes.RESET_MESSAGE });
@@ -224,7 +241,7 @@ function* fetchEmbeds (action) {
 /**
  * Documents fetching...
  */
-function* fetchDocuments (action) {
+function*fetchDocuments (action) {
   try {
     // reset notification message
     yield put({ type: adminTypes.RESET_MESSAGE });
@@ -244,7 +261,7 @@ function* fetchDocuments (action) {
 /**
  * Log fetching...
  */
-function* fetchLogs (action) {
+function*fetchLogs (action) {
   try {
     // reset notification message
     yield put({ type: adminTypes.RESET_MESSAGE });
@@ -264,7 +281,7 @@ function* fetchLogs (action) {
 /**
  * Log fetching...
  */
-function* fetchAuthAttempts (action) {
+function*fetchAuthAttempts (action) {
   try {
     // reset notification message
     yield put({ type: adminTypes.RESET_MESSAGE });
@@ -284,7 +301,7 @@ function* fetchAuthAttempts (action) {
 /**
  * Log fetching...
  */
-function* fetchDeleteAllAuthAttempts () {
+function*fetchDeleteAllAuthAttempts () {
   try {
     // reset notification message
     yield put({ type: adminTypes.RESET_MESSAGE });
@@ -304,7 +321,7 @@ function* fetchDeleteAllAuthAttempts () {
 /**
  * Recyclebin entries fetching...
  */
-function* fetchRecyclebinEntries (action) {
+function*fetchRecyclebinEntries (action) {
   try {
     // reset notification message
     yield put({ type: adminTypes.RESET_MESSAGE });
@@ -324,7 +341,7 @@ function* fetchRecyclebinEntries (action) {
 /**
  * Recyclebin entries fetching...
  */
-function* fetchSendMail (action) {
+function*fetchSendMail (action) {
   try {
     // reset notification message
     yield put({ type: adminTypes.RESET_MESSAGE });
@@ -341,13 +358,14 @@ function* fetchSendMail (action) {
   }
 }
 
-export default function* adminSaga () {
+export default function*adminSaga () {
   // avoid multiple fetching of the same data
   yield [
     fork(takeLatest, adminTypes.GET_USER_REQUEST, fetchUser),
     fork(takeLatest, adminTypes.SAVE_USER_REQUEST, saveUser),
     fork(takeLatest, adminTypes.GET_USERS_REQUEST, fetchUsers),
     fork(takeLatest, adminTypes.DELETE_USER_REQUEST, deleteUser),
+    fork(takeLatest, adminTypes.RESET_USER_PASSWORD_MANUALLY_REQUEST, resetUserPasswordManually),
     fork(takeLatest, adminTypes.UNBLOCK_USER_REQUEST, unblockUser),
     fork(takeLatest, adminTypes.CONFIRM_USER_REQUEST, confirmUser),
     fork(takeLatest, adminTypes.RESEND_USER_CONFIRMATION_EMAIL_REQUEST, resendConfirmationEmail),

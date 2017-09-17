@@ -61,6 +61,15 @@ export function unblockUser(user) {
   };
 }
 
+export function resetUserPasswordManually(user) {
+  return {
+    type: types.RESET_USER_PASSWORD_MANUALLY_REQUEST,
+    params: {
+      id: user.id
+    }
+  };
+}
+
 export function resendUserConfirmationEmail(user) {
   return {
     type: types.RESEND_USER_CONFIRMATION_EMAIL_REQUEST,

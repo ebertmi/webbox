@@ -10,6 +10,7 @@ export default function dashboard(state = INITIAL_DASHBOARD_STATE, action) {
     case adminTypes.DELETE_USER_FAILURE:
     case adminTypes.UNBLOCK_USER_FAILURE:
     case adminTypes.RESEND_USER_CONFIRMATION_EMAIL_FAILURE:
+    case adminTypes.RESET_USER_PASSWORD_MANUALLY_FAILURE:
     case adminTypes.SAVE_USER_FAILURE:
     case adminTypes.GET_USER_FAILURE:
     case adminTypes.GET_USERS_FAILURE:
@@ -41,6 +42,7 @@ export default function dashboard(state = INITIAL_DASHBOARD_STATE, action) {
     case adminTypes.CONFIRM_USER_SUCCESS:
     case adminTypes.SEND_MAIL_SUCCESS:
     case adminTypes.DELETE_AUTHATTEMPTS_SUCCESS:
+    case adminTypes.RESET_USER_PASSWORD_MANUALLY_SUCCESS:
       return Object.assign({}, state, {
         message: {
           type: 'success',
