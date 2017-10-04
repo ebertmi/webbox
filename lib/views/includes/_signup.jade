@@ -20,11 +20,13 @@ form(action="/signup", method="POST")
       option SS17
       option WS17
       option SS18
-  div.checkbox
-    label(for="su_accept_terms")
-      a(href="/datenschutz", target="_blank") Datenschutzbedingungen
-      = " akzeptieren"
-      input.checkbox(type="checkbox" id="su_accept_terms", name="terms", required)
+  div.checkbox-accept-terms
+    label.custom-control.custom-checkbox
+      input.custom-control-input(type="checkbox", id="su_accept_terms", name="terms", required)
+      span.custom-control-indicator
+      span.custom-control-description
+        a(href="/datenschutz", target="_blank") Datenschutzbedingungen
+        = " akzeptieren"
     p.text-muted Der Dienst kann nur unter Zustimmung der Bedingungen vollständig genutzt werden.
 
 

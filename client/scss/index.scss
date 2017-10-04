@@ -2,6 +2,8 @@
 //$fa-font-path: "../../public/font-awesome/fonts";
 //@import "~font-awesome/scss/font-awesome.scss";
 @import "includes/_bootstrap.custom.scss";
+@import "~bootstrap/scss/bootstrap";
+
 @import "includes/_layout.scss";
 @import "includes/_mediaupload.scss";
 
@@ -19,6 +21,67 @@ $line-height: 1.5rem;
 @import "ide/ide";
 @import "notebook/notebook";
 
+/* Bootstrap overrides */
+/**
+ * Start overriding bootstrap styles here
+ */
+
+ .alert {
+  padding: 5px;
+  border: none;
+  padding-left: 1rem;
+
+  & p {
+    margin-bottom: 0;
+    font-weight: 500;
+  }
+
+  &.alert-info.alert-left-border {
+    border-left: 4px solid $state-info-bg;
+    background-color: rgb(249, 249, 249)
+  }
+
+  &.alert-success.alert-left-border {
+    border-left: 4px solid $state-success-bg;
+    background-color: rgb(249, 249, 249)
+  }
+
+  &.alert-warning.alert-left-border {
+    border-left: 4px solid $state-warning-bg;
+    background-color: rgb(249, 249, 249)
+  }
+
+  &.alert-danger.alert-left-border {
+    border-left: 4px solid $state-danger-bg;
+    background-color: rgb(249, 249, 249);
+  }
+}
+
+.shadow {
+  box-shadow: 0 1px 3px 0 #767677,0 1px 3px 0px #d4d4d5;
+}
+
+/*.btn {
+  box-shadow: 0 1px 3px 0 #767677,0 1px 3px 0px #d4d4d5;
+}*/
+
+.form-footer button {
+  margin-top: 0.5rem;
+}
+
+.form-inline .form-group {
+  display: inline-block;
+  margin-bottom: 0;
+  vertical-align: middle;
+  margin-right: 0.25rem;
+}
+
+/* fix colors for bootstrap dropdown with button toggler */
+.dropdown .btn.nav-link {
+  background-color: inherit;
+}
+
+/* Custom CSS */
 .logo {
   padding-bottom: 1rem;
 }
@@ -53,6 +116,11 @@ form .btn,
   & a.btn {
     margin-top: 0.5rem;
   }
+}
+
+// Align custom checkbox with checkbox text
+.checkbox-accept-terms .custom-control-description {
+  vertical-align: text-bottom;
 }
 
 .card-deck .card {

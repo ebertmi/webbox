@@ -1,4 +1,7 @@
 import * as adminTypes from '../constants/AdminActionTypes';
+import Debug from 'debug';
+
+const debug = Debug('webbox:reducers:user');
 
 export const INITIAL_USER_STATE = {
   users: [],

@@ -203,7 +203,7 @@ export class UserForm extends Component {
         <Input onChange={this.handleChange} name="semester" type="text" label="Semester" muted="Semester in dem sich der Benutzer registriert hat." value={this.props.user.semester} />
         <Input onChange={this.handleChange} name="createdAt" type="text" label="Erstellt am" readOnly="readonly" value={this.props.user.createdAt} /> <span><Time value={this.props.user.createdAt} locale="de" relative={true} invalidDateString="kein Datum"/></span>
         <Input onChange={this.handleChange} name="verification.isCompleted" type="checkbox" label="Registrierung abgeschlossen" checked={this.props.user.verification.isCompleted} />
-        <Input onChange={this.handleChange} name="verification.token" muted="Mit diesem Token kann der Benutzer den Account aktivieren." disabled type="text" label="Aktivierungs-Token" value={this.props.user.verification.token || null} />
+        <Input onChange={this.handleChange} name="verification.token" muted="Mit diesem Token kann der Benutzer den Account aktivieren." disabled type="text" label="Aktivierungs-Token" value={this.props.user.verification.token || ''} />
         <div className="form-group">
           <label>Rollen</label>
           <TaggedInput onAddTag={this.handleRoleChange} onRemoveTag={this.handleRoleChange} name="roles" placeholder="Benutzerrollen" tags={this.props.user.roles} />

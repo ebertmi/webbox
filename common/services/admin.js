@@ -69,7 +69,7 @@ export const AdminAPI = {
       .catch(commonErrorHandler);
   },
   resetUserPasswordManually(params) {
-    return fetch(`/api/user/${params.id}/resetPasswordManually/`, {
+    return fetch(`/api/user/${params.id}/resetPasswordManually`, {
       credentials: 'same-origin',
       headers: getDefaultHeaders()
     })
