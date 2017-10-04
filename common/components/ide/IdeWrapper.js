@@ -165,14 +165,14 @@ export default class IdeWrapper extends React.Component {
   generatePattern(xOffset, yOffset, patternHeight, patternMulti) {
     const pattern = [];
     const offset = patternMulti * patternHeight + yOffset;
-    pattern.push(<rect x={0 + xOffset} y={0 + offset} width="67.0175439" height="11.9298746" rx="2"></rect>);
-    pattern.push(<rect x={76.8421053 + xOffset} y={0 + offset} width="140.350877" height="11.9298746" rx="2"></rect>);
-    pattern.push(<rect x={18.9473684 + xOffset} y={47.7194983 + offset} width="100.701754" height="11.9298746" rx="2"></rect>);
-    pattern.push(<rect x={0 + xOffset} y={71.930126 + offset} width="37.8947368" height="11.9298746" rx="2"></rect>);
-    pattern.push(<rect x={127.017544 + xOffset} y={48.0703769 + offset} width="53.3333333" height="11.9298746" rx="2"></rect>);
-    pattern.push(<rect x={187.719298 + xOffset} y={48.0703769 + offset} width="72.9824561" height="11.9298746" rx="2"></rect>);
-    pattern.push(<rect x={17.8947368 + xOffset} y={23.8597491 + offset} width="140.350877" height="11.9298746" rx="2"></rect>);
-    pattern.push(<rect x={166.315789 + xOffset} y={23.8597491 + offset} width="173.684211" height="11.9298746" rx="2"></rect>);
+    pattern.push(<rect key={`${this.props.codeID}-pattern-rect-1`} x={0 + xOffset} y={0 + offset} width="67.0175439" height="11.9298746" rx="2"></rect>);
+    pattern.push(<rect key={`${this.props.codeID}-pattern-rect-2`} x={76.8421053 + xOffset} y={0 + offset} width="140.350877" height="11.9298746" rx="2"></rect>);
+    pattern.push(<rect key={`${this.props.codeID}-pattern-rect-3`} x={18.9473684 + xOffset} y={47.7194983 + offset} width="100.701754" height="11.9298746" rx="2"></rect>);
+    pattern.push(<rect key={`${this.props.codeID}-pattern-rect-4`} x={0 + xOffset} y={71.930126 + offset} width="37.8947368" height="11.9298746" rx="2"></rect>);
+    pattern.push(<rect key={`${this.props.codeID}-pattern-rect-5`} x={127.017544 + xOffset} y={48.0703769 + offset} width="53.3333333" height="11.9298746" rx="2"></rect>);
+    pattern.push(<rect key={`${this.props.codeID}-pattern-rect-6`} x={187.719298 + xOffset} y={48.0703769 + offset} width="72.9824561" height="11.9298746" rx="2"></rect>);
+    pattern.push(<rect key={`${this.props.codeID}-pattern-rect-7`} x={17.8947368 + xOffset} y={23.8597491 + offset} width="140.350877" height="11.9298746" rx="2"></rect>);
+    pattern.push(<rect key={`${this.props.codeID}-pattern-rect-8`} x={166.315789 + xOffset} y={23.8597491 + offset} width="173.684211" height="11.9298746" rx="2"></rect>);
     return pattern;
   }
 

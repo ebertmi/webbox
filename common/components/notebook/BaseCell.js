@@ -12,7 +12,7 @@ import { sourceFromCell } from '../../util/nbUtil';
  * @class CellBase
  * @extends {React.Component}
  */
-export default class BaseCell extends React.PureComponent {
+export default class BaseCell extends React.Component {
   constructor(props) {
     super(props);
 

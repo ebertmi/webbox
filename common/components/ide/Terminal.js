@@ -66,7 +66,7 @@ export default class Terminal extends React.Component {
       cursorBlink: true
     });
 
-    this.terminal.open(this.container);
+    this.terminal.open(this.container, true);
 
     window.addEventListener('resize', this.onResize);
 

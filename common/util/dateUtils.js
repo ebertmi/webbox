@@ -4,7 +4,6 @@ import { timeYear, timeMonth, timeWeek, timeDay } from 'd3-time';
 import Debug from 'debug';
 
 // Create namespaced debug function | see https://github.com/visionmedia/debug
-console.log("dasfasdf", Debug);
 const debug = Debug('webbox:dateUtils');
 
 export function sortedRange(start, stop) {
