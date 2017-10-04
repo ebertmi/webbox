@@ -12,7 +12,7 @@ import {
   Deck,
   Slide,
   Text
-} from 'spectacle/lib/index';
+} from 'spectacle';
 
 // Custom Modules
 import Highlight from './Highlight';

@@ -10,7 +10,7 @@ import Debug from 'debug';
 import katex from 'katex';
 import mkitm from 'markdown-it-math';
 import isString from 'lodash/isString';
-import { S, Code, BlockQuote, Quote, Heading, Image, Link, Text, ListItem, List } from "spectacle/lib/index";
+import { S, Code, BlockQuote, Quote, Heading, Image, Link, Text, ListItem, List } from "spectacle";
 import Decorate from 'markdown-it-decorate';
 import MarkdownContainer from '../../util/markdown-it-container';
 
