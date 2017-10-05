@@ -10,7 +10,7 @@ import Blipp from 'blipp';
 import HapiIO from 'hapi-io';
 import HapiRateLimit from 'hapi-rate-limit';
 import CatboxMemory from 'catbox-memory';
-import CatboxRedis from 'catbox-redis';
+//import CatboxRedis from 'catbox-redis'; // see comment below
 import Log from './lib/models/log';
 import HapiPM2 from './lib/util/hapi-pm2';
 
@@ -37,16 +37,16 @@ if (config.isDev) {
   cache = { engine: CatboxMemory };
 } else {
   // ToDo: add Redis for production
-  cache = {
-    engine: CatboxRedis,
+  //cache = {
+  //  engine: CatboxRedis,
     /*database: config.cache.database,*/
-    host: config.cache.host,
-    port: config.cache.port,
-    password: config.cache.password,
+  //  host: config.cache.host,
+  //  port: config.cache.port,
+  //  password: config.cache.password,
     /*partition: config.cache.partition*/
-  };
+  //};
 
-  // ToDo: Change this
+  // ToDo: Change this, but for now we stick with a simple in memory cache
   cache = { engine: CatboxMemory };
 }
 

@@ -19,19 +19,6 @@ export default class InsightsPanel extends React.Component {
       components: null
     };
   }
-
-  onChange() {
-    // Rerender
-    let dateClusters = this.props.item.dateClustersToSeries();
-
-    this.setState({
-      dateClusters: dateClusters,
-      events: this.props.item.events,
-      errors: this.props.item.errors,
-      uniqueUsers: this.props.item.userMap.size
-    });
-  }
-
   componentWillMount() {
     this.props.item.getEvents();
     this.props.item.subscribeOnEvents();
@@ -59,16 +46,29 @@ export default class InsightsPanel extends React.Component {
     this.props.item.removeListener('change', this.onChange);
   }
 
+  onChange() {
+    // Rerender
+    const dateClusters = this.props.item.dateClustersToSeries();
+
+    this.setState({
+      dateClusters: dateClusters,
+      events: this.props.item.events,
+      errors: this.props.item.errors,
+      uniqueUsers: this.props.item.userMap.size
+    });
+  }
+
   /**
    * Normalize the date cluster settings from the chart component and set those on
    * the insights instance. This call may cause rerendering.
    *
-   * @param {any} settings
+   * @param {any} settings - cluster settings, e.g. start date, end date and resolution
+   * @returns {undefined}
    */
   onDateClusterSettingsChange(settings) {
     let start = settings.dateClusterStart;
     let end = settings.dateClusterEnd;
-    let resolution = settings.dateClusterResolution;
+    const resolution = settings.dateClusterResolution;
 
     if (start && start._d) {
       start = start._d;
@@ -83,19 +83,19 @@ export default class InsightsPanel extends React.Component {
 
   renderOverview() {
     if (this.state.components != null && this.state.components.TestResultOverview != null) {
-      return  <this.state.components.TestResultOverview testResults={this.props.item.testResultsOverview} />;
+      return <this.state.components.TestResultOverview testResults={this.props.item.testResultsOverview} />;
     }
   }
 
   renderTestResults() {
     if (this.state.components != null && this.state.components.TestResultOverview != null) {
-      return  <this.state.components.TestResultOverview testResults={this.props.item.testResultsOverview} />;
+      return <this.state.components.TestResultOverview testResults={this.props.item.testResultsOverview} />;
     }
   }
 
   renderDatesCluster() {
     if (this.state.components != null && this.state.components.EventDatesClusterChart != null) {
-      return  <this.state.components.EventDatesClusterChart onSettingsChange={this.onDateClusterSettingsChange} lineData={this.state.dateClusters} dateClusterResolution={this.props.item.dateClusterResolution} />
+      return <this.state.components.EventDatesClusterChart onSettingsChange={this.onDateClusterSettingsChange} lineData={this.state.dateClusters} dateClusterResolution={this.props.item.dateClusterResolution} />;
     }
   }
 
@@ -107,7 +107,7 @@ export default class InsightsPanel extends React.Component {
 
   renderErrorView() {
     if (this.state.components != null && this.state.components.ErrorView != null) {
-      return  <this.state.components.ErrorView insights={this.props.item} />;
+      return <this.state.components.ErrorView insights={this.props.item} />;
     }
   }
 

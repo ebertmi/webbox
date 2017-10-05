@@ -19,6 +19,7 @@ const ErrorTypes = {
 
 /**
  * Class represents wrapper for an instance of an ide component
+ * This component is quite complex, yet simplifies the page load. Embeds will be only loaded on a user action.
  */
 export default class IdeWrapper extends React.Component {
   /**
@@ -118,7 +119,7 @@ export default class IdeWrapper extends React.Component {
         }
       } else {
         //quick fix for englisch error message
-        data.error.title = (data.error.title === "Unauthorized") ? "Keine Berechtigung" : data.error.title;
+        data.error.title = (data.error.title === 'Unauthorized') ? 'Zum Bearbeiten bitte Anmelden' : data.error.title;
         this.setErrorState(data.error.title);
       }
     }).catch(err => {

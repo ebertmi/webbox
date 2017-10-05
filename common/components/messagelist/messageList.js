@@ -8,9 +8,13 @@ export class MessageList extends React.PureComponent {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
+
+    this.state = {
+      messages: []
+    };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.messageList.on('change', this.onChange);
     this.onChange();
   }

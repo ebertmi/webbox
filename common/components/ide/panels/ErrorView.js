@@ -223,7 +223,7 @@ export default class ErrorView extends React.Component {
                 {this.state.errors.map((err) => {
                   const className = err.id === this.state.errorInDetail ? 'table-active' : '';
                   return (
-                    <tr className={className} key={err.id} data-errorId={err.id} onDoubleClick={this.highlightError.bind(this, err.id)}>
+                    <tr className={className} key={err.id} data-errorid={err.id} onDoubleClick={this.highlightError.bind(this, err.id)}>
                       <td>{err.type}</td>
                       <td><code>{err.message}</code></td>
                       <td><pre>{err.data.errorHint}</pre></td>

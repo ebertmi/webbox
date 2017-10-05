@@ -52,9 +52,7 @@ export default class TabBar extends React.Component {
   }
 
   componentWillMount() {
-    this.props.project.on('change', this.onChange);
-    this.props.project.tabManager.on('change', this.onChange);
-    this.onChange();
+
   }
 
   componentDidMount() {
@@ -62,6 +60,10 @@ export default class TabBar extends React.Component {
     if (screenfull.enabled) {
       document.addEventListener(screenfull.raw.fullscreenchange, this.onScreenfullChange);
     }
+
+    this.props.project.on('change', this.onChange);
+    this.props.project.tabManager.on('change', this.onChange);
+    this.onChange();
   }
 
   componentWillUnmount() {
@@ -206,16 +208,16 @@ export default class TabBar extends React.Component {
 
     if (this.props.project.mode === MODES.Default) {
       shareWithTeacher = (
-          <NavItem className="unselectable" onClick={this.onToggleSendToTeacherModal} useHref={false} title="An Dozenten schicken" >
-            <Icon className="unselectable" name="paper-plane" title="An Dozenten schicken" />
-          </NavItem>
+        <NavItem className="unselectable" onClick={this.onToggleSendToTeacherModal} useHref={false} title="An Dozenten schicken" >
+          <Icon className="unselectable" name="paper-plane" title="An Dozenten schicken" />
+        </NavItem>
       );
     }
 
     return (
       <div className="control-bar">
         <ScrollableElement scrollYToX={true} className="tabs-scroll-wrapper" onScroll={this.onTabListScroll}>
-          <nav className="tabs-container" ref={ref => this.tabList = ref}>
+          <nav className="tabs-container" ref={ref => { this.tabList = ref; }}>
             {this.renderTabs()}
           </nav>
         </ScrollableElement>

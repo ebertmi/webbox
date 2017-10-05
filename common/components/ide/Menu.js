@@ -266,9 +266,9 @@ export default class Menu extends React.Component {
 
     if (project.exec) {
       newTerminal = (
-            <DropdownItem onClick={this.onNewTerminal}>
-              <Icon name="terminal" fixedWidth/> Neues Terminal
-            </DropdownItem>
+        <DropdownItem onClick={this.onNewTerminal}>
+          <Icon name="terminal" fixedWidth/> Neues Terminal
+        </DropdownItem>
       );
     }
 

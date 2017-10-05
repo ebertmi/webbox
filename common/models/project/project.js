@@ -94,6 +94,8 @@ export default class Project extends EventEmitter {
     if (this.showLoadError === true) {
       this.showMessage(Severity.Error, 'Es konnte keine gültige Sprachkonfiguration für das Beispiel gefunden werden. Lade mit Python 3..');
     }
+
+    this.setMaxListeners(0);
   }
 
   /**

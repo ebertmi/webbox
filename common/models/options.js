@@ -37,6 +37,8 @@ class OptionManager extends EventEmitter {
     });
 
     this.init();
+
+    this.setMaxListeners(0);
   }
 
   init() {

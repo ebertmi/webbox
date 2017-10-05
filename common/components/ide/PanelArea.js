@@ -27,9 +27,13 @@ export default class PanelArea extends React.Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
+
+    this.state = {
+      tabs: []
+    };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     //this.props.project.on('change', this.onChange);
     this.props.project.tabManager.on('change', this.onChange);
     this.onChange();
@@ -63,10 +67,11 @@ export default class PanelArea extends React.Component {
   }
 
   renderGlobalMessageList() {
+    // ToDo: change this to use the notebook messageList except when in fullscreen mode
     return (
-    <div className="global-message-list">
-      <MessageList messageList={this.props.messageList} />
-    </div>
+      <div className="global-message-list">
+        <MessageList messageList={this.props.messageList} />
+      </div>
     );
   }
 

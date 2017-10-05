@@ -12,12 +12,16 @@ export default class TabManager extends EventEmitter {
     this.unnamedTabCounter = 0;
 
     this.messageList = messageList;
+
+    // solutions to allow multiple events listeners
+    this.setMaxListeners(0);
   }
 
   /**
    * Clear all has changes flags of the file tabs, should be called
    * after an successful save.
-   *
+   * @returns {undefined}
+   * 
    * @memberOf TabManager
    */
   clearFileChanges() {

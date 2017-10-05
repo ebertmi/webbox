@@ -11,8 +11,10 @@ export class StatusBar extends React.Component {
 
     this.onChange = this.onChange.bind(this);
 
-    // Trigger Change for initial sorting
-    this.onChange();
+    this.state = {
+      leftDescriptors: [],
+      rightDescriptors: []
+    };
   }
 
   componentDidMount() {
@@ -24,17 +26,17 @@ export class StatusBar extends React.Component {
   }
 
   onChange() {
-    let orderedItems = this.orderItems(this.props.registry.getItems());
+    const orderedItems = this.orderItems(this.props.registry.getItems());
 
-    this.state = {
+    this.setState({
       leftDescriptors: orderedItems.leftDescriptors,
       rightDescriptors: orderedItems.rightDescriptors
-    };
+    });
   }
 
   orderItems(items) {
-    let leftDescriptors = items.filter(d => d.alignment === StatusBarAlignment.Left).sort((a, b) => b.priority - a.priority);
-    let rightDescriptors = items.filter(d => d.alignment === StatusBarAlignment.Right).sort((a, b) => a.priority - b.priority);
+    const leftDescriptors = items.filter(d => d.alignment === StatusBarAlignment.Left).sort((a, b) => b.priority - a.priority);
+    const rightDescriptors = items.filter(d => d.alignment === StatusBarAlignment.Right).sort((a, b) => a.priority - b.priority);
 
     return {
       leftDescriptors,
