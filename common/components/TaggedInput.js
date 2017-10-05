@@ -1,7 +1,7 @@
 import React from 'react';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
-var KEY_CODES = {
+const KEY_CODES = {
   ENTER: 13,
   BACKSPACE: 8
 };

@@ -5,6 +5,7 @@ import set from 'lodash/set';
 
 import { Button, Input } from '../../bootstrap';
 import { EmbedTypes } from '../../../constants/Embed';
+//import TaggedInput from '../../TaggedInput';
 
 /**
  * Displays and allows to change embed attributes.
@@ -24,21 +25,14 @@ export default class AttributePanel extends React.Component {
     this.onSave = this.onSave.bind(this);
     this.onReset = this.onReset.bind(this);
     this.onDelete = this.onDelete.bind(this);
-  }
-
-  /**
-   * Clone the current project.data object.
-   *
-   * @returns cloned (shallow) embed object
-   */
-  cloneFromProps() {
-    return clone(this.props.item.projectData.embed);
+    this.handleCreatorChange = this.handleCreatorChange.bind(this);
   }
 
   /**
    * Delets the embed after confirmation by the user.
    *
-   * @param {any} e
+   * @param {any} e - event
+   * @returns {undefined}
    */
   onDelete(e) {
     e.preventDefault();
@@ -51,6 +45,7 @@ export default class AttributePanel extends React.Component {
    *
    * @param {string} [path=['embed']] Path of the value to set
    * @param {any} event The change event including the target and its value
+   * @returns {undefined}
    */
   onChangeOption(path=['embed'], event) {
     let target = event.target;
@@ -87,6 +82,7 @@ export default class AttributePanel extends React.Component {
    * Saves the changes. It requires a reload, so that all changes are really made.
    *
    * @param {any} e React event
+   * @returns {undefined}
    */
   onSave(e) {
     e.preventDefault();
@@ -97,6 +93,7 @@ export default class AttributePanel extends React.Component {
    * Resets the state to the original embed data
    *
    * @param {any} e React event
+   * @returns {undefined}
    */
   onReset(e) {
     e.preventDefault();
@@ -104,6 +101,25 @@ export default class AttributePanel extends React.Component {
     this.setState({
       embed: this.cloneFromProps()
     });
+  }
+
+  handleCreatorChange (creator, creators) {
+    const update = {
+      isDirty: true,
+      creators: creators
+    };
+
+    // trigger state update
+    //this.props.onChange(update);
+  }
+
+  /**
+   * Clone the current project.data object.
+   *
+   * @returns {object} cloned (shallow) embed object
+   */
+  cloneFromProps() {
+    return clone(this.props.item.projectData.embed);
   }
 
   // ToDo:
@@ -149,11 +165,17 @@ export default class AttributePanel extends React.Component {
           <input className="form-control" type="text" placeholder="main.py" name="mainFile" onChange={this.onChangeOption.bind(this, ['embed', 'meta'])} value={embed.meta.mainFile}/>
           <small className="text-muted">Datei, die zum Ausführen verwendet werden soll. Hat nur Auswirkungen auf bestimmte Sprache wie z.B. Python.</small>
         </div>
-          <div className="form-group">
-            <label className="form-control-label" >Interne ID</label>
-            <input className={"form-control"} disabled readOnly type="text" defaultValue={embed.id} name="id" />
-            <small>Interne ID des Dokumentes.</small>
-          </div>
+        <div className="form-group">
+          <label className="form-control-label" >Interne ID</label>
+          <input className="form-control" disabled readOnly type="text" defaultValue={embed.id} name="id" />
+          <small>Interne ID des Dokumentes.</small>
+        </div>
+        <div className="form-group">
+          <label className="form-control-label" >Besitzer</label>
+          {/*<TaggedInput onAddTag={this.handleCreatorChange} onRemoveTag={this.handleCreatorChange} name="creators" placeholder="Besitzer" tags={this.embed.creators} />*/}
+          <input className="form-control" type="text" defaultValue={embed.creators.map(e => e.email).join(', ')} readOnly disabled name="creators" />
+          <small>Fügen Sie weitere Benutzer als Besitzer dieses Beispiels hinzu, diese können anschließend dieses wie der Autor bearbeiten.</small>
+        </div>
         <Button bsStyle="success" className="form-group" onClick={this.onSave}>Speichern</Button>
         <Button bsStyle="warn" className="form-group" onClick={this.onReset}>Zurücksetzen</Button>
         <div className="form-group">

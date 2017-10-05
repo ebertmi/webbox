@@ -19,6 +19,7 @@ export class StatusBar extends React.Component {
 
   componentDidMount() {
     this.props.registry.on('change', this.onChange);
+    this.onChange();
   }
 
   componentWillUnmount() {

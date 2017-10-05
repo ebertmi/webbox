@@ -234,7 +234,7 @@ class NotebookMetadata extends React.Component {
           <div className="form-group row">
             <label className={"col-sm-2 form-control-label"} ><Icon name="users" /> Weitere Autoren</label>
             <div className={"col-sm-10"}>
-              <TaggedInput className={"form-control"} onAddTag={this.handleAuthorsChange} onRemoveTag={this.handleAuthorsChange} name="authors"ref="authorsField" placeholder="Weitere Autoren" tags={authorsArray} title="Mitautoren" />
+              <TaggedInput className={"form-control"} onAddTag={this.handleAuthorsChange} onRemoveTag={this.handleAuthorsChange} name="authors" ref="authorsField" placeholder="Weitere Autoren" tags={authorsArray} title="Mitautoren" />
               <small className="text-muted">Diese erhalten Bearbeitungsrechte für dieses Dokument.</small>
             </div>
           </div>
