@@ -48,7 +48,7 @@
     "blipp": "^2.3.0",
     "bluebird": "^3.5.1",
     "boom": "6.0.0",
-    "bootstrap": "git://github.com/twbs/bootstrap.git#v4.0.0-alpha.4",
+    "bootstrap": "git://github.com/twbs/bootstrap.git#v4.0.0-beta",
     "catbox-memory": "^2.0.4",
     "catbox-redis": "^3.0.2",
     "classnames": "^2.2.5",

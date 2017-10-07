@@ -253,7 +253,7 @@ export default class IdeWrapper extends React.Component {
     classNames = (!this.state.codeData) ? 'downloadEmbed' : '';
     if (this.state.error == null) {
       stateIndicator = (!this.state.isDownloading) ? '' : <Loader type="line-scale" />;
-      headlineMessage = this.state.embedName + ' - ' + this.state.embedLang;
+      headlineMessage = `${this.state.embedName} - ${this.state.embedLang}`;
       clickEvent = this.onClick;
       overlay = this.generateSVGOverlay(this.props.height, headlineMessage, null, null, (!this.state.isDownloading) ? 'notLoaded' : 'downloading');
     } else if (this.state.errorType == ErrorTypes.EmbedLoadingError) {
@@ -302,7 +302,7 @@ export default class IdeWrapper extends React.Component {
         project = new SkulptProject(projectData);
       }
 
-      toRender = <div className="col-xs-12" id="ide-container" style={{ height: `${this.props.height}px` }}><Ide project={project} messageList={messageList} noWindowHandlers={true}/></div>;
+      toRender = <div className="col-12" id="ide-container" style={{ height: `${this.props.height}px` }}><Ide project={project} messageList={messageList} noWindowHandlers={true}/></div>;
     }
 
     return toRender;
