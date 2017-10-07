@@ -81,6 +81,24 @@ $line-height: 1.5rem;
   background-color: inherit;
 }
 
+/* Modal specific styles */
+.modal-backdrop {
+  z-index: 1071;
+
+  &.show {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+}
+
+.modal-dialog {
+  z-index: 1072;
+
+  &.show {
+    opacity: 1.0;
+    display: block;
+  }
+}
+
 /* Custom CSS */
 .logo {
   padding-bottom: 1rem;

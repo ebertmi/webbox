@@ -22,6 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+
+// ToDo: use React.Portals and fix this mess: https://reactjs.org/docs/portals.html
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
@@ -167,7 +170,7 @@ class Modal extends React.Component {
   }
 
   renderIntoSubtree() {
-    ReactDOM.unstable_renderSubtreeIntoContainer(
+    ReactDOM.createPortal(
       this,
       this.renderChildren(),
       this._element

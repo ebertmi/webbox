@@ -45,6 +45,7 @@ export default class TabBar extends React.Component {
     this.onScreenfullChange = this.onScreenfullChange.bind(this);
     this.onTabListScroll = this.onTabListScroll.bind(this);
     this.onToggleSendToTeacherModal = this.onToggleSendToTeacherModal.bind(this);
+    this.onCloseSendToTeacherModal = this.onCloseSendToTeacherModal.bind(this);
 
     this.state = {
       showSendToTeacherModal: false
@@ -79,6 +80,12 @@ export default class TabBar extends React.Component {
   onToggleSendToTeacherModal() {
     this.setState({
       showSendToTeacherModal: !this.state.showSendToTeacherModal
+    });
+  }
+
+  onCloseSendToTeacherModal() {
+    this.setState({
+      showSendToTeacherModal: false
     });
   }
 
@@ -229,7 +236,11 @@ export default class TabBar extends React.Component {
             <Icon name="save" />
           </NavItem>
           { shareWithTeacher }
-          <SendToTeacherModal isOpen={this.state.showSendToTeacherModal} toggle={this.onToggleSendToTeacherModal} callback={this.onShareWithTeacher}/>
+          <SendToTeacherModal
+            isOpen={this.state.showSendToTeacherModal}
+            toggle={this.onCloseSendToTeacherModal}
+            callback={this.onShareWithTeacher}
+          />
 
           <NavItem className="unselectable" onClick={this.onToggleFullscreen} title="Vollbildmodus" disabled={!screenfull.enabled}>
             <Icon name={fullScreenIcon} title="Vollbildmodus"/>
