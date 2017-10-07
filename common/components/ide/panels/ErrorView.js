@@ -174,10 +174,10 @@ export default class ErrorView extends React.Component {
     return (
       <div className="container-fluid">
         <div className="row">
-          <div className="col-xs-12">
+          <div className="col-12">
             <h4>Die letzten Fehler</h4>
           </div>
-          <div className="col-xs-12">
+          <div className="col-12">
             <form className="form-inline">
               <div className="form-group">
                 <label className="sr-only" htmlFor="errorFilterCount">Anzahl</label>
@@ -204,10 +204,10 @@ export default class ErrorView extends React.Component {
               <button className="btn btn-warning btn-sm" disabled={!this.state.isFiltering} onClick={this.onReset} >Zurücksetzen</button>
             </form>
           </div>
-          <div className="col-xs-12">
+          <div className="col-12">
             { this.renderErrorInDetail() }
           </div>
-          <div className="col-xs-12">
+          <div className="col-12">
             <table className="table table-sm table-hover">
               <thead>
                 <tr>

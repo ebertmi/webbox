@@ -107,33 +107,38 @@ html(lang="de")
 
         block navigation
           header
-            nav.navbar.navbar-light.wb-navbar
-              .nav.navbar-nav
-                a.navbar-brand(href="/")
-                  img(src="/public/img/trycoding_logo.png", alt="trycoding.io")
+            nav.navbar.navbar-light.navbar-expand-sm.wb-navbar.d-print-none
+              a.navbar-brand(href="/")
+                img(src="/public/img/trycoding_logo.png", alt="trycoding.io")
+              //button.navbar-toggler(type="button", data-toggle="collapse", data-target="#mainnavigation")
+              //.nav.navbar-nav
+              
+              //div.collapse.navbar-collapse(id="mainnavigation")
+              ul.navbar-nav.mr-auto
                 a(class="nav-item nav-link", href="/") Startseite
                 a(class="nav-item nav-link", href="/courseoverview") Kurse
                 if courseId != null
                   a(class="nav-item nav-link", href="/course/" + courseId, title="Das Inhaltsverzeichnis des aktuellen Kurses") Inhaltsverzeichnis
-                block navbar-extra
+              block navbar-extra
+              form.form-inline
                 if !user.isAnonymous
-                  .pull-xs-right
-                    a(class="nav-item btn btn-warning btn-sm", href="/logout") Ausloggen
-                  .pull-xs-right
+                  .float-right.mr-sm-2
                     a(href="/profile", alt="Benutzereinstellungen")
                       span.text-muted.m-r-1=user.email
+                  .float-right
+                    a(class="nav-item btn btn-warning btn-sm", href="/logout") Ausloggen
                 else
-                  .pull-xs-right
+                  .float-right
                     - var nextQuery = "?next=" + (next || "");
                     a(class="nav-item btn btn-success btn-sm", href="/login" + nextQuery) Einloggen
 
       block content
         main.site-content#content
 
-      footer(role="contentinfo", class="wb-footer text-muted hidden-print")
+      footer(role="contentinfo", class="wb-footer text-muted d-print-none")
         .container
           .row
-            .col-md-6.col-xs-12
+            .col-md-6.col-12
               ul.wb-footer-links
                 if isDev
                   li
@@ -152,7 +157,7 @@ html(lang="de")
                 Erstellt von Michael Ebert im Rahmen des Projektes Evelin
               p
                 a(href="//hs-coburg.de", target="_blank", rel="noopener noreferrer") Hochschule Coburg
-            .col-md-6.col-xs-12
+            .col-md-6.col-12
               p Powered by
                 img.m-l-1(src="/public/img/sourcebox.svg", height="30", alt="Sourcebox Logo")
 

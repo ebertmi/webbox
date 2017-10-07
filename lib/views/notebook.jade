@@ -14,7 +14,7 @@ block styles
 
 block content
   if user.isAnonymous
-    .pull-xs-right
+    .float-right
       - var nextQuery = "?next=" + (next || "");
       div.alert.alert-danger(role="alert")
         p.centered

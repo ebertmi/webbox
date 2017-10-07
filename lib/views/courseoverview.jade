@@ -9,20 +9,22 @@ block content
       .row
         if courses != null && courses.length
           h2 Kurse
-          .col-xs-12
+          .col-12
             p Hier finden Sie alle Kurse, zum Ausführen der Beispiele müssen Sie jedoch angemeldet sein.
-          .col-xs-12
+          .col-12
             div.card-deck
               - each course in courses
                 div.card
                   img.card-img-top.course-logo(src="/media/" + course.slug + "/"+ course.logo, alt="Kurs-Thumbnail" + course.title)
-                  div.card-block
+                  div.card-body
                     h5.card-title= course.title
-                    p.card-text= course.description
-                    - var url = course.slug ? course.slug : course.id
-                    a.btn.btn-primary(href="/course/" + url) Zum Kurs
+                    p.card-text
+                      span= course.description
+                      br
+                      - var url = course.slug ? course.slug : course.id
+                      a.btn.btn-primary(href="/course/" + url) Zum Kurs
         else
           h2 Kurse
-          .col-xs-12
+          .col-12
             p Es wurden bisher noch keine Kurse angelegt bzw. veröffentlicht.
 

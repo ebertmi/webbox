@@ -50,10 +50,10 @@ export function NavItem(props) {
     );
   } else {
     return (
-    <a {...props} href={props.href || '#'} className={classes}>
-      {props.children}
-    </a>
-  );
+      <a {...props} href={props.href || '#'} className={classes}>
+        {props.children}
+      </a>
+    );
   }
 }
 
@@ -151,7 +151,7 @@ export class Input extends React.Component {
       <div className={classes}>
         <label>
           <input {...rest}/>
-          {" "}{label}
+          {' '}{label}
           {this.renderMuted()}
         </label>
       </div>
@@ -190,7 +190,7 @@ export function Button(props) {
   const { inputClassName, className, bsStyle, ...rest } = props;
 
   const classes = classNames('btn', {
-    ['btn-' + bsStyle]: bsStyle
+    [`btn-${bsStyle}`]: bsStyle
   }, className);
 
   return (

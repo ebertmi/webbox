@@ -38,22 +38,46 @@ $line-height: 1.5rem;
 
   &.alert-info.alert-left-border {
     border-left: 4px solid $state-info-bg;
-    background-color: rgb(249, 249, 249)
+    background-color: rgb(249, 249, 249);
+    color: $gray-dark;
   }
 
   &.alert-success.alert-left-border {
     border-left: 4px solid $state-success-bg;
-    background-color: rgb(249, 249, 249)
+    background-color: rgb(249, 249, 249);
+    color: $gray-dark;
   }
 
   &.alert-warning.alert-left-border {
     border-left: 4px solid $state-warning-bg;
-    background-color: rgb(249, 249, 249)
+    background-color: rgb(249, 249, 249);
+    color: $gray-dark;
   }
 
   &.alert-danger.alert-left-border {
     border-left: 4px solid $state-danger-bg;
     background-color: rgb(249, 249, 249);
+    color: $gray-dark;
+  }
+
+  &.alert-danger {
+    color: $state-danger-text;
+    background: $state-danger-bg;
+  }
+
+  &.alert-warning {
+    color: $state-warning-text;
+    background: $state-warning-bg;
+  }
+
+  &.alert-info {
+    color: $state-info-text;
+    background: $state-info-bg;
+  }
+
+  &.alert-success {
+    color: $state-success-text;
+    background: $state-success-bg;
   }
 }
 
@@ -87,6 +111,7 @@ $line-height: 1.5rem;
 
   &.show {
     background-color: rgba(0, 0, 0, 0.5);
+    opacity: 1.0;
   }
 }
 
@@ -97,6 +122,16 @@ $line-height: 1.5rem;
     opacity: 1.0;
     display: block;
   }
+}
+
+/* add those old bootstrap styles to avoid rewriting custom toggle logic */
+.dropdown.open .dropdown-menu {
+  display: block;
+}
+
+.dropdown-menu.dropdown-menu-right {
+  right: 0;
+  left: auto;
 }
 
 /* Custom CSS */
@@ -141,10 +176,6 @@ form .btn,
   vertical-align: text-bottom;
 }
 
-.card-deck .card {
-  max-width: 22em;
-}
-
 .card-title {
   word-break: break-word;
 }
@@ -179,6 +210,10 @@ form .btn,
 
 .card {
   box-shadow: none;
+
+  & .card-body {
+    padding: 1.25rem;
+  }
 }
 
 .card-header-for-list {
@@ -207,13 +242,13 @@ form .btn,
 
 .course-logo {
   max-height: 200px;
-  width: 350px;
+  //width: 350px;
   max-width: 100%;
 }
 
 @include media-breakpoint-down(xs) {
-  .auth .col-xs-12,
-  .grid-divider .col-xs-12 {
+  .auth .col-12,
+  .grid-divider .col-12 {
     margin-bottom: 1.5rem;
   }
 }

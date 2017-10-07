@@ -119,7 +119,7 @@ export default class IdeWrapper extends React.Component {
         }
       } else {
         //quick fix for englisch error message
-        data.error.title = (data.error.title === 'Unauthorized') ? 'Zum Bearbeiten bitte Anmelden' : data.error.title;
+        data.error.title = (data.error.title === 'Unauthorized') ? 'Bitte melden Sie sich an, um dieses Beispiel zu bearbeiten.' : data.error.title;
         this.setErrorState(data.error.title);
       }
     }).catch(err => {

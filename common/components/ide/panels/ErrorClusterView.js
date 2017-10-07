@@ -62,7 +62,7 @@ export default class ErrorClusterView extends React.Component {
     return (
         <div className="container-fluid">
           <div className="row">
-            <div className="col-xs-12">
+            <div className="col-12">
               <h4>Häufige Fehler</h4>
               <FlexibleXYPlot
                 margin={{bottom: 70}}

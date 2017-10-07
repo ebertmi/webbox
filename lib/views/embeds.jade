@@ -7,7 +7,7 @@ block content
   main.site-content#content
     .container
       .row
-        section.col-xs-12
+        section.col-12
           if infoMessage
             div.alert.alert-info
               p= infoMessage
@@ -18,11 +18,11 @@ block content
       if !user.isAnonymous
         .row
           h4 Ihre erstellten Beispiele
-          .col-xs-12
+          .col-12
             p.
               Folgende Liste enthält nur von Ihnen erstellte Beispiele.
           if embeds && embeds.length > 0
-            .col-xs-12
+            .col-12
               div.card
                 h3.card-header.card-header-for-list.card-header-flex
                   span Ihre erstellten Beispiele
@@ -40,25 +40,25 @@ block content
                     li.list-group-item
                       - var urlPart = embed.slug != null && embed.slug != '' ? embed.slug : embed.id;
                       a(href="/embed/" + urlPart, ) !{embed.meta.name}
-                      span.pull-xs-right
+                      span.float-right
                         small Letzte Änderung !{embed.relativeDate}
           else
-            .col-xs-12
+            .col-12
               p
               strong Sie haben noch keine eigenen Beispiele erstellt.
 
   .container.second-entry
     if user.isAnonymous
       .row.auth
-        .col-xs-12
+        .col-12
           p.
             Nur angemeldete Benutzer können ihre Beispiele einsehen.
       .row.grid-divider
-        .col-md-5.col-xs-12
+        .col-md-5.col-12
           h2 Login
           include ./includes/_login.jade
         .col-md-2.hidden-sm-down.divider.vertical
           p Oder
-        .col-md-5.col-xs-12
+        .col-md-5.col-12
           h2 Registrierung
           include ./includes/_signup.jade

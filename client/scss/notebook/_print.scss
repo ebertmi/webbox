@@ -12,10 +12,13 @@
   ol,
   a,
   tr,
+  img,
   div.markdown-cell,
   div.code-cell,
   div.code-block,
-  div.raw-cell {
+  div.raw-cell,
+  div.col-12.view-mode,
+  div.centered {
     page-break-inside: avoid;
   }
   
@@ -65,6 +68,10 @@
 
   .header-anchor {
     display: none;
+  }
+
+  .hidden-print {
+    display: none !important;
   }
 
   .hljs {

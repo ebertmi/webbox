@@ -17,8 +17,8 @@ function renderToggleEditButton (props) {
   } else {
     return (
       <ActionItem onClick={props.onEdit} title="Inhalt bearbeiten">
-      <Icon className="icon-control" name="pencil" />
-    </ActionItem>);
+        <Icon className="icon-control" name="pencil" />
+      </ActionItem>);
   }
 }
 
@@ -32,7 +32,7 @@ export function EditButtonGroup (props) {
 
   // else render buttons
   return (
-    <div className="col-xs-12">
+    <div className="col-12">
       <div className="editor-btns">
         <Toolbar>
           {renderToggleEditButton(props)}

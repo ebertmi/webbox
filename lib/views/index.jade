@@ -7,7 +7,7 @@ block content
   main.site-content#content
     .container
       .row
-        section.col-xs-12
+        section.col-12
           if infoMessage
             div.alert.alert-info
               p= infoMessage
@@ -24,34 +24,34 @@ block content
           und Übungen können direkt im Browser ausprobiert und verändert werden.
       .row
         if courses != null && courses.length
-          .col-xs-12
+          .col-12
             h4 Kurse
             p Hier finden Sie alle Kurse, zum Ausführen der Beispiele müssen Sie jedoch angemeldet sein.
-          .col-xs-12
+          .col-12
             div.card-deck
               - each course in courses
                 div.card
                   img.card-img-top.course-logo(src="/media/" + course.slug + "/"+ course.logo, alt="Kurs-Thumbnail" + course.title)
-                  div.card-block
+                  div.card-body
                     h5.card-title= course.title
                     p.card-text= course.description
                     - var url = course.slug ? course.slug : course.id
                     a.btn.btn-primary(href="/course/" + url) Zum Kurs
         else
-          .col-xs-12
+          .col-12
             h4 Kurse
             p Es wurden bisher keine Kurse angelegt bzw. veröffentlicht.
 
       if !user.isAnonymous
         .row
-          .col-xs-12
+          .col-12
             h4 Ihre Übersicht
             p.
               Willkommen zurück <strong>!{user.username}</strong>. Wir haben hier ihre letzten Beispiele und Dokumente für Sie aufgelistet.
               Alternativ können Sie auch einen bestimmten Kurs auswählen.
 
           if documents && (documents.length > 0 || isAuthor)
-            .col-xs-12
+            .col-12.mb-2
               div.card
                 h3.card-header.card-header-for-list.card-header-flex
                   span Ihre Dokumente
@@ -71,11 +71,11 @@ block content
                     li.list-group-item
                       - var urlPart = doc.slug != null && doc.slug != '' ? doc.slug : doc.id;
                       a(href="/d/" + urlPart) !{doc.metadata.title}
-                      span.pull-xs-right
+                      span.float-right
                         small.hidden-xs-down Letzte Änderung !{doc.metadata.lastUpdate}
 
           if embeds && (embeds.length > 0 || isAuthor)
-            .col-xs-12
+            .col-12.mb-2
               div.card
                 h3.card-header.card-header-for-list.card-header-flex
                   span Ihre erstellten Beispiele
@@ -97,11 +97,11 @@ block content
                     li.list-group-item
                       - var urlPart = embed.slug != null && embed.slug != '' ? embed.slug : embed.id;
                       a(href="/embed/" + urlPart, ) !{embed.meta.name}
-                      span.pull-xs-right
+                      span.float-right
                         small.hidden-xs-down Letzte Änderung !{embed.lastUpdate}
 
           if codeDocuments && codeDocuments.length > 0
-            .col-xs-12
+            .col-12.mb-2
               div.card
                 h3.card-header.card-header-for-list
                   span Ihre gespeicherten Beispiele
@@ -115,11 +115,11 @@ block content
                   - each doc in codeDocuments
                     li.list-group-item
                       a(href="/embed/" + doc.codeEmbedId + "?showDocument=" + doc.id ) !{doc.embed.meta.name}
-                      span.pull-xs-right
+                      span.float-right
                         small.hidden-xs-down Letzte Änderung !{doc.lastUpdate}
 
           if recentlyViewedDocuments && recentlyViewedDocuments.length > 0
-            .col-xs-12
+            .col-12.mb-2
               div.card
                 h3.card-header.card-header-for-list
                   span Zuletzt angeschaut
@@ -128,7 +128,7 @@ block content
                     li.list-group-item
                       a(href="/d/" + doc.id, ) !{doc.title}
           else
-            .col-xs-12
+            .col-12.mb-2
               div.card
                 h3.card-header.card-header-for-list
                   span Zuletzt angeschaut
@@ -136,18 +136,18 @@ block content
   .container.second-entry
     if user.isAnonymous
       .row.auth
-        .col-xs-12
+        .col-12
           p.
             Zum Ausführen der Code-Beispiele und zum Bearbeiten der Übungen sowie für den Zugang einzelner Kurse
             müssen Sie angemeldet sein.
             Für die Anmeldung benötigen Sie eine <strong>gültige Hochschul-Email-Adresse</strong>. An diese wird eine Validierungsemail
             geschickt, um Sie der Hochschule zuzuordnen. Das Passwort können Sie dabei freiwählen.
       .row.grid-divider
-        .col-md-5.col-xs-12
+        .col-md-5.col-12
           h2 Login
           include ./includes/_login.jade
         .col-md-2.hidden-sm-down.divider.vertical
           p Oder
-        .col-md-5.col-xs-12
+        .col-md-5.col-12
           h2 Registrierung
           include ./includes/_signup.jade

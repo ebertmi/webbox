@@ -29,7 +29,7 @@ export default class RawCell extends BaseCell {
     }
 
     if (this.session) {
-      let content = this.session.getValue();
+      const content = this.session.getValue();
       this.props.dispatch(updateCell(this.props.cell.get('id'), content));
     } else {
       console.warn('RawCell.onSaveCellSource called with invalid session', this.session);
@@ -41,21 +41,21 @@ export default class RawCell extends BaseCell {
    */
   getWrapperHeightOrMin() {
     if (this.wrapperNode) {
-      return Math.max(this.wrapperNode.offsetHeight,  this.wrapperNode.scrollHeight,  this.wrapperNode.clientHeight, this.props.minHeight);
+      return Math.max(this.wrapperNode.offsetHeight, this.wrapperNode.scrollHeight, this.wrapperNode.clientHeight, this.props.minHeight);
     } else {
       return this.props.minHeight;
     }
   }
 
   renderEditMode() {
-    let minHeight = this.getWrapperHeightOrMin();
+    const minHeight = this.getWrapperHeightOrMin();
     let source = this.getSourceFromCell();
 
     if (source == null) {
       source = '';
     }
 
-    let mode = this.props.cell.getIn(['metadata', 'mode'], 'ace/mode/html');
+    const mode = this.props.cell.getIn(['metadata', 'mode'], 'ace/mode/html');
 
     if (this.session) {
       this.session.setValue(source);
@@ -66,7 +66,7 @@ export default class RawCell extends BaseCell {
     }
 
     return (
-      <div className="col-xs-12" onKeyDown={this.onKeyDown}>
+      <div className="col-12" onKeyDown={this.onKeyDown}>
         <p className="text-muted">
           Es werden folgende Formate unterstützt: <code>text/plain</code>, <code>text/html</code>, <code>image/(jpeg|png|gif)</code>.
         </p>
@@ -77,18 +77,18 @@ export default class RawCell extends BaseCell {
   }
 
   renderViewMode() {
-    let format = this.props.cell.getIn(['metadata', 'format']);
-    let source = this.getSourceFromCell();
+    const format = this.props.cell.getIn(['metadata', 'format']);
+    const source = this.getSourceFromCell();
 
-    switch(format) {
+    switch (format) {
       case 'text/plain':
-        return <div className="col-xs-12" ref={this.onRef}><pre>{source}</pre></div>;
+        return <div className="col-12" ref={this.onRef}><pre>{source}</pre></div>;
       case 'text/html':
-        return <div className="col-xs-12" ref={this.onRef} dangerouslySetInnerHTML={{__html: source}}></div>;
+        return <div className="col-12" ref={this.onRef} dangerouslySetInnerHTML={{__html: source}}></div>;
       case 'image/jpeg':
       case 'image/png':
       case 'image/gif':
-        return <div className="col-xs-12"><img ref={this.onRef} src={source} /></div>;
+        return <div className="col-12"><img ref={this.onRef} src={source} /></div>;
       default:
         return <p>Nicht unterstütztes Format für diese Zelle (siehe Metadaten unter "format").</p>;
     }
@@ -97,8 +97,8 @@ export default class RawCell extends BaseCell {
   render() {
     const { cell, isEditModeActive, editing, dispatch } = this.props;
     let content;
-    let metadata = <CellMetadata beforeChange={this.onUpdateCell} className="col-xs-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
-    let editingClass = editing ? ' editing' : '';
+    const metadata = <CellMetadata beforeChange={this.onUpdateCell} className="col-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
+    const editingClass = editing ? ' editing' : '';
     const isVisible = this.isVisible();
 
     if (!(isEditModeActive && editing)) {
@@ -107,7 +107,7 @@ export default class RawCell extends BaseCell {
       content = this.renderEditMode();
     }
 
-    const classes = classnames("raw-cell col-xs-12 row", editingClass, {
+    const classes = classnames('raw-cell col-12 row', editingClass, {
       'cell-not-visible': !isVisible
     });
 

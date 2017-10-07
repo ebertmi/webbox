@@ -81,7 +81,7 @@ export default class AnalyticsDashboard extends Component {
       }
 
       return (
-        <div className="analytics col-xs-12">
+        <div className="analytics col-12">
           <h4>Statistiken</h4>
           {children}
         </div>

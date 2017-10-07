@@ -44,12 +44,12 @@ export default class SubmissionView extends React.Component {
     const toggleText = this.state.isActive ? 'Deaktivieren' : 'Aktivieren';
     return (
       <div className="row">
-      <div className="col-xs-12">
+      <div className="col-12">
         <h4>Einreichungen</h4>
         <button className="btn btn-sm btn-primary m-b-1" title="Aktivieren/Deaktivieren" onClick={this.onToggleSubmissions}>{toggleText}</button>
         {/*<span>Akzeptiert?</span> <Icon className="icon-control" name={iconName} title="Aktivieren/Deaktivieren" onClick={this.onToggleSubmissions} />*/}
       </div>
-      <div className="col-xs-12">
+      <div className="col-12">
         <table className="table table-sm table-hover">
           <thead>
             <tr>

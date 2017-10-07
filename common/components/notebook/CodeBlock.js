@@ -33,7 +33,7 @@ export default class CodeBlock extends React.PureComponent {
   }
 
   render() {
-    return <div className="col-xs-12 read-view" dangerouslySetInnerHTML={{__html: this.state.rendered}}/>;
+    return <div className="col-12 read-view" dangerouslySetInnerHTML={{__html: this.state.rendered}}/>;
   }
 }
 
