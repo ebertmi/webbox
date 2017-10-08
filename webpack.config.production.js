@@ -67,8 +67,8 @@ module.exports = {
       {
         test: /\.scss$/,
         loader: ExtractTextPlugin.extract({
-          fallbackLoader: 'style-loader',
-          loader: [
+          fallback: 'style-loader',
+          use: [
             {
               loader: 'css-loader',
               options: { importLoaders: 1 }
@@ -76,14 +76,24 @@ module.exports = {
             {
               loader: 'postcss-loader',
               options: {
-                plugins: function () {
-                  return [ autoprefixer({ browsers: ['last 2 versions'] }) ];
-                }
+                config: {
+                  path: path.resolve(__dirname, 'postcss.config.js'),
+                },
               }
             },
             'sass-loader'
           ]
         })
+      },
+      {
+        // Do not transform vendor's CSS with CSS-modules
+        // The point is that they remain in global scope.
+        // Since we require these CSS files in our JS or CSS files,
+        // they will be a part of our compilation either way.
+        // So, no need for ExtractTextPlugin here.
+        test: /\.css$/,
+        include: /node_modules/,
+        use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.json$/,
@@ -124,7 +134,6 @@ module.exports = {
     new ExtractTextPlugin({
       filename: '../css/all.bundle.' + VERSION + '.css',
       allChunks: true,
-      disable: false
     }),
     new CopyWebpackPlugin([
       {
