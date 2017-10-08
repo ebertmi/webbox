@@ -76,7 +76,7 @@ export default class TestsPanel extends React.Component {
                 <p>
                   <span>{ checkIcon } </span>
                   {test.name}
-                  <span className="pull-xs-right">
+                  <span className="float-right">
                     <strong>{test.score} / {test.max_score}</strong>
                   </span>
                 </p>

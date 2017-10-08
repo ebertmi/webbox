@@ -967,7 +967,8 @@ export default class Project extends EventEmitter {
 
     API.embed.updateEmbed(params, payload).then(res => {
       if (res.error) {
-        this.showMessage(Severity.Error, 'Beim Aktualisieren ist ein Fehler augetreten.');
+        let errorMessage = res.error != '' ? res.error : 'Beim Aktualisieren ist ein Fehler augetreten.';
+        this.showMessage(Severity.Error, errorMessage);
       } else {
         // ToDo: Trigger auto reload here for the IDE
         this.showMessage(Severity.Ignore, 'Erfolgreich aktualisiert.');

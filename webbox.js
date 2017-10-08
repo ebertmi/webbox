@@ -20,6 +20,11 @@ import isString from 'lodash/isString';
 import config from './config/webbox.config';
 import Package from './package.json';
 
+process.on('unhandledRejection', (reason, p) => {
+  console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+  // application specific logging, throwing an error, or other logic here
+});
+
 // The default context is available for every response (template)
 const defaultContext = {
   webboxVersion: Package.version,
@@ -82,11 +87,11 @@ server.register({
 server.register({
   register: Good,
   options: config.good
-}, function (err) {
+}, (err) => {
   if (err) {
     console.error(err);
   } else {
-    server.start (function () {
+    server.start (() => {
       console.info('Server started at ' + server.info.uri);
     });
   }

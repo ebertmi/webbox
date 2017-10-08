@@ -174,15 +174,15 @@ class NotebookMetadata extends React.Component {
           <h1 className="notebook-title">{title}</h1>
           <h3>Metadaten:</h3>
           <div className="form-group row">
-            <label className={"col-sm-2 form-control-label"} >Titel</label>
-            <div className={"col-sm-10"}>
-              <input className={"form-control title-field"} onChange={this.onUpdate} placeholder="Titel" type="text" defaultValue={title} name="title" ref="titleField" onBlur={e => {}} title="Notebook Titel" />
+            <label className={'col-sm-2 form-control-label'} >Titel</label>
+            <div className={'col-sm-10'}>
+              <input className={'form-control title-field'} onChange={this.onUpdate} placeholder="Titel" type="text" defaultValue={title} name="title" ref="titleField" onBlur={e => {}} title="Notebook Titel" />
             </div>
           </div>
           <div className="notebook-metadata">
             <div className="form-group row">
-              <label className={"col-sm-2 form-control-label"} ><Icon name="language" /> Sprache</label>
-              <div className={"col-sm-10"}>
+              <label className={'col-sm-2 form-control-label'} ><Icon name="language" /> Sprache</label>
+              <div className={'col-sm-10'}>
                 <select className="form-control" defaultValue={language} onChange={this.onUpdate} name="language" ref="languageField" onBlur={e => {}} title="Sprache" >
                   <option value="python-3">Python 3</option>
                   <option value="python-2">Python 2</option>
@@ -193,8 +193,8 @@ class NotebookMetadata extends React.Component {
               </div>
             </div>
             <div className="form-group row">
-              <label className={"col-sm-2 form-control-label"}>Typ</label>
-              <div className={"col-sm-10"}>
+              <label className={'col-sm-2 form-control-label'}>Typ</label>
+              <div className={'col-sm-10'}>
                 <select className="form-control" name="embedType" onChange={this.onUpdate} defaultValue={embedType}>
                   <option value={EmbedTypes.Sourcebox}>Sourcebox (serverseitig)</option>
                   <option value={EmbedTypes.Skulpt}>Skulpt (clientseitig, nur Python)</option>
@@ -203,21 +203,21 @@ class NotebookMetadata extends React.Component {
               </div>
             </div>
             <div className="form-group row">
-              <label className={"col-sm-2 form-control-label"} ><Icon name="user" /> Autor</label>
-              <div className={"col-sm-10"}>
-                <input className={"form-control"} onChange={this.onUpdate} type="text" defaultValue={author} name="author" ref="authorField" onBlur={e => {}} title="Author" />
+              <label className={'col-sm-2 form-control-label'} ><Icon name="user" /> Autor</label>
+              <div className={'col-sm-10'}>
+                <input className={'form-control'} onChange={this.onUpdate} type="text" defaultValue={author} name="author" ref="authorField" onBlur={e => {}} title="Author" />
               </div>
             </div>
             <div className="form-group row">
-              <label className={"col-sm-2 form-control-label"} ><Icon name="link" /> Kurzlink</label>
-              <div className={"col-sm-10"}>
-                <input className={"form-control"} onChange={this.onUpdate} type="text" defaultValue={slug} name="slug" ref="slugField" onBlur={e => {}} title="Slug/Kurzlink" />
+              <label className={'col-sm-2 form-control-label'} ><Icon name="link" /> Kurzlink</label>
+              <div className={'col-sm-10'}>
+                <input className={'form-control'} onChange={this.onUpdate} type="text" defaultValue={slug} name="slug" ref="slugField" onBlur={e => {}} title="Slug/Kurzlink" />
               </div>
             </div>
             <div className="form-group row">
-              <label className={"col-sm-2 form-control-label"} ><Icon name="bank" /> Zugehöriger Kurs</label>
-              <div className={"col-sm-10"}>
-                <select defaultValue={course != undefined ? course : ''} ref="courseField" title="Kurs-Slug" onChange={this.onUpdate} className={"form-control custom-select"} name="course">
+              <label className={'col-sm-2 form-control-label'} ><Icon name="bank" /> Zugehöriger Kurs</label>
+              <div className={'col-sm-10'}>
+                <select defaultValue={course != undefined ? course : ''} ref="courseField" title="Kurs-Slug" onChange={this.onUpdate} className={'form-control custom-select'} name="course">
                   {this.state.coursesInfo.map(info => {
                     let infoStr = '' + info.title + ' (' + (info.published ? 'Veröffentlicht' : 'Nicht Veröffentlicht') + ')';
                     return <option value={info.slug} key={info.id}>{infoStr}</option>;
@@ -226,22 +226,22 @@ class NotebookMetadata extends React.Component {
                 </select>
                 {/*<input className={"form-control"} onChange={this.onUpdate} type="text" defaultValue={course} name="course" ref="courseField" onBlur={e => {}} title="Kurs-Slug" />*/}
                 <small>Angabe eines Kurses (Kurz-Link oder ID), um diese Document zuzuordnen. <strong>Eine Änderung am Kursnamen verschiebt keine Bilder.</strong></small>
-                <input className={"form-control"} disabled readOnly type="text" defaultValue={this.props.id} name="notebookdid" />
+                <input className={'form-control'} disabled readOnly type="text" defaultValue={this.props.id} name="notebookdid" />
                 <small>Interne ID des Dokumentes.</small>
               </div>
             </div>
           </div>
           <div className="form-group row">
-            <label className={"col-sm-2 form-control-label"} ><Icon name="users" /> Weitere Autoren</label>
-            <div className={"col-sm-10"}>
-              <TaggedInput className={"form-control"} onAddTag={this.handleAuthorsChange} onRemoveTag={this.handleAuthorsChange} name="authors" ref="authorsField" placeholder="Weitere Autoren" tags={authorsArray} title="Mitautoren" />
+            <label className={'col-sm-2 form-control-label'} ><Icon name="users" /> Weitere Autoren</label>
+            <div className={'col-sm-10'}>
+              <TaggedInput className={'form-control'} onAddTag={this.handleAuthorsChange} onRemoveTag={this.handleAuthorsChange} name="authors" ref="authorsField" placeholder="Weitere Autoren" tags={authorsArray} title="Mitautoren" />
               <small className="text-muted">Diese erhalten Bearbeitungsrechte für dieses Dokument.</small>
             </div>
           </div>
           <span className="metadata-item">
             <button className="btn btn-info btn-sm" onClick={this.toggleEditClicked}><Icon className={''} name={editIconName} title={editTitleText} /> {editTitleText}</button>
           </span>
-          <span className="metadata-item pull-xs-right">
+          <span className="metadata-item float-right">
             <button className="btn btn-danger btn-sm" onClick={this.props.onDelete}><Icon className={''} name="times-circle-o" title="Dokument Löschen" /> Dokument löschen</button>
           </span>
           <hr/>

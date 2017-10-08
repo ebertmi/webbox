@@ -117,9 +117,6 @@ export default class AttributePanel extends React.Component {
       isDirty: true,
       embed: newState
     });
-
-    // trigger state update
-    //this.props.onChange(update);
   }
 
   /**
@@ -185,7 +182,7 @@ export default class AttributePanel extends React.Component {
           <label className="form-control-label" >Besitzer</label>
           {<TaggedInput onAddTag={this.handleCreatorChange} onRemoveTag={this.handleCreatorChange} name="creators" placeholder="Besitzer" tags={embed.creators} />}
           {/*<input className="form-control" type="text" defaultValue={embed.creators.map(e => e.email).join(', ')} readOnly disabled name="creators" />*/}
-          <small>Fügen Sie weitere Benutzer als Besitzer dieses Beispiels hinzu, diese können anschließend dieses wie der Autor bearbeiten.</small>
+          <small>Fügen Sie weitere Benutzer (E-Mail) zu diesem Beispiel hinzu, um ihnen den Zugriff auf die Statistiken und Eigenschaften zu gewähren. Besitzer ändern anschließend immer nur das Grundbeispiel.</small>
         </div>
         <Button bsStyle="success" className="form-group" onClick={this.onSave}>Speichern</Button>
         <Button bsStyle="warn" className="form-group" onClick={this.onReset}>Zurücksetzen</Button>
