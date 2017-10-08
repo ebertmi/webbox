@@ -5,6 +5,8 @@ export default class MatplotlibPanel extends React.Component {
     super(props);
 
     this.imageRef = null;
+
+    this.onRef = this.onRef.bind(this);
   }
 
   onComponentWillUnmount() {
@@ -26,7 +28,7 @@ export default class MatplotlibPanel extends React.Component {
   render() {
     return (
       <div className="math-panel">
-        <div ref={this.onRef.bind(this)}></div>
+        <div ref={this.onRef}></div>
       </div>
     );
   }

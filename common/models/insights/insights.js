@@ -10,6 +10,10 @@ import { normalizeDate } from '../../util/dateUtils';
 import { TestResultsOverview } from './testResultsOverview';
 import { Action, RemoteEventTypes } from './remoteDispatcher';
 
+import { Severity } from '../severity';
+import { Action as MessageAction } from '../actions';
+import { MessageWithAction } from '../messages';
+
 const debug = Debug('webbox:insights');
 
 /**
@@ -162,7 +166,7 @@ export class Insights extends EventEmitter {
    * the current cluster interval (day, hour, month) and date bounds.
    *
    * @param {EventLog} event Event to cluster
-   * @returns
+   * @returns {undefined}
    */
   clusterEventOnDates(event) {
     assert(event != null, 'Received invalid event');
@@ -193,7 +197,8 @@ export class Insights extends EventEmitter {
   /**
    * Clusters all given events to the current date clusters.
    *
-   * @param {any} events
+   * @param {any} events - events to cluster
+   * @returns {undefined}
    */
   clusterDates(events) {
     for (let event of events) {
@@ -289,10 +294,10 @@ export class Insights extends EventEmitter {
 
 
   /**
-   *
+   * Filter the errors
    * @param {any} subsetSize number of errors for the subset, if n = 'all', return every error
-   * @param {any} [filter={}]
-   * @returns
+   * @param {any} [filters={}] filters
+   * @returns {undefined}
    */
   filterErrors(subsetSize, filters={}) {
     if (this.errors.length > 600) {
@@ -308,6 +313,7 @@ export class Insights extends EventEmitter {
 
   /**
    * Get events from database
+   * @returns {undefined}
    */
   getEvents() {
     let action = new Action(RemoteActions.GetEvents, this._project.getUserData(), {
@@ -321,5 +327,37 @@ export class Insights extends EventEmitter {
     });
 
     this._project.sendAction(action, true);
+  }
+
+  archiveEvents() {
+    // Show Message and ask if this is really intended!
+
+    let messageObj;
+    const archiveAction = new MessageAction('archive.message.action', 'Archivieren', null, true, () => {
+      const action = new Action(RemoteActions.ArchiveEventLogs, this._project.getUserData(), {
+      }, res => {
+        if (res.error) {
+          console.error('Failed request:', res.error, res);
+          this._project.showMessage(Severity.Error, `Archivierung fehlgeschlagen: ${res.error}`);
+        } else {
+          this.onEvents([], true);
+          this._project.showMessage(Severity.Ignore, 'Die Events wurden erfolgreich archiviert.');
+        }
+      });
+
+      this._project.sendAction(action, true);
+      this._project.hideMessage(messageObj); // hide message
+    });
+
+    const cancelAction = new MessageAction('cancel.message.action', 'Abbrechen', null, true, () => {
+      this._project.hideMessage(messageObj);
+    });
+
+    messageObj = new MessageWithAction('Wollen Sie die Events wirklich archivieren?',
+      [archiveAction, cancelAction]);
+
+    this._project.showMessage(Severity.Warning, messageObj);
+
+
   }
 }

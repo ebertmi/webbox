@@ -41,6 +41,7 @@ export const RemoteActions = {
   GetEvents: 'get-events', // get all events for the specific code embed
   SubscribeToEvents: 'subscribe', // subscribe to event feed for a specific code embed
   UnsubscribeFromEvents: 'unsubscribe', // unsubscribe from event feed
+  ArchiveEventLogs: 'archive-event-logs', // hide old event logs or from previous semester (does not delete, just set a flag)
   Submission: 'submission', // student submission to teacher
   TestResult: 'testresult', // student's testresult
   GetTestResults: 'get-testresults', // get all test results for a specific code embed

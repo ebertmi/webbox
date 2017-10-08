@@ -9,6 +9,7 @@ export default class InsightsPanel extends React.Component {
 
     this.onChange = this.onChange.bind(this);
     this.onDateClusterSettingsChange = throttle(this.onDateClusterSettingsChange.bind(this), 1000);
+    this.onArchiveEvents = this.onArchiveEvents.bind(this);
 
     // Initial state
     this.state = {
@@ -58,6 +59,10 @@ export default class InsightsPanel extends React.Component {
     });
   }
 
+  onArchiveEvents () {
+    this.props.item.archiveEvents();
+  }
+
   /**
    * Normalize the date cluster settings from the chart component and set those on
    * the insights instance. This call may cause rerendering.
@@ -79,12 +84,6 @@ export default class InsightsPanel extends React.Component {
     }
 
     this.props.item.changeDatesClusterSettings(start, end, resolution);
-  }
-
-  renderOverview() {
-    if (this.state.components != null && this.state.components.TestResultOverview != null) {
-      return <this.state.components.TestResultOverview testResults={this.props.item.testResultsOverview} />;
-    }
   }
 
   renderTestResults() {
@@ -117,9 +116,16 @@ export default class InsightsPanel extends React.Component {
         <h3>Interaktionen</h3>
         <SubmissionView submissions={this.props.item.submissions} />
         <hr/>
+        <div className="row">
+          <div className="col-12">
+            <small id="passwordHelpInline" className="text-muted float-left mr-3">
+              Archiviert alle Events für dieses Beispiel. Diese werden nicht gelöscht, jedoch auch nicht mehr für die Auswertungen berücksichtigt. Diese Aktion ist nicht rückgängig zu machen!
+            </small>
+            <button type="button" className="btn btn-sm btn-danger float-right" onClick={this.onArchiveEvents}>Alle Events archivieren</button>
+          </div>
+        </div>
 
         <h3>Daten <small className="text-muted">(von {this.state.uniqueUsers} Benutzern)</small></h3>
-        { this.renderOverview() }
         { this.renderTestResults() }
         { this.renderDatesCluster() }
         { this.renderErrorClusters() }

@@ -34,6 +34,7 @@ export default class TabManager extends EventEmitter {
 
   /**
    * Return all tabs of the project
+   * @returns {Array} array of tabs
    */
   getTabs() {
     return this.tabs;
