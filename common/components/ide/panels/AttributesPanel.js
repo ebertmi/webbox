@@ -5,7 +5,7 @@ import set from 'lodash/set';
 
 import { Button, Input } from '../../bootstrap';
 import { EmbedTypes } from '../../../constants/Embed';
-//import TaggedInput from '../../TaggedInput';
+import TaggedInput from '../../TaggedInput';
 
 /**
  * Displays and allows to change embed attributes.
@@ -19,7 +19,9 @@ export default class AttributePanel extends React.Component {
     super(props);
 
     this.state = {
-      embed: this.cloneFromProps()
+      embed: this.cloneFromProps(),
+      isDirty: false,
+      creators: []
     };
 
     this.onSave = this.onSave.bind(this);
@@ -103,11 +105,18 @@ export default class AttributePanel extends React.Component {
     });
   }
 
+  onBeforeCreatorAdded (value) {
+    // ToDo: check if e-mail does exist
+  }
+
   handleCreatorChange (creator, creators) {
-    const update = {
+    const newState = clone(this.state.embed);
+    newState.creators = creators;
+
+    this.setState({
       isDirty: true,
-      creators: creators
-    };
+      embed: newState
+    });
 
     // trigger state update
     //this.props.onChange(update);
@@ -119,7 +128,9 @@ export default class AttributePanel extends React.Component {
    * @returns {object} cloned (shallow) embed object
    */
   cloneFromProps() {
-    return clone(this.props.item.projectData.embed);
+    const clonedEmbed = clone(this.props.item.projectData.embed);
+    clonedEmbed.creators = clonedEmbed.creators.map(c => c.email);
+    return clonedEmbed;
   }
 
   // ToDo:
@@ -172,8 +183,8 @@ export default class AttributePanel extends React.Component {
         </div>
         <div className="form-group">
           <label className="form-control-label" >Besitzer</label>
-          {/*<TaggedInput onAddTag={this.handleCreatorChange} onRemoveTag={this.handleCreatorChange} name="creators" placeholder="Besitzer" tags={this.embed.creators} />*/}
-          <input className="form-control" type="text" defaultValue={embed.creators.map(e => e.email).join(', ')} readOnly disabled name="creators" />
+          {<TaggedInput onAddTag={this.handleCreatorChange} onRemoveTag={this.handleCreatorChange} name="creators" placeholder="Besitzer" tags={embed.creators} />}
+          {/*<input className="form-control" type="text" defaultValue={embed.creators.map(e => e.email).join(', ')} readOnly disabled name="creators" />*/}
           <small>Fügen Sie weitere Benutzer als Besitzer dieses Beispiels hinzu, diese können anschließend dieses wie der Autor bearbeiten.</small>
         </div>
         <Button bsStyle="success" className="form-group" onClick={this.onSave}>Speichern</Button>

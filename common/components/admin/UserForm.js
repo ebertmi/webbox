@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Input } from '../bootstrap';
+//import TaggedInput from '../TaggedInput';
 import TaggedInput from '../TaggedInput';
 import { Link } from 'react-router';
 import { Time } from '../Time';

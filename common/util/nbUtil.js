@@ -4,8 +4,8 @@ import { addCellWithIndex, initialState } from '../reducers/notebook/notebookRed
 import { CellTypes } from '../constants/NotebookConstants';
 
 export function getCodeEmbedsFromNotebook(notebookImmutable) {
-  let cells = notebookImmutable.get('cells');
-  let embeds = cells.filter(cell => cell.get('cell_type') === CellTypes.CodeEmbed);
+  const cells = notebookImmutable.get('cells');
+  const embeds = cells.filter(cell => cell.get('cell_type') === CellTypes.CodeEmbed);
 
   return embeds;
 }
@@ -14,12 +14,13 @@ export function getCodeEmbedsFromNotebook(notebookImmutable) {
  * Replaces the current URL either with the id or the new slug
  * Uses history.replaceState to avoid browser refresh
  * @export
- * @param {any} id
- * @param {any} slug
+ * @param {any} id - document id
+ * @param {any} slug - slug that replaces the id in the url
+ * @returns {undefined}
  */
 export function replaceIdWithSlug(id, slug) {
   // avoid renaming on course pages
-  if (window.location.pathname.includes("/course/")) {
+  if (window.location.pathname.includes('/course/')) {
     return;
   }
 
@@ -31,8 +32,8 @@ export function replaceIdWithSlug(id, slug) {
 }
 
 export function notebookMetadataToSourceboxLanguage(metadata) {
-  let languageName = metadata.getIn(['language_info', 'name'], 'python');
-  let languageVersion = metadata.getIn(['language_info', 'version'], '3');
+  const languageName = metadata.getIn(['language_info', 'name'], 'python');
+  const languageVersion = metadata.getIn(['language_info', 'version'], '3');
 
   return {
     executionLanguage: `${languageName}${languageVersion}`,
@@ -42,7 +43,9 @@ export function notebookMetadataToSourceboxLanguage(metadata) {
 }
 
 /**
- * Returns the source of a cell as one string
+ * Returns the source of a cell as one string and may combine multiple entries e.g. an array of strings
+ * @param {String|Array|Immutable.List} cell - cell with content
+ * @returns {String} content as a single string
  */
 export function sourceFromCell(cell) {
   if (!cell) {
@@ -66,6 +69,9 @@ export function sourceFromCell(cell) {
 
 /**
  * Transform the state to a JavaScript object for persisting this on the database
+ * 
+ * @param {Immutable.Map} state - immutable state to transform
+ * @returns {Object} transformed mutable javascript object
  */
 export function stateToJS(state) {
   const document = {
@@ -78,7 +84,7 @@ export function stateToJS(state) {
 
   // create a array of JavaScript cell objects
   cellOrder.map(cellId => {
-    let cell = cells.get(cellId);
+    const cell = cells.get(cellId);
     document.cells.push(cell.toJS()); // pushed converted JS cell object
   });
 
@@ -100,6 +106,9 @@ export function stateToJS(state) {
  *  -> All cells are added to a Immutable.Map using the cell.id as a key
  *  -> For storing the order of cells we use a Immutable.List "cellOrder"" - containing a mapping of index:key
  *  -> "isAuthor" manages the overall switching between edit and view mode
+ * 
+ * @param {object} document - document as javascript object
+ * @returns {undefined}
  */
 export function documentToState(document) {
   let newState = initialState.set('metadata', Immutable.fromJS(document.metadata));
@@ -119,13 +128,13 @@ export function documentToState(document) {
   newState = newState.set('id', document.id);
 
   // now add cells
-  for (let cell of document.cells) {
+  for (const cell of document.cells) {
     // Check for missing id
     if (!cell.id) {
       cell.id = UUID.v4();
     }
 
-    let res = addCellWithIndex(newState, null, Immutable.fromJS(cell));
+    const res = addCellWithIndex(newState, null, Immutable.fromJS(cell));
     newState = res.state;
   }
 
@@ -133,7 +142,7 @@ export function documentToState(document) {
 }
 
 export function loadCellsFromIPYNB(ipynb) {
-  let result = {
+  const result = {
     cells: [],
     language: null
   };
@@ -168,14 +177,14 @@ export function loadCellsFromIPYNB(ipynb) {
  * Tries to copy the text or the text from the "fromElement" to the clipboard.
  *
  * @export
- * @param {any} fromElement
- * @param {any} text
- * @returns
+ * @param {any} fromElement - element to get the text from
+ * @param {any} text - given text
+ * @returns {undefined}
  */
-export function copyText (fromElement, text){
+export function copyText (fromElement, text) {
   function selectElementText (element) {
     if (document.selection) {
-      var range = document.body.createTextRange();
+      const range = document.body.createTextRange();
       range.moveToElementText(element);
       range.select();
     } else if (window.getSelection) {

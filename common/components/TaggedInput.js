@@ -1,13 +1,14 @@
 import React from 'react';
-import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
+
 const KEY_CODES = {
   ENTER: 13,
   BACKSPACE: 8
 };
 
 function DefaultTagComponent(props) {
-  var className = 'tag' + (props.classes ? (' ' + props.classes) : '');
+  const classesStr = props.classes ? (` ${props.classes}`) : '';
+  const className = `tag${classesStr}`;
 
   return (
     <div className={className}>
@@ -19,299 +20,297 @@ function DefaultTagComponent(props) {
   );
 }
 
-export default createReactClass({
-  displayName: 'TaggedInput',
+export default class TaggedInput extends React.Component {
+  constructor (props) {
+    super(props);
 
-  propTypes: {
-    onBeforeAddTag: PropTypes.func,
-    onAddTag: PropTypes.func,
-    onBeforeRemoveTag: PropTypes.func,
-    onRemoveTag: PropTypes.func,
-    onEnter: PropTypes.func,
-    unique: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
-    autofocus: PropTypes.bool,
-    backspaceDeletesWord: PropTypes.bool,
-    placeholder: PropTypes.string,
-    tags: PropTypes.arrayOf(PropTypes.any),
-    removeTagLabel: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    delimiters: PropTypes.arrayOf(function (props, propName, componentName) {
-      if (typeof props[propName] !== 'string' || props[propName].length !== 1) {
-        return new Error('TaggedInput prop delimiters must be an array of 1 character strings')
-      }
-    }),
-    tagOnBlur: PropTypes.bool,
-    tabIndex: PropTypes.number,
-    clickTagToEdit: PropTypes.bool,
-    inputClassName: PropTypes.string
-  },
-
-  getDefaultProps: function () {
-    return {
-      delimiters: [' ', ','],
-      unique: true,
-      autofocus: false,
-      backspaceDeletesWord: true,
-      tagOnBlur: false,
-      clickTagToEdit: false,
-      onBeforeAddTag: function (tag) {
-        return true;
-      },
-      onBeforeRemoveTag: function (index) {
-        return true;
-      },
-      inputClassName: 'tagged-input'
-    };
-  },
-
-  getInitialState: function () {
-    return {
+    this.state = {
       tags: (this.props.tags || []).slice(0),
       currentInput: null
     };
-  },
 
-  render: function () {
-    var self = this, s = self.state, p = self.props;
+    this.onInputRef = this.onInputRef.bind(this);
+    this.onRemoveTag = this.onRemoveTag.bind(this);
+    this.onEditTag = this.onEditTag.bind(this);
+    this.onKeyUp = this.onKeyUp.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this.onChange = this.onChange.bind(this);
+    this.onBlur = this.onBlur.bind(this);
+    this.onClickOnWrapper = this.onClickOnWrapper.bind(this);
+    this._validateAndTag = this._validateAndTag.bind(this);
+  }
 
-    var tagComponents = [],
-      classes = "tagged-input-wrapper",
-      placeholder,
-      i;
-
-    if (p.classes) {
-      classes += ' ' + p.classes;
+  componentDidMount () {
+    // What should this do?
+    if (this.props.autofocus && this.input != null) {
+      this.input.focus();
     }
+  }
 
-    if (s.tags.length === 0) {
-      placeholder = p.placeholder;
-    }
-
-    var TagComponent = DefaultTagComponent;
-
-    for (i = 0; i < s.tags.length; i++) {
-      tagComponents.push(
-        <TagComponent
-          key={'tag' + i}
-          item={s.tags[i]}
-          itemIndex={i}
-          onRemove={self._handleRemoveTag.bind(this, i)}
-          onEdit={p.clickTagToEdit ? self._handleEditTag.bind(this, i) : null}
-          classes={p.unique && (i === s.duplicateIndex) ? 'duplicate' : ''}
-          removeTagLabel={p.removeTagLabel || "\u274C"}
-        />
-      );
-    }
-
-    var input = (
-      <input type="text"
-        className={this.props.inputClassName}
-        ref="input"
-        onKeyUp={this._handleKeyUp}
-        onKeyDown={this._handleKeyDown}
-        onChange={this._handleChange}
-        onBlur={this._handleBlur}
-        value={s.currentInput || ''}
-        placeholder={placeholder}
-        tabIndex={p.tabIndex}>
-      </input>
-      );
-
-    return (
-      <div className={classes} onClick={self._handleClickOnWrapper}>
-        {tagComponents}
-        {input}
-      </div>
-      );
-  },
-
-  componentDidMount: function () {
-    var self = this, s = self.state, p = self.props;
-
-    if (p.autofocus) {
-      self.refs.input;
-    }
-  },
-
-  componentWillReceiveProps: function (nextProps) {
+  componentWillReceiveProps (nextProps) {
     this.setState({
       tags: (nextProps.tags || []).slice(0)
     });
-  },
+  }
 
-  _handleRemoveTag: function (index) {
-    var self = this, s = self.state, p = self.props;
+  onInputRef (ref) {
+    this.input = ref;
+  }
 
-    if (p.onBeforeRemoveTag(index)) {
-      var removedItems = s.tags.splice(index, 1);
+  onRemoveTag (index) {
+    if (this.props.onBeforeRemoveTag(index)) {
+      const removedItems = this.state.tags.splice(index, 1);
 
-      if (s.duplicateIndex) {
-        self.setState({duplicateIndex: null}, function () {
-          p.onRemoveTag && p.onRemoveTag(removedItems[0], s.tags);
+      if (this.state.duplicateIndex) {
+        this.setState({duplicateIndex: null}, () => {
+          this.props.onRemoveTag && this.props.onRemoveTag(removedItems[0], this.state.tags);
         });
       } else {
-        p.onRemoveTag && p.onRemoveTag(removedItems[0], s.tags);
-        self.forceUpdate();
+        this.props.onRemoveTag && this.props.onRemoveTag(removedItems[0], this.state.tags);
+        this.forceUpdate();
       }
     }
-  },
+  }
 
-  _handleEditTag: function (index) {
-    var self = this, s = self.state, p = self.props;
-    var removedItems;
-
-    if (s.currentInput) {
-      var trimmedInput = s.currentInput.trim();
-      if (trimmedInput && (this.state.tags.indexOf(trimmedInput) < 0 || !p.unique)) {
-        this._validateAndTag(s.currentInput);
+  onEditTag (index) {
+    if (this.state.currentInput) {
+      const trimmedInput = this.state.currentInput.trim();
+      if (trimmedInput && (this.state.tags.indexOf(trimmedInput) < 0 || !this.props.unique)) {
+        this._validateAndTag(this.state.currentInput);
       }
     }
 
-    removedItems = s.tags.splice(index, 1);
-    if (s.duplicateIndex) {
-      self.setState({duplicateIndex: null, currentInput: removedItems[0]}, function () {
-        p.onRemoveTag && p.onRemoveTag(removedItems[0]);
+    const removedItems = this.state.tags.splice(index, 1);
+    if (this.state.duplicateIndex) {
+      this.setState({duplicateIndex: null, currentInput: removedItems[0]}, () => {
+        this.props.onRemoveTag && this.props.onRemoveTag(removedItems[0]);
       });
     } else {
-      self.setState({currentInput: removedItems[0]}, function () {
-        p.onRemoveTag && p.onRemoveTag(removedItems[0]);
+      this.setState({currentInput: removedItems[0]}, () => {
+        this.props.onRemoveTag && this.props.onRemoveTag(removedItems[0]);
       });
     }
-  },
+  }
 
-  _handleKeyUp: function (e) {
-    var self = this, s = self.state, p = self.props;
+  onKeyUp (e) {
+    //const enteredValue = e.target.value;
 
-    var enteredValue = e.target.value;
-
-    switch (e.keyCode) {
-      case KEY_CODES.ENTER:
-        if (s.currentInput) {
-          self._validateAndTag(s.currentInput, function (status) {
-            if (p.onEnter) {
-              p.onEnter(e, s.tags);
-            }
-          });
-        }
-        break;
+    if (e.keyCode === KEY_CODES.ENTER) {
+      if (this.state.currentInput) {
+        this._validateAndTag(this.state.currentInput, () => {
+          if (this.props.onEnter) {
+            this.props.onEnter(e, this.state.tags);
+          }
+        });
+      }
     }
-  },
+  }
 
-  _handleKeyDown: function (e) {
-    var self = this, s = self.state, p = self.props;
-    var poppedValue, newCurrentInput;
+  onKeyDown (e) {
+    let poppedValue, newCurrentInput;
 
-    switch (e.keyCode) {
-      case KEY_CODES.BACKSPACE:
-        if (!e.target.value || e.target.value.length < 0) {
-          if (p.onBeforeRemoveTag(s.tags.length - 1)) {
-            poppedValue = s.tags.pop();
+    if (e.keyCode === KEY_CODES.BACKSPACE) {
+      if (!e.target.value || e.target.value.length < 0) {
+        if (this.props.onBeforeRemoveTag(this.state.tags.length - 1)) {
+          poppedValue = this.state.tags.pop();
 
-            newCurrentInput = p.backspaceDeletesWord ? '' : poppedValue;
+          newCurrentInput = this.props.backspaceDeletesWord ? '' : poppedValue;
 
-            this.setState({
-              currentInput: newCurrentInput,
-              duplicateIndex: null
-            });
-            if (p.onRemoveTag && poppedValue) {
-              p.onRemoveTag(poppedValue);
-            }
+          this.setState({
+            currentInput: newCurrentInput,
+            duplicateIndex: null
+          });
+          if (this.props.onRemoveTag && poppedValue) {
+            this.props.onRemoveTag(poppedValue);
           }
         }
-        break;
+      }
     }
-  },
+  }
 
-  _handleChange: function (e) {
-    var self = this, s = self.state, p = self.props;
+  onChange (e) {
+    const value = e.target.value;
+    const lastChar = value.charAt(value.length - 1);
+    const tagText = value.substring(0, value.length - 1);
 
-    var value = e.target.value,
-      lastChar = value.charAt(value.length - 1),
-      tagText = value.substring(0, value.length - 1);
-
-    if (p.delimiters.indexOf(lastChar) !== -1) {
-      self._validateAndTag(tagText);
+    if (this.props.delimiters.indexOf(lastChar) !== -1) {
+      this._validateAndTag(tagText);
     } else {
       this.setState({
         currentInput: e.target.value
       });
     }
-  },
+  }
 
-  _handleBlur: function (e) {
+  onBlur (e) {
     if (this.props.tagOnBlur) {
-      var value = e.target.value;
+      const value = e.target.value;
       value && this._validateAndTag(value);
     }
-  },
+  }
 
-  _handleClickOnWrapper: function (e) {
-    this.refs.input;
-  },
+  onClickOnWrapper () {
+    //this.refs.input;
+  }
 
-  _validateAndTag: function (tagText, callback) {
-    var self = this, s = self.state, p = self.props;
-    var duplicateIndex;
-    var trimmedText;
-
-    if (tagText && tagText.length > 0) {
-      trimmedText = tagText.trim();
-      if (p.unique) {
-
-        // not a boolean, it's a function
-        if (typeof p.unique === 'function') {
-          duplicateIndex = p.unique(this.state.tags, trimmedText);
-        } else {
-          duplicateIndex = this.state.tags.indexOf(trimmedText);
-        }
-
-        if (duplicateIndex === -1) {
-          if (!p.onBeforeAddTag(trimmedText)) {
-            return;
-          }
-
-          s.tags.push(trimmedText);
-          self.setState({
-            currentInput: '',
-            duplicateIndex: null
-          }, function () {
-            p.onAddTag && p.onAddTag(tagText, s.tags);
-            callback && callback(true);
-          });
-        } else {
-          self.setState({duplicateIndex: duplicateIndex}, function () {
-            callback && callback(false);
-          });
-        }
-      } else {
-        if (!p.onBeforeAddTag(trimmedText)) {
-          return;
-        }
-
-        s.tags.push(trimmedText);
-        self.setState({currentInput: ''}, function () {
-          p.onAddTag && p.onAddTag(tagText);
-          callback && callback(true);
-        });
-      }
-    }
-  },
-
-  getTags: function () {
+  getTags () {
     return this.state.tags;
-  },
+  }
 
-  getEnteredText: function () {
+  getEnteredText () {
     return this.state.currentInput;
-  },
+  }
 
-  getAllValues: function () {
-    var self = this, s = this.state, p = this.props;
-
-    if (s.currentInput && s.currentInput.length > 0) {
-      return this.state.tags.concat(s.currentInput);
+  getAllValues () {
+    if (this.state.currentInput && this.state.currentInput.length > 0) {
+      return this.state.tags.concat(this.state.currentInput);
     } else {
       return this.state.tags;
     }
   }
 
-});
+  _validateAndTag (tagText, callback) {
+    let duplicateIndex;
+    let trimmedText;
+
+    if (tagText && tagText.length > 0) {
+      trimmedText = tagText.trim();
+      if (this.props.unique) {
+
+        // not a boolean, it's a function
+        if (typeof this.props.unique === 'function') {
+          duplicateIndex = this.props.unique(this.state.tags, trimmedText);
+        } else {
+          duplicateIndex = this.state.tags.indexOf(trimmedText);
+        }
+
+        if (duplicateIndex === -1) {
+          if (!this.props.onBeforeAddTag(trimmedText)) {
+            return;
+          }
+
+          this.state.tags.push(trimmedText);
+          this.setState({
+            currentInput: '',
+            duplicateIndex: null
+          }, () => {
+            this.props.onAddTag && this.props.onAddTag(tagText, this.state.tags);
+            callback && callback(true);
+          });
+        } else {
+          this.setState({duplicateIndex: duplicateIndex}, () => {
+            callback && callback(false);
+          });
+        }
+      } else {
+        if (!this.props.onBeforeAddTag(trimmedText)) {
+          return;
+        }
+
+        this.state.tags.push(trimmedText);
+        this.setState({currentInput: ''}, () => {
+          this.props.onAddTag && this.props.onAddTag(tagText);
+          callback && callback(true);
+        });
+      }
+    }
+  }
+
+  render () {
+    const tagComponents = [];
+    let classes = 'tagged-input-wrapper';
+    let placeholder;
+    let i;
+
+    if (this.props.classes) {
+      classes += ` ${this.props.classes}`;
+    }
+
+    if (this.state.tags.length === 0) {
+      placeholder = this.props.placeholder;
+    }
+
+    const TagComponent = DefaultTagComponent;
+
+    for (i = 0; i < this.state.tags.length; i++) {
+      tagComponents.push(
+        <TagComponent
+          key={`tag${i}`}
+          item={this.state.tags[i]}
+          itemIndex={i}
+          onRemove={this.onRemoveTag.bind(this, i)}
+          onEdit={this.props.clickTagToEdit ? this.onEditTag.bind(this, i) : null}
+          classes={this.props.unique && (i === this.state.duplicateIndex) ? 'duplicate' : ''}
+          removeTagLabel={this.props.removeTagLabel || '\u00D7'}
+        />
+      );
+    }
+
+    const input = (
+      <input
+        type="text"
+        className={this.props.inputClassName}
+        ref={this.onInputRef}
+        onKeyUp={this.onKeyUp}
+        onKeyDown={this.onKeyDown}
+        onChange={this.onChange}
+        onBlur={this.onBlur}
+        value={this.state.currentInput || ''}
+        placeholder={placeholder}
+        tabIndex={this.props.tabIndex}>
+      </input>
+    );
+
+    return (
+      <div className={classes} onClick={this.onClickOnWrapper}>
+        {tagComponents}
+        {input}
+      </div>
+    );
+  }
+}
+
+TaggedInput.propTypes = {
+  onBeforeAddTag: PropTypes.func,
+  onAddTag: PropTypes.func,
+  onBeforeRemoveTag: PropTypes.func,
+  onRemoveTag: PropTypes.func,
+  onEnter: PropTypes.func,
+  unique: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+  autofocus: PropTypes.bool,
+  backspaceDeletesWord: PropTypes.bool,
+  placeholder: PropTypes.string,
+  tags: PropTypes.arrayOf(PropTypes.any),
+  removeTagLabel: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  delimiters: PropTypes.arrayOf((props, propName, componentName) => {
+    if (typeof props[propName] !== 'string' || props[propName].length !== 1) {
+      return new Error('TaggedInput prop delimiters must be an array of 1 character strings');
+    }
+  }),
+  tagOnBlur: PropTypes.bool,
+  tabIndex: PropTypes.number,
+  clickTagToEdit: PropTypes.bool,
+  inputClassName: PropTypes.string
+};
+
+TaggedInput.defaultProps = {
+  delimiters: [' ', ','],
+  unique: true,
+  autofocus: false,
+  backspaceDeletesWord: true,
+  tagOnBlur: false,
+  tabIndex: 0,
+  tags: [],
+  clickTagToEdit: false,
+  onBeforeAddTag: () => {
+    return true;
+  },
+  onAddTag: () => {
+
+  },
+  onBeforeRemoveTag: () => {
+    return true;
+  },
+  placeholder: '',
+  inputClassName: 'tagged-input'
+};

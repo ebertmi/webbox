@@ -14,13 +14,13 @@ import assert from '../../util/assert';
 export const initialState = Immutable.Map({
   metadata: Immutable.fromJS({
     kernelspec: {
-      name: "webbox",
-      language: "python",
-      display_name: "Python 3"
+      name: 'webbox',
+      language: 'python',
+      display_name: 'Python 3'
     },
     language_info: {
-      name: "python",
-      version: "3"
+      name: 'python',
+      version: '3'
     },
     title: '',
     author: '',
