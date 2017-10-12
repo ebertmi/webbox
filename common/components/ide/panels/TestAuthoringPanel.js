@@ -17,6 +17,7 @@ export default class TestAuthoringPanel extends React.Component {
 
     // Initial state
     this.state = {
+      options: optionManager.getOptions()
     };
   }
 
@@ -27,9 +28,7 @@ export default class TestAuthoringPanel extends React.Component {
 
   componentDidMount() {
     this.editor.focus();
-  }
 
-  componentWillMount() {
     this.props.item.on('change', this.onChange);
     optionManager.on('change', this.onChangeOption);
     this.onChangeOption();
@@ -74,7 +73,7 @@ export default class TestAuthoringPanel extends React.Component {
           {...aceOptions}
           {...FIXED_OPTIONS}
           session={file}
-          ref={editor => this.editor = editor}
+          ref={editor => {this.editor = editor;}}
         />
       </div>
     );

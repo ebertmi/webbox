@@ -28,14 +28,12 @@ export default class CellMetadata extends React.PureComponent {
     this.onAddMetadata = this.onAddMetadata.bind(this);
     this.onNewMetadataChange = this.onNewMetadataChange.bind(this);
     this.onDelete = this.onDelete.bind(this);
-  }
 
-  componentWillMount() {
-    this.setState({
+    this.state = {
       newKey: '',
       newValue: '',
       newValid: METAKEY_VALID
-    });
+    };
   }
 
   callBeforeChange() {

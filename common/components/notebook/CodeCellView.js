@@ -45,7 +45,7 @@ export default class CodeCellView extends React.PureComponent {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     optionManager.on('change', this.onChangeOption);
   }
 

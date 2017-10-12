@@ -42,8 +42,13 @@ export default class IdeWrapper extends React.Component {
       isDownloading: false,
       IdeComponent: null,
       error: null,
-      errorType: null
+      errorType: null,
+      project: null,
+      messageList: null
     };
+
+    this.project = null;
+    this.messageList = null;
   }
 
   /**
@@ -53,6 +58,10 @@ export default class IdeWrapper extends React.Component {
    * @returns {void}
    */
   componentWillMount() {
+    //this.getAndSetEmbedMetadata();
+  }
+
+  componentDidMount() {
     this.getAndSetEmbedMetadata();
   }
 
@@ -283,26 +292,35 @@ export default class IdeWrapper extends React.Component {
     if ((this.state.codeData == null || this.state.IdeComponent == null) || this.state.error != null) { // check if embed data has been loaded
       return this.generateEmbedWindowByState();
     } else {
-      const messageList = new MessageListModel(usageConsole);
+      // save the messageListModel in the state, and use only one => do not recreate
+      if (this.messageList == null) {
+        this.messageList = new MessageListModel(usageConsole);
+      }
+
       const projectData = {
         embed: this.state.codeData.INITIAL_DATA,
         user: this.state.codeData.USER_DATA,
-        messageList: messageList,
+        messageList: this.messageList,
         remoteDispatcher: this.context.remoteDispatcher,
       };
 
-      let project;
-      if (this.state.embedType === EmbedTypes.Sourcebox) {
-        project = new SourceboxProject(projectData, {
-          auth: this.state.codeData.sourcebox.authToken,
-          server: this.state.codeData.sourcebox.server,
-          transports: this.state.codeData.sourcebox.transports || ['websocket']
-        });
-      } else if (this.state.embedType === EmbedTypes.Skulpt) {
-        project = new SkulptProject(projectData);
+      // Get project out of state, as it might be possible that this components does rerender
+      // if we recreate the project, it might happen that the other components do not unmount and therefore
+      // do not update their event listeners causing the UI to freeze!
+      //let project = this.state.project;
+      if (this.project == null) {
+        if (this.state.embedType === EmbedTypes.Sourcebox) {
+          this.project = new SourceboxProject(projectData, {
+            auth: this.state.codeData.sourcebox.authToken,
+            server: this.state.codeData.sourcebox.server,
+            transports: this.state.codeData.sourcebox.transports || ['websocket']
+          });
+        } else if (this.state.embedType === EmbedTypes.Skulpt) {
+          this.project = new SkulptProject(projectData);
+        }
       }
 
-      toRender = <div className="col-12" id="ide-container" style={{ height: `${this.props.height}px` }}><Ide project={project} messageList={messageList} noWindowHandlers={true}/></div>;
+      toRender = <div className="col-12" id="ide-container" style={{ height: `${this.props.height}px` }}><Ide project={this.project} messageList={this.messageList} noWindowHandlers={true}/></div>;
     }
 
     return toRender;

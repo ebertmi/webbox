@@ -130,6 +130,11 @@ Use the following command for running a migration where `X` the number of the mi
 node ./migrations/migration-runner.js migration-X
 ```
 
+Depending on your configuration of the host system you might need to set the node environment:
+```nodejs
+NODE_ENV=production node ./migrations/migration-runner.js migration-X
+```
+
 ### CLI
 
 Use the cli to add a user or list all users:

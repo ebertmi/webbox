@@ -11,15 +11,15 @@ export default class FilePanel extends React.Component {
   constructor(props) {
     super(props);
     this.onChangeOption = this.onChangeOption.bind(this);
-  }
 
-  componentWillMount() {
-    optionManager.on('change', this.onChangeOption);
-    this.onChangeOption();
+    this.state = {
+      options: optionManager.getOptions()
+    };
   }
 
   componentDidMount() {
     this.editor.focus();
+    optionManager.on('change', this.onChangeOption);
   }
 
   componentWillUnmount() {
@@ -44,7 +44,7 @@ export default class FilePanel extends React.Component {
         {...aceOptions}
         {...FIXED_OPTIONS}
         session={file}
-        ref={editor => this.editor = editor}
+        ref={editor => {this.editor = editor;}}
       />
     );
   }

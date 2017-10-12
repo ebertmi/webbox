@@ -1,9 +1,12 @@
 import uniqueId from 'lodash/uniqueId';
 import { EventEmitter } from 'events';
 
-import { Severity  } from './severity';
+import { Severity } from './severity';
 import { Action } from './actions';
 import { MessageWithAction } from './messages';
+
+import Debug from 'debug';
+const debug = Debug('webbox:tabManager');
 
 export default class TabManager extends EventEmitter {
   constructor(messageList) {
@@ -15,6 +18,11 @@ export default class TabManager extends EventEmitter {
 
     // solutions to allow multiple events listeners
     this.setMaxListeners(0);
+
+    this.on('error', err => {
+      console.error(err);
+    });
+
   }
 
   /**

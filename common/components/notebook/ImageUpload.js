@@ -21,18 +21,12 @@ export default class ImageUpload extends React.PureComponent {
     this.onDone = this.onDone.bind(this);
     this.onError = this.onError.bind(this);
     this.onImageClick = this.onImageClick.bind(this);
-  }
 
-  componentWillMount() {
-    this.setState({
+    this.state = {
       isUploading: false,
       progress: 0,
       images: []
-    });
-  }
-
-  componentDidMount() {
-
+    };
   }
 
   onDrop(files) {

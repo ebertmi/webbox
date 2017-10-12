@@ -16,13 +16,12 @@ export default class ImageGallery extends React.PureComponent {
     super(props);
 
     this.onImageClick = this.onImageClick.bind(this);
+
+    this.state = {
+      isFetching: false
+    };
   }
 
-  componentWillMount() {
-    this.setState({
-      isFetching: false
-    });
-  }
 
   componentDidMount() {
     function getFilenameFromPath(path) {

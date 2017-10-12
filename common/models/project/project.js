@@ -96,6 +96,10 @@ export default class Project extends EventEmitter {
     }
 
     this.setMaxListeners(0);
+
+    this.on('error', err => {
+      console.error(err);
+    });
   }
 
   /**

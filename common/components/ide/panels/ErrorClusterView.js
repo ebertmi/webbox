@@ -33,7 +33,7 @@ export default class ErrorClusterView extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.errorClusters.on('change', this.onChange);
     this.onChange();
   }

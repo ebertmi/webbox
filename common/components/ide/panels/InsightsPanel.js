@@ -20,11 +20,11 @@ export default class InsightsPanel extends React.Component {
       components: null
     };
   }
+
   componentWillMount() {
     this.props.item.getEvents();
     this.props.item.subscribeOnEvents();
 
-    this.props.item.on('change', this.onChange);
 
     require.ensure(['./EventDatesClusterChart', './ErrorView', './ErrorClusterView', './TestResultOverview'], require => {
       const EventDatesClusterChart = require('./EventDatesClusterChart');
@@ -41,6 +41,10 @@ export default class InsightsPanel extends React.Component {
         }
       });
     });
+  }
+
+  componentDidMount() {
+    this.props.item.on('change', this.onChange);
   }
 
   componentWillUnmount() {

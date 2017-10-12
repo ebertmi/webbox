@@ -34,13 +34,7 @@ export default class TestsPanel extends React.Component {
     this.onChange = this.onChange.bind(this);
   }
 
-  onChange() {
-  }
-
   componentDidMount() {
-  }
-
-  componentWillMount() {
     this.props.item.on('change', this.onChange);
   }
 

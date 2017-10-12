@@ -46,9 +46,11 @@ export default class Menu extends React.Component {
     const input = document.createElement('input');
     input.type = 'file';
     input.multiple = true;
-    input.addEventListener('change', this.onImport);
-
     this.input = input;
+  }
+
+  componentDidMount() {
+    this.input.addEventListener('change', this.onImport);
   }
 
   /**

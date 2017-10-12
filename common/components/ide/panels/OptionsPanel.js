@@ -13,7 +13,7 @@ export default class OptionsPanel extends React.Component {
     this.onChangeOption = this.onChangeOption.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     optionManager.on('change', this.onChangeOption);
     this.onChangeOption();
   }

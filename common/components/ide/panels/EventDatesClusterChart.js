@@ -36,19 +36,13 @@ export default class EventDatesClusterChart extends React.Component {
     this.formatHint = this.formatHint.bind(this);
     this._rememberHintValue = this._rememberHintValue.bind(this);
     this._forgetHintValue = this._forgetHintValue.bind(this);
-  }
 
-  componentWillMount() {
-    this.setState({
+    this.state = {
       dateClusterResolution: this.props.dateClusterResolution,
       dateClusterStart: this.props.dateClusterStart,
       dateClusterEnd: this.props.dateClusterEnd,
       hintValue: null
-    });
-  }
-
-  componentWillUnmount() {
-
+    };
   }
 
   onDateClusterResolutionChange(e) {

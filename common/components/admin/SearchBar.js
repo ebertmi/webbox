@@ -8,12 +8,10 @@ export class SearchBar extends Component {
 
     this.handleSearchClick = this.handleSearchClick.bind(this);
     this.handleSearchQuery = this.handleSearchQuery.bind(this);
-  }
 
-  componentWillMount () {
-    this.setState({
+    this.state = {
       q: this.props.searchQuery
-    });
+    };
   }
 
   renderSearchResetButton () {

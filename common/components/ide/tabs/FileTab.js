@@ -16,9 +16,11 @@ export default class FileTab extends React.Component {
     this.onRenameBlur = this.onRenameBlur.bind(this);
     this.onEnterRename = this.onEnterRename.bind(this);
     this.onHasChangesUpdate = this.onHasChangesUpdate.bind(this);
+
+    this.state = {};
   }
 
-  componentWillMount() {
+  componentDidMount() {
     let item = this.props.item;
 
     item.on('changeName', this.onChangeName);

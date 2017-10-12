@@ -48,12 +48,9 @@ export default class TabBar extends React.Component {
     this.onCloseSendToTeacherModal = this.onCloseSendToTeacherModal.bind(this);
 
     this.state = {
-      showSendToTeacherModal: false
+      showSendToTeacherModal: false,
+      tabs: []
     };
-  }
-
-  componentWillMount() {
-
   }
 
   componentDidMount() {
@@ -101,6 +98,7 @@ export default class TabBar extends React.Component {
     this.setState({
       tabs: this.props.project.tabManager.getTabs()
     });
+    this.forceUpdate();
   }
 
   /**
@@ -108,7 +106,7 @@ export default class TabBar extends React.Component {
    */
   onToggleFullscreen(e) {
     if (screenfull.enabled) {
-      screenfull.toggle(e.currentTarget.closest(".ide"));
+      screenfull.toggle(e.currentTarget.closest('.ide'));
     }
   }
 

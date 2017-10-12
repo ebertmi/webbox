@@ -43,7 +43,7 @@ export default class ErrorView extends React.Component {
     this.onChange = this.onChange.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.insights.on('newErrors', this.onChange);
     this.onChange();
     optionManager.on('change', this.onChangeOption);
