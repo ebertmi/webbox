@@ -8,7 +8,90 @@ import { DocumentTableRow } from '../../components/admin/DocumentTableRow';
 import * as AdminActions from '../../actions/AdminActions';
 import { SearchBar } from '../../components/admin/SearchBar';
 
+import Modal from 'react-modal';
+import ModalBody from '../../components/ModalBody';
+import ModalFooter from '../../components/ModalFooter';
+import ModalHeader from '../../components/ModalHeader';
+
+const SearchHelpModal = props => (
+  <Modal
+  isOpen={props.isOpen}
+  onRequestClose={props.toggle}
+  shouldCloseOnOverlayClick={true}
+  className={{
+    base: 'modal-dialog modal-lg',
+    afterOpen: 'show',
+    beforeClose: ''
+  }}
+
+  overlayClassName={{
+    base: 'modal-backdrop',
+    afterOpen: 'show',
+    beforeClose: ''
+  }}
+>
+  <div className="modal-content">
+    <ModalHeader toggle={props.toggle}>Such- und Filteroptionen</ModalHeader>
+    <ModalBody>
+      <p>Folgende Suchoptionen stehen zur Verfügung:</p>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Option</th>
+            <th>Beschreibung</th>
+            <th>Beispiel</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Name bzw. Title</td>
+            <td>Sucht nach dem Title</td>
+            <td><code>Hello World</code></td>
+          </tr>
+          <tr>
+            <td>Autor</td>
+            <td>Filtert nach dem Autor in den Metadaten</td>
+            <td><code>author: Michael</code> oder <code>author: Ebert</code></td>
+          </tr>
+          <tr>
+            <td>Kurz-Url</td>
+            <td>Sucht nach der der Kurz-Url (slug)</td>
+            <td><code>slug: hellp</code></td>
+          </tr>
+          <tr>
+            <td>Programmiersprache</td>
+            <td>Sucht nach der Programmiersprache in den Metadaten</td>
+            <td><code>language: python</code></td>
+          </tr>
+          <tr>
+            <td>Ausführungsumgebung</td>
+            <td>Sucht nach der Ausführungsumgebung in den Metadaten</td>
+            <td><code>type: sourcebox</code> oder <code>type: skulpt</code></td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        Die Filter- bzw. Suchoptionen können zusätzlich kombiniert und mehrfach verwendet werden.
+      </p>
+    </ModalBody>
+    <ModalFooter>
+      <button className="btn btn-secondary" onClick={props.toggle}>Schließen</button>
+    </ModalFooter>
+  </div>
+</Modal>
+);
+
 class DocumentOverview extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      helpModalOpen: false
+    }
+
+    this.toggleSearchHelp = this.toggleSearchHelp.bind(this);
+  }
+
   onSearchQueryChange (newQuery) {
     // trigger change, if needed
     // update url query
@@ -25,13 +108,22 @@ class DocumentOverview extends Component {
     this.props.changeDocumentsSearch('');
   }
 
+  toggleSearchHelp () {
+    this.setState({
+      helpModalOpen: !this.state.helpModalOpen
+    });
+  }
+
   renderSearch () {
     return (<SearchBar
       placeholderText="Nach Beispiel suchen..."
       searchClickHandler={this.onSearchClick.bind(this)}
       changeSearchQuery={this.onSearchQueryChange.bind(this)}
       resetSearchHandler={this.onResetSearchClick.bind(this)}
-      searchQuery={this.props.documentOverview.pagesQuery.q} />);
+      searchQuery={this.props.documentOverview.pagesQuery.q}
+      showHelpIcon={true}
+      onSearchHelp={this.toggleSearchHelp}
+      />);
   }
 
   renderTable() {
@@ -67,6 +159,7 @@ class DocumentOverview extends Component {
           location={this.props.location}>
         <h2>Dokumente <small>({this.props.documentOverview.count})</small></h2>
         {this.renderSearch()}
+        <SearchHelpModal isOpen={this.state.helpModalOpen} toggle={this.toggleSearchHelp}/>
         <LoadingContainer isLoading={this.props.documentOverview.isFetching}>
           {content}
         </LoadingContainer>

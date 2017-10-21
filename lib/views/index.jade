@@ -27,7 +27,7 @@ block content
           .col-12
             h4 Kurse
             p Hier finden Sie alle Kurse, zum Ausführen der Beispiele müssen Sie jedoch angemeldet sein.
-          .col-12
+          .col-12.mb-4
             div.card-deck
               - each course in courses
                 div.card
@@ -38,13 +38,13 @@ block content
                     - var url = course.slug ? course.slug : course.id
                     a.btn.btn-primary(href="/course/" + url) Zum Kurs
         else
-          .col-12
+          .col-12.mb-4
             h4 Kurse
             p Es wurden bisher keine Kurse angelegt bzw. veröffentlicht.
 
       if !user.isAnonymous
         .row
-          .col-12
+          .col-12.mb-4
             h4 Ihre Übersicht
             p.
               Willkommen zurück <strong>!{user.username}</strong>. Wir haben hier ihre letzten Beispiele und Dokumente für Sie aufgelistet.

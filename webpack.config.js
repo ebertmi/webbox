@@ -9,6 +9,22 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
+  //stats: 'errors-only',
+  stats: {
+    assets: false,
+    children: false,
+    // Add chunk information (setting this to `false` allows for a less verbose output)
+    chunks: false,
+    // Add built modules information to chunk information
+    chunkModules: false,
+    // Add the origins of chunks and chunk merging info
+    chunkOrigins: false,
+    entrypoints: false,
+    modules: true,
+    publicPath: false,
+    reasons: false,
+    warnings: false,
+  },
   target: 'web',
   context: path.join(__dirname, 'client'),
   entry: {
@@ -29,7 +45,7 @@ module.exports = {
     modules: ['client', 'node_modules']
   },
   externals: {
-    'ace': 'ace',
+    ace: 'ace',
     'highlight.js': 'hljs',
     'markdown-it': 'markdownit',
     'katex': 'katex',

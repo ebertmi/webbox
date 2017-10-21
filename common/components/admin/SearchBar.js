@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import noop from 'lodash/noop';
+
+import Icon from '../Icon';
 
 export class SearchBar extends Component {
 
@@ -39,6 +42,7 @@ export class SearchBar extends Component {
   }
 
   render() {
+    const help = this.props.showHelpIcon ? <Icon onClick={this.props.onSearchHelp} name="question-circle" title="Hilfe zur Suche" /> : null;
     return (
         <div className="row table-search-bar">
           <div className="col-sm-6">
@@ -52,6 +56,7 @@ export class SearchBar extends Component {
                 </div>
               </div>
               {this.renderSearchResetButton()}
+              {help}
             </form>
           </div>
         </div>
@@ -64,9 +69,13 @@ SearchBar.propTypes = {
   changeSearchQuery: PropTypes.func.isRequired,
   searchClickHandler: PropTypes.func.isRequired,
   resetSearchHandler: PropTypes.func.isRequired,
-  placeholderText: PropTypes.string
+  placeholderText: PropTypes.string,
+  showHelpIcon: PropTypes.bool,
+  onSearchHelp: PropTypes.func
 };
 
 SearchBar.defaultProps = {
-  placeholderText: 'Suchbegriff...'
+  placeholderText: 'Suchbegriff...',
+  showHelpIcon: false,
+  onSearchHelp: noop
 };

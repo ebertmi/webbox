@@ -1,7 +1,20 @@
 import React, {Component} from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { Input } from '../bootstrap';
 import { Time } from '../Time';
+
+const Fade = ({ children, ...props }) => (
+  <CSSTransition
+    {...props}
+    timeout={{
+      enter: 300,
+      exit: 500,
+     }}
+    classNames="fade"
+  >
+    {children}
+  </CSSTransition>
+);
 
 /**
  * The Courseform Component displays a course and allows to edit the course data.
@@ -99,15 +112,15 @@ export class CourseForm extends Component {
    */
   renderConfirmDelete () {
     return (
-      <div className="form-footer">
-        <ReactCSSTransitionGroup transitionName="fade-in" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
-          <div className="form-inline">
-            <p className="form-control-static">Soll der Kurs wirklich gelöscht werden?</p>
-            <button onClick={this.handleDeleteConfirm.bind(this)} className="btn btn-danger">Ja</button>
-            <button onClick={this.handleDeleteDismiss.bind(this)} className="btn btn-default">Nein</button>
-          </div>
-        </ReactCSSTransitionGroup>
-      </div>
+      <TransitionGroup className='form-footer'>
+          <Fade>
+            <div className="form-inline">
+              <p className="form-control-plaintext">Soll der Kurs wirklich gelöscht werden?</p>
+              <button onClick={this.handleDeleteConfirm.bind(this)} className="btn btn-danger">Ja</button>
+              <button onClick={this.handleDeleteDismiss.bind(this)} className="btn btn-secondary">Nein</button>
+            </div>
+          </Fade>
+      </TransitionGroup>
     );
   }
 

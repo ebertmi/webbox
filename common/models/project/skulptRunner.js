@@ -156,6 +156,7 @@ export default class Runner extends EventEmitter {
   }
 
   readPrompt(prompt) {
+    console.log(Sk.Promise);
     return new Promise((resolve, reject) => {
       // Store the reject function, so that we can
       // terminate the program while waiting for user input

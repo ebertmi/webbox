@@ -3,7 +3,7 @@ import 'babel-polyfill';
 import 'exports-loader?fetch!whatwg-fetch/fetch';
 
 import React from 'react';
-import { render } from 'react-dom';
+import { hydrate } from 'react-dom';
 import { Provider } from 'react-redux';
 import { Router, browserHistory } from 'react-router';
 
@@ -20,7 +20,7 @@ const rootElement = document.getElementById('content');
 
 // render application with router and to the rootElement and
 // set the initialState
-render(
+hydrate(
   <Provider store={store}>
     <div>
       <Router history={browserHistory}>
