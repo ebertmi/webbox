@@ -50,7 +50,7 @@ export default class MarkdownCell extends BaseCell {
   }
 
   componentDidMount() {
-    let source = this.getSourceFromCell();
+    const source = this.getSourceFromCell();
     this.renderMarkdown(source);
   }
 
@@ -59,16 +59,16 @@ export default class MarkdownCell extends BaseCell {
    */
   renderMarkdown(source) {
     Markdown.render(source)
-    .then((rendered) => {
-      this.setState({
-        rendered: rendered
+      .then((rendered) => {
+        this.setState({
+          rendered: rendered
+        });
       });
-    });
   }
 
   saveCurrentSessionToState() {
     if (this.session) {
-      let content = this.session.getValue();
+      const content = this.session.getValue();
       this.props.dispatch(updateCell(this.props.cell.get('id'), content));
     }
   }
@@ -78,7 +78,7 @@ export default class MarkdownCell extends BaseCell {
    */
   onUpdateCell() {
     if (this.session) {
-      let content = this.session.getValue();
+      const content = this.session.getValue();
       this.props.dispatch(updateCell(this.props.cell.get('id'), content));
       this.renderMarkdown(content);
     } else {
@@ -96,13 +96,13 @@ export default class MarkdownCell extends BaseCell {
    * Insert a new markdown image tag
    */
   onInsertImage (src) {
-    let customImageItem = cloneDeep(ImageItem);
+    const customImageItem = cloneDeep(ImageItem);
     customImageItem.placeHolder = src;
     this.onEditorInsert(customImageItem);
   }
 
   toggleImageGallery() {
-    let newState = this.state.showImageGallery ? false : true;
+    const newState = this.state.showImageGallery ? false : true;
 
     // Save the current session, otherwise it will be overridden
     this.onUpdateCell();
@@ -151,16 +151,16 @@ export default class MarkdownCell extends BaseCell {
 
   renderListToolbar() {
     return (<Toolbar className="notebook-toolbar" animated={true}>
-        <ActionItem onClick={this.onUnorderedListInsert} isIcon={true} title="Liste">
-          <Icon name="list-ul" />
-        </ActionItem>
-        <ActionItem onClick={this.onOrderedListInsert} isIcon={true} title="Nummerierte Liste">
-          <Icon name="list-ol" />
-        </ActionItem>
-        <ActionItem onClick={this.onExtendedFormatInsert} isIcon={true} title="Erweiterte Formatierung einfügen">
-          <Icon name="css3" />
-        </ActionItem>
-      </Toolbar>);
+      <ActionItem onClick={this.onUnorderedListInsert} isIcon={true} title="Liste">
+        <Icon name="list-ul" />
+      </ActionItem>
+      <ActionItem onClick={this.onOrderedListInsert} isIcon={true} title="Nummerierte Liste">
+        <Icon name="list-ol" />
+      </ActionItem>
+      <ActionItem onClick={this.onExtendedFormatInsert} isIcon={true} title="Erweiterte Formatierung einfügen">
+        <Icon name="css3" />
+      </ActionItem>
+    </Toolbar>);
   }
 
   renderVariousToolbar() {
@@ -177,7 +177,7 @@ export default class MarkdownCell extends BaseCell {
       <ActionItem onClick={this.onLinkInsert} isIcon={true} title="Link">
         <Icon name="link" />
       </ActionItem>
-      </Toolbar>);
+    </Toolbar>);
   }
 
   renderTextToolbar() {
@@ -197,8 +197,8 @@ export default class MarkdownCell extends BaseCell {
    * @returns
    */
   renderEditMode() {
-    let minHeight = this.renderedHeight ? this.renderedHeight : this.props.minHeight;
-    let source = this.getSourceFromCell();
+    const minHeight = this.renderedHeight ? this.renderedHeight : this.props.minHeight;
+    const source = this.getSourceFromCell();
     if (this.session) {
       this.session.setValue(source);
     } else {
@@ -209,7 +209,7 @@ export default class MarkdownCell extends BaseCell {
     // ToDo: Render ToolBar, that inserts Markdown Code
 
     return (
-      <div className="col-xs-12" onKeyDown={this.onKeyDown}>
+      <div className="col-12" onKeyDown={this.onKeyDown}>
         { this.renderImageGallery() }
         <strong>Markdown</strong>  <Icon className="icon-control" onClick={this.toggleImageGallery} title="Verfügbare Bilder anzeigen" name="picture-o"/>
         { this.renderTextToolbar() }
@@ -226,14 +226,14 @@ export default class MarkdownCell extends BaseCell {
    * @returns
    */
   renderViewMode() {
-    return <div className="col-xs-12 view-mode" data-viewnode={true} ref={this.onRef} dangerouslySetInnerHTML={{__html: this.state.rendered}}/>;
+    return <div className="col-12 view-mode" data-viewnode={true} ref={this.onRef} dangerouslySetInnerHTML={{__html: this.state.rendered}}/>;
   }
 
   render() {
     const { cell, isEditModeActive, editing, dispatch } = this.props;
     let content;
-    let metadata = <CellMetadata beforeChange={this.saveCurrentSessionToState} className="col-xs-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
-    let editingClass = editing ? ' editing' : '';
+    const metadata = <CellMetadata beforeChange={this.saveCurrentSessionToState} className="col-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
+    const editingClass = editing ? ' editing' : '';
     const isVisible = this.isVisible();
 
     if (!(isEditModeActive && editing)) {
@@ -242,7 +242,7 @@ export default class MarkdownCell extends BaseCell {
       content = this.renderEditMode();
     }
 
-    const classes = classnames("markdown-cell col-xs-12 row", editingClass, {
+    const classes = classnames('markdown-cell col-12 row', editingClass, {
       'cell-not-visible': !isVisible
     });
 

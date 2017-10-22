@@ -16,6 +16,6 @@ export default connect(state => {
   return { notebook: state.notebook };
 })(PresentationApp);
 
-PresentationApp.childContextTypes = {
-  remoteDispatcher: PropTypes.object
-};
+//PresentationApp.childContextTypes = {
+//  remoteDispatcher: PropTypes.object
+//};

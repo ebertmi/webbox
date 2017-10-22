@@ -6,8 +6,8 @@ import JSONTree from 'react-json-tree';
 const theme = {
   scheme: 'monokai',
   author: 'wimer hazenberg (http://www.monokai.nl)',
-  /*base00: '#272822',*/
-  base00: 'transparent', /* use the background of the current row*/
+  base00: 'rgba(0, 0, 0, 0)',
+  /*base00: 'transparent', *//* use the background of the current row*/
   base01: '#383830',
   base02: '#49483e',
   base03: '#75715e',
@@ -35,7 +35,7 @@ export function RecyclebinTableRow (props) {
     <tr>
       <td>{props.data.model}</td>
       <td><Link to={userDetailPath}><code>{props.data.userId}</code></Link></td>
-      <td><JSONTree hideRoot={true} data={ props.data.data } theme={theme} invertTheme={true}/></td>
+      <td><JSONTree hideRoot={true} data={ props.data.data } theme={theme} invertTheme={true} /></td>
       <td>
         <Time value={props.data.timeStamp} locale="de" relative={true}/>
       </td>

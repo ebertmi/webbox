@@ -43,7 +43,7 @@ export default class ErrorView extends React.Component {
     this.onChange = this.onChange.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.insights.on('newErrors', this.onChange);
     this.onChange();
     optionManager.on('change', this.onChangeOption);
@@ -174,10 +174,10 @@ export default class ErrorView extends React.Component {
     return (
       <div className="container-fluid">
         <div className="row">
-          <div className="col-xs-12">
+          <div className="col-12">
             <h4>Die letzten Fehler</h4>
           </div>
-          <div className="col-xs-12">
+          <div className="col-12">
             <form className="form-inline">
               <div className="form-group">
                 <label className="sr-only" htmlFor="errorFilterCount">Anzahl</label>
@@ -204,10 +204,10 @@ export default class ErrorView extends React.Component {
               <button className="btn btn-warning btn-sm" disabled={!this.state.isFiltering} onClick={this.onReset} >Zurücksetzen</button>
             </form>
           </div>
-          <div className="col-xs-12">
+          <div className="col-12">
             { this.renderErrorInDetail() }
           </div>
-          <div className="col-xs-12">
+          <div className="col-12">
             <table className="table table-sm table-hover">
               <thead>
                 <tr>
@@ -223,7 +223,7 @@ export default class ErrorView extends React.Component {
                 {this.state.errors.map((err) => {
                   const className = err.id === this.state.errorInDetail ? 'table-active' : '';
                   return (
-                    <tr className={className} key={err.id} data-errorId={err.id} onDoubleClick={this.highlightError.bind(this, err.id)}>
+                    <tr className={className} key={err.id} data-errorid={err.id} onDoubleClick={this.highlightError.bind(this, err.id)}>
                       <td>{err.type}</td>
                       <td><code>{err.message}</code></td>
                       <td><pre>{err.data.errorHint}</pre></td>

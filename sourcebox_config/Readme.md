@@ -39,5 +39,5 @@ Server-side Turtle module is now working for basic drawing and stuff.
 The only things missing are keyboard and mouse events. See `/common/turtle/turtle.js` and the out commented code for handling
 those.
 
-See latest `Turtle.py`on https://gist.github.com/waywaaard/2bc0b67867c3da4434389d31b43a5e41
-Use something like `wget` or `curl` to download the files, e.g. `wget https://gist.githubusercontent.com/waywaaard/5b11e3e45956d82e47fbae54b9eccf93/raw/48cc344caf6199abfb0d40dab925518c3a107bb5/backend_sb.py`
+See latest `Turtle.py`on https://gist.github.com/ebertmi/2bc0b67867c3da4434389d31b43a5e41
+Use something like `wget` or `curl` to download the files, e.g. `wget https://gist.githubusercontent.com/ebertmi/5b11e3e45956d82e47fbae54b9eccf93/raw/48cc344caf6199abfb0d40dab925518c3a107bb5/backend_sb.py`

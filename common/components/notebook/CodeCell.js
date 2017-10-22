@@ -99,7 +99,7 @@ export default class CodeCell extends BaseCell {
     }
 
     return (
-      <div className="col-xs-12" onKeyDown={this.onKeyDown}>
+      <div className="col-12" onKeyDown={this.onKeyDown}>
         <strong>Code</strong>
         <p className="text-muted">Sie können über die Schlüssel <code>embedType</code> (<em>sourcebox</em> oder <em>skulpt</em>) und <code>executionLanguage</code> die Ausführungsumgebung für eine Zelle einzeln definieren. Ansonsten werden die Werte aus den Notebook-Metadaten übernommen. Sie können die Syntax-Hervorhebung (Farben) über den Schlüssel <code>mode</code> ändern.</p>
         <Editor fontSize="14px" minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />
@@ -110,7 +110,7 @@ export default class CodeCell extends BaseCell {
   render() {
     const { cell, isEditModeActive, editing, dispatch, id, executionLanguage, notebookLanguage, embedType } = this.props;
     let content;
-    let metadata = <CellMetadata beforeChange={this.saveCurrentSessionToState} className="col-xs-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
+    let metadata = <CellMetadata beforeChange={this.saveCurrentSessionToState} className="col-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
     let editingClass = editing ? ' editing' : '';
     const isVisible = this.isVisible();
 
@@ -121,7 +121,7 @@ export default class CodeCell extends BaseCell {
                               notebookLanguage={notebookLanguage} embedType={embedType}/>;
     }
 
-    const classes = classnames("code-cell col-xs-12 row", editingClass, {
+    const classes = classnames("code-cell col-12 row", editingClass, {
       'cell-not-visible': !isVisible
     });
 

@@ -37,7 +37,7 @@ class User extends Component {
     }
   }
   renderUser () {
-    return <UserForm changeMailData={this.props.changeMailData} confirmUser={this.props.confirmUser} unblockUser={this.props.unblockUser} resendConfirmationEmail={this.props.resendUserConfirmationEmail} save={this.props.saveUser} delete={this.props.deleteUser} onChange={this.props.updateUserForm} user={this.props.userOverview.user} />;
+    return <UserForm resetUserPasswordManually={this.props.resetUserPasswordManually} changeMailData={this.props.changeMailData} confirmUser={this.props.confirmUser} unblockUser={this.props.unblockUser} resendConfirmationEmail={this.props.resendUserConfirmationEmail} save={this.props.saveUser} delete={this.props.deleteUser} onChange={this.props.updateUserForm} user={this.props.userOverview.user} />;
   }
 
   renderLoader () {

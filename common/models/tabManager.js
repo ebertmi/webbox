@@ -1,9 +1,12 @@
 import uniqueId from 'lodash/uniqueId';
 import { EventEmitter } from 'events';
 
-import { Severity  } from './severity';
+import { Severity } from './severity';
 import { Action } from './actions';
 import { MessageWithAction } from './messages';
+
+import Debug from 'debug';
+const debug = Debug('webbox:tabManager');
 
 export default class TabManager extends EventEmitter {
   constructor(messageList) {
@@ -12,12 +15,21 @@ export default class TabManager extends EventEmitter {
     this.unnamedTabCounter = 0;
 
     this.messageList = messageList;
+
+    // solutions to allow multiple events listeners
+    this.setMaxListeners(0);
+
+    this.on('error', err => {
+      console.error(err);
+    });
+
   }
 
   /**
    * Clear all has changes flags of the file tabs, should be called
    * after an successful save.
-   *
+   * @returns {undefined}
+   * 
    * @memberOf TabManager
    */
   clearFileChanges() {
@@ -30,6 +42,7 @@ export default class TabManager extends EventEmitter {
 
   /**
    * Return all tabs of the project
+   * @returns {Array} array of tabs
    */
   getTabs() {
     return this.tabs;

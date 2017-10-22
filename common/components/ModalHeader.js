@@ -60,10 +60,10 @@ const ModalHeader = (props) => {
 
   return (
     <div {...attributes} className={classes}>
-      {closeButton}
       <h4 className="modal-title">
         {children}
       </h4>
+      {closeButton}
     </div>
   );
 };

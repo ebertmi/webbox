@@ -10,7 +10,7 @@ import Blipp from 'blipp';
 import HapiIO from 'hapi-io';
 import HapiRateLimit from 'hapi-rate-limit';
 import CatboxMemory from 'catbox-memory';
-import CatboxRedis from 'catbox-redis';
+//import CatboxRedis from 'catbox-redis'; // see comment below
 import Log from './lib/models/log';
 import HapiPM2 from './lib/util/hapi-pm2';
 
@@ -19,6 +19,11 @@ import isString from 'lodash/isString';
 // own imports
 import config from './config/webbox.config';
 import Package from './package.json';
+
+process.on('unhandledRejection', (reason, p) => {
+  console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+  // application specific logging, throwing an error, or other logic here
+});
 
 // The default context is available for every response (template)
 const defaultContext = {
@@ -37,16 +42,16 @@ if (config.isDev) {
   cache = { engine: CatboxMemory };
 } else {
   // ToDo: add Redis for production
-  cache = {
-    engine: CatboxRedis,
+  //cache = {
+  //  engine: CatboxRedis,
     /*database: config.cache.database,*/
-    host: config.cache.host,
-    port: config.cache.port,
-    password: config.cache.password,
+  //  host: config.cache.host,
+  //  port: config.cache.port,
+  //  password: config.cache.password,
     /*partition: config.cache.partition*/
-  };
+  //};
 
-  // ToDo: Change this
+  // ToDo: Change this, but for now we stick with a simple in memory cache
   cache = { engine: CatboxMemory };
 }
 
@@ -82,11 +87,11 @@ server.register({
 server.register({
   register: Good,
   options: config.good
-}, function (err) {
+}, (err) => {
   if (err) {
     console.error(err);
   } else {
-    server.start (function () {
+    server.start (() => {
       console.info('Server started at ' + server.info.uri);
     });
   }
@@ -157,7 +162,7 @@ server.ext('onPreResponse', function onPreResponse(request, reply) {
     }, 'Error');
     console.error(`Repsonse is Error`, request.response.stack);
   } else {
-    console.log(`Repsonse is Error with status ${request.response.output.statusCode}`);
+    console.log(`Repsonse is Error with status ${request.response.output.statusCode}`, request.response.stack);
   }
 
   // We should try to do some useful logging

@@ -36,19 +36,13 @@ export default class EventDatesClusterChart extends React.Component {
     this.formatHint = this.formatHint.bind(this);
     this._rememberHintValue = this._rememberHintValue.bind(this);
     this._forgetHintValue = this._forgetHintValue.bind(this);
-  }
 
-  componentWillMount() {
-    this.setState({
+    this.state = {
       dateClusterResolution: this.props.dateClusterResolution,
       dateClusterStart: this.props.dateClusterStart,
       dateClusterEnd: this.props.dateClusterEnd,
       hintValue: null
-    });
-  }
-
-  componentWillUnmount() {
-
+    };
   }
 
   onDateClusterResolutionChange(e) {
@@ -133,10 +127,10 @@ export default class EventDatesClusterChart extends React.Component {
     return (
       <div className="container-fluid">
         <div className="row">
-          <div className="col-md-12 col-xs-12">
+          <div className="col-md-12 col-12">
             <h4>Anzahl der Events</h4>
           </div>
-          <div className="col-md-7 col-xs-12">
+          <div className="col-md-7 col-12">
           <div style={LEGEND_IN_CHART_STYLES}>
             <DiscreteColorLegend
               orientation="horizontal"
@@ -164,7 +158,7 @@ export default class EventDatesClusterChart extends React.Component {
             }
           </FlexibleXYPlot>
           </div>
-          <div className="col-md-4 col-xs-12">
+          <div className="col-md-4 col-12">
             <form>
               <div className="form-group">
                 <label htmlFor="dateClusterResolution">Cluster-Einstellung</label>

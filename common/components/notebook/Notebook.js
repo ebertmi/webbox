@@ -41,10 +41,13 @@ export default class Notebook extends React.Component {
     this.onDelete = this.onDelete.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onToggleViewMode = this.onToggleViewMode.bind(this);
+    this.onBlur = this.onBlur.bind(this);
+    this.onFocus = this.onFocus.bind(this);
 
     this.state = {
       isDragging: false,
-      dashboardComponent: null
+      dashboardComponent: null,
+      hasEditorFocus: false
     };
   }
 
@@ -58,7 +61,7 @@ export default class Notebook extends React.Component {
 
   componentDidMount() {
     // handle Ctrl+S on the whole document even when nothing is focused
-    document.addEventListener('keydown', this.onKeyDown);
+    document.addEventListener('keydown', this.onKeyDown, false);
 
     // Try to update url
     replaceIdWithSlug(this.props.notebook.get('id'), this.props.notebook.get('slug'));
@@ -73,49 +76,110 @@ export default class Notebook extends React.Component {
   }
 
   /**
-   * Show a message as a box
-   * @returns{void}
+   * Reset maintained focused if user leaves the IDE
+   * 
+   * @param {React.SyntheticEvent} e - blur event
+   * @memberof Notebook
+   * @returns {undefined}
    */
-  showMessage(severity, message) {
-    if (this.messageList) {
-      this.messageList.showMessage(severity, message);
+  onBlur(e) {
+    e.persist();
+
+    this._timeoutID = setTimeout(() => {
+      if (this.state.hasEditorFocus) {
+        this.setState({
+          hasEditorFocus: false,
+        });
+      }
+    }, 0);
+  }
+
+  /**
+   * Update the current maintained focus to determine if we need to handle CTRL+S on the notebook or
+   * inside the IDE.
+   * 
+   * @param {React.SyntheticEvent} e - e focus event 
+   * @memberof Notebook
+   * @returns {undefined}
+   */
+  onFocus(e) {
+    e.persist();
+
+    clearTimeout(this._timeoutID);
+    if (!this.state.hasEditorFocus && e.target && e.target.closest('.codeembed-cell') != null) {
+      this.setState({
+        hasEditorFocus: true,
+      });
     }
   }
 
   /**
    * Check for Ctrl+S and try to save the document if possible
+   * @param {SynthenticEvent} e - key event
    * @returns{void}
    */
   onKeyDown(e) {
     const key = e.which || e.keyCode;
+    let handeled = false;
+
     if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 83) {
       // Pressed Ctrl-S for saving
-      if (this.props.notebook.get('isAuthor', false)) {
+      if (this.state.hasEditorFocus === false && this.props.notebook.get('isAuthor', false)) {
         this.onSave();
       }
-      e.preventDefault();
+
+      handeled = true;
     } else if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 77) {
       // Pressed Ctrl+M to open the presentation
       this.onPresentationMode();
+
+      handeled = true;
     } else if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 81) {
       // Pressed Ctrl-Q to toggle view mode
       if (this.props.notebook.get('isAuthor', false)) {
         this.onToggleViewMode();
       }
+
+      handeled = true;
+    }
+
+    if (handeled) {
       e.preventDefault();
+      e.stopPropagation();
+      if (e.nativeEvent) {
+        e.nativeEvent.stopImmediatePropagation();
+      }
     }
   }
 
+  /**
+   * Toggles between view and edit mode
+   * 
+   * @memberof Notebook
+   * @returns {undefined}
+   */
   onToggleViewMode() {
     this.props.dispatch(toggleViewMode());
   }
 
+  /**
+   * Opens the document as a presentation in a new window
+   * 
+   * @memberof Notebook
+   * @returns {undefined}
+   */
   onPresentationMode() {
     const linkToPresentation = `/p/${this.props.notebook.get('id')}`;
 
     window.open(linkToPresentation);
   }
 
+  /**
+   * Saves the current document (if possible)
+   * 
+   * @memberof Notebook
+   * @returns {undefined}
+   */
   onSave() {
     const documentObj = stateToJS(this.props.notebook);
     API.document.save({ id: documentObj.id }, { document: documentObj }).then(res => {
@@ -136,6 +200,12 @@ export default class Notebook extends React.Component {
     });
   }
 
+  /**
+   * Deletes the document after being verified again by the user
+   * 
+   * @memberof Notebook
+   * @returns {undefined}
+   */
   onDelete() {
     const id = this.props.notebook.get('id');
     let messageObj;
@@ -165,6 +235,13 @@ export default class Notebook extends React.Component {
   }
 
 
+  /**
+   * Handles drop events, e. g. imports a dropped jupyter notebook to the current document
+   * 
+   * @param {any} e - the drop event
+   * @returns {undefined}
+   * @memberof Notebook
+   */
   onDrop(e) {
     e.preventDefault();
     const target = e.target;
@@ -231,6 +308,25 @@ export default class Notebook extends React.Component {
     });
   }
 
+  /**
+  * Show a message as a box
+  * @param {Severity} severity of the message
+  * @param {String|Message|Error} message to display
+  * @returns{void}
+  */
+  showMessage(severity, message) {
+    if (this.messageList) {
+      this.messageList.showMessage(severity, message);
+    }
+  }
+
+  /**
+   * Render each individual cell depeding on its type.
+   * If the edit mode is active this will also add a controls between each cell
+   * 
+   * @returns {Array} - array of rendered cells
+   * @memberof Notebook
+   */
   renderCells() {
     const activeBlock = this.props.notebook.get('activeBlock');
     const isEditModeActive = this.props.notebook.get('isEditModeActive');
@@ -265,7 +361,15 @@ export default class Notebook extends React.Component {
           blocks.push(<CodeCell embedType={embedType} course={course} executionLanguage={executionLanguage} notebookLanguage={notebookLanguage} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={index === activeBlock}/>);
           break;
         case 'codeembed':
-          blocks.push(<CodeEmbedCell course={course} dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive}editing={index === activeBlock}/>);
+          blocks.push(<CodeEmbedCell
+            course={course}
+            dispatch={dispatch}
+            key={id}
+            cellIndex={index}
+            id={id}
+            cell={cell}
+            isEditModeActive={isEditModeActive}
+            editing={index === activeBlock}/>);
           break;
         case 'raw':
           blocks.push(<RawCell dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={index === activeBlock}/>);
@@ -278,7 +382,7 @@ export default class Notebook extends React.Component {
 
     if (isEditModeActive) {
       blocks.push(
-          <AddControls dispatch={dispatch} key="add-end" isEditModeActive={isEditModeActive} />
+        <AddControls dispatch={dispatch} key="add-end" isEditModeActive={isEditModeActive} />
       );
     }
 
@@ -298,7 +402,7 @@ export default class Notebook extends React.Component {
     // Is Author, renders the edit buttons or the view mode
     const isEditModeActive = this.props.notebook.get('isEditModeActive');
 
-    const classes = classnames("notebook row", {
+    const classes = classnames('notebook row', {
       'view-mode': !isEditModeActive
     });
 
@@ -309,7 +413,13 @@ export default class Notebook extends React.Component {
     }
 
     return (
-      <div data-drag={true} className={classes} onDragOver={this.onDragOver} onDrop={this.onDrop}>
+      <div
+        data-drag={true}
+        className={classes}
+        onDragOver={this.onDragOver}
+        onDrop={this.onDrop}
+        onBlur={this.onBlur}
+        onFocus={this.onFocus}>
         <div className="global-message-list">
           <MessageList messageList={this.messageList} />
         </div>

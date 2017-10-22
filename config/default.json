@@ -37,7 +37,9 @@
           "subject": "email-verification"
         },
         "resetPassword": {
-          "secret": "secret_reset_password_secret_for_webbox_forgot_password_function_for_users!!11!XD"
+          "secret": "secret_reset_password_secret_for_webbox_forgot_password_function_for_users!!11!XD",
+          "memorablePassword": false,
+          "passwordLength": 10
         }
     },
     "mail": {
@@ -115,7 +117,8 @@
         "forgotEmailSubject": "trycoding.io - Passwort zurücksetzen",
         "invalidToken": "Der Schlüssel zum Zurücksetzen ist ungültig.",
         "successMessage": "Das Passwort wurde zurückgesetzt. Sie können sich nun einloggen.",
-        "resetErrorMessage": "Es ist ein Fehler aufgetreten.  Bitte versuchen Sie es erneut."
+        "resetErrorMessage": "Es ist ein Fehler aufgetreten.  Bitte versuchen Sie es erneut.",
+        "manualPasswordResetMessage": "Ihr Password wurde vom Administrator zurückgesetzt."
       },
       "changePassword": {
         "passwordsNotEqual": "Die neuen Passwörter sind nicht gleich. Haben Sie sich ggf. vertippt?",

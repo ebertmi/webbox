@@ -153,7 +153,7 @@ var $builtinmodule = function (name) {
 
         Some methods are based on the original numpy implementation.
 
-        See http://waywaaard.github.io/skulpt/ for more information.
+        See http://ebertmi.github.io/skulpt/ for more information.
     **/
     /* eslint-disable */
 

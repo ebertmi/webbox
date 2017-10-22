@@ -21,18 +21,12 @@ export default class ImageUpload extends React.PureComponent {
     this.onDone = this.onDone.bind(this);
     this.onError = this.onError.bind(this);
     this.onImageClick = this.onImageClick.bind(this);
-  }
 
-  componentWillMount() {
-    this.setState({
+    this.state = {
       isUploading: false,
       progress: 0,
       images: []
-    });
-  }
-
-  componentDidMount() {
-
+    };
   }
 
   onDrop(files) {
@@ -91,7 +85,7 @@ export default class ImageUpload extends React.PureComponent {
     const dropzoneText = this.state.isUploading ? `Lade hoch ... (${this.state.progress}%)` : 'Lege hier Bilder ab, um sie hochzuladen.';
     return (
       <div className="image-upload-wrapper" data-name="image-upload">
-          <div data-name="image-upload" className="image-upload card-primary text-xs-center" style={{ maxWidth: MAX_WIDTH }}>
+          <div data-name="image-upload" className="image-upload card bg-info text-sm-center" style={{ maxWidth: MAX_WIDTH }}>
             <Dropzone accept="image/*" multiple={false} onDrop={this.onDrop} className="image-dropzone" data-name="image-upload">
                 <div data-name="image-upload">
                   <p data-name="image-upload" style={{textAlign: 'left'}}>{dropzoneText}</p>

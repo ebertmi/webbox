@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Modal from '../Modal';
+
+import Modal from 'react-modal';
 import ModalBody from '../ModalBody';
 import ModalFooter from '../ModalFooter';
 import ModalHeader from '../ModalHeader';
@@ -44,17 +45,34 @@ export default class SendToTeacherModal extends React.Component {
   }
 
   render() {
-    return <Modal isOpen={this.props.isOpen} toggle={this.props.toggle} backdrop={true}>
-      <ModalHeader toggle={this.props.toggle}>An Dozenten Schicken</ModalHeader>
-      <ModalBody>
-        <p>Sie können hier noch eine optinale Nachricht eingeben:</p>
-        <textarea placeholder="Die Lösung verwendet..." className="form-control" rows="5" cols="" onChange={this.onMessageChange} value={this.state.message}></textarea>
-        <small></small>
-      </ModalBody>
-      <ModalFooter>
-        <button className="btn btn-primary" onClick={this.onSubmit}>Abschicken</button>{' '}
-        <button className="btn btn-secondary" onClick={this.props.toggle}>Schließen</button>
-      </ModalFooter>
+    return <Modal
+      isOpen={this.props.isOpen}
+      onRequestClose={this.props.toggle}
+      shouldCloseOnOverlayClick={true}
+      className={{
+        base: 'modal-dialog',
+        afterOpen: 'show',
+        beforeClose: ''
+      }}
+
+      overlayClassName={{
+        base: 'modal-backdrop',
+        afterOpen: 'show',
+        beforeClose: ''
+      }}
+    >
+      <div className="modal-content">
+        <ModalHeader toggle={this.props.toggle}>An Dozenten Schicken</ModalHeader>
+        <ModalBody>
+          <p>Sie können hier noch eine optinale Nachricht eingeben:</p>
+          <textarea placeholder="Die Lösung verwendet..." className="form-control" rows="5" cols="" onChange={this.onMessageChange} value={this.state.message}></textarea>
+          <small></small>
+        </ModalBody>
+        <ModalFooter>
+          <button className="btn btn-primary" onClick={this.onSubmit}>Abschicken</button>{' '}
+          <button className="btn btn-secondary" onClick={this.props.toggle}>Schließen</button>
+        </ModalFooter>
+      </div>
     </Modal>;
   }
 }

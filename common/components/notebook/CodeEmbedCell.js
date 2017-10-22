@@ -201,18 +201,18 @@ export default class CodeEmbedCell extends BaseCell {
     return (
       // onKeyDown={this.onKeyDown}
       // ToDo: handle onUpdateCell differently, as this does not work for ESC to stop editing
-      <div className="col-xs-12">
+      <div className="col-12">
         <strong>Codebeispiel-Einstellungen</strong>
         <p className="text-muted">Sie können die Größe (Höhe und Breite) über die Metadaten auch selbst steuern. Nutzen Sie dazu die Schlüssel <code>height</code> bzw. <code>width</code> und einen numerischen Wert (z.B. <code>500</code>) ohne Einheit.</p>
         <div className="form-group">
           <label className="form-control-label">Beispiel-ID</label>
           <Autosuggest suggestions={this.state.suggestions}
-          shouldRenderSuggestions={this.shouldRenderEmbedSuggestions}
-          getSuggestionValue={this.getSuggestionValue}
-          onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-          onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-          renderSuggestion={this.renderSuggestion}
-          inputProps={inputProps} />
+            shouldRenderSuggestions={this.shouldRenderEmbedSuggestions}
+            getSuggestionValue={this.getSuggestionValue}
+            onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+            onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+            renderSuggestion={this.renderSuggestion}
+            inputProps={inputProps} />
           <p className="text-muted">Sie können hier direkt eine ID einfügen, oder ihre eigenen Beispiele durchsuchen. Ein Klick in das leere Feld, zeigt all Ihre Beispiele in einer Liste an.</p>
           {/*<input className="form-control" type="text" placeholder="ID..." onChange={this.onUpdateCell} value={source} ref={ref => this.sourceInput = ref}/>*/}
         </div>
@@ -229,15 +229,15 @@ export default class CodeEmbedCell extends BaseCell {
     //const width = this.props.cell.getIn(['metadata', 'width']);
     const height = this.props.cell.getIn(['metadata', 'height']);
     let content;
-    let metadata = <CellMetadata className="col-xs-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
+    let metadata = <CellMetadata className="col-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
     let editingClass = editing ? ' editing' : '';
     const isVisible = this.isVisible();
 
     let source = this.getSourceFromCell();
-    //let frame = source !== '' ? <IFrame lazy={true} className="col-xs-12" width={width} height={height} src={`/embed/${source}`} allowFullScreen={true} frameBorder="0" /> : <p>Keine ID angegeben.</p>;
+    //let frame = source !== '' ? <IFrame lazy={true} className="col-12" width={width} height={height} src={`/embed/${source}`} allowFullScreen={true} frameBorder="0" /> : <p>Keine ID angegeben.</p>;
 
     // Add check for empty source
-    let wrapper = source !== '' ? <IdeWrapper className="col-xs-12" height={height} codeID={source} /> : <p>Keine ID angegeben.</p>;
+    let wrapper = source !== '' ? <IdeWrapper className="col-12" height={height} codeID={source} /> : <p>Keine ID angegeben.</p>;
 
     if (!(isEditModeActive && editing)) {
       content = null;
@@ -245,7 +245,7 @@ export default class CodeEmbedCell extends BaseCell {
       content = this.renderEditMode();
     }
 
-    const classes = classnames(`codeembed-cell col-xs-12 row ${className}`, editingClass, {
+    const classes = classnames(`codeembed-cell col-12 row ${className}`, editingClass, {
       'cell-not-visible': !isVisible
     });
 

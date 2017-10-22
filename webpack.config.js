@@ -9,6 +9,22 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
+  //stats: 'errors-only',
+  stats: {
+    assets: false,
+    children: false,
+    // Add chunk information (setting this to `false` allows for a less verbose output)
+    chunks: false,
+    // Add built modules information to chunk information
+    chunkModules: false,
+    // Add the origins of chunks and chunk merging info
+    chunkOrigins: false,
+    entrypoints: false,
+    modules: true,
+    publicPath: false,
+    reasons: false,
+    warnings: false,
+  },
   target: 'web',
   context: path.join(__dirname, 'client'),
   entry: {
@@ -29,7 +45,7 @@ module.exports = {
     modules: ['client', 'node_modules']
   },
   externals: {
-    'ace': 'ace',
+    ace: 'ace',
     'highlight.js': 'hljs',
     'markdown-it': 'markdownit',
     'katex': 'katex',
@@ -66,13 +82,23 @@ module.exports = {
           {
             loader: 'postcss-loader',
             options: {
-              plugins: function prefixConfig() {
-                return [ autoprefixer({ browsers: ['last 2 versions'] }) ];
-              }
+              config: {
+                path: path.resolve(__dirname, 'postcss.config.js'),
+              },
             }
           },
           'sass-loader'
         ]
+      },
+      {
+        // Do not transform vendor's CSS with CSS-modules
+        // The point is that they remain in global scope.
+        // Since we require these CSS files in our JS or CSS files,
+        // they will be a part of our compilation either way.
+        // So, no need for ExtractTextPlugin here.
+        test: /\.css$/,
+        include: /node_modules/,
+        use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.json$/,
@@ -102,7 +128,8 @@ module.exports = {
         to: '../css/spectacle.css',
         copyUnmodified: true
       }
-    ])
+    ]),
+    new webpack.optimize.ModuleConcatenationPlugin()
     /*new webpack.SourceMapDevToolPlugin({
       filename: '[file].map',
       include: ['presentation.bundle.js', 'index.bundle.js', 'react-commons.bundle.js', 'dashboard.bundle.js'],

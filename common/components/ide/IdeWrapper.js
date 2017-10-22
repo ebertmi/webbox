@@ -19,6 +19,7 @@ const ErrorTypes = {
 
 /**
  * Class represents wrapper for an instance of an ide component
+ * This component is quite complex, yet simplifies the page load. Embeds will be only loaded on a user action.
  */
 export default class IdeWrapper extends React.Component {
   /**
@@ -41,8 +42,13 @@ export default class IdeWrapper extends React.Component {
       isDownloading: false,
       IdeComponent: null,
       error: null,
-      errorType: null
+      errorType: null,
+      project: null,
+      messageList: null
     };
+
+    this.project = null;
+    this.messageList = null;
   }
 
   /**
@@ -52,6 +58,10 @@ export default class IdeWrapper extends React.Component {
    * @returns {void}
    */
   componentWillMount() {
+    //this.getAndSetEmbedMetadata();
+  }
+
+  componentDidMount() {
     this.getAndSetEmbedMetadata();
   }
 
@@ -117,6 +127,8 @@ export default class IdeWrapper extends React.Component {
           this.onProjectLoaded(data);
         }
       } else {
+        //quick fix for englisch error message
+        data.error.title = (data.error.title === 'Unauthorized') ? 'Bitte melden Sie sich an, um dieses Beispiel zu bearbeiten.' : data.error.title;
         this.setErrorState(data.error.title);
       }
     }).catch(err => {
@@ -141,6 +153,10 @@ export default class IdeWrapper extends React.Component {
     });
   }
 
+  /**
+   * Receives and set meta data
+   * @returns {void}
+   */
   getAndSetEmbedMetadata() {
     // check if reloading meta data
     if (this.state.error != null) {
@@ -157,25 +173,42 @@ export default class IdeWrapper extends React.Component {
         embedType: data.meta.embedType,
       });
     }).catch(err => {
-      this.setErrorState('embed_loading_error', ErrorTypes.EmbedLoadingError);
+      this.setErrorState('Fehler beim Laden der Metadaten', ErrorTypes.EmbedLoadingError);
       debug(err);
     });
   }
 
+  /**
+   * Generates svg of code line pattern
+   * @param {number} xOffset horizontal offset of code lines
+   * @param {number} yOffset vertical offset of code lines
+   * @param {number} patternHeight for additional vertical offset (currently used for creating multiple patterns in a loop). Might be replaced by yOffset
+   * @param {number} patternMulti multiplicator of patternHeight. Will be removed if patternHeight is removed
+   * @returns {Array} containing svg code elements of pattern
+   */
   generatePattern(xOffset, yOffset, patternHeight, patternMulti) {
     const pattern = [];
     const offset = patternMulti * patternHeight + yOffset;
-    pattern.push(<rect x={0 + xOffset} y={0 + offset} width="67.0175439" height="11.9298746" rx="2"></rect>);
-    pattern.push(<rect x={76.8421053 + xOffset} y={0 + offset} width="140.350877" height="11.9298746" rx="2"></rect>);
-    pattern.push(<rect x={18.9473684 + xOffset} y={47.7194983 + offset} width="100.701754" height="11.9298746" rx="2"></rect>);
-    pattern.push(<rect x={0 + xOffset} y={71.930126 + offset} width="37.8947368" height="11.9298746" rx="2"></rect>);
-    pattern.push(<rect x={127.017544 + xOffset} y={48.0703769 + offset} width="53.3333333" height="11.9298746" rx="2"></rect>);
-    pattern.push(<rect x={187.719298 + xOffset} y={48.0703769 + offset} width="72.9824561" height="11.9298746" rx="2"></rect>);
-    pattern.push(<rect x={17.8947368 + xOffset} y={23.8597491 + offset} width="140.350877" height="11.9298746" rx="2"></rect>);
-    pattern.push(<rect x={166.315789 + xOffset} y={23.8597491 + offset} width="173.684211" height="11.9298746" rx="2"></rect>);
+    pattern.push(<rect key={`${this.props.codeID}-pattern-rect-1`} x={0 + xOffset} y={0 + offset} width="67.0175439" height="11.9298746" rx="2"></rect>);
+    pattern.push(<rect key={`${this.props.codeID}-pattern-rect-2`} x={76.8421053 + xOffset} y={0 + offset} width="140.350877" height="11.9298746" rx="2"></rect>);
+    pattern.push(<rect key={`${this.props.codeID}-pattern-rect-3`} x={18.9473684 + xOffset} y={47.7194983 + offset} width="100.701754" height="11.9298746" rx="2"></rect>);
+    pattern.push(<rect key={`${this.props.codeID}-pattern-rect-4`} x={0 + xOffset} y={71.930126 + offset} width="37.8947368" height="11.9298746" rx="2"></rect>);
+    pattern.push(<rect key={`${this.props.codeID}-pattern-rect-5`} x={127.017544 + xOffset} y={48.0703769 + offset} width="53.3333333" height="11.9298746" rx="2"></rect>);
+    pattern.push(<rect key={`${this.props.codeID}-pattern-rect-6`} x={187.719298 + xOffset} y={48.0703769 + offset} width="72.9824561" height="11.9298746" rx="2"></rect>);
+    pattern.push(<rect key={`${this.props.codeID}-pattern-rect-7`} x={17.8947368 + xOffset} y={23.8597491 + offset} width="140.350877" height="11.9298746" rx="2"></rect>);
+    pattern.push(<rect key={`${this.props.codeID}-pattern-rect-8`} x={166.315789 + xOffset} y={23.8597491 + offset} width="173.684211" height="11.9298746" rx="2"></rect>);
     return pattern;
   }
 
+  /**
+   * Generates svg Overlay
+   * @param {number} height height of the whole svg graphic
+   * @param {string} headline text which shall be showed in the headline
+   * @param {string} headlineColor background color of the headline text in form of #rrggbb
+   * @param {string} fontColor font color of the headline text in form of #rrggbb
+   * @param {string} state state of the overlay to render things like loader
+   * @return {void}
+   */
   generateSVGOverlay(height, headline, headlineColor, fontColor, state) {
     const draw = [];
     const patternHeight = 96;
@@ -207,9 +240,9 @@ export default class IdeWrapper extends React.Component {
       <text x="50%" y="25" fill={fontColor} fontSize="18" fontWeight="700" textAnchor="middle">{headline}</text>
       <rect className="js-diff-placeholder" x="0" y="35" width="44" height={height - 58} fill="#e8e8e8" fillRule="evenodd"></rect>
       <path className="js-diff-placeholder" clipPath={`url(#diff-placeholder-${this.props.codeID})`} d={`M0 0h1200v${height}H0z`} fill="#ccc" fillRule="evenodd"></path>
-        <clipPath id={`diff-placeholder-${this.props.codeID}`}>
-          {draw}
-        </clipPath>
+      <clipPath id={`diff-placeholder-${this.props.codeID}`}>
+        {draw}
+      </clipPath>
       <rect className="js-diff-placeholder" x="0" y={height - 24} width="100%" height={24} fill="#007ACC" fillRule="evenodd"></rect>
       {stateDraw}
     </svg>;
@@ -229,7 +262,7 @@ export default class IdeWrapper extends React.Component {
     classNames = (!this.state.codeData) ? 'downloadEmbed' : '';
     if (this.state.error == null) {
       stateIndicator = (!this.state.isDownloading) ? '' : <Loader type="line-scale" />;
-      headlineMessage = this.state.embedName + ' - ' + this.state.embedLang;
+      headlineMessage = `${this.state.embedName} - ${this.state.embedLang}`;
       clickEvent = this.onClick;
       overlay = this.generateSVGOverlay(this.props.height, headlineMessage, null, null, (!this.state.isDownloading) ? 'notLoaded' : 'downloading');
     } else if (this.state.errorType == ErrorTypes.EmbedLoadingError) {
@@ -245,14 +278,13 @@ export default class IdeWrapper extends React.Component {
     }
 
     return <div className={`container ${classNames}`} onClick={clickEvent}>
-              {stateIndicator}
-              {overlay}
-          </div>;
+      {stateIndicator}
+      {overlay}
+    </div>;
   }
 
   /**
    * Creates html code to render depending on current state.
-   * 
    * @returns {React.Node} IdeWrapper Node
    */
   renderIdeWrapper() {
@@ -260,26 +292,35 @@ export default class IdeWrapper extends React.Component {
     if ((this.state.codeData == null || this.state.IdeComponent == null) || this.state.error != null) { // check if embed data has been loaded
       return this.generateEmbedWindowByState();
     } else {
-      const messageList = new MessageListModel(usageConsole);
+      // save the messageListModel in the state, and use only one => do not recreate
+      if (this.messageList == null) {
+        this.messageList = new MessageListModel(usageConsole);
+      }
+
       const projectData = {
         embed: this.state.codeData.INITIAL_DATA,
         user: this.state.codeData.USER_DATA,
-        messageList: messageList,
+        messageList: this.messageList,
         remoteDispatcher: this.context.remoteDispatcher,
       };
 
-      let project;
-      if (this.state.embedType === EmbedTypes.Sourcebox) {
-        project = new SourceboxProject(projectData, {
-          auth: this.state.codeData.sourcebox.authToken,
-          server: this.state.codeData.sourcebox.server,
-          transports: this.state.codeData.sourcebox.transports || ['websocket']
-        });
-      } else if (this.state.embedType === EmbedTypes.Skulpt) {
-        project = new SkulptProject(projectData);
+      // Get project out of state, as it might be possible that this components does rerender
+      // if we recreate the project, it might happen that the other components do not unmount and therefore
+      // do not update their event listeners causing the UI to freeze!
+      //let project = this.state.project;
+      if (this.project == null) {
+        if (this.state.embedType === EmbedTypes.Sourcebox) {
+          this.project = new SourceboxProject(projectData, {
+            auth: this.state.codeData.sourcebox.authToken,
+            server: this.state.codeData.sourcebox.server,
+            transports: this.state.codeData.sourcebox.transports || ['websocket']
+          });
+        } else if (this.state.embedType === EmbedTypes.Skulpt) {
+          this.project = new SkulptProject(projectData);
+        }
       }
 
-      toRender = <div className="col-xs-12" id="ide-container" style={{ height: `${this.props.height}px` }}><Ide project={project} messageList={messageList} /></div>;
+      toRender = <div className="col-12" id="ide-container" style={{ height: `${this.props.height}px` }}><Ide project={this.project} messageList={this.messageList} noWindowHandlers={true}/></div>;
     }
 
     return toRender;

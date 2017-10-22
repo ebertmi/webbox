@@ -1,5 +1,16 @@
 import isString from 'lodash/isString';
 
+/**
+ * This function determines which data to load from the given embed (from the server) and
+ * loads it in the project.
+ * 
+ * @export
+ * @param {any} project - reference to project
+ * @param {any} data  - embed data that might include a code document
+ * @param {boolean} [ignoreDocument=false] - ignores the included document if set to true
+ * 
+ * @returns {undefined}
+ */
 export function loadFromData(project, data, ignoreDocument=false) {
   let code;
 
@@ -14,7 +25,7 @@ export function loadFromData(project, data, ignoreDocument=false) {
   project.tabManager.clear();
 
   for (let file in code) {
-    let fileData = code[file];
+    const fileData = code[file];
     if (isString(fileData)) {
       project.addFile(file, fileData);
     } else {
@@ -24,7 +35,7 @@ export function loadFromData(project, data, ignoreDocument=false) {
   }
 
   let index = 0;
-  let mainFile = data.meta.mainFile;
+  const mainFile = data.meta.mainFile;
 
   // switch to specified mainFile
   if (mainFile) {
@@ -35,7 +46,7 @@ export function loadFromData(project, data, ignoreDocument=false) {
 
   // switch to first tab
   if (project.tabManager.getTabs().length > 1) {
-    let oldTab = project.tabManager.getTabs()[index];
+    const oldTab = project.tabManager.getTabs()[index];
     // Switch files inside the tabs array
     project.tabManager.getTabs().splice(index, 1); // Remove tab from tabs
     project.tabManager.getTabs().unshift(oldTab);
@@ -53,9 +64,10 @@ export function loadFromData(project, data, ignoreDocument=false) {
  * ToDo
  *
  * @export
- * @param {any} project
- * @param {any} data
+ * @param {any} project - project
+ * @param {any} data - data
+ * 
+ * @returns {undefined}
  */
 export function reloadFromData(project, data) {
-
 }

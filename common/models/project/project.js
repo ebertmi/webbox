@@ -40,7 +40,7 @@ export default class Project extends EventEmitter {
     // Check the project/language configuration
     this.checkProjectConfiguration();
 
-    // Everything failed, greatly
+    // Everything possible failed => so show an error! 
     if (this.config == null) {
       this.config = languages['python3'];
       this.showLoadError = true;
@@ -94,6 +94,12 @@ export default class Project extends EventEmitter {
     if (this.showLoadError === true) {
       this.showMessage(Severity.Error, 'Es konnte keine gültige Sprachkonfiguration für das Beispiel gefunden werden. Lade mit Python 3..');
     }
+
+    this.setMaxListeners(0);
+
+    this.on('error', err => {
+      console.error(err);
+    });
   }
 
   /**
@@ -367,6 +373,14 @@ export default class Project extends EventEmitter {
 
   /**
    * Adds a new file(-tab) to the project. It checks for duplicates and asks the user what to do.
+   * 
+   * @param {any} name - new file name
+   * @param {any} text - content of the file
+   * @param {any} mode - mode of the file for syntax highlighting
+   * @param {boolean} [active=true] - should be displayed (active tabe)
+   * @memberof Project
+   * 
+   * @returns {undefined}
    */
   addFile(name, text, mode, active=true) {
     let file;
@@ -396,9 +410,11 @@ export default class Project extends EventEmitter {
   /**
    * Sets the unsaved changes statusbar and project indicators.
    *
-   * @param {Boolean} val
+   * @param {Boolean} val - indicator if there are changes
    *
    * @memberOf Project
+   * 
+   * @returns {undefined}
    */
   setUnsavedChanges(val) {
     // Prevent Changes display in RunMode, etc.
@@ -766,6 +782,8 @@ export default class Project extends EventEmitter {
    *
    * @param {Object} data -  The Embed
    * @param {Boolean} [ignoreDocument=false] - If true any code document will be ignored
+   * 
+   * @returns {undefined}
    */
   fromInitialData(data, ignoreDocument=false) {
     loadFromData(this, data, ignoreDocument);
@@ -774,7 +792,7 @@ export default class Project extends EventEmitter {
     this.tests = this.getTestCodeFromData();
 
     // Update title
-    this.setTitle();
+    this.setHTMLDocumentTitle();
 
     // Update URL to slug, when possible
     this.setLocationToSlug();
@@ -783,7 +801,7 @@ export default class Project extends EventEmitter {
   /**
    * Update the URL from the embed id to the slug if available
    *
-   * @returns
+   * @returns {undefined}
    */
   setLocationToSlug() {
     let url = window.location.href;
@@ -803,8 +821,10 @@ export default class Project extends EventEmitter {
 
   /**
    * Update the browser/document title with the project name
+   * 
+   * @returns {undefined}
    */
-  setTitle() {
+  setHTMLDocumentTitle() {
     if (this.projectData.embed.meta.name) {
       document.title = `${this.projectData.embed.meta.name} | ${document.title}`;
     }
@@ -849,10 +869,12 @@ export default class Project extends EventEmitter {
 
   /**
    * Internal save logic
+   * 
+   * @returns {undefined}
    */
   _saveEmbed() {
     if (this.pendingSave) {
-      return; // pending save request
+      return; // do not call twice if there is already a pending save request
     }
 
 
@@ -870,7 +892,7 @@ export default class Project extends EventEmitter {
     };
 
 
-    // trigger save
+    // Call save API
     API.embed.saveEmbed(params, payload).then(res => {
       if (res.error) {
         this.setStatusMessage('Beim Speichern ist ein Fehler augetreten.', null, StatusBarColor.Danger);
@@ -900,7 +922,7 @@ export default class Project extends EventEmitter {
   /**
    * Saves the tests in the assets. This removes all asset entries with the type TESTS_KEY.
    *
-   * @returns
+   * @returns {undefined}
    */
   saveTests() {
     // Get data from file
@@ -935,7 +957,8 @@ export default class Project extends EventEmitter {
   /**
    * Update the embed attributes. This does not save any file changes.
    *
-   * @param {any} embed
+   * @param {any} embed - embed object containing the updated data
+   * @returns {undefined}
    */
   updateEmbed(embed) {
     const params = {
@@ -948,7 +971,8 @@ export default class Project extends EventEmitter {
 
     API.embed.updateEmbed(params, payload).then(res => {
       if (res.error) {
-        this.showMessage(Severity.Error, 'Beim Aktualisieren ist ein Fehler augetreten.');
+        let errorMessage = res.error != '' ? res.error : 'Beim Aktualisieren ist ein Fehler augetreten.';
+        this.showMessage(Severity.Error, errorMessage);
       } else {
         // ToDo: Trigger auto reload here for the IDE
         this.showMessage(Severity.Ignore, 'Erfolgreich aktualisiert.');
@@ -963,6 +987,8 @@ export default class Project extends EventEmitter {
    * Tries to delete the current codeEmbed (owners only).
    *
    * @memberOf Project
+   * 
+   * @returns {undefined}
    */
   deleteEmbed() {
     const id = this.getEmbedId();

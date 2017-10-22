@@ -13,9 +13,13 @@ export default class ProcessPanel extends React.Component {
     this.onBell = this.onBell.bind(this);
     this.onResize = this.onResize.bind(this);
     this.onTitle = this.onTitle.bind(this);
+
+    this.state = {
+      options: optionManager.getOptions()
+    };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     optionManager.on('change', this.onChangeOption);
     this.onChangeOption();
   }

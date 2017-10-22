@@ -9,6 +9,7 @@ export default class InsightsPanel extends React.Component {
 
     this.onChange = this.onChange.bind(this);
     this.onDateClusterSettingsChange = throttle(this.onDateClusterSettingsChange.bind(this), 1000);
+    this.onArchiveEvents = this.onArchiveEvents.bind(this);
 
     // Initial state
     this.state = {
@@ -20,23 +21,10 @@ export default class InsightsPanel extends React.Component {
     };
   }
 
-  onChange() {
-    // Rerender
-    let dateClusters = this.props.item.dateClustersToSeries();
-
-    this.setState({
-      dateClusters: dateClusters,
-      events: this.props.item.events,
-      errors: this.props.item.errors,
-      uniqueUsers: this.props.item.userMap.size
-    });
-  }
-
   componentWillMount() {
     this.props.item.getEvents();
     this.props.item.subscribeOnEvents();
 
-    this.props.item.on('change', this.onChange);
 
     require.ensure(['./EventDatesClusterChart', './ErrorView', './ErrorClusterView', './TestResultOverview'], require => {
       const EventDatesClusterChart = require('./EventDatesClusterChart');
@@ -55,20 +43,41 @@ export default class InsightsPanel extends React.Component {
     });
   }
 
+  componentDidMount() {
+    this.props.item.on('change', this.onChange);
+  }
+
   componentWillUnmount() {
     this.props.item.removeListener('change', this.onChange);
+  }
+
+  onChange() {
+    // Rerender
+    const dateClusters = this.props.item.dateClustersToSeries();
+
+    this.setState({
+      dateClusters: dateClusters,
+      events: this.props.item.events,
+      errors: this.props.item.errors,
+      uniqueUsers: this.props.item.userMap.size
+    });
+  }
+
+  onArchiveEvents () {
+    this.props.item.archiveEvents();
   }
 
   /**
    * Normalize the date cluster settings from the chart component and set those on
    * the insights instance. This call may cause rerendering.
    *
-   * @param {any} settings
+   * @param {any} settings - cluster settings, e.g. start date, end date and resolution
+   * @returns {undefined}
    */
   onDateClusterSettingsChange(settings) {
     let start = settings.dateClusterStart;
     let end = settings.dateClusterEnd;
-    let resolution = settings.dateClusterResolution;
+    const resolution = settings.dateClusterResolution;
 
     if (start && start._d) {
       start = start._d;
@@ -81,21 +90,15 @@ export default class InsightsPanel extends React.Component {
     this.props.item.changeDatesClusterSettings(start, end, resolution);
   }
 
-  renderOverview() {
-    if (this.state.components != null && this.state.components.TestResultOverview != null) {
-      return  <this.state.components.TestResultOverview testResults={this.props.item.testResultsOverview} />;
-    }
-  }
-
   renderTestResults() {
     if (this.state.components != null && this.state.components.TestResultOverview != null) {
-      return  <this.state.components.TestResultOverview testResults={this.props.item.testResultsOverview} />;
+      return <this.state.components.TestResultOverview testResults={this.props.item.testResultsOverview} />;
     }
   }
 
   renderDatesCluster() {
     if (this.state.components != null && this.state.components.EventDatesClusterChart != null) {
-      return  <this.state.components.EventDatesClusterChart onSettingsChange={this.onDateClusterSettingsChange} lineData={this.state.dateClusters} dateClusterResolution={this.props.item.dateClusterResolution} />
+      return <this.state.components.EventDatesClusterChart onSettingsChange={this.onDateClusterSettingsChange} lineData={this.state.dateClusters} dateClusterResolution={this.props.item.dateClusterResolution} />;
     }
   }
 
@@ -107,7 +110,7 @@ export default class InsightsPanel extends React.Component {
 
   renderErrorView() {
     if (this.state.components != null && this.state.components.ErrorView != null) {
-      return  <this.state.components.ErrorView insights={this.props.item} />;
+      return <this.state.components.ErrorView insights={this.props.item} />;
     }
   }
 
@@ -117,9 +120,16 @@ export default class InsightsPanel extends React.Component {
         <h3>Interaktionen</h3>
         <SubmissionView submissions={this.props.item.submissions} />
         <hr/>
+        <div className="row">
+          <div className="col-12">
+            <small id="passwordHelpInline" className="text-muted float-left mr-3">
+              Archiviert alle Events für dieses Beispiel. Diese werden nicht gelöscht, jedoch auch nicht mehr für die Auswertungen berücksichtigt. Diese Aktion ist nicht rückgängig zu machen!
+            </small>
+            <button type="button" className="btn btn-sm btn-danger float-right" onClick={this.onArchiveEvents}>Alle Events archivieren</button>
+          </div>
+        </div>
 
         <h3>Daten <small className="text-muted">(von {this.state.uniqueUsers} Benutzern)</small></h3>
-        { this.renderOverview() }
         { this.renderTestResults() }
         { this.renderDatesCluster() }
         { this.renderErrorClusters() }

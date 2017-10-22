@@ -76,7 +76,7 @@ export default class EventClusterChart extends React.Component {
 
   render() {
     return (
-      <div className="col-xs-12">
+      <div className="col-12">
         <div style={LEGEND_IN_CHART_STYLES}>
           <DiscreteColorLegend
             width={180}

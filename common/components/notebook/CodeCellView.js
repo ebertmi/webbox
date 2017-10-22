@@ -45,7 +45,7 @@ export default class CodeCellView extends React.PureComponent {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     optionManager.on('change', this.onChangeOption);
   }
 
@@ -286,7 +286,7 @@ export default class CodeCellView extends React.PureComponent {
     }
 
     return (
-      <div className="edit-view col-xs-12" onKeyDown={this.onKeyDown}>
+      <div className="edit-view col-12" onKeyDown={this.onKeyDown}>
         <Editor
           fontFamily={`${font}, monospace`}
           fontSize={`${fontSize}pt`}
@@ -311,16 +311,16 @@ export default class CodeCellView extends React.PureComponent {
   render() {
     const { code, className} = this.props;
     const { editMode, showTerminal, project, tabs } = this.state;
-    const classes = classnames(`code-cell col-xs-12 row ${className}`);
-    const externalIcon = <Icon name="external-link" className="icon-control hidden-print" onClick={this.onOpenInExternalWindow} title="IDE in neuem Fenster öffnen" />;
-    const editIcon = <Icon name="edit" className="icon-control hidden-print" onClick={this.onSwitchMode} title="Zum Editiermodus wechseln" />;
-    const readIcon = <Icon name="book" className="icon-control hidden-print" onClick={this.onSwitchMode} title="Zum Lesemodus wechseln (Escape)" />;
-    const playIcon = <Icon name="play" className="success icon-control hidden-print" onClick={this.onStartStopExecution} title="Code ausführen (Shift + Enter)" />;
-    const stopIcon = <Icon name="stop" className="danger icon-control hidden-print" onClick={this.onStartStopExecution} title="Code stoppen" />;
-    const undoIcon = <Icon name="undo" className="danger icon-control hidden-print" onClick={this.onUndoChanges} title="Änderungen rückgängig machen" />;
-    const closeTerminalIcon = <Icon name="close" className="close-btn icon-control hidden-print" onClick={this.onCloseTerminal} title="Terminal schliessen" />;
+    const classes = classnames(`code-cell col-12 row ${className}`);
+    const externalIcon = <Icon name="external-link" className="icon-control d-print-none" onClick={this.onOpenInExternalWindow} title="IDE in neuem Fenster öffnen" />;
+    const editIcon = <Icon name="edit" className="icon-control d-print-none" onClick={this.onSwitchMode} title="Zum Editiermodus wechseln" />;
+    const readIcon = <Icon name="book" className="icon-control d-print-none" onClick={this.onSwitchMode} title="Zum Lesemodus wechseln (Escape)" />;
+    const playIcon = <Icon name="play" className="success icon-control d-print-none" onClick={this.onStartStopExecution} title="Code ausführen (Shift + Enter)" />;
+    const stopIcon = <Icon name="stop" className="danger icon-control d-print-none" onClick={this.onStartStopExecution} title="Code stoppen" />;
+    const undoIcon = <Icon name="undo" className="danger icon-control d-print-none" onClick={this.onUndoChanges} title="Änderungen rückgängig machen" />;
+    const closeTerminalIcon = <Icon name="close" className="close-btn icon-control d-print-none" onClick={this.onCloseTerminal} title="Terminal schliessen" />;
     const additionalPanels = showTerminal ? this.handleAdditionalPanels(tabs, project, code) : null;
-    //const missingEmbed = <div className="col-lg-12 col-md-12 col-xs-12 alert alert-danger">Ungültiger embedType. Wenden Sie sich an den Autor!</div>;
+    //const missingEmbed = <div className="col-lg-12 col-md-12 col-12 alert alert-danger">Ungültiger embedType. Wenden Sie sich an den Autor!</div>;
 
     const ideArea = <div className="ide-area" style={{height: '200px'}}>
       { showTerminal ? closeTerminalIcon : null }
@@ -329,17 +329,17 @@ export default class CodeCellView extends React.PureComponent {
     </div>;
 
     return (
-        <div className={classes}>
-          { /*!project ? missingEmbed : null*/}
-          <div className="action-btn-group">
-            { externalIcon }
-            { editMode ? readIcon : editIcon}
-            { project ? (project.isRunning() ? stopIcon : playIcon) : playIcon}
-            { this.session ? (this.session.getUndoManager().hasUndo() ? null : undoIcon) : null }
-          </div>
-          { editMode ? this.renderEditMode() : this.renderReadMode() }
-          { showTerminal ? ideArea : null }
+      <div className={classes}>
+        { /*!project ? missingEmbed : null*/}
+        <div className="action-btn-group">
+          { externalIcon }
+          { editMode ? readIcon : editIcon}
+          { project ? (project.isRunning() ? stopIcon : playIcon) : playIcon}
+          { this.session ? (this.session.getUndoManager().hasUndo() ? null : undoIcon) : null }
         </div>
+        { editMode ? this.renderEditMode() : this.renderReadMode() }
+        { showTerminal ? ideArea : null }
+      </div>
     );
   }
 }

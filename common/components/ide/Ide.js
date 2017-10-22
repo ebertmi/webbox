@@ -1,9 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import TabBar from './TabBar';
 import { StatusBar } from './StatusBar';
 import PanelArea from './PanelArea';
 import Debug from 'debug';
+import noop from 'lodash/noop';
 
 const debug = Debug('webbox:ide');
 
@@ -15,11 +17,14 @@ export default class Ide extends React.Component {
   constructor(props) {
     super(props);
     this.onDrop = this.onDrop.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
   }
 
   componentDidMount() {
     // handle Ctrl+S on the whole document even when nothing is focused
-    document.addEventListener('keydown', this.onKeyDown.bind(this));
+    if (this.props.noWindowHandlers === false) {
+      document.addEventListener('keydown', this.onKeyDown);
+    }
 
     // ToDo: Add a check for unsaved changes!
     addEventListener('beforeunload', event => {
@@ -27,9 +32,9 @@ export default class Ide extends React.Component {
         return false;
       }
 
-      // Do not bother users with iFrame stuff
+      // Do not bother users with iFrame or IDEWrappers stuff
       // ToDo: should we limit this on presentations only?
-      if ((loadedInIFrame())) {
+      if ((loadedInIFrame()) || this.props.noWindowHandlers) {
         return false;
       }
 
@@ -79,7 +84,8 @@ export default class Ide extends React.Component {
    * @returns {void}
    */
   onKeyDown(e) {
-    let key = e.which || e.keyCode;
+    const key = e.which || e.keyCode;
+
     // Check for Ctrl+S and try to save the document if possible
     if ((e.metaKey || (e.ctrlKey && !e.altKey)) && key === 83) {
 
@@ -106,13 +112,25 @@ export default class Ide extends React.Component {
   }
 
   render() {
+    const keyDownHandler = this.props.noWindowHandlers ? this.onKeyDown : noop;
+
     return (
-      <div className="ide" onDragOver={this.onDragOver} onDrop={this.onDrop} ref={div => this.container = div}>
+      <div className="ide" onKeyDown={keyDownHandler} onDragOver={this.onDragOver} onDrop={this.onDrop} ref={div => this.container = div}>
         <TabBar project={this.props.project}/>
         <PanelArea project={this.props.project} messageList={this.props.messageList} />
         <StatusBar registry={this.props.project.statusBarRegistry}/>
-        <script dangerouslySetInnerHTML={{__html: 'var project =' + this.props.project}} />
+        <script dangerouslySetInnerHTML={{__html: `var project =${this.props.project}`}} />
       </div>
     );
   }
 }
+
+Ide.propTypes = {
+  noWindowHandlers: PropTypes.bool,
+  project: PropTypes.object.isRequired,
+  messageList: PropTypes.object.isRequired
+};
+
+Ide.defaultProps = {
+  noWindowHandlers: false
+};

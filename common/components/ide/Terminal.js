@@ -4,6 +4,8 @@ import Term from 'xterm';
 
 import capitalize from 'lodash/capitalize';
 import debounce from 'lodash/debounce';
+import Debug from 'debug';
+const debug = Debug('webbox:Terminal');
 
 const events = [
   'data', 'end', 'finish',
@@ -66,7 +68,7 @@ export default class Terminal extends React.Component {
       cursorBlink: true
     });
 
-    this.terminal.open(this.container);
+    this.terminal.open(this.container, true);
 
     window.addEventListener('resize', this.onResize);
 
@@ -105,6 +107,7 @@ export default class Terminal extends React.Component {
   }
 
   onStreamChange() {
+    debug('Streams Changed');
     const process = this.props.process;
 
     // Reset the terminal and delete old lines!

@@ -1,9 +1,22 @@
 import React, {Component} from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as AdminActions from '../../actions/AdminActions';
+
+const Fade = ({ children, ...props }) => (
+  <CSSTransition
+    {...props}
+    timeout={{
+      enter: 300,
+      exit: 500,
+     }}
+    classNames="fade"
+  >
+    {children}
+  </CSSTransition>
+);
 
 class MailOverview extends Component {
   constructor(props) {
@@ -76,15 +89,15 @@ class MailOverview extends Component {
    */
   renderConfirmSend () {
     return (
-      <div className="form-footer">
-        <ReactCSSTransitionGroup transitionName="fade-in" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
-          <div className="form-inline">
-            <p className="form-control-static">Wirklich abschicken?</p>
-            <button onClick={this.handleSendConfirm} className="btn btn-danger">Ja</button>
-            <button onClick={this.handleSendDismiss} className="btn btn-default">Nein</button>
-          </div>
-        </ReactCSSTransitionGroup>
-      </div>
+        <TransitionGroup className='form-footer'>
+          <Fade>
+            <div className="form-inline">
+              <p className="form-control-plaintext">Wirklich abschicken?</p>
+              <button onClick={this.handleSendConfirm} className="btn btn-danger">Ja</button>
+              <button onClick={this.handleSendDismiss} className="btn btn-secondary">Nein</button>
+            </div>
+          </Fade>
+      </TransitionGroup>
     );
   }
 

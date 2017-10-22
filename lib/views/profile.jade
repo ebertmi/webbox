@@ -7,7 +7,7 @@ block content
   main.site-content#content
     .container
       .row
-        section.col-xs-12
+        section.col-12
           if infoMessage
             div.alert.alert-info
               p= infoMessage
@@ -18,7 +18,7 @@ block content
       if !user.isAnonymous
         .row
           h4 Benutzereinstellungen
-          form.col-xs-12
+          form.col-12
             div.form-group
               label E-Mail-Adresse:
               input(disabled=true, type="email", value=user.email).disabled.form-control
@@ -29,7 +29,7 @@ block content
 
           hr
           h5 Passwort ändern
-          form.col-xs-12(action="/change-password", method="POST")
+          form.col-12(action="/change-password", method="POST")
             input(type="hidden", name="crumb", value=crumb)
             p.
               Sobald Sie das Passwort erfolgreich geändert haben, werden Sie automatisch ausgeloggt. Anschließend müssen Sie sich
@@ -50,6 +50,6 @@ block content
   .container.second-entry
     if user.isAnonymous
       .row.auth
-        .col-xs-12
+        .col-12
           p.
             Sie müssen angemeldet sein, um auf die Benutzereinstellungen zugreifen zu können.

@@ -79,6 +79,10 @@ export class MessageListModel extends EventEmitter {
   /**
    * Adds the message to the list and triggers a UI change.
    * The @param{message} may be a string, Error, string[] or Error[].
+   * 
+   * @param {Severity} severity - serverity of the message
+   * @param {Array|String|Message|MessageWithAction|Error} message - object that represents a message
+   * @returns {function} hide callback
    */
   showMessage(severity, message) {
     // translate multiple messages into to single calls
@@ -186,8 +190,8 @@ export class MessageListModel extends EventEmitter {
   }
 
   prepareMessages() {
-    let messages = [];
-    let handledMessages = {};
+    const messages = [];
+    const handledMessages = {};
 
     let offset = 0;
 

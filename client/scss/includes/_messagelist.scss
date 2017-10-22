@@ -19,7 +19,8 @@
  *--------------------------------------------------------------------------------------------*/
 .global-message-list {
 	font-size: 14px;
-	position: fixed;
+  position: fixed;
+  top: 1em; /* place it at the top */
 	z-index: 2000; /* on top of the world */
 	color: #000000;
 	box-shadow: 0 2px 8px #A8A8A8;

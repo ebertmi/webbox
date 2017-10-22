@@ -43,44 +43,45 @@ export default class Runner extends EventEmitter {
 
     this.stdio = [this.stdin, this.stdout, this.stderr];
 
+    debug('Recreated stdio streams');
     this.emit('streamsChanged');
   }
 
 
   defaultFileRead(x) {
     // Try to read local fileObject
-    let file = this.project.readFile(x);
+    const file = this.project.readFile(x);
 
     if (file != null) {
       return file;
     }
-    
+
     if (Sk.builtinFiles === undefined || Sk.builtinFiles.files[x] === undefined) {
-        throw new Error('File not found: \'' + x + '\'');
+      throw new Error(`File not found: '${x}'`);
     }
     return Sk.builtinFiles.files[x];
   }
 
   _fileWrite(pyFile, str) {
     if (pyFile.mode === 'r') {
-      throw new Sk.builtin.IOError("File is in readonly mode, cannot write");
+      throw new Sk.builtin.IOError('File is in readonly mode, cannot write');
     }
 
-    let name = pyFile.name.replace('./', '');
-    let file = this.project.getFileForName(name);
+    const name = pyFile.name.replace('./', '');
+    const file = this.project.getFileForName(name);
 
     if (file != null) {
-      let value = file.getValue();
+      const value = file.getValue();
       file.setValue(value + str);
     } else {
       // error
-      throw new Sk.builtin.IOError("File has been deleted, cannot write.");
+      throw new Sk.builtin.IOError('File has been deleted, cannot write.');
     }
   }
 
   _fileRead(x, mode='r') {
-    let name = x.replace('./', '');
-    let file = this.project.getFileForName(name);
+    const name = x.replace('./', '');
+    const file = this.project.getFileForName(name);
 
     // Check mode
     if (mode === 'w') {
@@ -101,7 +102,7 @@ export default class Runner extends EventEmitter {
     }
 
     if (mode === 'b') {
-      throw new Sk.builtin.IOError("Binary mode is not supported");
+      throw new Sk.builtin.IOError('Binary mode is not supported');
     }
 
     if (file != null) {
@@ -110,8 +111,8 @@ export default class Runner extends EventEmitter {
   }
 
   getMainFile() {
-    let name = this.project.projectData.embed.meta.mainFile;
-    let fileObject = this.project.getFileForName(name); // ToDo:
+    const name = this.project.projectData.embed.meta.mainFile;
+    const fileObject = this.project.getFileForName(name); // ToDo:
     let code = '';
 
     if (fileObject) {
@@ -137,7 +138,7 @@ export default class Runner extends EventEmitter {
   showTurtleTab() {
     // add a new tab with the turtle canvas
     this.project.tabManager.closeTabByType('turtle');
-    let tabIndex = this.project.tabManager.addTab('turtle', {item: {canvas: this.canvas}, active: false});
+    const tabIndex = this.project.tabManager.addTab('turtle', {item: {canvas: this.canvas}, active: false});
 
     this.project.tabManager.hideTabsByType('file');
     this.project.tabManager.toggleTab(tabIndex);
@@ -155,12 +156,13 @@ export default class Runner extends EventEmitter {
   }
 
   readPrompt(prompt) {
+    console.log(Sk.Promise);
     return new Promise((resolve, reject) => {
       // Store the reject function, so that we can
       // terminate the program while waiting for user input
       this.stdoutTransform.write(prompt);
 
-      let rli = createInterface({
+      const rli = createInterface({
         input: this.stdin,
         output: this.stdoutTransform,
         terminal: true
@@ -208,7 +210,7 @@ export default class Runner extends EventEmitter {
       file.setAnnotations([]);
     });
 
-    let emitChange = () => {
+    const emitChange = () => {
       process.nextTick(() => {
         this.project.emitChange();
       });
@@ -217,7 +219,7 @@ export default class Runner extends EventEmitter {
     emitChange();
 
     // Check for python2/python3
-    let isPython3 = this.project.projectData.embed.meta.language === 'python3';
+    const isPython3 = this.project.projectData.embed.meta.language === 'python3';
 
     // Create a new canvas
     this.canvas = this.getOrCreateCanvasContainer();
@@ -262,12 +264,13 @@ export default class Runner extends EventEmitter {
 
     // Wrap Skulpt native Promise with Bluebird
     this.promiseChain = this._exec()
-    .tap(this._done.bind(this))
-    .catch(this.handleSkulptError.bind(this))
-    .finally(() => {
+      .tap(this._done.bind(this))
+      .catch(this.handleSkulptError.bind(this))
+      .finally(() => {
       //this.stdout.end();
-      emitChange();
-    });
+        emitChange();
+        debug('finished skulpt execution');
+      });
   }
 
   /**
@@ -276,12 +279,12 @@ export default class Runner extends EventEmitter {
    * @param {any} err
    */
   handleSkulptError(err) {
-    let annotationMap = {};
-    let errObj = this.skulptErrorToErrorObject(err);
+    const annotationMap = {};
+    const errObj = this.skulptErrorToErrorObject(err);
 
     // Special Handling of Keyboard Interrupts
     // Avoid logging and exposing the real error
-    if (errObj.error === "KeyboardInterrupt") {
+    if (errObj.error === 'KeyboardInterrupt') {
       this._error('Ausführung abgebrochen');
       return;
     }
@@ -289,15 +292,15 @@ export default class Runner extends EventEmitter {
     // Normal error handling with logging, etc
     this._error(errObj.raw);
 
-    let tabIndex = this.project.getIndexForFilename(errObj.file.replace('./', ''));
-    let fileContent = tabIndex > -1 ? this.project.tabManager.getTabs()[tabIndex].item.getValue() : '';
+    const tabIndex = this.project.getIndexForFilename(errObj.file.replace('./', ''));
+    const fileContent = tabIndex > -1 ? this.project.tabManager.getTabs()[tabIndex].item.getValue() : '';
 
-    let errorEvent = new EventLog(EventLog.NAME_ERROR, Object.assign({}, errObj, { fileContent: fileContent }));
+    const errorEvent = new EventLog(EventLog.NAME_ERROR, Object.assign({}, errObj, { fileContent: fileContent }));
 
     // Log error event
     this.project.sendEvent(errorEvent);
 
-    let normalizedFileName = errObj.file.replace('./', '');
+    const normalizedFileName = errObj.file.replace('./', '');
 
     if (annotationMap[normalizedFileName] == null) {
       annotationMap[normalizedFileName] = [];
@@ -306,14 +309,14 @@ export default class Runner extends EventEmitter {
     // Add annotation for code editor
     annotationMap[normalizedFileName].push({
       row: errObj.line - 1,
-      column: errObj.column != null ? errObj.column  : 0,
+      column: errObj.column != null ? errObj.column : 0,
       text: errObj.message,
       type: 'error'
     });
 
     // Display annotations
     this.files.forEach((file) => {
-      let annotations = annotationMap[file.getName()];
+      const annotations = annotationMap[file.getName()];
 
       if (annotations == null) {
         file.clearAnnotations();
@@ -336,9 +339,9 @@ export default class Runner extends EventEmitter {
     // Create stacktrace message
     if (err.traceback) {
       for (let i = 0; i < err.traceback.length; i++) {
-        ret += "\n  at " + err.traceback[i].filename + " line " + err.traceback[i].lineno;
-        if ("colno" in err.traceback[i]) {
-          ret += " column " + err.traceback[i].colno;
+        ret += '\n  at ' + err.traceback[i].filename + ' line ' + err.traceback[i].lineno;
+        if ('colno' in err.traceback[i]) {
+          ret += ' column ' + err.traceback[i].colno;
         }
       }
     }
@@ -378,26 +381,26 @@ export default class Runner extends EventEmitter {
       throw new Error('No exec command');
     }
 
-    let command = ['python3']; //this._commandArray(this.config.exec);
+    const command = ['python3']; //this._commandArray(this.config.exec);
 
-    let mainFile = this.getMainFile();
+    const mainFile = this.getMainFile();
 
-    let runEvent = new EventLog(EventLog.NAME_RUN, { execCommand: [command, mainFile].join(' ') });
+    const runEvent = new EventLog(EventLog.NAME_RUN, { execCommand: [command, mainFile].join(' ') });
     this.project.sendEvent(runEvent);
 
     this._status(command.join(' '), false); // output run call
 
-    let processPromise = new Bluebird((resolve, reject) => {
+    const processPromise = new Bluebird((resolve, reject) => {
       Sk.misceval.asyncToPromise(() => {
         return Sk.importMainWithBody(mainFile.name.replace('.py',''), false, mainFile.code, true);
       }, {'*': this.handleInterrupt.bind(this)})
-      .then((res) => {
-        debug('resolving skulpt execution', res);
-        resolve();
-      }, err => {
-        debug('rejecting skulpt execution', err);
-        reject(err);
-      });
+        .then((res) => {
+          debug('resolving skulpt execution', res);
+          resolve();
+        }, err => {
+          debug('rejecting skulpt execution', err);
+          reject(err);
+        });
     });
 
     return processPromise;

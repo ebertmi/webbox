@@ -3,7 +3,8 @@ import set from 'lodash/set';
 
 import optionManager from '../../models/options';
 
-import Modal from '../Modal';
+import Modal from 'react-modal';
+//import Modal from '../Modal';
 import ModalBody from '../ModalBody';
 import ModalFooter from '../ModalFooter';
 import ModalHeader from '../ModalHeader';
@@ -45,9 +46,11 @@ export default class Menu extends React.Component {
     const input = document.createElement('input');
     input.type = 'file';
     input.multiple = true;
-    input.addEventListener('change', this.onImport);
-
     this.input = input;
+  }
+
+  componentDidMount() {
+    this.input.addEventListener('change', this.onImport);
   }
 
   /**
@@ -91,16 +94,10 @@ export default class Menu extends React.Component {
     this.focusShareLink();
   }
 
-  toggleShareLinkModal() {
+  onModalClose() {
     this.setState({
-      showShareLinkModal: !this.state.showShareLinkModal
+      showShareLinkModal: false
     });
-  }
-
-  focusShareLink() {
-    if (this.refs.sharelinkinput) {
-      this.refs.sharelinkinput.select();
-    }
   }
 
   onResetProject(e) {
@@ -113,7 +110,8 @@ export default class Menu extends React.Component {
    * Handler for creating new files. Delegates the file creation to the project model associated
    * with this Menu.
    *
-   * @param e Event object
+   * @param {event} e Event object
+   * @returns {undefined}
    */
   onNewFile(e) {
     e.preventDefault();
@@ -187,14 +185,6 @@ export default class Menu extends React.Component {
     }
   }
 
-  changeFontSize(delta) {
-    let fontSize = optionManager.getOptions().fontSize;
-    fontSize += delta;
-
-    let options = set({}, 'fontSize', fontSize);
-    optionManager.setOptions(options);
-  }
-
   onSmallerFontsize(e) {
     e.preventDefault();
     this.changeFontSize(-2);
@@ -217,6 +207,26 @@ export default class Menu extends React.Component {
     e.preventDefault();
     let link = this.props.project.getSharableLink();
     window.open(link, '_blank');
+  }
+
+  changeFontSize(delta) {
+    let fontSize = optionManager.getOptions().fontSize;
+    fontSize += delta;
+
+    let options = set({}, 'fontSize', fontSize);
+    optionManager.setOptions(options);
+  }
+
+  toggleShareLinkModal() {
+    this.setState({
+      showShareLinkModal: !this.state.showShareLinkModal
+    });
+  }
+
+  focusShareLink() {
+    if (this.refs.sharelinkinput) {
+      this.refs.sharelinkinput.select();
+    }
   }
 
   renderStatisticsItem() {
@@ -266,9 +276,9 @@ export default class Menu extends React.Component {
 
     if (project.exec) {
       newTerminal = (
-            <DropdownItem onClick={this.onNewTerminal}>
-              <Icon name="terminal" fixedWidth/> Neues Terminal
-            </DropdownItem>
+        <DropdownItem onClick={this.onNewTerminal}>
+          <Icon name="terminal" fixedWidth/> Neues Terminal
+        </DropdownItem>
       );
     }
 
@@ -293,17 +303,34 @@ export default class Menu extends React.Component {
         <DropdownItem onClick={this.onShowShareableLink}>
           <Icon name="share" fixedWidth/> Teilen (Link)
         </DropdownItem>
-        <Modal isOpen={this.state.showShareLinkModal} toggle={this.toggleShareLinkModal} backdrop={true}>
-          <ModalHeader toggle={this.toggleShareLinkModal}>Teilbarer Link</ModalHeader>
-          <ModalBody>
-            <p>Unter folgendem Link kann das Beispiel inklusive Ihrer Änderungen aufgerufen werden.</p>
-            <input ref="sharelinkinput" className="form-control" type="text" readOnly value={this.state.shareLink} onClick={this.focusShareLink} />
-            <small>Falls Sie iOS verwenden, klicken Sie bitte auf den Link und nutzen Sie die Standardfunktionen zum kopieren.</small>
-          </ModalBody>
-          <ModalFooter>
-            <button className="btn btn-primary" onClick={this.onCopyShareLink}>{this.state.shareLinkModalCopyButtonText}</button>{' '}
-            <button className="btn btn-secondary" onClick={this.toggleShareLinkModal}>Schließen</button>
-          </ModalFooter>
+        <Modal
+          isOpen={this.state.showShareLinkModal}
+          onRequestClose={this.toggleShareLinkModal}
+          shouldCloseOnOverlayClick={true}
+          className={{
+            base: 'modal-dialog',
+            afterOpen: 'show',
+            beforeClose: ''
+          }}
+
+          overlayClassName={{
+            base: 'modal-backdrop',
+            afterOpen: 'show',
+            beforeClose: ''
+          }}
+        >
+          <div className="modal-content">
+            <ModalHeader toggle={this.toggleShareLinkModal}>Teilbarer Link</ModalHeader>
+            <ModalBody>
+              <p>Unter folgendem Link kann das Beispiel inklusive Ihrer Änderungen aufgerufen werden.</p>
+              <input ref="sharelinkinput" className="form-control" type="text" readOnly value={this.state.shareLink} onClick={this.focusShareLink} />
+              <small>Falls Sie iOS verwenden, klicken Sie bitte auf den Link und nutzen Sie die Standardfunktionen zum kopieren.</small>
+            </ModalBody>
+            <ModalFooter>
+              <button className="btn btn-primary" onClick={this.onCopyShareLink}>{this.state.shareLinkModalCopyButtonText}</button>{' '}
+              <button className="btn btn-secondary" onClick={this.toggleShareLinkModal}>Schließen</button>
+            </ModalFooter>
+          </div>
         </Modal>
 
         { this.renderStatisticsItem() }

@@ -45,16 +45,12 @@ export default class TabBar extends React.Component {
     this.onScreenfullChange = this.onScreenfullChange.bind(this);
     this.onTabListScroll = this.onTabListScroll.bind(this);
     this.onToggleSendToTeacherModal = this.onToggleSendToTeacherModal.bind(this);
+    this.onCloseSendToTeacherModal = this.onCloseSendToTeacherModal.bind(this);
 
     this.state = {
-      showSendToTeacherModal: false
+      showSendToTeacherModal: false,
+      tabs: []
     };
-  }
-
-  componentWillMount() {
-    this.props.project.on('change', this.onChange);
-    this.props.project.tabManager.on('change', this.onChange);
-    this.onChange();
   }
 
   componentDidMount() {
@@ -62,6 +58,10 @@ export default class TabBar extends React.Component {
     if (screenfull.enabled) {
       document.addEventListener(screenfull.raw.fullscreenchange, this.onScreenfullChange);
     }
+
+    this.props.project.on('change', this.onChange);
+    this.props.project.tabManager.on('change', this.onChange);
+    this.onChange();
   }
 
   componentWillUnmount() {
@@ -80,6 +80,12 @@ export default class TabBar extends React.Component {
     });
   }
 
+  onCloseSendToTeacherModal() {
+    this.setState({
+      showSendToTeacherModal: false
+    });
+  }
+
   onShareWithTeacher(message) {
     this.props.project.shareWithTeacher(message);
   }
@@ -92,6 +98,7 @@ export default class TabBar extends React.Component {
     this.setState({
       tabs: this.props.project.tabManager.getTabs()
     });
+    this.forceUpdate();
   }
 
   /**
@@ -99,7 +106,7 @@ export default class TabBar extends React.Component {
    */
   onToggleFullscreen(e) {
     if (screenfull.enabled) {
-      screenfull.toggle(e.currentTarget.closest(".ide"));
+      screenfull.toggle(e.currentTarget.closest('.ide'));
     }
   }
 
@@ -206,16 +213,16 @@ export default class TabBar extends React.Component {
 
     if (this.props.project.mode === MODES.Default) {
       shareWithTeacher = (
-          <NavItem className="unselectable" onClick={this.onToggleSendToTeacherModal} useHref={false} title="An Dozenten schicken" >
-            <Icon className="unselectable" name="paper-plane" title="An Dozenten schicken" />
-          </NavItem>
+        <NavItem className="unselectable" onClick={this.onToggleSendToTeacherModal} useHref={false} title="An Dozenten schicken" >
+          <Icon className="unselectable" name="paper-plane" title="An Dozenten schicken" />
+        </NavItem>
       );
     }
 
     return (
       <div className="control-bar">
         <ScrollableElement scrollYToX={true} className="tabs-scroll-wrapper" onScroll={this.onTabListScroll}>
-          <nav className="tabs-container" ref={ref => this.tabList = ref}>
+          <nav className="tabs-container" ref={ref => { this.tabList = ref; }}>
             {this.renderTabs()}
           </nav>
         </ScrollableElement>
@@ -227,7 +234,11 @@ export default class TabBar extends React.Component {
             <Icon name="save" />
           </NavItem>
           { shareWithTeacher }
-          <SendToTeacherModal isOpen={this.state.showSendToTeacherModal} toggle={this.onToggleSendToTeacherModal} callback={this.onShareWithTeacher}/>
+          <SendToTeacherModal
+            isOpen={this.state.showSendToTeacherModal}
+            toggle={this.onCloseSendToTeacherModal}
+            callback={this.onShareWithTeacher}
+          />
 
           <NavItem className="unselectable" onClick={this.onToggleFullscreen} title="Vollbildmodus" disabled={!screenfull.enabled}>
             <Icon name={fullScreenIcon} title="Vollbildmodus"/>

@@ -34,13 +34,7 @@ export default class TestsPanel extends React.Component {
     this.onChange = this.onChange.bind(this);
   }
 
-  onChange() {
-  }
-
   componentDidMount() {
-  }
-
-  componentWillMount() {
     this.props.item.on('change', this.onChange);
   }
 
@@ -76,7 +70,7 @@ export default class TestsPanel extends React.Component {
                 <p>
                   <span>{ checkIcon } </span>
                   {test.name}
-                  <span className="pull-xs-right">
+                  <span className="float-right">
                     <strong>{test.score} / {test.max_score}</strong>
                   </span>
                 </p>

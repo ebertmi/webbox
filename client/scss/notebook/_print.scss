@@ -1,11 +1,77 @@
 @media print {
 
+  /* Gutenberg => https://github.com/BafS/Gutenberg/blob/master/scss/_pagination.scss */
+  table,
+  blockquote,
+  pre,
+  code,
+  figure,
+  li,
+  hr,
+  ul,
+  ol,
+  a,
+  tr,
+  img,
+  div.markdown-cell,
+  div.code-cell,
+  div.code-block,
+  div.raw-cell,
+  div.col-12.view-mode,
+  div.centered {
+    page-break-inside: avoid;
+  }
+  
+  // Orphans and widows
+  h2,
+  h3,
+  h4,
+  p,
+  a {
+    orphans: 3; // minimum number of lines that must be left at the bottom of a page
+    widows: 3; // minimum number of lines that must be left at the top of a page
+  }
+  
+  // Avoid breaking inside or just after titles
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+  
+  // Avoid breaking before a paragraph if header before
+  h1 + p,
+  h2 + p,
+  h3 + p {
+    page-break-before: avoid;
+  }
+  
+  // Avoid to break inside an image
+  img {
+    page-break-after: auto;
+    page-break-before: auto;
+    page-break-inside: avoid;
+  }
+  
+  pre {
+    white-space: pre-wrap !important;
+    word-wrap: break-word;
+  }
+
   blockquote {
     border: none;
   }
 
   .header-anchor {
     display: none;
+  }
+
+  .hidden-print {
+    display: none !important;
   }
 
   .hljs {

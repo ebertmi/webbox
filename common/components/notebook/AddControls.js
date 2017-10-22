@@ -37,7 +37,7 @@ export default class AddControls extends PureComponent {
       return null;
     }
     return (
-      <div className="add-controls col-xs-12">
+      <div className="add-controls col-12">
         <Toolbar className="notebook-toolbar">
           <ActionItem isIcon={true} title="Neuer Textabschnitt" onClick={this.addMarkdownCell}>
             <Icon name="file-text-o" className="icon-control" />
