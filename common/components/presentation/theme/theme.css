@@ -1,6 +1,7 @@
 .spectacle-slide {
   -webkit-transform-origin: center center;
           transform-origin: center center;
+  overflow-y: auto!important;
 }
 
 .spectacle-content .fragment * {

@@ -277,7 +277,7 @@ export default class IdeWrapper extends React.Component {
       overlay = this.generateSVGOverlay(this.props.height, headlineMessage, '#f00', '#fff');
     }
 
-    return <div className={`container ${classNames}`} onClick={clickEvent}>
+    return <div className={`container ${classNames}`} style={{ height: `${this.props.height}px` }} onClick={clickEvent}>
       {stateIndicator}
       {overlay}
     </div>;
@@ -320,7 +320,7 @@ export default class IdeWrapper extends React.Component {
         }
       }
 
-      toRender = <div className="col-12" id="ide-container" style={{ height: `${this.props.height}px` }}><Ide project={this.project} messageList={this.messageList} noWindowHandlers={true}/></div>;
+      toRender = <div className="col-12" id={`ide-container-${this.props.codeID}`} style={{ height: `${this.props.height}px` }}><Ide project={this.project} messageList={this.messageList} noWindowHandlers={true}/></div>;
     }
 
     return toRender;

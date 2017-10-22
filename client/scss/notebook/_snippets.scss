@@ -4,8 +4,9 @@
 
 .hljs {
   padding: 1rem;
+  padding-top: 0;
   margin: 1rem (-$grid-gutter-width / 2);
-  //background-color: #f7f7f9;
+  background-color: transparent;
 
   @include media-breakpoint-up(sm) {
     padding: 1.5rem;
@@ -18,7 +19,7 @@
   padding: 0;
   margin-top: 0;
   margin-bottom: 0;
-  //background-color: transparent;
+  background-color: transparent;
   border: 0;
 }
 

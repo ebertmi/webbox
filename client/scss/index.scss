@@ -268,8 +268,11 @@ form .btn,
  */
 
 figure.hljs {
-  background-color: rgba(248, 248, 248, 0.3);
-  border-left: 2px solid #1d79b6;
+  background-color: transparent;
+  padding-top: 0;
+  & .hljs {
+    padding-top: 0;
+  }
 }
 
 pre.hljs {
