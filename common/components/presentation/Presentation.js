@@ -101,11 +101,12 @@ export default class Presentation extends React.Component {
         embedType = cell.getIn(['metadata', 'embedType'], notebook.get('embedType'));
         //runId = cell.getIn(['metadata', 'runid']);
         //return <Highlight showRunButton={true} embedType={embedType} runId={runId} code={source} executionLanguage={executionLanguage} notebookLanguage={lang}></Highlight>;
-        return (
+        return <CodeCellView className="present-mode" viewComponent={Highlight} code={source} cell={cell} executionLanguage={{executionLanguage: executionLanguage}} notebookLanguage={lang} embedType={embedType}/>;
+        /*return (
           <Window title={lang}>
             <CodeCellView className="present-mode" viewComponent={Highlight} code={source} cell={cell} executionLanguage={{executionLanguage: executionLanguage}} notebookLanguage={lang} embedType={embedType}/>
           </Window>
-        );
+        );*/
       case 'codeembed':
         //return <Text>{source}</Text>;
         height = parseInt(cell.getIn(['metadata', 'height'], 350), 10);

@@ -83,8 +83,8 @@ export const style = {
     position: 'relative',
     padding: '8px',
     backgroundColor: '#E0E9F0',
-    borderTopLeftRadius: '10px',
-    borderTopRightRadius: '10px',
+    borderTopLeftRadius: '0px',
+    borderTopRightRadius: '0px',
   },
   nav: {
     display: 'flex',
@@ -121,7 +121,7 @@ export const style = {
     marginTop: '-5px'
   },
   main: {
-    backgroundColor: 'rgba(248, 248, 248, 0.5)',
+    backgroundColor: 'rgba(248, 248, 248, 1)',
     border: '1px solid rgb(224, 233, 240)',
     color: 'black',
     fontFamily: "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace",

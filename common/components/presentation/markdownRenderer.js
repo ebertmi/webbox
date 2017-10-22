@@ -10,7 +10,7 @@ import Debug from 'debug';
 import katex from 'katex';
 import mkitm from 'markdown-it-math';
 import isString from 'lodash/isString';
-import { S, Code, BlockQuote, Quote, Heading, Image, Link, Text, ListItem, List } from "spectacle";
+import { S, Code, BlockQuote, Quote, Heading, Image, Link, Text, ListItem, List, Table, TableHeader, TableBody, TableRow, TableHeaderItem, TableItem } from "spectacle";
 import Decorate from 'markdown-it-decorate';
 import MarkdownContainer from '../../util/markdown-it-container';
 
@@ -135,6 +135,7 @@ export const mdOptions = {
 
     if (props.class != null) {
       props.className = props.class;
+      delete props.class;
     }
 
     // Maybe we need here a more generic solution with a simple mapping
@@ -259,6 +260,22 @@ export const mdOptions = {
           type: 'htmlinline',
           content
         };
+
+      case 'table':
+        return <Table {...props}>{children}</Table>;
+
+      case 'thead':
+        return <TableHeader {...props}>{children}</TableHeader>;
+      case 'tbody':
+        return <TableBody {...props}>{children}</TableBody>;
+      case 'tr':
+        return <TableRow {...props}>{children}</TableRow>;
+      case 'th':
+        content = makeChildren(children, props, options.htmlOptions);
+        return <TableHeaderItem {...props}>{content}</TableHeaderItem>;
+      case 'td':
+        content = makeChildren(children, props, options.htmlOptions);
+        return <TableItem {...props}>{content}</TableItem>;
 
       case 'wrapper':
         return <DefaultWrapper {...props}>{children}</DefaultWrapper>;

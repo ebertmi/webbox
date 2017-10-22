@@ -180,13 +180,13 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
           minWidth: "100%",
           maxWidth: 800,
           textAlign: "left",
-          backgroundColor: "rgba(248, 248, 248, 0.5)",
+          backgroundColor: "rgba(248, 248, 248, 1)",
           borderLeft: "2px solid #1d79b6"
         },
         code: {
           textAlign: "left",
           fontWeight: "normal",
-          backgroundColor: "transparent"
+          backgroundColor: "inherit"
         }
       },
       code: {
@@ -281,11 +281,11 @@ const screen = (colorArgs = defaultColors, fontArgs = defaultFonts) => {
         strikethrough: {}
       },
       tableHeaderItem: {
-        fontSize: "2.66rem",
+        fontSize: "1.8rem",
         fontWeight: "bold"
       },
       tableItem: {
-        fontSize: "1.8rem",
+        fontSize: "1.5rem",
         textAlign: "left"
       },
       table: {

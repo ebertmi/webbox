@@ -5,7 +5,7 @@
   "main": "webbox.js",
   "scripts": {
     "clean": "rimraf public/js/* public/css/*",
-    "clean-react": "rimraf node_modules/spectacle/node_modules/component-playground/node_modules/react-dom",
+    "clean-react": "rimraf node_modules/spectacle/node_modules/component-playground/node_modules/react-dom && rimraf node_modules/spectacle/node_modules/react",
     "test:build": "webpack --config webpack.config.test.js",
     "test:watch": "webpack --config webpack.config.test.js --watch --display-modules",
     "start:prod": "cross-env NODE_ENV=production node webbox.babel.js",
@@ -108,7 +108,7 @@
     "react-json-tree": "^0.10.9",
     "react-lazyload": "^2.3.0",
     "react-modal": "^3.0.4",
-    "react-paginate": "^4.4.4",
+    "react-paginate": "^5.0.0",
     "react-redux": "^5.0.6",
     "react-router": "^3.0.5",
     "react-vis": "^1.7.9",

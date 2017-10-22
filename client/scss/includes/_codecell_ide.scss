@@ -49,11 +49,14 @@
 
 
  // CODE AREA
-.edit-view,.read-view,.highlight-view {
+.edit-view,
+.read-view,
+.highlight-view {
   flex: 1 0 auto;
   width: auto;
   max-width: none;
   padding-left: 0;
+  padding-right: 0;
 }
 
 .edit-view {
