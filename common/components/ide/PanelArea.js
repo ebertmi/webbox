@@ -1,5 +1,13 @@
 import React from 'react';
 
+import {
+  ReflexContainer,
+  ReflexSplitter,
+  ReflexElement
+} from 'react-reflex'
+
+import 'react-reflex/styles.css'
+
 import FilePanel from './panels/FilePanel';
 import ProcessPanel from './panels/ProcessPanel';
 import OptionsPanel from './panels/OptionsPanel';
@@ -10,6 +18,10 @@ import { MessageList } from '../messagelist/messageList';
 import MatplotlibPanel from './panels/MatplotlibPanel';
 import TestAuthoringPanel from './panels/TestAuthoringPanel';
 import TestResultPanel from './panels/TestResultPanel';
+
+import Debug from 'debug';
+
+const debug = Debug('webbox:PanelArea');
 
 const PANEL_TYPES = {
   file: FilePanel,
@@ -54,7 +66,7 @@ export default class PanelArea extends React.Component {
     return this.state.tabs.map(({active, item, type}, index) => {
       let PanelType = PANEL_TYPES[type];
 
-      if (PanelType && (active || PanelType.renderInactive)) {
+      if (PanelType && (active /*|| PanelType.renderInactive*/)) {
         return (
           <PanelType
             key={index}
@@ -76,11 +88,44 @@ export default class PanelArea extends React.Component {
   }
 
   render() {
+    const panels = this.renderPanels();
+
+    const children = [];
+    panels.forEach((panel, i) => {
+      if (panel === null || panel === undefined) {
+        return;
+      }
+
+      const isLast = (panels.length - 1) == i;
+
+      children.push(
+        <ReflexElement
+          key={`panel-${i}`}
+          propagateDimensions={true}
+          renderOnResizeRate={50}
+          renderOnResize={true}
+          minSize="200">{panel}</ReflexElement>
+      );
+
+      if (isLast === false) {
+        children.push(<ReflexSplitter key={`splitter-${i}`} propagate={true}/>);
+      }
+    });
+
+
+    return (
+      <ReflexContainer className="panel-area" orientation="vertical">
+        {children}
+      </ReflexContainer>
+    );
+  }
+
+  /*render() {
     return (
       <div className="panel-area">
         {this.renderGlobalMessageList()}
         {this.renderPanels()}
       </div>
     );
-  }
+  }*/
 }

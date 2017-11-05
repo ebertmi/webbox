@@ -387,7 +387,7 @@ export default class Project extends EventEmitter {
     let filename = name;
 
     if (name == null) {
-      filename = `Unbenannt${  this.tabManager.unnamedTabCounter++  }.txt`;
+      filename = `Unbenannt${this.tabManager.unnamedTabCounter++}.txt`;
       file = new File(filename, text, mode);
       file.setNameEdtiable(true); // enable file renaming immediatelly
     } else {

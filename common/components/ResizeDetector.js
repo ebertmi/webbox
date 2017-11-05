@@ -107,12 +107,15 @@ export default class ResizeDetector extends Component {
     });
   }
 
-  handleScroll() {
+  handleScroll(e) {
     if (typeof window === 'undefined') {
       return;
     }
 
     const { state } = this;
+
+    e.preventDefault();
+    e.stopPropagation();
 
     const [width, height] = this.containerSize();
     if ((width !== state.lastWidth) || (height !== state.lastHeight)) {

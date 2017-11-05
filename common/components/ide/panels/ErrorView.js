@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Ace, {EditSession} from 'ace';
+//import Ace, {EditSession} from 'ace';
 
 import Editor from '../../Editor';
 import optionManager from '../../../models/options';

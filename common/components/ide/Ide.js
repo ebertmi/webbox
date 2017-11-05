@@ -7,7 +7,7 @@ import PanelArea from './PanelArea';
 import Debug from 'debug';
 import noop from 'lodash/noop';
 
-const debug = Debug('webbox:ide');
+const debug = noop;//Debug('webbox:ide');
 
 function loadedInIFrame () {
   return window.frameElement && window.frameElement.nodeName == 'IFRAME';
@@ -119,7 +119,7 @@ export default class Ide extends React.Component {
         <TabBar project={this.props.project}/>
         <PanelArea project={this.props.project} messageList={this.props.messageList} />
         <StatusBar registry={this.props.project.statusBarRegistry}/>
-        <script dangerouslySetInnerHTML={{__html: `var project =${this.props.project}`}} />
+
       </div>
     );
   }

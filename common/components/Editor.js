@@ -1,18 +1,29 @@
 import React from 'react';
-import Ace from 'ace';
+import PropTypes from 'prop-types';
+import ResizeDetector from './ResizeDetector';
+
+const Monaco = window.monaco;
 
 // "dumb" editor component
 
 export default class Editor extends React.Component {
+  constructor() {
+    super();
+
+    this.onResize = this.onResize.bind(this);
+  }
+
   componentDidMount() {
-    this.editor = Ace.edit(this.container);
-    this.editor.$blockScrolling = Infinity;
+    this.editor = monaco.editor.create(this.container);
+    //window.__editor = this.editor;
     this.updateProps(this.props);
+
+    window.addEventListener("resize", this.onResize);
   }
 
   componentWillUnmount() {
-    this.editor.setSession();
-    this.editor.destroy();
+     this.editor.dispose();
+     window.removeEventListener("resize", this.onResize);
   }
 
   componentWillReceiveProps(next) {
@@ -20,24 +31,27 @@ export default class Editor extends React.Component {
   }
 
   componentDidUpdate() {
-    this.editor.resize();
+    this.editor.layout();
+  }
+
+  onResize() {
+    if (this.editor && this.editor.layout) {
+      this.editor.layout();
+    }
   }
 
   updateProps(props) {
-    let {onBlur, minHeight, session, ...options} = props;
+    let {onBlur, minHeight, file, options} = props;
 
-    if (session) {
-      this.editor.setSession(props.session);
+    if (file) {
+      this.editor.setModel(props.file.model);
     }
 
-    this.editor.setOptions(options);
+    this.editor.updateOptions(options);
 
-    if (Ace.config.$defaultOptions.editor.enableBasicAutocompletion == null) {
-      Ace.config.loadModule('ace/ext/language_tools', () => {
-        this.editor.setOptions(options);
-      });
+    if (options.theme) {
+      monaco.editor.setTheme(options.theme)
     }
-
   }
 
   focus() {
@@ -45,11 +59,42 @@ export default class Editor extends React.Component {
   }
 
   render() {
-    const styles = {};
+    const { width, height } = this.props;
+    const fixedWidth = width.toString().indexOf('%') !== -1 ? width : `${width}px`;
+    const fixedHeight = height.toString().indexOf('%') !== -1 ? height : `${height}px`;
+    const style = {
+      width: fixedWidth,
+      height: fixedHeight,
+      display: 'block'
+    };
+
     if (this.props.minHeight) {
-      styles.minHeight = this.props.minHeight;
+      style.minHeight = this.props.minHeight;
     }
-    return <div onBlur={this.props.onBlur} style={styles} ref={div => this.container = div}/>;
+
+    return (
+        //<div>
+          <div style={style} ref={div => this.container = div} onBlur={this.props.onBlur} className="react-monaco-editor-container" />
+        //  <ResizeDetector handleWidth handleHeight onResize={this.onResize} />
+        //</div>
+      )
   }
 
 }
+
+Editor.propTypes = {
+  width: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+  height: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+  options: PropTypes.object
+}
+
+Editor.defaultProps = {
+  width: '100%',
+  height: '100%'
+};

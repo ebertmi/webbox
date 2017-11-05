@@ -45,7 +45,6 @@ module.exports = {
     modules: ['client', 'node_modules']
   },
   externals: {
-    ace: 'ace',
     'highlight.js': 'hljs',
     'markdown-it': 'markdownit',
     'katex': 'katex',
@@ -127,6 +126,12 @@ module.exports = {
         from: path.join(__dirname, 'common/components/presentation/theme/theme.css'),
         to: '../css/spectacle.css',
         copyUnmodified: true
+      }
+    ]),
+    new CopyWebpackPlugin([
+      {
+        from: '../node_modules/monaco-editor/min/vs',
+        to: 'vs',
       }
     ]),
     new webpack.optimize.ModuleConcatenationPlugin()

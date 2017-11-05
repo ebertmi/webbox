@@ -1,7 +1,14 @@
-import Ace, {EditSession, UndoManager} from 'ace';
+//import Ace, {EditSession, UndoManager} from 'ace';
 
-const modelist = Ace.require('ace/ext/modelist');
-
+//const modelist = Ace.require('ace/ext/modelist');
+const modelist = {
+  getModeForPath: () => {}
+}
+class EditSession {
+  constructor() {
+    
+  }
+}
 /**
  * Holds a code file with the tests
  *

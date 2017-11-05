@@ -3,6 +3,7 @@
 
 import { EventEmitter } from 'events';
 import defaultsDeep from 'lodash/defaultsDeep';
+import clone from 'lodash/clone';
 
 const LOCAL_STORAGE_KEY = 'sourcebox.options';
 
@@ -13,15 +14,24 @@ const DEFAULT_OPTIONS = {
     audibleBell: true
   },
   ace: {
-    theme: 'ace/theme/xcode',
-    showInvisibles: false,
+    displayIndentGuides: false,
+    enableBasicAutocompletion: true,
+    enableLiveAutocompletion: false,
     highlightActiveLine: true,
     highlightSelectedWord: true,
-    displayIndentGuides: false,
     showGutter: true,
-    wrap: false,
-    enableBasicAutocompletion: true,
-    enableLiveAutocompletion: false
+    showInvisibles: false,
+    theme: 'ace/theme/xcode',
+    wrap: false
+  },
+  editor: {
+    automaticLayout: false,
+    cursorStyle: 'line',
+    readOnly: false,
+    roundedSelection: false,
+    scrollBeyondLastLine: false,
+    selectOnLineNumbers: true,
+    theme: 'vs-dark'
   }
 };
 
@@ -70,6 +80,15 @@ class OptionManager extends EventEmitter {
 
   getOptions() {
     return this.options;
+  }
+
+  getEditorOptions() {
+    const options = clone(this.options.editor);
+
+    options.fontSize = this.options.fontSize;
+    options.fontFamily = this.options.font;
+
+    return options;
   }
 
   emitChange() {
