@@ -18,8 +18,7 @@ export default class TestAuthoringPanel extends React.Component {
   }
 
   onChange() {
-    this.setState({
-    });
+
   }
 
   componentDidMount() {
@@ -62,7 +61,7 @@ export default class TestAuthoringPanel extends React.Component {
         </div>
         <hr />
         <Editor
-          otions={this.state.options}
+          options={this.state.options}
           file={file}
           ref={editor => {this.editor = editor;}}
         />

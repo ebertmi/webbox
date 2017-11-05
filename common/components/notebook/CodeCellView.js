@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-//import { EditSession, UndoManager } from 'ace';
 import classnames from 'classnames';
 
 import Editor from '../Editor';
@@ -14,6 +13,7 @@ import CodeBlock from './CodeBlock';
 import { EmbedTypes, RunModeDefaults } from '../../constants/Embed';
 
 import { createEmbedObject } from '../../util/embedUtils';
+import { createModel } from '../../util/monacoUtils';
 
 import SourceboxProject from '../../models/project/sourceboxProject';
 import SkulptProject from '../../models/project/skulptProject';
@@ -88,7 +88,7 @@ export default class CodeCellView extends React.PureComponent {
      *  - Either use the set id for statistics or generate a new one
      *  - Current course/chapter (for statistics)
      */
-    const code = this.session != null ? this.session.getValue() : this.props.code;
+    const code = this.model != null ? this.model.getValue() : this.props.code;
     const notebookLanguageInformation = this.props.cell.getIn(['metadata', 'executionLanguage'], this.props.executionLanguage.executionLanguage);
     const notebookEmbedType = this.props.embedType || EmbedTypes.Sourcebox;
     const embedType = this.props.cell.getIn(['metadata', 'embedType'], notebookEmbedType);
@@ -109,7 +109,7 @@ export default class CodeCellView extends React.PureComponent {
   }
 
   onUndoChanges() {
-    this.session.setValue(this.props.code);
+    this.model.setValue(this.props.code);
     this.setState({
       change: true
     });
@@ -137,7 +137,7 @@ export default class CodeCellView extends React.PureComponent {
       return;
     }
 
-    const code = this.session != null ? this.session.getValue() : this.props.code;
+    const code = this.model != null ? this.model.getValue() : this.props.code;
     const project = this.state.project;
 
     this.state.project.tabManager.closeTabByType('matplotlib');
@@ -264,21 +264,20 @@ export default class CodeCellView extends React.PureComponent {
 
   renderEditMode() {
     const minHeight = 100;
-    const source = this.session != null ? this.session.getValue() : this.props.code;
+    const source = this.model != null ? this.model.getValue() : this.props.code;
     const languageName = this.props.notebookLanguage || 'python';
     const mode = this.props.cell.getIn(['metadata', 'mode'], languageName);
-    const {font, fontSize, ace: aceOptions} = this.state.options;
 
     // Reuse existing session if possible
-    if (this.session) {
-      this.session.setValue(source);
-      this.session.setMode(`ace/mode/${mode}`);
+    if (this.model) {
+      this.model.setValue(source);
+      // ToDo: mode selection
+      //this.model.setMode(`ace/mode/${mode}`);
     } else {
-      this.session = new EditSession(source, `ace/mode/${mode}`);
-      this.session.setUndoManager(new UndoManager);
+      this.model = createModel('temp', source, mode);
 
       // Register change listener on the editor to know when to update
-      this.session.on('change', () => {
+      this.model.onDidChangeContent(() => {
         this.setState({
           change: true
         });
@@ -288,19 +287,17 @@ export default class CodeCellView extends React.PureComponent {
     return (
       <div className="edit-view col-12" onKeyDown={this.onKeyDown}>
         <Editor
-          fontFamily={`${font}, monospace`}
-          fontSize={`${fontSize}pt`}
-          {...aceOptions}
+          options={this.state.options}
           minHeight={minHeight}
           maxLines={100}
-          session={this.session}
+          file={{model: this.model}}
           ref={editor => { this.editor = editor; }} />
       </div>
     );
   }
 
   renderReadMode() {
-    const code = this.session != null ? this.session.getValue() : this.props.code;
+    const code = this.model != null ? this.model.getValue() : this.props.code;
     const executionLanguage = this.props.cell.getIn(['metadata', 'executionLanguage'], this.props.executionLanguage.executionLanguage);
     const mode = this.props.cell.getIn(['metadata', 'mode'], (this.props.notebookLanguage || 'python'));
 
@@ -335,7 +332,7 @@ export default class CodeCellView extends React.PureComponent {
           { externalIcon }
           { editMode ? readIcon : editIcon}
           { project ? (project.isRunning() ? stopIcon : playIcon) : playIcon}
-          { this.session ? (this.session.getUndoManager().hasUndo() ? null : undoIcon) : null }
+          { this.model ? (this.model._alternativeVersionId <= 1 ? null : undoIcon) : null }
         </div>
         { editMode ? this.renderEditMode() : this.renderReadMode() }
         { showTerminal ? ideArea : null }

@@ -150,7 +150,7 @@ export default class ErrorView extends React.Component {
           <Editor
             minHeight="150px"
             options={this.state.options}
-            file={this.state.errorInDetailSession}
+            file={{model: this.state.errorInDetailSession}}
             ref={editor => this.editor = editor}
           />
         </div>);

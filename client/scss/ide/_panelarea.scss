@@ -50,16 +50,10 @@
   overflow: auto;
   padding: 1rem;
   background-color: white;
+  height: inherit;
 
   & hr {
     width: 100%;
-  }
-
-  & .ace_editor {
-    flex-grow: 1;
-    flex-shrink: 1;
-    flex-basis: 0px;
-    overflow: auto;
   }
 
   & .total-score {

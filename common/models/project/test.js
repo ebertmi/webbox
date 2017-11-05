@@ -1,36 +1,26 @@
-//import Ace, {EditSession, UndoManager} from 'ace';
-
-//const modelist = Ace.require('ace/ext/modelist');
-const modelist = {
-  getModeForPath: () => {}
-}
-class EditSession {
-  constructor() {
-    
-  }
-}
-
-//ToDo
+import { EventEmitter } from "events";
+import { createModel } from '../../util/monacoUtils';
 
 /**
  * Holds a code file with the tests
  *
  * @export
  * @class Test
- * @extends {EditSession}
+ * @extends {EventEmitter}
  */
-export default class Test extends EditSession {
+export default class Test extends EventEmitter{
   constructor(metadata, text='') {
-    super(text);
-    this.setUndoManager(new UndoManager);
+    super();
     this._name = metadata.name;
     this.metadata  = metadata;
     this.autoDetectMode();
+
+    this.model = createModel(name, text, metadata.language);
   }
 
   autoDetectMode() {
-    let mode = modelist.getModeForPath(this._name).mode;
-    super.setMode(mode);
+    //let mode = modelist.getModeForPath(this._name).mode;
+    //super.setMode(mode);
   }
 
   getName() {
@@ -50,11 +40,17 @@ export default class Test extends EditSession {
   }
 
   containsText() {
-    return this.getValue() !== '';
+    return this.model.getValue() !== '';
+  }
+
+  setValue(value) {
+    this.model.setValue(value);
+  }
+
+  getValue() {
+    return this.model.getValue();
   }
 
   dispose() {
   }
 }
-
-Test.prototype.addListener = Test.prototype.addEventListener;

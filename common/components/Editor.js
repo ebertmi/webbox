@@ -15,7 +15,7 @@ export default class Editor extends React.Component {
 
   componentDidMount() {
     this.editor = monaco.editor.create(this.container);
-    //window.__editor = this.editor;
+    window.__editor = this.editor;
     this.updateProps(this.props);
 
     window.addEventListener("resize", this.onResize);
