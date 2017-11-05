@@ -58,7 +58,7 @@ export default class FileTab extends React.Component {
   onChangeAnnotation() {
     let annotations = this.props.item.getAnnotations();
 
-    const types = [null, 'info', 'warning', 'error'];
+    const types = [null, 'Info', 'Warning', 'Error'];
     let worst = 0;
 
     annotations.forEach(annotation => {
@@ -111,11 +111,11 @@ export default class FileTab extends React.Component {
     let {annotationLevel, annotationCount} = this.state;
 
     if (annotationCount) {
-      annotationLevel = annotationLevel.replace('error', 'danger');
+      annotationLevel = annotationLevel.replace('Error', 'danger');
 
       let icon = 'exclamation-triangle';
 
-      if (annotationLevel === 'info') {
+      if (annotationLevel === 'Info') {
         icon = 'info-circle';
       }
 

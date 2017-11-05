@@ -1,16 +1,19 @@
 import React from 'react';
-//import Ace from 'ace';
 import set from 'lodash/set';
 
 import {Button, Input} from '../../bootstrap';
 import optionManager from '../../../models/options';
 
-//const themeList = ace.require('ace/ext/themelist');
-const themeList = {themes: []};
+const themeList = {themes: ['vs', 'vs-dark', 'hc-black']};
+
 export default class OptionsPanel extends React.Component {
   constructor(props) {
     super(props);
     this.onChangeOption = this.onChangeOption.bind(this);
+
+    this.state = {
+      options: optionManager.getOptions()
+    };
   }
 
   componentDidMount() {
@@ -58,29 +61,49 @@ export default class OptionsPanel extends React.Component {
     optionManager.reset();
   }
 
-  renderAceOptions() {
-    let options = this.state.options.ace;
+  renderEditorOptions() {
+    let options = this.state.options.editor;
 
-    let themes = themeList.themes.reduce((themes, theme) => {
-      let group = theme.isDark ? themes.dark : themes.light;
-      group.push(<option key={theme.name} value={theme.theme}>{theme.caption}</option>);
-      return themes;
-    }, { light: [], dark: [] });
+    let themes = themeList.themes.map((theme) => {
+      return <option key={theme} value={theme}>{theme}</option>;
+    });
+
+    const wrapOptions = [
+      <option key="wordWrap-on" value="on">An</option>,
+      <option key="wordWrap-off" value="off">Aus</option>
+    ];
+
+    const whitespaceOptions = [
+      <option key="wordWrap-none" value="none">Keine</option>,
+      <option key="wordWrap-boundary" value="boundary">Zeilenanfang und -ende</option>,
+      <option key="wordWrap-all" value="all">Alle</option>
+    ];
+
+    const lineHighlightOptions = [
+      <option key="wordWrap-none" value="none">Keine</option>,
+      <option key="wordWrap-gutter" value="gutter">In der linken Leiste (Gutter)</option>,
+      <option key="wordWrap-line" value="line">Zeile</option>,
+      <option key="wordWrap-all" value="all">Leiste + Zeile</option>
+    ];
 
     return (
-      <div onChange={this.onChange.bind(this, ['ace'])}>
+      <div onChange={this.onChange.bind(this, ['editor'])}>
         <legend>Editor</legend>
         <Input type="select" label="Farbschema" name="theme" defaultValue={options.theme}>
-          <optgroup label="Hell">{themes.light}</optgroup>
-          <optgroup label="Dunkel">{themes.dark}</optgroup>
+          {themes}
         </Input>
-        <Input label="Aktive Zeile hervorheben" type="checkbox" name="highlightActiveLine" defaultChecked={options.highlightActiveLine}/>
-        <Input label="Ausgewähltes Wort hervorheben" type="checkbox" name="highlightSelectedWord" defaultChecked={options.highlightSelectedWord}/>
-        <Input label="Unsichtbare Zeichen anzeigen" type="checkbox" name="showInvisibles" defaultChecked={options.showInvisibles}/>
-        <Input label="Einrückung anzeigen" type="checkbox" name="displayIndentGuides" defaultChecked={options.displayIndentGuides}/>
-        <Input label="Zeilen umbrechen" type="checkbox" name="wrap" defaultChecked={options.wrap}/>
-        <Input label="Autovervollständigung" type="checkbox" name="enableBasicAutocompletion" defaultChecked={options.enableBasicAutocompletion}/>
-        <Input label="Beim Tippen vervollständigen" type="checkbox" name="enableLiveAutocompletion" defaultChecked={options.enableLiveAutocompletion}/>
+        <Input type="select" label="Aktive Zeile hervorheben" name="renderLineHighlight" defaultValue={options.renderLineHighlight}>
+          {lineHighlightOptions}
+        </Input>
+        <Input label="Ausgewähltes Wort hervorheben" type="checkbox" name="selectionHighlight" defaultChecked={options.selectionHighlight}/>
+        <Input type="select" label="Unsichtbare Zeichen anzeigen" name="renderWhitespace" defaultValue={options.renderWhitespace}>
+          {whitespaceOptions}
+        </Input>
+        <Input label="Einrückung anzeigen" type="checkbox" name="renderIndentGuides" defaultChecked={options.renderIndentGuides}/>
+        <Input type="select" label="Zeilen umbrechen" name="wordWrap" defaultValue={options.wordWrap}>
+          {wrapOptions}
+        </Input>
+        <Input label="Autovervollständigung bei Klammern" type="checkbox" name="autoClosingBrackets" defaultChecked={options.autoClosingBrackets}/>
       </div>
     );
   }
@@ -104,7 +127,7 @@ export default class OptionsPanel extends React.Component {
         <legend>Allgemeine Einstellungen</legend>
         <Input label="Schriftart" type="text" name='font' defaultValue={options.font}/>
         <Input label="Schriftgröße" type="number" min="1" max="50" step="1" name='fontSize' defaultValue={options.fontSize}/>
-        {this.renderAceOptions()}
+        {this.renderEditorOptions()}
         {this.renderTerminalOptions()}
         <hr/>
         <Button bsStyle="danger" className="form-group" onClick={this.onReset.bind(this)}>Alle Einstellungen zurücksetzen</Button>

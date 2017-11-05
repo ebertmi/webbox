@@ -11,6 +11,13 @@ import capitalize from 'lodash/capitalize';
 //    column: int
 //  }
 
+/**
+ * Creates {Annotation} objects out of parsed labels
+ * 
+ * @param {any} matches 
+ * @param {any} labels 
+ * @returns 
+ */
 function defaultCallback(matches, labels) {
   if (!labels.file || labels.row == null) {
     // file and row are required

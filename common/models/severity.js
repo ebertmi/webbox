@@ -3,11 +3,24 @@
  * https://github.com/Microsoft/vscode/blob/master/src/vs/base/common/severity.ts
  */
 export const Severity = {
-  "Ignore": "ignore",
-  "Info": "info",
-  "Warning": "warning",
-  "Error": "danger"
+  0: "Ignore",
+  1: "Info",
+  2: "Warning",
+  3: "Error",
+  Ignore: 0,
+  Info: 1,
+  Warning: 2,
+  Error: 3
 };
+
+export function typeToSeverity(type) {
+  switch(type) {
+    case 'error': return Severity.Error;
+    case 'warning': return Severity.Warning;
+    case 'info': return Severity.Info;
+    default: return Severity.Ignore
+  }
+}
 
 export function toBootstrapClass(severity) {
   switch (severity) {

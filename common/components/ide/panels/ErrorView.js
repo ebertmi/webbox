@@ -1,15 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-//import Ace, {EditSession} from 'ace';
 
 import Editor from '../../Editor';
 import optionManager from '../../../models/options';
 import { Time } from '../../Time';
+import { createModel } from '../../../util/monacoUtils';
 
-const modelist = Ace.require('ace/ext/modelist');
-const FIXED_OPTIONS = {
-  showPrintMargin: false
-};
+
 
 /**
  * Displays and filters recent errors in a table
@@ -28,7 +25,7 @@ export default class ErrorView extends React.Component {
       filterType: '',
       filterUsername: '',
       isFiltering: false,
-      errorInDetailSession: new EditSession(''),
+      errorInDetailSession: createModel(""),
       errorInDetail: null,
       errors: [],
       options: {}
@@ -56,7 +53,7 @@ export default class ErrorView extends React.Component {
 
   onChangeOption() {
     this.setState({
-      options: optionManager.getOptions()
+      options: optionManager.getEditorOptions()
     });
   }
 
@@ -142,22 +139,18 @@ export default class ErrorView extends React.Component {
       });
 
       if (error != null) {
-        let {font, fontSize, ace: aceOptions} = this.state.options;
         this.state.errorInDetailSession.setValue(error.data.fileContent);
 
-        // Update mode
-        let mode = modelist.getModeForPath(error.data.file).mode;
-        this.state.errorInDetailSession.setMode(mode);
+        // ToDo: Update mode
+        //let mode = modelist.getModeForPath(error.data.file).mode;
+        //this.state.errorInDetailSession.setMode(mode);
 
         return (<div>
           <p className="text-muted">Detailansicht: {error.type} in <strong>{error.data.file}</strong> Zeile: {error.data.line} <Time value={new Date(error.timeStamp)} locale="de" relative={true} invalidDateString="Nicht verfügbar"></Time></p>
           <Editor
             minHeight="150px"
-            fontFamily={`${font}, monospace`}
-            fontSize={`${fontSize}pt`}
-            {...aceOptions}
-            {...FIXED_OPTIONS}
-            session={this.state.errorInDetailSession}
+            options={this.state.options}
+            file={this.state.errorInDetailSession}
             ref={editor => this.editor = editor}
           />
         </div>);

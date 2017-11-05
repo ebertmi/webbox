@@ -520,7 +520,7 @@ export default class Runner extends EventEmitter {
       let annotations = annotationMap[file.getName()];
       if (annotations != null) {
         file.setAnnotations(annotations);
-        file._emit('changeAnnotation');
+        file.emit('changeAnnotation');
       } else {
         file.clearAnnotations();
       }

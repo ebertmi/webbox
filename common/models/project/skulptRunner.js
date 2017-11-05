@@ -5,7 +5,10 @@ import Bluebird from 'bluebird';
 import { EventLog } from '../insights/remoteDispatcher';
 import { TerminalTransform } from '../../util/streamUtils';
 import { createInterface } from '../../util/readline';
+import { Annotation } from '../annotation';
+
 import Debug from 'debug';
+import { Severity } from '../severity';
 const debug = Debug('webbox:skulptRunner');
 
 // Disable warnings in production
@@ -307,12 +310,7 @@ export default class Runner extends EventEmitter {
     }
 
     // Add annotation for code editor
-    annotationMap[normalizedFileName].push({
-      row: errObj.line - 1,
-      column: errObj.column != null ? errObj.column : 0,
-      text: errObj.message,
-      type: 'error'
-    });
+    annotationMap[normalizedFileName].push(new Annotation(errorObj.message, errObj.line, errObj.column, Severity.Error));
 
     // Display annotations
     this.files.forEach((file) => {

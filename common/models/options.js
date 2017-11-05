@@ -13,23 +13,16 @@ const DEFAULT_OPTIONS = {
   terminal: {
     audibleBell: true
   },
-  ace: {
-    displayIndentGuides: false,
-    enableBasicAutocompletion: true,
-    enableLiveAutocompletion: false,
-    highlightActiveLine: true,
-    highlightSelectedWord: true,
-    showGutter: true,
-    showInvisibles: false,
-    theme: 'ace/theme/xcode',
-    wrap: false
-  },
   editor: {
     automaticLayout: false,
     cursorStyle: 'line',
     readOnly: false,
+    renderWhitespace: false,
+    renderIndentGuides: false,
+    renderLineHighlight: 'line',
     roundedSelection: false,
     scrollBeyondLastLine: false,
+    selectionHighlight: true,
     selectOnLineNumbers: true,
     theme: 'vs-dark'
   }

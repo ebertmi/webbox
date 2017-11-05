@@ -1,5 +1,7 @@
 import { EventEmitter } from 'events';
 import { createModel } from '../../util/monacoUtils';
+import { Annotation } from '../annotation';
+import { Severity, typeToSeverity } from '../severity';
 
 export default class File extends EventEmitter {
   constructor(name, value, language) {
@@ -26,10 +28,24 @@ export default class File extends EventEmitter {
   }
 
   removeListener() {}
-  
+
+  setAnnotations(annotations) {
+    console.info(annotations);
+
+    const markers = annotations.map(a => {
+      return new Annotation(a.text, a.row+1, a.column, typeToSeverity(a.type));
+    });
+
+    monaco.editor.setModelMarkers(this.model, this._name, markers);
+  }
+
   getAnnotations() {
       console.log(this.model.getAllDecorations());
       return this.model.getAllDecorations();
+  }
+
+  clearAnnotations() {
+    monaco.editor.setModelMarkers(this.model, this._name, []);
   }
 
   /**
@@ -109,12 +125,6 @@ export default class File extends EventEmitter {
 
   getName() {
     return this._name;
-  }
-
-  updateAnnotations(annotations) {
-    console.info('new annotations', annotations);
-    //this.setAnnotations(annotations);
-    this.emit('hasChangesUpdate');
   }
 
   dispose() {
