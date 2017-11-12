@@ -10,6 +10,8 @@ import { EditButtonGroup } from './EditButtonGroup';
 import CodeCellView from './CodeCellView';
 import { updateCell } from '../../actions/NotebookActions';
 import Markdown from '../../util/markdown';
+import { createModel } from '../../util/monacoUtils';
+import optionManager from '../../models/options';
 
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
@@ -21,16 +23,25 @@ export default class CodeCell extends BaseCell {
     this.onRef = this.onRef.bind(this);
     this.saveCurrentSessionToState = this.saveCurrentSessionToState.bind(this);
 
-    this.state = { rendered: '' };
+    this.state = {
+      rendered: '',
+      options: optionManager.getOptions()
+    };
   }
 
   componentDidMount() {
     this.renderMarkdown(this.getSourceFromCell());
+
+    optionManager.on('change', this.onChangeOption); 
+  }
+
+  componentWillUnmount() {
+    optionManager.removeListener('change', this.onChangeOption);
   }
 
   saveCurrentSessionToState() {
-    if (this.session) {
-      let content = this.session.getValue();
+    if (this.model) {
+      let content = this.model.getValue();
       this.props.dispatch(updateCell(this.props.cell.get('id'), content));
     }
   }
@@ -52,16 +63,22 @@ export default class CodeCell extends BaseCell {
     });
   }
 
+  onChangeOption() {
+    this.setState({
+      options: optionManager.getOptions()
+    });
+  }
+
   /**
    * Saves the "source" property of a cell.
    */
   onUpdateCell() {
-    if (this.session) {
-      let content = this.session.getValue();
+    if (this.model) {
+      let content = this.model.getValue();
       this.props.dispatch(updateCell(this.props.cell.get('id'), content));
       this.renderMarkdown(content);
     } else {
-      console.warn('CodeCell.onSaveCellSource called with invalid session', this.session);
+      console.warn('CodeCell.onSaveCellSource called with invalid session', this.model);
     }
   }
 
@@ -90,19 +107,24 @@ export default class CodeCell extends BaseCell {
     let languageName = this.props.notebookLanguage || 'python';
     let mode = this.props.cell.getIn(['metadata', 'mode'], languageName);
 
-    if (this.session) {
-      this.session.setValue(source);
-      this.session.setMode('ace/mode/' + mode);
+    if (this.model) {
+      this.model.setValue(source);
+      this.model.setMode('ace/mode/' + mode);
     } else {
-      this.session = new EditSession(source, 'ace/mode/' + mode);
-      this.session.setUndoManager(new UndoManager);
+      this.model = createModel('temp', source, mode);
     }
 
     return (
       <div className="col-12" onKeyDown={this.onKeyDown}>
         <strong>Code</strong>
         <p className="text-muted">Sie können über die Schlüssel <code>embedType</code> (<em>sourcebox</em> oder <em>skulpt</em>) und <code>executionLanguage</code> die Ausführungsumgebung für eine Zelle einzeln definieren. Ansonsten werden die Werte aus den Notebook-Metadaten übernommen. Sie können die Syntax-Hervorhebung (Farben) über den Schlüssel <code>mode</code> ändern.</p>
-        <Editor fontSize="14px" minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />
+        <Editor
+          fontSize="14px"
+          minHeight={minHeight}
+          maxLines={100}
+          file={{model: this.model}}
+          ref={editor => this.editor = editor}
+        />
       </div>
     );
   }

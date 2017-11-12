@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-//import { EditSession, UndoManager } from 'ace';
+
 import classnames from 'classnames';
 import cloneDeep from 'lodash/cloneDeep';
 
+import optionManager from '../../models/options';
 import BaseCell from './BaseCell';
 import Icon from '../Icon';
 import Editor from '../Editor';
@@ -13,9 +14,22 @@ import { EditButtonGroup } from './EditButtonGroup';
 
 import { Toolbar, ActionItem } from '../Toolbar';
 import { updateCell } from '../../actions/NotebookActions';
-
+import { createModel } from '../../util/monacoUtils';
 import Markdown from '../../util/markdown';
-import { insert, appendAtEndOfLine, BoldItem, ItalicsItem, UlItem, OlItem, LinkItem, BlockquoteItem, InlineCodeItem, CodeBlockItem, ImageItem, ExtendedFormat } from '../../util/aceUtil';
+import { 
+  insert,
+  appendAtEndOfLine,
+  BoldItem,
+  ItalicsItem,
+  UlItem,
+  OlItem,
+  LinkItem,
+  BlockquoteItem,
+  InlineCodeItem,
+  CodeBlockItem,
+  ImageItem,
+  ExtendedFormat
+} from '../../util/aceUtil';
 
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
@@ -45,13 +59,19 @@ export default class MarkdownCell extends BaseCell {
     this.state = {
       rendered: '',
       showImageUpload: false,
-      showImageGallery: false
+      showImageGallery: false,
+      options: optionManager.getOptions()
     };
   }
 
   componentDidMount() {
     const source = this.getSourceFromCell();
     this.renderMarkdown(source);
+    optionManager.on('change', this.onChangeOption); 
+  }
+
+  componentWillUnmount() {
+    optionManager.removeListener('change', this.onChangeOption);
   }
 
   /**
@@ -67,22 +87,28 @@ export default class MarkdownCell extends BaseCell {
   }
 
   saveCurrentSessionToState() {
-    if (this.session) {
-      const content = this.session.getValue();
+    if (this.model) {
+      const content = this.model.getValue();
       this.props.dispatch(updateCell(this.props.cell.get('id'), content));
     }
+  }
+
+  onChangeOption() {
+    this.setState({
+      options: optionManager.getOptions()
+    });
   }
 
   /**
    * Saves the "source" property of a cell.
    */
   onUpdateCell() {
-    if (this.session) {
-      const content = this.session.getValue();
+    if (this.model) {
+      const content = this.model.getValue();
       this.props.dispatch(updateCell(this.props.cell.get('id'), content));
       this.renderMarkdown(content);
     } else {
-      console.warn('MarkdownCell.onSaveCellSource called with invalid session', this.session);
+      console.warn('MarkdownCell.onSaveCellSource called with invalid session', this.model);
     }
   }
 
@@ -128,8 +154,8 @@ export default class MarkdownCell extends BaseCell {
    * @param {any} item
    */
   onEditorInsert(item) {
-    if (this.session) {
-      insert(item, this.session);
+    if (this.model) {
+      insert(item, this.model);
     }
 
     // Focus editor
@@ -139,8 +165,8 @@ export default class MarkdownCell extends BaseCell {
   }
 
   onExtendedFormatInsert () {
-    if (this.session) {
-      appendAtEndOfLine(ExtendedFormat, this.session);
+    if (this.model) {
+      appendAtEndOfLine(ExtendedFormat, this.model);
     }
 
     // Focus editor
@@ -199,11 +225,10 @@ export default class MarkdownCell extends BaseCell {
   renderEditMode() {
     const minHeight = this.renderedHeight ? this.renderedHeight : this.props.minHeight;
     const source = this.getSourceFromCell();
-    if (this.session) {
-      this.session.setValue(source);
+    if (this.model) {
+      this.model.setValue(source);
     } else {
-      this.session = new EditSession(source, 'ace/mode/markdown');
-      this.session.setUndoManager(new UndoManager);
+      this.model = createModel('temp.md', source, 'markdown');
     }
 
     // ToDo: Render ToolBar, that inserts Markdown Code
@@ -215,7 +240,13 @@ export default class MarkdownCell extends BaseCell {
         { this.renderTextToolbar() }
         { this.renderVariousToolbar() }
         { this.renderListToolbar() }
-        <Editor fontSize="1.3rem" minHeight={minHeight} maxLines={100} session={this.session} showGutter={false} ref={editor => this.editor = editor} />
+        <Editor
+          fontSize="1.3rem"
+          minHeight={minHeight}
+          options={this.state.options}
+          file={{model: this.model}}
+          ref={editor => this.editor = editor} 
+        />
       </div>
     );
   }
