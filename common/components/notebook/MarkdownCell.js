@@ -16,6 +16,8 @@ import { Toolbar, ActionItem } from '../Toolbar';
 import { updateCell } from '../../actions/NotebookActions';
 import { createModel } from '../../util/monacoUtils';
 import Markdown from '../../util/markdown';
+
+// ToDo: change those to monaco
 import { 
   insert,
   appendAtEndOfLine,

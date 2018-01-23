@@ -32,18 +32,7 @@ const options = {
       args: [{ log: '*', response: '*', request: '*', error: '*' }]
     }, {
       module: 'good-console'
-    }, 'stdout'],
-    /*myFileOpsReporter: [{
-      module: 'good-squeeze',
-      name: 'Squeeze',
-      args: [{ ops: '*'}]
-    }, {
-      module: 'good-squeeze',
-      name: 'SafeJson'
-    }, {
-      module: 'good-file',
-      args: ['./logs/webbox_ops.log']
-    }],*/
+    }, 'stdout']
   }
 };
 
