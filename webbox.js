@@ -192,7 +192,7 @@ server.ext('onPreResponse', (request, h) => {
 
   // ToDo: change this to hide information in production mode
   if (!request.response.isBoom) {
-    return h.continue();
+    return h.continue;
   }
 
   if (request.response.output.statusCode >= 500) {
@@ -214,7 +214,7 @@ server.ext('onPreResponse', (request, h) => {
   let errorMessage = isString(request.response) ? request.repsonse : 'Server Error 500';
   let errorStack = request.response.stack != undefined ? request.response.stack : 'No stack available';
 
-  console.log('Error in request: %s', errorMessage, errorStack);
+  //console.log('Error in request: %s', errorMessage, errorStack);
 
   let err;
   let errName;
