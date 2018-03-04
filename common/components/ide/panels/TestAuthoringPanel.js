@@ -17,10 +17,6 @@ export default class TestAuthoringPanel extends React.Component {
     };
   }
 
-  onChange() {
-
-  }
-
   componentDidMount() {
     this.editor.focus();
 
@@ -32,6 +28,10 @@ export default class TestAuthoringPanel extends React.Component {
   componentWillUnmount() {
     this.props.item.removeListener('change', this.onChange);
     optionManager.removeListener('change', this.onChangeOption);
+  }
+
+  onChange() {
+
   }
 
   onChangeOption() {

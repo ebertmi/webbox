@@ -135,7 +135,7 @@ export default class CellMetadata extends React.PureComponent {
   renderEditing() {
     let slideType = this.props.metadata.getIn(['slideshow', 'slide_type']);
     let metadata = this.props.metadata.remove('slideshow');
-    let classes = "cell-header " + this.props.className;
+    let classes = 'cell-header ' + this.props.className;
 
     return (
       <div className={classes}>
@@ -149,7 +149,7 @@ export default class CellMetadata extends React.PureComponent {
               <option value="">Standard</option>
               <option value="skip">Nicht anzeigen</option>
             </select>
-            <p className="text-muted" style={{fontSize: "0.75rem", lineHeight: 1}}><em>Folie</em> erzeugt eine neue Folie; <em>Standard</em> wird auf der aktuellen Folie platziert; <em>Fragment</em> wird auf <kbd>→</kbd> eingeblendet; <em>Nicht anzeigen</em> wird nicht auf der Folie angezeigt.</p>
+            <p className="text-muted" style={{fontSize: '0.75rem', lineHeight: 1}}><em>Folie</em> erzeugt eine neue Folie; <em>Standard</em> wird auf der aktuellen Folie platziert; <em>Fragment</em> wird auf <kbd>→</kbd> eingeblendet; <em>Nicht anzeigen</em> wird nicht auf der Folie angezeigt.</p>
           </div>
         </div>
         <strong>Weitere Metadaten</strong>
@@ -161,12 +161,12 @@ export default class CellMetadata extends React.PureComponent {
                 <input className="form-control form-control-sm" name={entry[0]} value={entry[1]} onChange={this.onMetadataChange} />
               </div>
               <div className="col-sm-2">
-                <Icon className="icon-control" onClick={this.onDelete} data-metakey={entry[0]} name="times-circle-o" title={entry[0] + " Löschen"} />
+                <Icon className="icon-control" onClick={this.onDelete} data-metakey={entry[0]} name="times-circle-o" title={entry[0] + ' Löschen'} />
               </div>
             </div>
           );
         })}
-        <div className={"form-group row " + this.state.newValid}>
+        <div className={'form-group row ' + this.state.newValid}>
           <label className="col-sm-2 form-control-label"><input onChange={this.onNewMetadataChange} className="form-control form-control-sm" placeholder="Name" name="metadataKey" value={this.state.newKey} /></label>
           <div className="col-sm-8">
             <input onChange={this.onNewMetadataChange} className="form-control form-control-sm" placeholder="Wert" name="metadataValue" value={this.state.newValue} />

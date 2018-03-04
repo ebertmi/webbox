@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-//import { EditSession, UndoManager } from 'ace';
 import classnames from 'classnames';
 
 import BaseCell from './BaseCell';
@@ -10,7 +9,7 @@ import { EditButtonGroup } from './EditButtonGroup';
 import CodeCellView from './CodeCellView';
 import { updateCell } from '../../actions/NotebookActions';
 import Markdown from '../../util/markdown';
-import { createModel } from '../../util/monacoUtils';
+import { createModel, setMode } from '../../util/monacoUtils';
 import optionManager from '../../models/options';
 
 /**
@@ -41,7 +40,7 @@ export default class CodeCell extends BaseCell {
 
   saveCurrentSessionToState() {
     if (this.model) {
-      let content = this.model.getValue();
+      const content = this.model.getValue();
       this.props.dispatch(updateCell(this.props.cell.get('id'), content));
     }
   }
@@ -51,16 +50,16 @@ export default class CodeCell extends BaseCell {
    */
   renderMarkdown(source) {
     // Get default language from notebook if mode is not available
-    let language = this.props.notebookLanguage || 'python';
-    let mode = this.props.cell.getIn(['metadata', 'mode'], language);
+    const language = this.props.notebookLanguage || 'python';
+    const mode = this.props.cell.getIn(['metadata', 'mode'], language);
 
-    const codeSource = '```' + mode + '\n' + source + '\n```';
+    const codeSource = `\`\`\`${mode}\n${source}\n\`\`\``;
     Markdown.render(codeSource)
-    .then((rendered) => {
-      this.setState({
-        rendered: rendered
+      .then((rendered) => {
+        this.setState({
+          rendered: rendered
+        });
       });
-    });
   }
 
   onChangeOption() {
@@ -71,10 +70,12 @@ export default class CodeCell extends BaseCell {
 
   /**
    * Saves the "source" property of a cell.
+   *
+   * @returns {void}
    */
   onUpdateCell() {
     if (this.model) {
-      let content = this.model.getValue();
+      const content = this.model.getValue();
       this.props.dispatch(updateCell(this.props.cell.get('id'), content));
       this.renderMarkdown(content);
     } else {
@@ -90,26 +91,28 @@ export default class CodeCell extends BaseCell {
 
   /**
    * Helper to determine the height of the rendered markdown to set the ace editor size accordingly
+   *
+   * @returns {number} height
    */
   getWrapperHeightOrMin() {
     if (this.wrapperNode) {
-      return Math.max(this.wrapperNode.offsetHeight,  this.wrapperNode.scrollHeight,  this.wrapperNode.clientHeight, this.props.minHeight);
+      return Math.max(this.wrapperNode.offsetHeight, this.wrapperNode.scrollHeight, this.wrapperNode.clientHeight, this.props.minHeight);
     } else {
       return this.props.minHeight;
     }
   }
 
   renderEditMode() {
-    let minHeight = this.getWrapperHeightOrMin();
-    let source = this.getSourceFromCell();
+    const minHeight = this.getWrapperHeightOrMin();
+    const source = this.getSourceFromCell();
 
     // Get default language from notebook if mode is not available
-    let languageName = this.props.notebookLanguage || 'python';
-    let mode = this.props.cell.getIn(['metadata', 'mode'], languageName);
+    const languageName = this.props.notebookLanguage || 'python';
+    const mode = this.props.cell.getIn(['metadata', 'mode'], languageName);
 
     if (this.model) {
       this.model.setValue(source);
-      this.model.setMode('ace/mode/' + mode);
+      setMode(this.model, mode);
     } else {
       this.model = createModel('temp', source, mode);
     }
@@ -132,18 +135,18 @@ export default class CodeCell extends BaseCell {
   render() {
     const { cell, isEditModeActive, editing, dispatch, id, executionLanguage, notebookLanguage, embedType } = this.props;
     let content;
-    let metadata = <CellMetadata beforeChange={this.saveCurrentSessionToState} className="col-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
-    let editingClass = editing ? ' editing' : '';
+    const metadata = <CellMetadata beforeChange={this.saveCurrentSessionToState} className="col-12" dispatch={dispatch} cellId={cell.get('id')} editing={editing} metadata={cell.get('metadata')} />;
+    const editingClass = editing ? ' editing' : '';
     const isVisible = this.isVisible();
 
     if (isEditModeActive && editing) {
       content = this.renderEditMode();
     } else {
       content = <CodeCellView code={this.getSourceFromCell()} cell={cell} executionLanguage={executionLanguage}
-                              notebookLanguage={notebookLanguage} embedType={embedType}/>;
+        notebookLanguage={notebookLanguage} embedType={embedType}/>;
     }
 
-    const classes = classnames("code-cell col-12 row", editingClass, {
+    const classes = classnames('code-cell col-12 row', editingClass, {
       'cell-not-visible': !isVisible
     });
 

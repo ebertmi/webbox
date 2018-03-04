@@ -17,8 +17,7 @@ import { updateCell } from '../../actions/NotebookActions';
 import { createModel } from '../../util/monacoUtils';
 import Markdown from '../../util/markdown';
 
-// ToDo: change those to monaco
-import { 
+import {
   insert,
   appendAtEndOfLine,
   BoldItem,
@@ -31,7 +30,7 @@ import {
   CodeBlockItem,
   ImageItem,
   ExtendedFormat
-} from '../../util/aceUtil';
+} from '../../util/mdUtil';
 
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
@@ -78,6 +77,8 @@ export default class MarkdownCell extends BaseCell {
 
   /**
    * Renders marks down and sets the returned markup as state when finished.
+   * @param {string} source - source to render
+   * @returns {void}
    */
   renderMarkdown(source) {
     Markdown.render(source)
@@ -103,6 +104,7 @@ export default class MarkdownCell extends BaseCell {
 
   /**
    * Saves the "source" property of a cell.
+   * @returns {void}
    */
   onUpdateCell() {
     if (this.model) {
@@ -122,6 +124,8 @@ export default class MarkdownCell extends BaseCell {
 
   /**
    * Insert a new markdown image tag
+   * @param {string} src - url of the image to include
+   * @returns {void}
    */
   onInsertImage (src) {
     const customImageItem = cloneDeep(ImageItem);
@@ -153,11 +157,12 @@ export default class MarkdownCell extends BaseCell {
   /**
    * Insert Markdown-Format-Items in the editor. Uses the current selection if possible.
    *
-   * @param {any} item
+   * @param {any} item - item to wrap
+   * @returns {void}
    */
   onEditorInsert(item) {
     if (this.model) {
-      insert(item, this.model);
+      insert(item, this.model, this.editor.editor);
     }
 
     // Focus editor
@@ -168,7 +173,7 @@ export default class MarkdownCell extends BaseCell {
 
   onExtendedFormatInsert () {
     if (this.model) {
-      appendAtEndOfLine(ExtendedFormat, this.model);
+      appendAtEndOfLine(ExtendedFormat, this.model, this.editor.editor);
     }
 
     // Focus editor
@@ -222,7 +227,7 @@ export default class MarkdownCell extends BaseCell {
   /**
    * Render the Editor for Markdown Editing
    *
-   * @returns
+   * @returns {void}
    */
   renderEditMode() {
     const minHeight = this.renderedHeight ? this.renderedHeight : this.props.minHeight;
@@ -256,7 +261,7 @@ export default class MarkdownCell extends BaseCell {
   /**
    * Renders the view mode of the markdown cell. Basically, this is rendering the markdown as HTML.
    *
-   * @returns
+   * @returns {React.ReactNode} rendered view mode
    */
   renderViewMode() {
     return <div className="col-12 view-mode" data-viewnode={true} ref={this.onRef} dangerouslySetInnerHTML={{__html: this.state.rendered}}/>;

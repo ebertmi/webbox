@@ -92,7 +92,7 @@ export default class BaseCell extends React.Component {
    * Check for Ctrl+S and try to save the document if possible
    */
   onKeyDown(e) {
-    let key = e.which || e.keyCode;
+    const key = e.which || e.keyCode;
     if (key === 27) {
       // Escape Key pressed
       this.onStopEdit();
@@ -117,6 +117,7 @@ export default class BaseCell extends React.Component {
 
   render() {
     throw new Error('CellBase is an abstract component');
+    return;
   }
 }
 

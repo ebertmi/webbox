@@ -17,12 +17,12 @@ export function loadMonaco(context=window, requireConfig) {
           context.require.config(requireConfig);
         }
       }
-  
+
       // Load monaco
       context.require(['vs/editor/editor.main'], () => {
         resolve(context.monaco);
       });
-  
+
       // Call the delayed callbacks when AMD loader has been loaded
       if (context.__REACT_MONACO_EDITOR_LOADER_ISPENDING__) {
         context.__REACT_MONACO_EDITOR_LOADER_ISPENDING__ = false;
@@ -36,7 +36,7 @@ export function loadMonaco(context=window, requireConfig) {
         }
       }
     };
-  
+
     // Load AMD loader if necessary
     if (context.__REACT_MONACO_EDITOR_LOADER_ISPENDING__) {
       // We need to avoid loading multiple loader.js when there are multiple editors loading
@@ -68,7 +68,7 @@ export const BASE_MONACO_REQUIRE_CONFIG = {
 };
 
 
-export function createModel(name, value, language="python", uri) {
+export function createModel(name, value, language='python', uri) {
   if (value == null) {
     value = '';
   }
@@ -76,5 +76,9 @@ export function createModel(name, value, language="python", uri) {
   const model = monaco.editor.createModel(value, language);
   model._name = name;
 
-  return  model;
+  return model;
+}
+
+export function setMode(model, mode='python') {
+  moncao.editor.setModelLanguage(model, mode);
 }

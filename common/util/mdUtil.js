@@ -94,19 +94,21 @@ export const CodeBlockItem = {
 export const ExtendedFormat = '<!-- {} -->';
 
 /**
- * Inserts the item in the Ace Editor Session.
+ * Inserts the item in the monaco editor model.
  *
  * @export
  * @param {Object} item - item to insert
- * @param {EditSession} session - session to use
+ * @param {Monaco.IModel} model - model to use
+ * @param {Monaco.IStandaloneEditor} editor - editor instance to use
  * @returns {void}
  */
-export function insert(item, session) {
+export function insert(item, model, editor) {
   let str;
   let lineNumber = 1;
   const clonedItem = cloneDeep(item); // Clone Item to prevent object manipulation
+  const range = editor.getSelection();
+  let selection = model.getValueInRange(range);
 
-  let selection = session.doc.getTextRange(session.selection.getRange());
   const openBlockWith = clonedItem.openBlockWith;
   const closeBlockWith = clonedItem.closeBlockWith;
 
@@ -133,7 +135,7 @@ export function insert(item, session) {
   str.openBlockWith = openBlockWith;
   str.closeBlockWith = closeBlockWith;
 
-  doInsert(str, session);
+  doInsert(str, model, editor);
 }
 
 /**
@@ -141,49 +143,54 @@ export function insert(item, session) {
  *
  * @export
  * @param {String} str - string to insert
- * @param {EditSession} session - session to use
+ * @param {Monaco.IModel} model - session to use
+ * @param {Monaco.IStandaloneEditor} editor - session to use
  * @returns {void}
  */
-export function appendAtEndOfLine(str, session) {
-  const cursor = session.selection.getCursor();
-  const currline = cursor.row;
-  const wholelinetext = session.getLine(currline);
+export function appendAtEndOfLine(str, model, editor) {
+  const range = editor.getSelection();
+  const currline = range.positionLineNumber;
+  const wholelinetext = model.getLineContent(currline);
   const lineLength = wholelinetext != null ? wholelinetext.length : 0;
 
-  cursor.column += lineLength;
-  session.insert(cursor, str);
-  const position = session.selection.getCursor();
+  const endCol = lineLength;
+  const editOps = [{
+    forceMoveMarkers: false,
+    identifier: 'insertMarkdown',
+    range: {
+      startLineNumber: currline,
+      startColumn: endCol,
+      endLineNumber: currline,
+      endColumn: endCol
+    },
+    text: str
+  }];
 
-  // Apply new position
-  session.selection.moveCursorToPosition(position);
+  model.pushEditOperations(range, editOps);
 }
 
 /**
  * Inserts the item in the edit session.
  *
  * @param {Object} strItem - string to insert
- * @param {EditSession} session - session to use
+ * @param {Monaco.IModel} model - model to use
+ * @param {Monaco.IStandaloneEditor} editor - editor instance
  * @returns {void}
  */
-function doInsert(strItem, session) {
-  const selection = session.doc.getTextRange(session.selection.getRange());
+function doInsert(strItem, model, editor) {
+  const range = editor.getSelection();
 
-  if (selection) {
-    session.replace(session.selection.getRange(), strItem.block);
-  } else {
-    session.insert(session.selection.getCursor(), strItem.block);
+  const editOps = [{
+    forceMoveMarkers: false,
+    identifier: 'insertMarkdown',
+    range: range,
+    text: strItem.block
+  }];
 
-    const position = session.selection.getCursor();
-    const backOffset = strItem.closeWith.length;
-
-    // Alter position
-    position.column -= backOffset;
-
-    // Apply new position
-    session.selection.moveCursorToPosition(position);
-  }
+  model.pushEditOperations(range, editOps);
 }
 
+// ToDo: automatically remove markup if we trigger it again, e.g. **bold** back to bold
 function buildBlock(str, item, lineNumber) {
   const multiline = item.multiline;
   let block;

@@ -16,6 +16,9 @@ const DEFAULT_OPTIONS = {
   editor: {
     automaticLayout: false,
     cursorStyle: 'line',
+    minimap: {
+      enabled: false
+    },
     readOnly: false,
     renderWhitespace: false,
     renderIndentGuides: false,
@@ -48,7 +51,7 @@ class OptionManager extends EventEmitter {
     this.options = defaultsDeep({}, DEFAULT_OPTIONS);
 
     try {
-      let savedOptions = JSON.parse(localStorage[LOCAL_STORAGE_KEY]);
+      const savedOptions = JSON.parse(localStorage[LOCAL_STORAGE_KEY]);
       this.options = defaultsDeep(savedOptions, this.options);
     } catch (error) {
       // ignore

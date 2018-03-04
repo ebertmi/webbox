@@ -26,6 +26,8 @@ process.on('unhandledRejection', (reason, p) => {
   // application specific logging, throwing an error, or other logic here
 });
 
+let isProvisioned = false;
+
 // The default context is available for every response (template)
 const defaultContext = {
   webboxVersion: Package.version,
@@ -72,6 +74,11 @@ const server = new Hapi.Server({
 });
 
 const provision = async (shouldStart) => {
+  if (isProvisioned === true) {
+    console.warn('Already provisioned, called twiced!');
+    return;
+  }
+
   await server.register({
     plugin: HapiRateLimit,
     options: config.ratelimit.cacheOptions
@@ -177,10 +184,9 @@ const provision = async (shouldStart) => {
   if (shouldStart === true) {
     await server.start();
     console.info(`Server started at ${server.info.uri}`);
-  } else {
-    await server.initialize();
-    console.info('Server has been required and only intialized');
   }
+
+  isProvisioned = true;
 };
 
 // register better error pages

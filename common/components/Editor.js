@@ -2,10 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ResizeDetector from './ResizeDetector';
 
-const Monaco = window.monaco;
-
-// "dumb" editor component
-
 export default class Editor extends React.Component {
   constructor() {
     super();
@@ -18,12 +14,7 @@ export default class Editor extends React.Component {
     window.__editor = this.editor;
     this.updateProps(this.props);
 
-    window.addEventListener("resize", this.onResize);
-  }
-
-  componentWillUnmount() {
-     this.editor.dispose();
-     window.removeEventListener("resize", this.onResize);
+    window.addEventListener('resize', this.onResize);
   }
 
   componentWillReceiveProps(next) {
@@ -32,6 +23,11 @@ export default class Editor extends React.Component {
 
   componentDidUpdate() {
     this.editor.layout();
+  }
+
+  componentWillUnmount() {
+    this.editor.dispose();
+    window.removeEventListener('resize', this.onResize);
   }
 
   onResize() {
@@ -50,7 +46,7 @@ export default class Editor extends React.Component {
     this.editor.updateOptions(options);
 
     if (options.theme) {
-      monaco.editor.setTheme(options.theme)
+      monaco.editor.setTheme(options.theme);
     }
   }
 
@@ -92,7 +88,7 @@ Editor.propTypes = {
     PropTypes.number,
   ]),
   options: PropTypes.object
-}
+};
 
 Editor.defaultProps = {
   width: '100%',

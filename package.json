@@ -8,7 +8,7 @@
     "clean-react": "rimraf node_modules/spectacle/node_modules/component-playground/node_modules/react-dom && rimraf node_modules/spectacle/node_modules/react",
     "test:build": "webpack --config webpack.config.test.js",
     "test:watch": "webpack --config webpack.config.test.js --watch --display-modules",
-    "test": "lab --assert code --coverage -v -I 'Reflect,core,_babelPolyfill,regeneratorRuntime,__core-js_shared__,System,asap,Observable",
+    "test": "lab --assert code --coverage --coverage-path /lib -v -I 'Reflect,core,_babelPolyfill,regeneratorRuntime,__core-js_shared__,System,asap,Observable",
     "start:prod": "cross-env NODE_ENV=production node webbox.babel.js",
     "start:dev": "nodemon webbox.babel.js",
     "web:build": "npm run clean-react && webpack --config webpack.config.production.js -p --progress",

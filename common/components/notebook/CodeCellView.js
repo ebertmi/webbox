@@ -151,14 +151,14 @@ export default class CodeCellView extends React.PureComponent {
         project: project,
         tabs: this.state.project.tabManager.getTabs()
       });
-      project.run();      // execute the code
+      project.run(); // execute the code
     }
   }
 
   onProjectStateChange() {
     this.setState({
       tabs: this.state.project.tabManager.getTabs()
-    }, this.forceUpdate());  // To force a Rerender
+    }, this.forceUpdate()); // To force a Rerender
   }
 
   /**

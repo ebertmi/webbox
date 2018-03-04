@@ -10,6 +10,8 @@ export default class OptionsPanel extends React.Component {
   constructor(props) {
     super(props);
     this.onChangeOption = this.onChangeOption.bind(this);
+    this.onReset = this.onReset.bind(this);
+    this.onChange = this.onChange.bind(this);
 
     this.state = {
       options: optionManager.getOptions()
@@ -31,10 +33,10 @@ export default class OptionsPanel extends React.Component {
     });
   }
 
-  onChange(path=[], e) {
+  onChange(e) {
     e.stopPropagation();
 
-    let target = e.target;
+    const target = e.target;
     let value;
 
     switch (target.type) {
@@ -48,7 +50,8 @@ export default class OptionsPanel extends React.Component {
         value = target.value;
     }
 
-    let options = set({}, path.concat(target.name), value);
+    const path = target.name.split('.');
+    const options = set({}, path, value);
     optionManager.setOptions(options);
   }
 
@@ -56,15 +59,14 @@ export default class OptionsPanel extends React.Component {
     e.preventDefault();
     e.stopPropagation();
 
-    // maybe ask for confirmation
-
+    // ToDo: maybe ask for confirmation
     optionManager.reset();
   }
 
   renderEditorOptions() {
-    let options = this.state.options.editor;
+    const options = this.state.options.editor;
 
-    let themes = themeList.themes.map((theme) => {
+    const themes = themeList.themes.map((theme) => {
       return <option key={theme} value={theme}>{theme}</option>;
     });
 
@@ -87,50 +89,51 @@ export default class OptionsPanel extends React.Component {
     ];
 
     return (
-      <div onChange={this.onChange.bind(this, ['editor'])}>
+      <div onChange={this.onChange}>
         <legend>Editor</legend>
-        <Input type="select" label="Farbschema" name="theme" defaultValue={options.theme}>
+        <Input type="select" label="Farbschema" name="editor.theme" defaultValue={options.theme}>
           {themes}
         </Input>
-        <Input type="select" label="Aktive Zeile hervorheben" name="renderLineHighlight" defaultValue={options.renderLineHighlight}>
+        <Input type="select" label="Aktive Zeile hervorheben" name="editor.renderLineHighlight" defaultValue={options.renderLineHighlight}>
           {lineHighlightOptions}
         </Input>
-        <Input label="Ausgewähltes Wort hervorheben" type="checkbox" name="selectionHighlight" defaultChecked={options.selectionHighlight}/>
-        <Input type="select" label="Unsichtbare Zeichen anzeigen" name="renderWhitespace" defaultValue={options.renderWhitespace}>
+        <Input label="Ausgewähltes Wort hervorheben" type="checkbox" name="editor.selectionHighlight" defaultChecked={options.selectionHighlight}/>
+        <Input type="select" label="Unsichtbare Zeichen anzeigen" name="editor.renderWhitespace" defaultValue={options.renderWhitespace}>
           {whitespaceOptions}
         </Input>
-        <Input label="Einrückung anzeigen" type="checkbox" name="renderIndentGuides" defaultChecked={options.renderIndentGuides}/>
-        <Input type="select" label="Zeilen umbrechen" name="wordWrap" defaultValue={options.wordWrap}>
+        <Input label="Einrückung anzeigen" type="checkbox" name="editor.renderIndentGuides" defaultChecked={options.renderIndentGuides}/>
+        <Input type="select" label="Zeilen umbrechen" name="editor.wordWrap" defaultValue={options.wordWrap}>
           {wrapOptions}
         </Input>
-        <Input label="Autovervollständigung bei Klammern" type="checkbox" name="autoClosingBrackets" defaultChecked={options.autoClosingBrackets}/>
+        <Input label="Autovervollständigung bei Klammern" type="checkbox" name="editor.autoClosingBrackets" defaultChecked={options.autoClosingBrackets}/>
+        <Input label="Minimap anzeigen" type="checkbox" name="editor.minimap.enabled" defaultChecked={options.minimap.enabled}/>
       </div>
     );
   }
 
   renderTerminalOptions() {
-    let options = this.state.options.terminal;
+    const options = this.state.options.terminal;
 
     return (
-      <div onChange={this.onChange.bind(this, ['terminal'])}>
+      <div onChange={this.onChange}>
         <legend>Terminal</legend>
-        <Input label="Akustisches Signal" type="checkbox" name="audibleBell" defaultChecked={options.audibleBell}/>
+        <Input label="Akustisches Signal" type="checkbox" name="terminal.audibleBell" defaultChecked={options.audibleBell}/>
       </div>
     );
   }
 
   render() {
-    let options = this.state.options;
+    const options = this.state.options;
 
     return (
-      <form className="options-panel" onChange={this.onChange.bind(this, [])} onSubmit={e => e.preventDefault()}>
+      <form className="options-panel" onChange={this.onChange} onSubmit={e => e.preventDefault()}>
         <legend>Allgemeine Einstellungen</legend>
-        <Input label="Schriftart" type="text" name='font' defaultValue={options.font}/>
-        <Input label="Schriftgröße" type="number" min="1" max="50" step="1" name='fontSize' defaultValue={options.fontSize}/>
+        <Input label="Schriftart" type="text" name="font" defaultValue={options.font}/>
+        <Input label="Schriftgröße" type="number" min="1" max="50" step="1" name="fontSize" defaultValue={options.fontSize}/>
         {this.renderEditorOptions()}
         {this.renderTerminalOptions()}
         <hr/>
-        <Button bsStyle="danger" className="form-group" onClick={this.onReset.bind(this)}>Alle Einstellungen zurücksetzen</Button>
+        <Button bsStyle="danger" className="form-group" onClick={this.onReset}>Alle Einstellungen zurücksetzen</Button>
       </form>
     );
   }

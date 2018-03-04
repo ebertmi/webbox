@@ -17,13 +17,17 @@ export default class CodeBlock extends React.PureComponent {
 
   /**
    * Renders marks down and sets the returned markup as state when finished.
+   *
+   * @param {string} source source code to render
+   *
+   * @returns {void}
    */
   renderMarkdown(source) {
     // Get default language from notebook if mode is not available
-    let language = this.props.executionLanguage;
-    let mode = this.props.mode || language;
+    const language = this.props.executionLanguage;
+    const mode = this.props.mode || language;
 
-    const codeSource = '```' + mode + '\n' + source + '\n```';
+    const codeSource = `\`\`\`${mode}\n${source}\n\`\`\``;
     Markdown.render(codeSource)
       .then((rendered) => {
         this.setState({
