@@ -7,5 +7,19 @@ require('babel-register')({
   'presets': ['es2015', 'react'],
   'plugins': ['transform-object-rest-spread']
 });
+
 require('babel-polyfill');
-require('./webbox.js');
+const webbox = require('./webbox.js');
+
+// Server start
+async function bootstrap() {
+  if (!module.parent) {
+    await webbox.provision(true);
+  } else {
+    console.info('no provisioning');
+  }
+}
+bootstrap();
+
+
+module.exports = webbox;

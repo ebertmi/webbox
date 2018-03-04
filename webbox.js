@@ -71,7 +71,7 @@ const server = new Hapi.Server({
   cache: cache
 });
 
-const provision = async () => {
+const provision = async (shouldStart) => {
   await server.register({
     plugin: HapiRateLimit,
     options: config.ratelimit.cacheOptions
@@ -174,8 +174,13 @@ const provision = async () => {
    */
   await server.register(require('hapi-named-routes'));
 
-  await server.start();
-  console.info('Server started at ' + server.info.uri);
+  if (shouldStart === true) {
+    await server.start();
+    console.info(`Server started at ${server.info.uri}`);
+  } else {
+    await server.initialize();
+    console.info('Server has been required and only intialized');
+  }
 };
 
 // register better error pages
@@ -242,7 +247,7 @@ server.ext('onPreResponse', (request, h) => {
   }).code(statusCode);
 });
 
-server.events.on({ name: 'request', channels: 'error' }, function (request, event, tags) {
+server.events.on({ name: 'request', channels: 'error' }, (request, event, tags) => {
   try {
     const error = event.response.source || {};
     error._error = event.response. _error.toString();
@@ -260,6 +265,7 @@ server.events.on({ name: 'request', channels: 'error' }, function (request, even
   }
 });
 
-
-// start server configuration
-provision();
+module.exports = {
+  server,
+  provision
+};
