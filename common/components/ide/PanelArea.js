@@ -4,9 +4,9 @@ import {
   ReflexContainer,
   ReflexSplitter,
   ReflexElement
-} from 'react-reflex'
+} from 'react-reflex';
 
-import 'react-reflex/styles.css'
+import 'react-reflex/styles.css';
 
 import FilePanel from './panels/FilePanel';
 import ProcessPanel from './panels/ProcessPanel';
@@ -64,7 +64,7 @@ export default class PanelArea extends React.Component {
 
   renderPanels() {
     return this.state.tabs.map(({active, item, type}, index) => {
-      let PanelType = PANEL_TYPES[type];
+      const PanelType = PANEL_TYPES[type];
 
       if (PanelType && (active /*|| PanelType.renderInactive*/)) {
         return (
@@ -114,18 +114,12 @@ export default class PanelArea extends React.Component {
 
 
     return (
-      <ReflexContainer className="panel-area" orientation="vertical">
-        {children}
-      </ReflexContainer>
+      <React.Fragment>
+        <ReflexContainer className="panel-area" orientation="vertical">
+          {children}
+        </ReflexContainer>
+        {this.renderGlobalMessageList()}
+      </React.Fragment>
     );
   }
-
-  /*render() {
-    return (
-      <div className="panel-area">
-        {this.renderGlobalMessageList()}
-        {this.renderPanels()}
-      </div>
-    );
-  }*/
 }

@@ -1,7 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ResizeDetector from './ResizeDetector';
+import Debug from 'debug';
 
+const debug = Debug('webbox:Editor');
+
+/**
+ * https://github.com/Microsoft/monaco-editor/issues/772
+ */
 export default class Editor extends React.Component {
   constructor() {
     super();
@@ -26,7 +32,12 @@ export default class Editor extends React.Component {
   }
 
   componentWillUnmount() {
-    this.editor.dispose();
+    try {
+      this.editor.dispose();
+    } catch (e) {
+      debug('Failed to dispose editor', e);
+    }
+
     window.removeEventListener('resize', this.onResize);
   }
 
@@ -92,5 +103,6 @@ Editor.propTypes = {
 
 Editor.defaultProps = {
   width: '100%',
-  height: '100%'
+  height: '100%',
+  options: {}
 };

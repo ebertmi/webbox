@@ -122,15 +122,18 @@ r.db('rethinkdb').table('cluster_config').get('auth').update({auth_key: 'newkey'
 You can use the rethinkdb Python driver to **dump** and **restore** the webbox database aswell as to export tables as `csv`:
 
 ### Migrations
+
 Depending on the installation date you might need to run the database migration scripts in order to update the system.
 The migrations scripts are written in a way such they do not change anything if run multiple times.
 
 Use the following command for running a migration where `X` the number of the migration is.
+
 ```nodejs
 node ./migrations/migration-runner.js migration-X
 ```
 
 Depending on your configuration of the host system you might need to set the node environment:
+
 ```nodejs
 NODE_ENV=production node ./migrations/migration-runner.js migration-X
 ```
