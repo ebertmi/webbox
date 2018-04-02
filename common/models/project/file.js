@@ -1,7 +1,8 @@
+/*global monaco */
 import { EventEmitter } from 'events';
 import { createModel } from '../../util/monacoUtils';
 import { Annotation } from '../annotation';
-import { Severity, typeToSeverity } from '../severity';
+import { typeToSeverity } from '../severity';
 
 export default class File extends EventEmitter {
   constructor(name, value, language) {
@@ -11,6 +12,7 @@ export default class File extends EventEmitter {
     this._isNameEditable = false;
     this._nameChanged = false;
     this.hasChanges = true; // a new file is a change, basically
+    this.annotations = []; // raw annotations
 
     this.model = createModel(name, value, language);
 
@@ -30,28 +32,31 @@ export default class File extends EventEmitter {
   removeListener() {}
 
   setAnnotations(annotations) {
-    console.info(annotations);
+    //debugs(annotations, annotations.length);
 
     const markers = annotations.map(a => {
-      return new Annotation(a.text, a.row+1, a.column, typeToSeverity(a.type));
+      return new Annotation(a.text, a.row + 1, a.column, typeToSeverity(a.type));
     });
+
+    this.annotations = annotations;
 
     monaco.editor.setModelMarkers(this.model, this._name, markers);
   }
 
   getAnnotations() {
-      console.log(this.model.getAllDecorations());
-      return this.model.getAllDecorations();
+    //debugs(this.model.getAllDecorations(), this.model.getAllDecorations().length);
+    return this.model.getAllDecorations();
   }
 
   clearAnnotations() {
+    this.annotations = [];
     monaco.editor.setModelMarkers(this.model, this._name, []);
   }
 
   /**
    * Set the hasChanges flag to true and notify all listeners if it has changes.
    *
-   * @returns
+   * @returns {void}
    *
    * @memberOf File
    */
@@ -71,7 +76,6 @@ export default class File extends EventEmitter {
   }
 
   autoDetectMode() {
-    //let mode = modelist.getModeForPath(this._name).mode;
     monaco.editor.setModelLanguage(this.model);
   }
 
@@ -102,6 +106,9 @@ export default class File extends EventEmitter {
 
   /**
    * Escapes invalid path characters
+   * @param {String} str - string to escape
+   *
+   * @returns {String} escaped string
    */
   escapeName(str) {
     if (!str) {
@@ -112,7 +119,7 @@ export default class File extends EventEmitter {
   }
 
   setName(name) {
-    let escapedName = this.escapeName(name);
+    const escapedName = this.escapeName(name);
 
     this._oldName = this._name;
     this._name = escapedName;
@@ -128,9 +135,9 @@ export default class File extends EventEmitter {
   }
 
   dispose() {
-    this.removeAllListeners("changeName");
-    this.removeAllListeners("changedName");
-    this.removeAllListeners("changeNameEditable");
-    this.removeAllListeners("hasChangesUpdate");
+    this.removeAllListeners('changeName');
+    this.removeAllListeners('changedName');
+    this.removeAllListeners('changeNameEditable');
+    this.removeAllListeners('hasChangesUpdate');
   }
 }

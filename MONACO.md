@@ -9,7 +9,7 @@
 * [ ] Add own resize logic to avoid 100ms interval for checking https://github.com/superRaytin/react-monaco-editor/issues/53
 * [ ] Refactor displaying of errors in editor and file tab
 
-## Use Uris instead of names?
+## Shoudl we use Uris instead of names
 
 ```javascript
 var vscodeUri = require("vscode-uri")
