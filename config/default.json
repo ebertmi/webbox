@@ -51,7 +51,6 @@
         "host": "localhost",
         "port": "28015",
         "db": "webbox",
-        /*"authKey": "webbox_db_token", old way, disabled for now*/
         "user": "admin",
         "password": "webbox_db_token"
     },
