@@ -56,6 +56,7 @@ export default class FileTab extends React.Component {
   }
 
   onChangeAnnotation() {
+    // ToDO Monaco: trace this and change the handling here
     let annotations = this.props.item.getAnnotations();
 
     const types = [null, 'Info', 'Warning', 'Error'];
@@ -85,17 +86,6 @@ export default class FileTab extends React.Component {
     this.props.item.setName(value);
   }
 
-  /**
-   * Start file renaming
-   */
-  handleRename(e) {
-    if (e  && e.preventDefault) {
-      e.preventDefault();
-    }
-
-    this.props.item.setNameEdtiable.call(this.props.item, true);
-  }
-
   onEnterRename(keyCode, charCode, key) {
     const isEnter = keyCode === 13 || charCode === 13 || key === "Enter";
     if (isEnter) {
@@ -107,10 +97,27 @@ export default class FileTab extends React.Component {
     this.props.item.setNameEdtiable(false);
   }
 
+  /**
+   * Start file renaming
+   * @param {Event} e - rename event
+   * @returns {void}
+   */
+  handleRename(e) {
+    if (e  && e.preventDefault) {
+      e.preventDefault();
+    }
+
+    this.props.item.setNameEdtiable.call(this.props.item, true);
+  }
+
   renderAnnotations() {
     let {annotationLevel, annotationCount} = this.state;
 
     if (annotationCount) {
+      if (annotationLevel == null) {
+        annotationLevel = 'danger';
+      }
+
       annotationLevel = annotationLevel.replace('Error', 'danger');
 
       let icon = 'exclamation-triangle';
@@ -127,6 +134,8 @@ export default class FileTab extends React.Component {
         />
       );
     }
+
+    return null;
   }
 
   renderNameOrInput() {
