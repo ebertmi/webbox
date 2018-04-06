@@ -153,6 +153,10 @@ export default class Terminal extends React.Component {
         this.terminal.focus();
       }
     }
+
+    // apply changed props
+    this.terminal.setOption('fontFamily', this.props.fontFamily);
+    this.terminal.setOption('fontSize', this.props.fontSize);
   }
 
   componentWillUnmount() {
@@ -164,7 +168,6 @@ export default class Terminal extends React.Component {
   }
 
   onStreamChange(reuse) {
-    debug('Streams Changed', reuse);
     const process = this.props.process;
 
     // Reset the terminal and delete old lines!
