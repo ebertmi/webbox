@@ -13,7 +13,7 @@
     "start:dev": "nodemon webbox.babel.js",
     "web:build": "npm run clean-react && webpack --config webpack.config.production.js -p --progress",
     "web:json:": "webpack --config webpack.config.production.js -p --progress --json > webox.stats.json",
-    "web:watch": "npm run clean-react && webpack --watch --hide-modules"
+    "web": "npm run clean-react && webpack --watch --hide-modules"
   },
   "private": true,
   "engine": ">= node 8.0.0",
@@ -133,7 +133,7 @@
     "uuid": "^3.2.1",
     "vision": "^5.3.2",
     "whatwg-fetch": "^2.0.4",
-    "xterm": "^2.9.2"
+    "xterm": "^3.2.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -164,8 +164,9 @@
     "rimraf": "^2.6.2",
     "sass-loader": "^6.0.7",
     "style-loader": "^0.20.3",
-    "webpack": "~3.11.0",
+    "webpack": "^4.4.1",
     "webpack-bundle-analyzer": "^2.11.1",
+    "webpack-cli": "^2.0.13",
     "yargs": "^9.0.1"
   }
 }

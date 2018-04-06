@@ -25,6 +25,7 @@ module.exports = {
     reasons: false,
     warnings: false,
   },
+  mode: 'development',
   target: 'web',
   context: path.join(__dirname, 'client'),
   entry: {
@@ -32,7 +33,7 @@ module.exports = {
     index: './js/index.js',
     embed: './js/embed.js',
     notebook: './js/notebook.js',
-    presentation: './js/presentation',
+    presentation: './js/presentation.js',
   },
   output: {
     filename: '[name].bundle.js',
@@ -111,11 +112,11 @@ module.exports = {
   },
   plugins: [
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new webpack.optimize.CommonsChunkPlugin({
+    /*new webpack.optimize.CommonsChunkPlugin({
       name: 'commons',
       chunks: ['dashboard', 'embed', 'notebook', 'presentation'],
       minChunks: 2
-    }),
+    }),*/
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('development')
@@ -134,7 +135,7 @@ module.exports = {
         to: 'vs',
       }
     ]),
-    new webpack.optimize.ModuleConcatenationPlugin()
+    /*new webpack.optimize.ModuleConcatenationPlugin()*/
     /*new webpack.SourceMapDevToolPlugin({
       filename: '[file].map',
       include: ['presentation.bundle.js', 'index.bundle.js', 'react-commons.bundle.js', 'dashboard.bundle.js'],
@@ -143,6 +144,15 @@ module.exports = {
     }),*/
     //new BundleAnalyzerPlugin()
   ],
+  optimization: {
+    namedModules: true,
+    splitChunks: {
+      name: 'commons',
+      minChunks: 2
+    },
+    noEmitOnErrors: true,
+    concatenateModules: true
+  },
   node: {
     Buffer: true,
     fs: 'empty' // needed for term.js

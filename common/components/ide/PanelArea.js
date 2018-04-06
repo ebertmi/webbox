@@ -66,15 +66,15 @@ export default class PanelArea extends React.Component {
     return this.state.tabs.map(({active, item, type}, index) => {
       const PanelType = PANEL_TYPES[type];
 
-      if (PanelType && (active /*|| PanelType.renderInactive*/)) {
-        return (
-          <PanelType
-            key={index}
-            active={active}
-            item={item}
-          />
-        );
+      if (PanelType && (active || PanelType.renderInactive)) {
+        return {
+          panel: (<PanelType key={index} active={active} item={item} />),
+          isInactive: PanelType.renderInactive,
+          active: active
+        };
       }
+
+      return null;
     });
   }
 
@@ -91,20 +91,29 @@ export default class PanelArea extends React.Component {
     const panels = this.renderPanels();
 
     const children = [];
-    panels.forEach((panel, i) => {
-      if (panel === null || panel === undefined) {
+    const inactiveChildren = [];
+
+    panels.forEach((panelItem, i) => {
+      if (panelItem === null || panelItem === undefined) {
+        return;
+      }
+
+      if (panelItem.active === false /*&& panelItem.isInactive === true*/) {
+        inactiveChildren.push(panelItem.panel);
         return;
       }
 
       const isLast = (panels.length - 1) == i;
+      const minSize = '200';
 
       children.push(
         <ReflexElement
           key={`panel-${i}`}
+          isInactive={panelItem.isInactive}
           propagateDimensions={true}
           renderOnResizeRate={50}
           renderOnResize={true}
-          minSize="200">{panel}</ReflexElement>
+          minSize={minSize}>{panelItem.panel}</ReflexElement>
       );
 
       if (isLast === false) {
@@ -112,12 +121,14 @@ export default class PanelArea extends React.Component {
       }
     });
 
+    debug(inactiveChildren);
 
     return (
       <React.Fragment>
         <ReflexContainer className="panel-area" orientation="vertical">
           {children}
         </ReflexContainer>
+        {inactiveChildren}
         {this.renderGlobalMessageList()}
       </React.Fragment>
     );
