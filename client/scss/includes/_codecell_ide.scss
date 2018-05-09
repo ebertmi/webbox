@@ -109,7 +109,7 @@
 
 .close-btn {   // Close Button shall float top right of the Output Area of the CodeCellView
   position: absolute;
-  z-index: 1;
+  z-index: 10;
   top: 0;
   right: 1rem;
   color: #777;

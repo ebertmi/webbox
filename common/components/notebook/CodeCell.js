@@ -47,6 +47,10 @@ export default class CodeCell extends BaseCell {
 
   /**
    * Renders marks down and sets the returned markup as state when finished.
+   *
+   * @param {string} source - markdown formatted string to render to html
+   *
+   * @returns {void}
    */
   renderMarkdown(source) {
     // Get default language from notebook if mode is not available

@@ -22,6 +22,8 @@ import {Severity} from '../../models/severity';
 import Debug from 'debug';
 const debug = Debug('webbox:CodeCellView');
 
+const bell = new Audio('/public/audio/bell.ogg');
+
 /**
  * The Notebook-Component renders the different cells with a component according to its cell_type.
  */
@@ -159,6 +161,25 @@ export default class CodeCellView extends React.PureComponent {
     this.setState({
       tabs: this.state.project.tabManager.getTabs()
     }, this.forceUpdate()); // To force a Rerender
+  }
+
+  onResize(cols, rows) {
+    const process = this.state.project.runner;
+
+    if (process != null) {
+      process.resize(cols, rows);
+    }
+  }
+
+
+  onBell() {
+    if (this.state.options.terminal.audibleBell) {
+      if (bell.paused) {
+        bell.play();
+      } else {
+        bell.currentTime = 0;
+      }
+    }
   }
 
   /**
@@ -306,8 +327,10 @@ export default class CodeCellView extends React.PureComponent {
   }
 
   render() {
+    // Notice: This component is quite difficult to render as it contains a lot of logic to make it lazy and to work in notebook and presentations
     const { code, className} = this.props;
     const { editMode, showTerminal, project, tabs } = this.state;
+    const {font, fontSize} = this.state.options;
     const classes = classnames(`code-cell col-12 row ${className}`);
     const externalIcon = <Icon name="external-link" className="icon-control d-print-none" onClick={this.onOpenInExternalWindow} title="IDE in neuem Fenster öffnen" />;
     const editIcon = <Icon name="edit" className="icon-control d-print-none" onClick={this.onSwitchMode} title="Zum Editiermodus wechseln" />;
@@ -321,7 +344,16 @@ export default class CodeCellView extends React.PureComponent {
 
     const ideArea = <div className="ide-area" style={{height: '200px'}}>
       { showTerminal ? closeTerminalIcon : null }
-      { (project && project.runner) ? <Terminal process={project.runner}/> : null}
+
+      { (project && project.runner) ? <Terminal
+        fontFamily={`${font}, monospace`}
+        fontSize={`${fontSize}`}
+        onBell={this.onBell}
+        onResize={this.onResize}
+        hidden={false}
+        process={project.runner}
+      /> : null}
+
       { additionalPanels }
     </div>;
 
