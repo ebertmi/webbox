@@ -97,7 +97,7 @@ loadMonaco(window, BASE_MONACO_REQUIRE_CONFIG).then(monaco => {
     rootElement
   );
 }).catch(err => {
-  debug(err);
+  console.error(err);
   render(
     <div className="alert alert-danger">Failed to load Editor dependencies</div>,
     document.getElementById('ide-container')
