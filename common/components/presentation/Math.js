@@ -1,5 +1,5 @@
-import React from "react";
-import katex from "katex";
+import React from 'react';
+import katex from 'katex';
 import PropTypes from 'prop-types';
 
 export class Math extends React.Component {
@@ -26,7 +26,7 @@ export class Math extends React.Component {
         throwOnError: false
       });
     } catch (e) {
-      rendered = "<span>" + e.message + "</span>";
+      rendered = '<span>' + e.message + '</span>';
     }
 
     return rendered;

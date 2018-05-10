@@ -246,7 +246,7 @@ It is also possible to just build the tests once using `npm run test:build`.
 You need to start two processes in order to get the development mode running:
 
 1. `npm run start:dev` which starts the server in the development mode (`NODE_ENV=development`) (you need `npm install nodemon`)
-2. `npm run web:watch` which automatically builds all client bundles on file changes.
+2. `npm run web` which automatically builds all client bundles on file changes and rebuilds on changes.
 
 You can add/configure a custom development configuration under `/config/development.json` which gets *merged* with the `/config/default.json` configuration.
 But you do not need to do so. The default configuration should have some sane values...

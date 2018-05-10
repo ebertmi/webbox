@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import hljs from 'highlight.js';
-import { getStyles } from "spectacle/lib/utils/base";
-import Radium from "radium";
+import { getStyles } from 'spectacle/lib/utils/base';
+import styled from 'react-emotion';
 
 import { EmbedTypes, RunModeDefaults } from '../../constants/Embed';
 import Icon from '../Icon';
+
+const StyledPre = styled.pre(props => props.styles);
 
 /**
  * Highlights CodePanes using highlight.js.
@@ -18,12 +20,11 @@ class Highlight extends React.Component {
 
     this.onRef = this.onRef.bind(this);
     this.onRun = this.onRun.bind(this);
+
+    this.preNode = React.createRef();
   }
 
   componentDidMount() {
-    this.highlightCode();
-  }
-  componentDidUpdate() {
     this.highlightCode();
   }
 
@@ -31,9 +32,15 @@ class Highlight extends React.Component {
     return false;
   }
 
+  componentDidUpdate() {
+    this.highlightCode();
+  }
+
   /**
    * Clicked the run button. Should we enable postMessage communication with the new window?
    * Maybe at some point later
+   *
+   * @returns {void}
    */
   onRun() {
     /**
@@ -50,9 +57,9 @@ class Highlight extends React.Component {
     const id = this.props.runId || RunModeDefaults.id;
 
     const url = `${window.location.protocol}//${window.location.host}/run?language=${encodeURIComponent(language)}&id=${encodeURIComponent(id)}&embedType=${encodeURIComponent(embedType)}&code=${encodeURIComponent(code)}`;
-    const strWindowFeatures = "menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes";
+    const strWindowFeatures = 'menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes';
 
-    window.open(url, "Beispiel Ausführen", strWindowFeatures);
+    window.open(url, 'Beispiel Ausführen', strWindowFeatures);
   }
 
   onRef(node) {
@@ -60,11 +67,11 @@ class Highlight extends React.Component {
   }
 
   highlightCode () {
-    if (!this.preNode) {
+    if (this.preNode.current == null) {
       return;
     }
 
-    var nodes = this.preNode.querySelectorAll('code');
+    const nodes = this.preNode.current.querySelectorAll('code');
     if (nodes.length > 0) {
       for (var i = 0; i < nodes.length; i=i+1) {
         hljs.highlightBlock(nodes[i]);
@@ -73,18 +80,25 @@ class Highlight extends React.Component {
   }
 
   render() {
+    const styles = [
+      this.context.styles.components.codePane.pre,
+      getStyles.call(this),
+      this.context.typeface || {},
+      this.props.style,
+    ];
+
     const runBtnStyles = {
-      position: "absolute",
-      left: "-1em",
-      top: "0em"
+      position: 'absolute',
+      left: '-1em',
+      top: '0em'
     };
     const lang = `language-${this.props.mode}`;
     const runBtn = this.props.showRunButton ? <Icon style={runBtnStyles} name="play-circle-o" className="icon-control" onClick={this.onRun} title="Code Ausführen" /> : null;
     return (
-      <div className="highlight-view" style={{position: "relative"}}>
-        <pre className="hljs" ref={this.onRef} style={[this.context.styles.components.codePane.pre, getStyles.call(this), this.props.style]}>
+      <div className="highlight-view" style={{position: 'relative'}}>
+        <StyledPre className="hljs" ref={this.onRef} styles={styles}>
           <code className={lang} style={this.context.styles.components.codePane.code}>{this.props.code}</code>
-        </pre>
+        </StyledPre>
         {runBtn}
       </div>
     );
@@ -99,7 +113,8 @@ Highlight.defaultProps = {
   mode: '',
   executionLanguage: '',
   code: '',
-  showRunButton: false
+  showRunButton: false,
+  style: {}
 };
 
-export default Radium(Highlight);
+export default Highlight;
