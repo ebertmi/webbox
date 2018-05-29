@@ -43,7 +43,8 @@ export default class CodeCellView extends React.PureComponent {
     this.state = {
       editMode: false,
       showTerminal: false,
-      options: optionManager.getOptions()
+      options: optionManager.getOptions(),
+      project: null
     };
   }
 
@@ -96,7 +97,8 @@ export default class CodeCellView extends React.PureComponent {
     const embedType = this.props.cell.getIn(['metadata', 'embedType'], notebookEmbedType);
 
     // Experimental
-    const id = this.props.cell.getIn(['metadata', 'runid'], RunModeDefaults.id);
+    const id = this.props.cell.getIn(['metadata', 'runid'], `${RunModeDefaults.id}-${this.props.cell.get('id')}`);
+    debug('using following project/embedid', id);
 
     const url = `${window.location.protocol}//${window.location.host}/run?language=${encodeURIComponent(notebookLanguageInformation)}&id=${encodeURIComponent(id)}&embedType=${encodeURIComponent(embedType)}&code=${encodeURIComponent(code)}`;
     const strWindowFeatures = 'menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes';
@@ -216,7 +218,8 @@ export default class CodeCellView extends React.PureComponent {
     // Step 1: Get all relevant information, language, embed type and code
     const language = this.props.cell.getIn(['metadata', 'executionLanguage'], this.props.executionLanguage.executionLanguage);
     const notebookEmbedType = this.props.embedType || EmbedTypes.Sourcebox;
-    const id = this.props.cell.getIn(['metadata', 'runid'], RunModeDefaults.id);
+    const id = this.props.cell.getIn(['metadata', 'runid'], `${RunModeDefaults.id}-${this.props.cell.get('id')}`);
+    debug('using following project/embedid', id);
     const embedType = this.props.cell.getIn(['metadata', 'embedType'], notebookEmbedType);
 
     const projectData = {

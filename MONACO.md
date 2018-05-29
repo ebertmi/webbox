@@ -8,6 +8,7 @@
 * [x] Implement Markdown Utils
 * [ ] Add own resize logic to avoid 100ms interval for checking https://github.com/superRaytin/react-monaco-editor/issues/53
 * [x] Refactor displaying of errors in editor and file tab
+* [ ] Fix terminal CodeCellViews
 
 ## Shoudl we use Uris instead of names
 
