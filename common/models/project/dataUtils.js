@@ -3,12 +3,12 @@ import isString from 'lodash/isString';
 /**
  * This function determines which data to load from the given embed (from the server) and
  * loads it in the project.
- * 
+ *
  * @export
  * @param {any} project - reference to project
  * @param {any} data  - embed data that might include a code document
  * @param {boolean} [ignoreDocument=false] - ignores the included document if set to true
- * 
+ *
  * @returns {undefined}
  */
 export function loadFromData(project, data, ignoreDocument=false) {
@@ -66,7 +66,7 @@ export function loadFromData(project, data, ignoreDocument=false) {
  * @export
  * @param {any} project - project
  * @param {any} data - data
- * 
+ *
  * @returns {undefined}
  */
 export function reloadFromData(project, data) {
