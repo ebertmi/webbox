@@ -1,4 +1,7 @@
 import isFunction from 'lodash/isFunction';
+import Debug from 'debug';
+
+const debug = Debug('webbox:terminalManager');
 
 /**
  * Basic manager for terminal (xterm.js) instances that
@@ -22,6 +25,7 @@ class TerminalManager {
    * @memberof TerminalManager
    */
   get(key) {
+    debug(`get(${key})`);
     return this.instances.get(key);
   }
 
