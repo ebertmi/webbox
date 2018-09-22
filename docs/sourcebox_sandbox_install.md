@@ -14,6 +14,17 @@ title: Installing the Sourcebox Sandbox
 
 Install a couple of required tools...
 
+Upgrade the distro to the latest stretch release and then install the precompiled kernel options
+Please consult https://wiki.debian.org/DebianTesting for further information about the dist-upgrade process as it requires to change
+the `/etc/apt/sources.list`.
+
+```bash
+sudo apt-get dist-upgrade
+sudo dpkg -i linux-image-4.5.0-rc5-sourcebox_4.5.0-rc5-11_amd64.deb linux-headers-4.5.0-rc5-sourcebox_4.5.0-rc5-1_amd64.deb
+```
+
+Next we install a couple of required tools...
+
 ```bash
 sudo apt-get install curl
 curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
@@ -22,10 +33,18 @@ sudo apt-get install nodejs git btrfs-tools libcap-dev build-essential lxc lxc-d
 sudo -E npm install -g ebertmi/sourcebox-sandbox
 ```
 
+Depending on the system and if you are the root user you might need to use `sudo npm install PACKAGE --unsafe-perm'
+
+
 **Hint:**
 
+<<<<<<< Updated upstream
 * Also try to update `npm` itself with `sudo npm install npm` and maybe you need to link the node binary `sudo ln -s /usr/bin/nodejs /usr/bin/node`.
 * You might need to disable apparmor in order to get lxc working on Ubuntu (see https://help.ubuntu.com/community/AppArmor & https://forum.proxmox.com/threads/nfs-file-system-mount-problem-apparmor.31706/)
+=======
+**Only for private repos:**
+For using the `sourcebox-sandbox` repository your public key must be added to the ssh config (`~/.ssh/config`).
+>>>>>>> Stashed changes
 
 ## Experiences
 
@@ -44,8 +63,11 @@ Try to rerun `sudo node-gype rebuild` in the sourcebox-lxc directory (the one wi
 
 ## Install Script
 
+<<<<<<< Updated upstream
 > There is a difference between the number of subuids and subgids between debian jessie and stretch or higher. In jessie we can get at least 65536 whereas in stretch or higher we only get less which causes any `apt install` command to fail.
 
+=======
+>>>>>>> Stashed changes
 ```bash
 #!/bin/sh -e
 set -e

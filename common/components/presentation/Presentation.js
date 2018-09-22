@@ -62,7 +62,7 @@ export default class Presentation extends React.Component {
 
       const title = this.props.notebook.getIn(['metadata', 'title'], 'Ohne Titel');
 
-      document.title = `${title} - trycoding.io`;
+      document.title = `${title} - trycoding`;
     }
   }
 
