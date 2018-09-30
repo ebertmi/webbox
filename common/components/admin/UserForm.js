@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { CSSTransition, TransitionGroup } from 'react-transition-group'
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { Input } from '../bootstrap';
 import TaggedInput from '../TaggedInput';
 import { Link } from 'react-router';
@@ -11,7 +11,7 @@ const Fade = ({ children, ...props }) => (
     timeout={{
       enter: 300,
       exit: 500,
-     }}
+    }}
     classNames="fade"
   >
     {children}
@@ -85,7 +85,7 @@ export class UserForm extends Component {
     // nested data structures are special cases
     if (event.target.name.startsWith('verification')) {
       const verificationValue = this.props.user.verification;
-      switch(event.target.name) {
+      switch (event.target.name) {
         case 'verification.isCompleted':
           verificationValue.isCompleted = value;
           break;
@@ -169,14 +169,14 @@ export class UserForm extends Component {
    */
   renderConfirmDelete () {
     return (
-        <TransitionGroup className='form-footer'>
-          <Fade>
-            <div className="form-inline">
-              <p className="form-control-plaintext">Soll der Benutzer wirklich gelöscht werden?</p>
-              <button onClick={this.handleDeleteConfirm.bind(this)} className="btn btn-danger btn-sm">Ja</button>
-              <button onClick={this.handleDeleteDismiss.bind(this)} className="btn btn-secondary btn-sm">Nein</button>
-            </div>
-          </Fade>
+      <TransitionGroup className="form-footer">
+        <Fade>
+          <div className="form-inline">
+            <p className="form-control-plaintext">Soll der Benutzer wirklich gelöscht werden?</p>
+            <button onClick={this.handleDeleteConfirm.bind(this)} className="btn btn-danger btn-sm">Ja</button>
+            <button onClick={this.handleDeleteDismiss.bind(this)} className="btn btn-secondary btn-sm">Nein</button>
+          </div>
+        </Fade>
       </TransitionGroup>
     );
   }
@@ -212,7 +212,7 @@ export class UserForm extends Component {
         </div>
         <Input onChange={this.handleChange} name="email" type="text" label="E-Mail-Adresse" muted="Vorsicht: Benutzer werden anhand ihrer E-Mail-Adresse identifiziert. Diese muss eindeutig sein." value={this.props.user.email} />
         <Input onChange={this.handleChange} name="username" type="text" label="Benutzername" muted="Dieser wird aus der E-Mail-Adresse automatisch generiert." value={this.props.user.username} />
-        <Input onChange={this.handleChange} name="isActive" type="checkbox" label="Aktiviert: Hiermit könnten Benutzer aktiviert und deaktiviert werden."  checked={this.props.user.isActive} />
+        <Input onChange={this.handleChange} name="isActive" type="checkbox" label="Aktiviert: Hiermit könnten Benutzer aktiviert und deaktiviert werden." checked={this.props.user.isActive} />
         <Input onChange={this.handleChange} name="semester" type="text" label="Semester" muted="Semester in dem sich der Benutzer registriert hat." value={this.props.user.semester} />
         <Input onChange={this.handleChange} name="createdAt" type="text" label="Erstellt am" readOnly="readonly" value={this.props.user.createdAt} /> <span><Time value={this.props.user.createdAt} locale="de" relative={true} invalidDateString="kein Datum"/></span>
         <Input onChange={this.handleChange} name="verification.isCompleted" type="checkbox" label="Registrierung abgeschlossen" checked={this.props.user.verification.isCompleted} />
@@ -240,7 +240,7 @@ export class UserForm extends Component {
   }
 }
 
-UserForm.getInitialState = function () {
+UserForm.getInitialState = function getInitialState() {
   return {
     showConfirmDelete: false
   };

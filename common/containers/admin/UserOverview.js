@@ -16,70 +16,70 @@ import ModalHeader from '../../components/ModalHeader';
 
 const SearchHelpModal = props => (
   <Modal
-  isOpen={props.isOpen}
-  onRequestClose={props.toggle}
-  shouldCloseOnOverlayClick={true}
-  className={{
-    base: 'modal-dialog modal-lg',
-    afterOpen: 'show',
-    beforeClose: ''
-  }}
+    isOpen={props.isOpen}
+    onRequestClose={props.toggle}
+    shouldCloseOnOverlayClick={true}
+    className={{
+      base: 'modal-dialog modal-lg',
+      afterOpen: 'show',
+      beforeClose: ''
+    }}
 
-  overlayClassName={{
-    base: 'modal-backdrop',
-    afterOpen: 'show',
-    beforeClose: ''
-  }}
->
-  <div className="modal-content">
-    <ModalHeader toggle={props.toggle}>Such- und Filteroptionen</ModalHeader>
-    <ModalBody>
-      <p>Folgende Suchoptionen stehen zur Verfügung:</p>
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Option</th>
-            <th>Beschreibung</th>
-            <th>Beispiel</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Name oder E-Mail</td>
-            <td>Sucht nach dem Namen oder der E-Mail-Adresse</td>
-            <td><code>christian</code> oder <code>@stud.hs-coburg.de</code></td>
-          </tr>
-          <tr>
-            <td>Aktive Benutzer</td>
-            <td>Filtert nach dem Status der Aktivierung</td>
-            <td><code>active: false</code> oder <code>active: true</code></td>
-          </tr>
-          <tr>
-            <td>Verifizierte Benutzer</td>
-            <td>Filtert nach dem Status der Account-Verifikation</td>
-            <td><code>verified: false</code> oder <code>verified: true</code></td>
-          </tr>
-          <tr>
-            <td>Semester</td>
-            <td>Filtert nach dem Semester</td>
-            <td><code>semester: SS16</code></td>
-          </tr>
-          <tr>
-            <td>Rolle</td>
-            <td>Filtert die Benutzer nach der angegebenen Rolle</td>
-            <td><code>role: author</code> oder <code>role: admin</code></td>
-          </tr>
-        </tbody>
-      </table>
-      <p>
+    overlayClassName={{
+      base: 'modal-backdrop',
+      afterOpen: 'show',
+      beforeClose: ''
+    }}
+  >
+    <div className="modal-content">
+      <ModalHeader toggle={props.toggle}>Such- und Filteroptionen</ModalHeader>
+      <ModalBody>
+        <p>Folgende Suchoptionen stehen zur Verfügung:</p>
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Option</th>
+              <th>Beschreibung</th>
+              <th>Beispiel</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Name oder E-Mail</td>
+              <td>Sucht nach dem Namen oder der E-Mail-Adresse</td>
+              <td><code>christian</code> oder <code>@stud.hs-coburg.de</code></td>
+            </tr>
+            <tr>
+              <td>Aktive Benutzer</td>
+              <td>Filtert nach dem Status der Aktivierung</td>
+              <td><code>active: false</code> oder <code>active: true</code></td>
+            </tr>
+            <tr>
+              <td>Verifizierte Benutzer</td>
+              <td>Filtert nach dem Status der Account-Verifikation</td>
+              <td><code>verified: false</code> oder <code>verified: true</code></td>
+            </tr>
+            <tr>
+              <td>Semester</td>
+              <td>Filtert nach dem Semester</td>
+              <td><code>semester: SS16</code></td>
+            </tr>
+            <tr>
+              <td>Rolle</td>
+              <td>Filtert die Benutzer nach der angegebenen Rolle</td>
+              <td><code>role: author</code> oder <code>role: admin</code></td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
         Die Filter- bzw. Suchoptionen können zusätzlich kombiniert und mehrfach verwendet werden. Zum Beispiel kann nach Autoren und Administratoren gleichzeitig gesucht werden: <code>role: admin role: author</code>
-      </p>
-    </ModalBody>
-    <ModalFooter>
-      <button className="btn btn-secondary" onClick={props.toggle}>Schließen</button>
-    </ModalFooter>
-  </div>
-</Modal>
+        </p>
+      </ModalBody>
+      <ModalFooter>
+        <button className="btn btn-secondary" onClick={props.toggle}>Schließen</button>
+      </ModalFooter>
+    </div>
+  </Modal>
 );
 
 class UserOverview extends Component {
@@ -87,7 +87,7 @@ class UserOverview extends Component {
     super(props);
     this.state = {
       helpModalOpen: false
-    }
+    };
 
     this.toggleSearchHelp = this.toggleSearchHelp.bind(this);
   }
@@ -150,7 +150,7 @@ class UserOverview extends Component {
       searchQuery={this.props.userOverview.pagesQuery.q}
       showHelpIcon={true}
       onSearchHelp={this.toggleSearchHelp}
-      />);
+    />);
   }
 
   render () {
@@ -177,5 +177,5 @@ class UserOverview extends Component {
 export default connect(state => ({
   userOverview: state.userOverview
 }),
-  dispatch => bindActionCreators(AdminActions, dispatch)
+dispatch => bindActionCreators(AdminActions, dispatch)
 )(UserOverview);

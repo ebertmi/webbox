@@ -394,7 +394,7 @@ export default class Runner extends EventEmitter {
         return Sk.importMainWithBody(mainFile.name.replace('.py',''), false, mainFile.code, true);
       }, {'*': this.handleInterrupt.bind(this)})
         .then((res) => {
-          debug('resolving skulpt execution', res);
+          debug('resolving skulpt execution');
           resolve();
         }, err => {
           debug('rejecting skulpt execution', err);
