@@ -38,6 +38,9 @@
 
 .turtle-panel,
 .math-panel {
+  width: 100%;
+  width: inherit;
+  height: 100%;
   min-height: 100%;
   overflow: auto;
   padding: 1rem;

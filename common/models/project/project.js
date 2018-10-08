@@ -927,8 +927,10 @@ export default class Project extends EventEmitter {
   saveTests() {
     // Get data from file
     const file = this.getTestCode();
+
     if (file == null) {
       // FIXME: this should not happen
+      debug('getTestCode returned null - that is not expected');
       return;
     }
 

@@ -1,7 +1,6 @@
 require('../scss/index.scss');
-import 'babel-polyfill';
-import 'exports-loader?fetch!whatwg-fetch/fetch';
-import React from 'react';
+import '@babel/polyfill';
+import 'whatwg-fetch';import React from 'react';
 import { render } from 'react-dom';
 
 import Ide from '../../common/components/ide/Ide';

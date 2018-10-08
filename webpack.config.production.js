@@ -61,8 +61,20 @@ module.exports = {
         ],
         loader: 'babel-loader',
         query: {
-          presets: [['es2015', { modules: false }], 'react', 'stage-2', 'stage-3'],
-          plugins: ['transform-runtime', 'syntax-dynamic-import', 'emotion']
+          presets: [['@babel/preset-env', { modules: false }], '@babel/preset-react'],
+          plugins: [
+            '@babel/plugin-transform-runtime',
+            '@babel/plugin-proposal-object-rest-spread',
+            // Stage 2
+            ['@babel/plugin-proposal-decorators', { 'legacy': true }],
+            '@babel/plugin-proposal-export-namespace-from',
+            '@babel/plugin-proposal-throw-expressions',
+            // Stage 3
+            '@babel/plugin-syntax-dynamic-import',
+            '@babel/plugin-syntax-import-meta',
+            ['@babel/plugin-proposal-class-properties', { 'loose': false }],
+            '@babel/plugin-proposal-json-strings'
+          ]
         }
       },
       {

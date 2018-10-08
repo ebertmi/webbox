@@ -31,7 +31,6 @@ export default class Runner extends EventEmitter {
     super();
 
     this.project = project;
-    //this.sourcebox = project.sourcebox;
     this.id = this.project.getEmbedId();
 
     this.createStdio();

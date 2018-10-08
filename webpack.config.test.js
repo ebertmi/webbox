@@ -7,10 +7,9 @@ module.exports = {
   entry: './test-client/all.js',
   output: {
     filename: 'test.build.js',
-    path: 'test-client/',
+    path: path.join(__dirname, 'test-client/'),
   },
   externals: {
-    'ace': 'ace',
     'highlight.js': 'hljs',
     'markdown-it': 'markdownit',
     'katex': 'katex',
@@ -32,37 +31,60 @@ module.exports = {
         ],
         loader: 'babel-loader',
         query: {
-          presets: [['es2015', { modules: false }], 'react', 'stage-2', 'stage-3'],
-          plugins: ['transform-runtime', 'syntax-dynamic-import', 'emotion']
+          presets: [['@babel/preset-env', { modules: false }], '@babel/preset-react'],
+          plugins: [
+            '@babel/plugin-transform-runtime',
+            '@babel/plugin-proposal-object-rest-spread',
+            // Stage 2
+            ['@babel/plugin-proposal-decorators', { 'legacy': true }],
+            '@babel/plugin-proposal-export-namespace-from',
+            '@babel/plugin-proposal-throw-expressions',
+            // Stage 3
+            '@babel/plugin-syntax-dynamic-import',
+            '@babel/plugin-syntax-import-meta',
+            ['@babel/plugin-proposal-class-properties', { 'loose': false }],
+            '@babel/plugin-proposal-json-strings'
+          ]
         }
       },
       {
         test: /\.scss$/,
-        use: ['style-loader', 'css-loader?-url', 'postcss-loader', 'sass-loader']
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: { importLoaders: 1 }
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              config: {
+                path: path.resolve(__dirname, 'postcss.config.js'),
+              },
+            }
+          },
+          'sass-loader'
+        ]
+      },
+      {
+        // Do not transform vendor's CSS with CSS-modules
+        // The point is that they remain in global scope.
+        // Since we require these CSS files in our JS or CSS files,
+        // they will be a part of our compilation either way.
+        // So, no need for ExtractTextPlugin here.
+        test: /\.css$/,
+        include: /node_modules/,
+        use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.json$/,
-        loader: "json-loader"
+        loader: 'json-loader'
       }
     ],
-    noParse: /acorn\/dist\/acorn\.js$/
+    noParse: [/acorn\/dist\/acorn\.js$/, /xterm\/lib\/.*$/]
   },
   plugins: [
-    new webpack.ContextReplacementPlugin(/^\.\/locale$/, context => {
-      // check if the context was created inside the moment package
-      if (!/\/moment\//.test(context.context)) {
-        return;
-      }
-      // context needs to be modified in place
-      Object.assign(context, {
-        // include only german variants
-        // all tests are prefixed with './' so this must be part of the regExp
-        // the default regExp includes everything; /^$/ could be used to include nothing
-        regExp: /^\.\/(de)/,
-        // point to the locale data folder relative to moment/src/lib/locale
-        request: '../../locale'
-      });
-    }),
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('development')
