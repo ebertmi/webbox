@@ -141,6 +141,8 @@ export default class Runner extends EventEmitter {
    *  1. Write all files on the disk
    *  2. Try to compile (depending of the language)
    *  3. Try to execute (if other steps are successfull or are skipped)
+   *
+   * @returns {void}
    */
   run() {
     if (this.isRunning()) {
@@ -308,6 +310,8 @@ export default class Runner extends EventEmitter {
 
   /**
    * Executes the process with the provides config params (see languages.js)
+   *
+   * @returns {Promise} execution promise
    */
   _exec() {
     if (!this.config.exec) {
@@ -376,13 +380,13 @@ export default class Runner extends EventEmitter {
 
   /**
    * Tests the project (see languages.js)
+   *
+   * @returns {Promise} test promise
    */
   _test() {
     if (!this.config.test) {
       throw new Error('No test command');
     }
-
-    const annotationMap = {};
 
     const command = this._commandArray(this.config.test);
 
@@ -414,21 +418,6 @@ export default class Runner extends EventEmitter {
 
     this.stdin.pipe(this.process.stdin);
     this.process.stdout.pipe(this.stdout, {end: false});
-
-    // ToDo: put this into languages.js as a hook
-    // check for matplotlib stream
-    //if (this.process.stdio[3]) {
-    //  var mplTransform = new MatplotLibTransfrom(this.project);
-    //  this.process.stdio[3].pipe(mplTransform, {end: false});
-    //}
-
-    // turtle streams
-    /*if (this.process.stdio[4]) {
-      new Turtle({
-        turtle: this.process.stdio[4],
-        stdout: this.stdout
-      }, this.project);
-    }*/
 
     // after Streams hook
     if (this.process.stdio[5]) {
