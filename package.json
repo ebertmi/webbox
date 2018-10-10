@@ -1,6 +1,6 @@
 {
   "name": "webbox",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Webbased course editor powered by sourcebox",
   "main": "webbox.js",
   "scripts": {
@@ -148,6 +148,7 @@
     "@babel/preset-stage-3": "^7.0.0",
     "autoprefixer": "^8.5.0",
     "babel-eslint": "^10.0.1",
+    "babel-plugin-emotion": "^9.2.11",
     "chai": "*",
     "code": "^5.2.0",
     "copy-webpack-plugin": "^4.5.2",

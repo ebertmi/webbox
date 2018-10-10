@@ -6,7 +6,7 @@ Consider reading the rethinkdb documentation about data migration: [Docs](https:
 ## Dump the current database
 
 ```bash
-rethinkdb dump -e webbox -f webbox_dump.tar.gz
+rethinkdb dump -e webbox -f webbox_dump.tar.gz -p
 ```
 
 ## Restore a database dump

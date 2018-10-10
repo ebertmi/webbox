@@ -33,6 +33,7 @@ module.exports = {
         query: {
           presets: [['@babel/preset-env', { modules: false }], '@babel/preset-react'],
           plugins: [
+            'emotion',
             '@babel/plugin-transform-runtime',
             '@babel/plugin-proposal-object-rest-spread',
             // Stage 2

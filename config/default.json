@@ -9,7 +9,8 @@
         "contact": "michael.ebert@hs-coburg.de",
         "showHelpInFooter": false,
         "baseTitle": "trycoding.io",
-        "baseLink": "www.trycoding.io"
+        "baseLink": "www.trycoding.io",
+        "baseEmailSender": "trycoding.io"
     },
     "security": true,
     "views": {

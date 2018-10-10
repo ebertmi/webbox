@@ -15,6 +15,9 @@
     margin-right: 0;
   }
 
+  & .code-cell {
+    text-align: left;
+  }
 }
 
 .code-cell {
@@ -22,7 +25,7 @@
   flex-direction: row;
   margin: 0;
   padding-left: 0;
-
+  text-align: left;
 }
 
 .ide-area {

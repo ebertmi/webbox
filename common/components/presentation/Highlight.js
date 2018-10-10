@@ -18,7 +18,6 @@ class Highlight extends React.Component {
   constructor(props) {
     super(props);
 
-    this.onRef = this.onRef.bind(this);
     this.onRun = this.onRun.bind(this);
 
     this.preNode = React.createRef();
@@ -62,10 +61,6 @@ class Highlight extends React.Component {
     window.open(url, 'Beispiel Ausführen', strWindowFeatures);
   }
 
-  onRef(node) {
-    this.preNode = node;
-  }
-
   highlightCode () {
     if (this.preNode.current == null) {
       return;
@@ -96,7 +91,7 @@ class Highlight extends React.Component {
     const runBtn = this.props.showRunButton ? <Icon style={runBtnStyles} name="play-circle-o" className="icon-control" onClick={this.onRun} title="Code Ausführen" /> : null;
     return (
       <div className="highlight-view" style={{position: 'relative'}}>
-        <StyledPre className="hljs" ref={this.onRef} styles={styles}>
+        <StyledPre className="hljs" innerRef={this.preNode} styles={styles}>
           <code className={lang} style={this.context.styles.components.codePane.code}>{this.props.code}</code>
         </StyledPre>
         {runBtn}
