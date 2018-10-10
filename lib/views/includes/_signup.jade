@@ -15,16 +15,14 @@ form(action="/signup", method="POST")
   div.form-group
     label(for="su_semester") Semester
     select.form-control(id="su_semester", name="semester", required, selected=registration != null ? registration.semester : "")
-      option SS16
-      option WS16
-      option SS17
-      option WS17
-      option SS18
+      option WS18
+      option SS19
+      option WS19
+      option SS20
   div.checkbox-accept-terms
     label.custom-control.custom-checkbox
       input.custom-control-input(type="checkbox", id="su_accept_terms", name="terms", required)
-      span.custom-control-indicator
-      span.custom-control-description
+      span.custom-control-label
         a(href="/datenschutz", target="_blank") Datenschutzbedingungen
         = " akzeptieren"
     p.text-muted Der Dienst kann nur unter Zustimmung der Bedingungen vollständig genutzt werden.

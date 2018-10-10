@@ -869,7 +869,7 @@ export default class Project extends EventEmitter {
 
   /**
    * Internal save logic
-   * 
+   *
    * @returns {undefined}
    */
   _saveEmbed() {
