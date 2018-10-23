@@ -782,7 +782,7 @@ export default class Project extends EventEmitter {
    *
    * @param {Object} data -  The Embed
    * @param {Boolean} [ignoreDocument=false] - If true any code document will be ignored
-   * 
+   *
    * @returns {undefined}
    */
   fromInitialData(data, ignoreDocument=false) {
