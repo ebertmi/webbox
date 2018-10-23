@@ -42,6 +42,13 @@ h1.notebook-title {
   top: 0.25rem;
 }
 
+/*
+  Set text color of logout button to white in normal state
+*/
+a.nav-item.btn.btn-warning {
+  color: #FFFFFF;
+}
+
 .markdown-cell,
 .code-cell,
 .codeembed-cell,

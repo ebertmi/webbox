@@ -56,7 +56,7 @@ export const OlItem = {
   replaceWith: '',
   openBlockWith: '',
   closeBlockWith: '',
-  canUndo: false
+  canUndo: false,
   type: 'ol'
 };
 
