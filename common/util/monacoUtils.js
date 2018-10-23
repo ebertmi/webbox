@@ -80,5 +80,5 @@ export function createModel(name, value, language='python', uri) {
 }
 
 export function setMode(model, mode='python') {
-  moncao.editor.setModelLanguage(model, mode);
+  monaco.editor.setModelLanguage(model, mode);
 }

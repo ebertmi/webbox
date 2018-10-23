@@ -37,7 +37,7 @@ export default class FilePanel extends React.Component {
       <Editor
         options={this.state.options}
         file={file}
-        ref={editor => {this.editor = editor;}}
+        ref={editor => { this.editor = editor; }}
       />
     );
   }

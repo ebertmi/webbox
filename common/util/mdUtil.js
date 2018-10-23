@@ -7,7 +7,8 @@ export const ImageItem = {
   placeHolder: 'Bild-URL',
   replaceWith: '',
   openBlockWith: '',
-  closeBlockWith: ''
+  closeBlockWith: '',
+  type: 'image'
 };
 
 export const ItalicsItem = {
@@ -17,7 +18,9 @@ export const ItalicsItem = {
   placeHolder: '',
   replaceWith: '',
   openBlockWith: '',
-  closeBlockWith: ''
+  closeBlockWith: '',
+  canUndo: true,
+  type: 'italic'
 };
 
 export const BoldItem = {
@@ -27,7 +30,9 @@ export const BoldItem = {
   placeHolder: '',
   replaceWith: '',
   openBlockWith: '',
-  closeBlockWith: ''
+  closeBlockWith: '',
+  canUndo: true,
+  type: 'bold'
 };
 
 export const UlItem = {
@@ -37,7 +42,9 @@ export const UlItem = {
   placeHolder: '',
   replaceWith: '',
   openBlockWith: '',
-  closeBlockWith: ''
+  closeBlockWith: '',
+  canUndo: true,
+  type: 'ul'
 };
 
 export const OlItem = {
@@ -48,7 +55,9 @@ export const OlItem = {
   placeHolder: '',
   replaceWith: '',
   openBlockWith: '',
-  closeBlockWith: ''
+  closeBlockWith: '',
+  canUndo: false
+  type: 'ol'
 };
 
 export const LinkItem = {
@@ -58,7 +67,9 @@ export const LinkItem = {
   placeHolder: 'Linktext',
   replaceWith: '',
   openBlockWith: '',
-  closeBlockWith: ''
+  closeBlockWith: '',
+  canUndo: true,
+  type: 'link'
 };
 
 export const BlockquoteItem = {
@@ -68,7 +79,9 @@ export const BlockquoteItem = {
   placeHolder: ' Zitat',
   replaceWith: '',
   openBlockWith: '',
-  closeBlockWith: ''
+  closeBlockWith: '',
+  canUndo: true,
+  type: 'blockquote'
 };
 
 export const InlineCodeItem = {
@@ -78,7 +91,9 @@ export const InlineCodeItem = {
   placeHolder: 'Code',
   replaceWith: '',
   openBlockWith: '',
-  closeBlockWith: ''
+  closeBlockWith: '',
+  canUndo: true,
+  type: 'inlinecode'
 };
 
 export const CodeBlockItem = {
@@ -88,7 +103,9 @@ export const CodeBlockItem = {
   placeHolder: 'Codeblock',
   replaceWith: '',
   openBlockWith: '\n```Sprache\n',
-  closeBlockWith: '\n```\n'
+  closeBlockWith: '\n```\n',
+  canUndo: false,
+  type: 'codeblock'
 };
 
 export const ExtendedFormat = '<!-- {} -->';
@@ -153,9 +170,9 @@ export function appendAtEndOfLine(str, model, editor) {
   const wholelinetext = model.getLineContent(currline);
   const lineLength = wholelinetext != null ? wholelinetext.length : 0;
 
-  const endCol = lineLength;
+  const endCol = lineLength + 1;
   const editOps = [{
-    forceMoveMarkers: false,
+    forceMoveMarkers: true,
     identifier: 'insertMarkdown',
     range: {
       startLineNumber: currline,
@@ -196,9 +213,7 @@ function buildBlock(str, item, lineNumber) {
   let block;
   const openWith = `${item.prependLineNumbers ? lineNumber : ''}${item.openWith}`;
 
-  if (item.replaceWith !== '') {
-    block = openWith + item.replaceWith + item.closeWith;
-  } else if (str === '' && item.placeHolder !== '') {
+  if ((str === '' || item.type === ImageItem.type) && item.placeHolder !== '') {
     block = openWith + item.placeHolder + item.closeWith;
   } else {
     let lines = [str];
@@ -208,14 +223,25 @@ function buildBlock(str, item, lineNumber) {
       lines = str.split(/\r?\n/);
     }
 
+    // iterate over all lines
     for (let l = 0; l < lines.length; l++) {
       const line = lines[l];
       const trailingSpaces = line.match(/ *$/);
 
-      if (trailingSpaces) {
-        blocks.push(openWith + line.replace(/ *$/g, '') + item.closeWith + trailingSpaces);
+      // Determine if we can undo the action if line has already same format
+      if (item.canUndo && line.startsWith(openWith) && line.endsWith(item.closeWith)) {
+        if (trailingSpaces) {
+          blocks.push(line.slice(openWith.length, line.length-item.closeWith.length) + trailingSpaces);
+        } else {
+          blocks.push(line.slice(openWith.length, line.length-item.closeWith.length));
+        }
       } else {
-        blocks.push(openWith + line + item.closeWith);
+        // Normal formatting routine
+        if (trailingSpaces) {
+          blocks.push(openWith + line.replace(/ *$/g, '') + item.closeWith + trailingSpaces);
+        } else {
+          blocks.push(openWith + line + item.closeWith);
+        }
       }
     }
 
@@ -225,7 +251,6 @@ function buildBlock(str, item, lineNumber) {
   return {
     block: block,
     openWith: item.openWith,
-    replaceWith: item.replaceWith,
     placeHolder: item.placeHolder,
     closeWith: item.closeWith
   };

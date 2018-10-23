@@ -68,7 +68,7 @@ export default class MarkdownCell extends BaseCell {
   componentDidMount() {
     const source = this.getSourceFromCell();
     this.renderMarkdown(source);
-    optionManager.on('change', this.onChangeOption); 
+    optionManager.on('change', this.onChangeOption);
   }
 
   componentWillUnmount() {

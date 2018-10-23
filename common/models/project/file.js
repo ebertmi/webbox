@@ -1,8 +1,13 @@
 /*global monaco */
 import { EventEmitter } from 'events';
+import isString from 'lodash/isString';
 import { createModel } from '../../util/monacoUtils';
+import { getLanguageByFileExtension } from '../../util/languageUtils';
 import { Annotation } from '../annotation';
 import { typeToSeverity } from '../severity';
+import Debug from 'debug';
+
+const debug = Debug('webbox:languageUtils');
 
 export default class File extends EventEmitter {
   constructor(name, value, language) {
@@ -32,8 +37,6 @@ export default class File extends EventEmitter {
   removeListener() {}
 
   setAnnotations(annotations) {
-    //debugs(annotations, annotations.length);
-
     const markers = annotations.map(a => {
       return new Annotation(a.text, a.row + 1, a.column, typeToSeverity(a.type));
     });
@@ -44,7 +47,6 @@ export default class File extends EventEmitter {
   }
 
   getAnnotations() {
-    //debugs(this.model.getAllDecorations(), this.model.getAllDecorations().length);
     return this.model.getAllDecorations();
   }
 
@@ -76,7 +78,12 @@ export default class File extends EventEmitter {
   }
 
   autoDetectMode() {
-    monaco.editor.setModelLanguage(this.model);
+    try {
+      const extension = isString(this._name) ? this._name.split('.').pop(): 'text';
+      monaco.editor.setModelLanguage(this.model, getLanguageByFileExtension(extension));
+    } catch (e) {
+      debug('Failed to automatically detect mode', e);
+    }
   }
 
   isNameEditable() {

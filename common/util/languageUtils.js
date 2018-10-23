@@ -13,6 +13,8 @@ const LANGUAGE_EXT = new Map([
   ['ruby', 'rb']
 ]);
 
+const LANGUAGE_EXT_LANGUAGE = new Map(Array.from(LANGUAGE_EXT).map(([key, value]) => [value, key]));
+
 const LANGUAGE_TEMPLATES = new Map([
   ['python', 'print "Hi"'],
   ['python2', 'print "Hi"'],
@@ -27,6 +29,10 @@ const LANGUAGE_TEMPLATES = new Map([
 
 export function getFileExtensionByLanguage (language) {
   return LANGUAGE_EXT.get(language);
+}
+
+export function getLanguageByFileExtension(extension) {
+  return LANGUAGE_EXT_LANGUAGE.get(extension);
 }
 
 /**
