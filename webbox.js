@@ -33,8 +33,6 @@ const defaultContext = {
   webboxVersion: Package.version,
   isProd: config.isProd,
   isDev: config.isDev,
-  KEENIO_PROJECTID: JSON.stringify(config.keenio.projectId),
-  KEENIO_WRITEKEY: JSON.stringify(config.keenio.writeKey),
   showHelp: config.app.showHelpInFooter,
   baseTitle: config.app.baseTitle
 };
@@ -58,10 +56,6 @@ if (config.isDev) {
   // ToDo: Change this, but for now we stick with a simple in memory cache
   cache = { engine: CatboxMemory };
 }
-
-/*const server = new Hapi.Server({
-  cache: cache
-});*/
 
 const server = new Hapi.Server({
   host: config.app.hostname,
@@ -140,10 +134,10 @@ const provision = async (shouldStart) => {
   // Now register the jwt stuff too
   server.auth.strategy('jwt', 'jwt', {
     key: config.websocket.secret,
-    validate: (decoded) => {
-      console.info(decoded);
+    validate: async (decoded, request, h) => {
+      console.info('in validate func', decoded);
       //callback(null, true);
-      return { valid: true };
+      return { isValid: true };
     }
   });
 

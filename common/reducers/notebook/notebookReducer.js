@@ -397,7 +397,7 @@ function updateNotebookMetadata(state, name, value) {
   let _version;
   let newState;
 
-  switch(name) {
+  switch (name) {
     case 'slug':
       return state.set('slug', value);
     case 'authors':

@@ -57,6 +57,8 @@ export class EventLog {
    *  - embed id
    *  - user
    * - ...
+   * @param {object} context of the EventLog
+   * @returns {void}
    */
   setContext(context) {
     this._context = context;
@@ -187,7 +189,7 @@ export class RemoteDispatcher extends EventEmitter {
     }
 
     // Defer the connection until we receive our first message or event
-    this._socket = io(this._url, {query : `Authorization=${this._jwt}&crumb=${crumb}`});
+    this._socket = io(this._url, {query : `token=${this._jwt}&crumb=${crumb}`});
 
     this._socket.on('connect', this.onConnect.bind(this));
     this._socket.on('disconnect', this.onDisconnect.bind(this));
