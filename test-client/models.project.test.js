@@ -1,4 +1,4 @@
-import 'babel-polyfill';
+import '@babel/polyfill';
 import { expect } from 'chai';
 
 import { MODES } from '../common/constants/Embed';

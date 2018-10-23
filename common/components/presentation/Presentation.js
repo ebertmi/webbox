@@ -20,7 +20,7 @@ import Highlight from './Highlight';
 import CodeCellView from '../notebook/CodeCellView';
 import CodeEmbedCell from '../notebook/CodeEmbedCell';
 import { toMarkdownComponent } from './markdownRenderer';
-import createTheme from "./theme";
+import createTheme from './theme';
 import { sourceFromCell, replaceIdWithSlug, notebookMetadataToSourceboxLanguage } from '../../util/nbUtil';
 import RawCell from '../notebook/RawCell';
 import { RemoteDispatcher, getConnectionConfiguration } from '../../models/insights/remoteDispatcher';
@@ -62,7 +62,7 @@ export default class Presentation extends React.Component {
 
       const title = this.props.notebook.getIn(['metadata', 'title'], 'Ohne Titel');
 
-      document.title = `${title} - trycoding.io`;
+      document.title = `${title} - trycoding`;
     }
   }
 
@@ -91,7 +91,7 @@ export default class Presentation extends React.Component {
     // Push cell
     switch (cell.get('cell_type')) {
       case 'markdown':
-        return toMarkdownComponent({source: source});
+        return toMarkdownComponent({source: source, key: id});
       case 'code':
         notebookLanguageInformation = notebookMetadataToSourceboxLanguage(notebook.get('metadata'));
         lang = cell.getIn(['metadata', 'mode'], notebookLanguageInformation.languageName);
@@ -101,7 +101,7 @@ export default class Presentation extends React.Component {
         embedType = cell.getIn(['metadata', 'embedType'], notebook.get('embedType'));
         //runId = cell.getIn(['metadata', 'runid']);
         //return <Highlight showRunButton={true} embedType={embedType} runId={runId} code={source} executionLanguage={executionLanguage} notebookLanguage={lang}></Highlight>;
-        return <CodeCellView className="present-mode" viewComponent={Highlight} code={source} cell={cell} executionLanguage={{executionLanguage: executionLanguage}} notebookLanguage={lang} embedType={embedType}/>;
+        return <CodeCellView key={id} className="present-mode" viewComponent={Highlight} code={source} cell={cell} executionLanguage={{executionLanguage: executionLanguage}} notebookLanguage={lang} embedType={embedType}/>;
         /*return (
           <Window title={lang}>
             <CodeCellView className="present-mode" viewComponent={Highlight} code={source} cell={cell} executionLanguage={{executionLanguage: executionLanguage}} notebookLanguage={lang} embedType={embedType}/>
@@ -111,7 +111,7 @@ export default class Presentation extends React.Component {
         //return <Text>{source}</Text>;
         height = parseInt(cell.getIn(['metadata', 'height'], 350), 10);
         height = isNaN(height) ? 350 : height;
-        return <CodeEmbedCell /*course={course}*/ className="present-mode" dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={index === activeBlock}/>;
+        return <CodeEmbedCell style={{textAlign: 'center'}} /*course={course}*/ className="present-mode" dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={index === activeBlock}/>;
       case 'raw':
         return <RawCell dispatch={dispatch} cellIndex={index} key={id} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={id === activeBlock}/>;
       default:
@@ -122,6 +122,8 @@ export default class Presentation extends React.Component {
 
   /**
    * Renders the cells to slides depending on the given "slide_type" in the metadata.
+   *
+   * @returns {array} tree of slides and their content
    */
   renderSlides() {
     let i;
@@ -154,7 +156,7 @@ export default class Presentation extends React.Component {
       } else if (isInSlide === true && slideType === 'slide') {
         // End current slide and start new one
         slideCounter += 1;
-        slides.push(<Slide transition={[]} maxHeight={maxHeight} maxWidth={maxWidth} key={`slide-${slideCounter}`} children={children}></Slide>);
+        slides.push(<Slide transition={[]} maxHeight={maxHeight} maxWidth={maxWidth} key={`slide-${slideCounter}`} children>{children}</Slide>);
         children = []; // reset children
         children.push(this.renderCell(cell, i, this.props.notebook)); // add first new child
       } else {
@@ -164,7 +166,7 @@ export default class Presentation extends React.Component {
 
           // Fragments are wrapped with the Appear Tag
           if (slideType === 'fragment') {
-            children.push(<Appear><div>{renderResult}</div></Appear>);
+            children.push(<Appear key={`slide-${slideCounter}-appear-${i}`}><div>{renderResult}</div></Appear>);
           } else {
             children.push(renderResult);
           }

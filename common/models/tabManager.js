@@ -5,6 +5,8 @@ import { Severity } from './severity';
 import { Action } from './actions';
 import { MessageWithAction } from './messages';
 
+import TerminalManager from './terminalManager';
+
 import Debug from 'debug';
 const debug = Debug('webbox:tabManager');
 
@@ -29,7 +31,7 @@ export default class TabManager extends EventEmitter {
    * Clear all has changes flags of the file tabs, should be called
    * after an successful save.
    * @returns {undefined}
-   * 
+   *
    * @memberOf TabManager
    */
   clearFileChanges() {
@@ -104,6 +106,13 @@ export default class TabManager extends EventEmitter {
 
     if (tab.type === 'file') {
       this.closeFileTab(tab, index);
+    } else if (tab.type === 'process') {
+      // Clear from terminalManager
+      if (tab.item && tab.item.id) {
+        TerminalManager.remove(tab.item.id);
+      }
+
+      this.removeTab(tab, index);
     } else {
       // handle other tab types (e.g. stats that the user can reopen)
       this.removeTab(tab, index);

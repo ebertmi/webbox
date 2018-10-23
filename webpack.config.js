@@ -25,6 +25,7 @@ module.exports = {
     reasons: false,
     warnings: false,
   },
+  mode: 'development',
   target: 'web',
   context: path.join(__dirname, 'client'),
   entry: {
@@ -32,7 +33,7 @@ module.exports = {
     index: './js/index.js',
     embed: './js/embed.js',
     notebook: './js/notebook.js',
-    presentation: './js/presentation',
+    presentation: './js/presentation.js',
   },
   output: {
     filename: '[name].bundle.js',
@@ -45,7 +46,6 @@ module.exports = {
     modules: ['client', 'node_modules']
   },
   externals: {
-    ace: 'ace',
     'highlight.js': 'hljs',
     'markdown-it': 'markdownit',
     'katex': 'katex',
@@ -67,8 +67,21 @@ module.exports = {
         ],
         loader: 'babel-loader',
         query: {
-          presets: [['es2015', { modules: false }], 'react', 'stage-2', 'stage-3'],
-          plugins: ['transform-runtime', 'syntax-dynamic-import']
+          presets: [['@babel/preset-env', { modules: false }], '@babel/preset-react'],
+          plugins: [
+            'emotion',
+            '@babel/plugin-transform-runtime',
+            '@babel/plugin-proposal-object-rest-spread',
+            // Stage 2
+            ['@babel/plugin-proposal-decorators', { 'legacy': true }],
+            '@babel/plugin-proposal-export-namespace-from',
+            '@babel/plugin-proposal-throw-expressions',
+            // Stage 3
+            '@babel/plugin-syntax-dynamic-import',
+            '@babel/plugin-syntax-import-meta',
+            ['@babel/plugin-proposal-class-properties', { 'loose': false }],
+            '@babel/plugin-proposal-json-strings'
+          ]
         },
       },
       {
@@ -112,11 +125,11 @@ module.exports = {
   },
   plugins: [
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new webpack.optimize.CommonsChunkPlugin({
+    /*new webpack.optimize.CommonsChunkPlugin({
       name: 'commons',
       chunks: ['dashboard', 'embed', 'notebook', 'presentation'],
       minChunks: 2
-    }),
+    }),*/
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('development')
@@ -129,7 +142,13 @@ module.exports = {
         copyUnmodified: true
       }
     ]),
-    new webpack.optimize.ModuleConcatenationPlugin()
+    new CopyWebpackPlugin([
+      {
+        from: '../node_modules/monaco-editor/min/vs',
+        to: 'vs',
+      }
+    ]),
+    /*new webpack.optimize.ModuleConcatenationPlugin()*/
     /*new webpack.SourceMapDevToolPlugin({
       filename: '[file].map',
       include: ['presentation.bundle.js', 'index.bundle.js', 'react-commons.bundle.js', 'dashboard.bundle.js'],
@@ -138,6 +157,15 @@ module.exports = {
     }),*/
     //new BundleAnalyzerPlugin()
   ],
+  optimization: {
+    namedModules: true,
+    splitChunks: {
+      name: 'commons',
+      minChunks: 2
+    },
+    noEmitOnErrors: true,
+    concatenateModules: true
+  },
   node: {
     Buffer: true,
     fs: 'empty' // needed for term.js

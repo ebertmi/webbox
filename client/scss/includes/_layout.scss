@@ -31,6 +31,11 @@ h1 > img {
 
 .wb-navbar {
   border-bottom: solid 1px #eee;
+
+  & .navbar-brand {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
 }
 
 .wb-navbar .navbar-nav .nav-link {

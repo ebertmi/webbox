@@ -1,6 +1,6 @@
 // modules
-import 'babel-polyfill';
-import 'exports-loader?fetch!whatwg-fetch/fetch';
+import '@babel/polyfill';
+import 'whatwg-fetch';
 
 import React from 'react';
 import { hydrate } from 'react-dom';

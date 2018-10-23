@@ -1,25 +1,64 @@
-import Ace, { EditSession, UndoManager } from 'ace';
-//import modelist from 'ace-builds/src-min-noconflict/ext-modelist';
-const modelist = Ace.require('ace/ext/modelist');
+/*global monaco */
+import { EventEmitter } from 'events';
+import isString from 'lodash/isString';
+import { createModel } from '../../util/monacoUtils';
+import { getLanguageByFileExtension } from '../../util/languageUtils';
+import { Annotation } from '../annotation';
+import { typeToSeverity } from '../severity';
+import Debug from 'debug';
 
-export default class File extends EditSession {
-  constructor(name, text='', mode=modelist.getModeForPath(name).mode) {
-    super(text, mode);
-    this.setUndoManager(new UndoManager);
+const debug = Debug('webbox:languageUtils');
+
+export default class File extends EventEmitter {
+  constructor(name, value, language) {
+    super();
+
     this._name = name;
     this._isNameEditable = false;
     this._nameChanged = false;
     this.hasChanges = true; // a new file is a change, basically
+    this.annotations = []; // raw annotations
+
+    this.model = createModel(name, value, language);
 
     // Binding
     this.onDocumentChange = this.onDocumentChange.bind(this);
-    this.on('change', this.onDocumentChange);
+    this.model.onDidChangeContent(this.onDocumentChange);
+  }
+
+  setValue(value) {
+    this.model.setValue(value);
+  }
+
+  getValue() {
+    return this.model.getValue();
+  }
+
+  removeListener() {}
+
+  setAnnotations(annotations) {
+    const markers = annotations.map(a => {
+      return new Annotation(a.text, a.row + 1, a.column, typeToSeverity(a.type));
+    });
+
+    this.annotations = annotations;
+
+    monaco.editor.setModelMarkers(this.model, this._name, markers);
+  }
+
+  getAnnotations() {
+    return this.model.getAllDecorations();
+  }
+
+  clearAnnotations() {
+    this.annotations = [];
+    monaco.editor.setModelMarkers(this.model, this._name, []);
   }
 
   /**
    * Set the hasChanges flag to true and notify all listeners if it has changes.
    *
-   * @returns
+   * @returns {void}
    *
    * @memberOf File
    */
@@ -30,17 +69,21 @@ export default class File extends EditSession {
     }
 
     this.hasChanges = true;
-    this._emit('hasChangesUpdate');
+    this.emit('hasChangesUpdate');
   }
 
   clearChanges() {
     this.hasChanges = false;
-    this._emit('hasChangesUpdate');
+    this.emit('hasChangesUpdate');
   }
 
   autoDetectMode() {
-    let mode = modelist.getModeForPath(this._name).mode;
-    super.setMode(mode);
+    try {
+      const extension = isString(this._name) ? this._name.split('.').pop(): 'text';
+      monaco.editor.setModelLanguage(this.model, getLanguageByFileExtension(extension));
+    } catch (e) {
+      debug('Failed to automatically detect mode', e);
+    }
   }
 
   isNameEditable() {
@@ -50,12 +93,12 @@ export default class File extends EditSession {
   setNameEdtiable(val) {
     if (val !== undefined && (val === true || val === false)) {
       this._isNameEditable = val;
-      this._emit('changeNameEditable');
+      this.emit('changeNameEditable');
 
       // trigger changedName event, when name is different after leaving
       // name edit mode
       if (this._isNameEditable === false && this._oldName !== undefined && this._name !== this._oldName) {
-        this._emit('changedName', {
+        this.emit('changedName', {
           newName: this._name,
           oldName: this._oldName,
           file: this
@@ -70,6 +113,9 @@ export default class File extends EditSession {
 
   /**
    * Escapes invalid path characters
+   * @param {String} str - string to escape
+   *
+   * @returns {String} escaped string
    */
   escapeName(str) {
     if (!str) {
@@ -80,12 +126,12 @@ export default class File extends EditSession {
   }
 
   setName(name) {
-    let escapedName = this.escapeName(name);
+    const escapedName = this.escapeName(name);
 
     this._oldName = this._name;
     this._name = escapedName;
 
-    this._emit('changeName', {
+    this.emit('changeName', {
       newName: this._name,
       oldName: this._oldName
     });
@@ -95,18 +141,10 @@ export default class File extends EditSession {
     return this._name;
   }
 
-  updateAnnotations(annotations) {
-    console.info('new annotations', annotations);
-    this.setAnnotations(annotations);
-    this._emit('hasChangesUpdate');
-  }
-
   dispose() {
-    this.removeAllListeners("changeName");
-    this.removeAllListeners("changedName");
-    this.removeAllListeners("changeNameEditable");
-    this.removeAllListeners("hasChangesUpdate");
+    this.removeAllListeners('changeName');
+    this.removeAllListeners('changedName');
+    this.removeAllListeners('changeNameEditable');
+    this.removeAllListeners('hasChangesUpdate');
   }
 }
-
-File.prototype.addListener = File.prototype.addEventListener;

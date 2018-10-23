@@ -66,8 +66,8 @@ class User extends Component {
 
     return (
       <div>
-          <h3><small>Benutzer</small></h3>
-          {content}
+        <h3><small>Benutzer</small></h3>
+        {content}
       </div>
     );
   }
@@ -77,5 +77,5 @@ class User extends Component {
 export default connect(state => ({
   userOverview: state.userOverview
 }),
-  dispatch => bindActionCreators(AdminActions, dispatch)
+dispatch => bindActionCreators(AdminActions, dispatch)
 )(User);

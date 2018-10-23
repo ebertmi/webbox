@@ -23,12 +23,12 @@ html(lang="de")
           link(href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600", rel="stylesheet", type="text/css")
           link(rel="stylesheet", href="https://cdn.jsdelivr.net/katex/0.6.0/katex.min.css")
           if isProd
-            link(rel="stylesheet", href="/public/css/all.bundle.#{webboxVersion}.css")
+            link(rel="stylesheet", href="/public/css/commons.bundle.#{webboxVersion}.css")
 
           link(rel="stylesheet", href="/public/css/spectacle.css")
 
         block title
-          title Präsentation trycoding.io
+          title Präsentation #{baseTitle}
     body
       <div id="root"></div>
 
@@ -38,9 +38,7 @@ html(lang="de")
           window.__USER_DATA__ = !{USER_DATA};
           window.__SOURCEBOX__ = !{sourcebox};
           window.__crumb__ = "!{crumb}";
-        script(src="https://cdn.jsdelivr.net/ace/1.2.4/min/ace.js")
-        script(src="https://cdn.jsdelivr.net/ace/1.2.4/min/ext-themelist.js")
-        script(src="https://cdn.jsdelivr.net/ace/1.2.4/min/ext-modelist.js")
+
         script(src="//cdn.jsdelivr.net/highlight.js/9.6.0/highlight.min.js")
         script(src="https://cdn.jsdelivr.net/katex/0.6.0/katex.min.js")
         script(src="https://cdn.jsdelivr.net/markdown-it/8.0.0/markdown-it.min.js")

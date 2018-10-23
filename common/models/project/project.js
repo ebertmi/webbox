@@ -387,7 +387,7 @@ export default class Project extends EventEmitter {
     let filename = name;
 
     if (name == null) {
-      filename = `Unbenannt${  this.tabManager.unnamedTabCounter++  }.txt`;
+      filename = `Unbenannt${this.tabManager.unnamedTabCounter++}.txt`;
       file = new File(filename, text, mode);
       file.setNameEdtiable(true); // enable file renaming immediatelly
     } else {
@@ -782,7 +782,7 @@ export default class Project extends EventEmitter {
    *
    * @param {Object} data -  The Embed
    * @param {Boolean} [ignoreDocument=false] - If true any code document will be ignored
-   * 
+   *
    * @returns {undefined}
    */
   fromInitialData(data, ignoreDocument=false) {
@@ -869,7 +869,7 @@ export default class Project extends EventEmitter {
 
   /**
    * Internal save logic
-   * 
+   *
    * @returns {undefined}
    */
   _saveEmbed() {
@@ -927,8 +927,10 @@ export default class Project extends EventEmitter {
   saveTests() {
     // Get data from file
     const file = this.getTestCode();
+
     if (file == null) {
       // FIXME: this should not happen
+      debug('getTestCode returned null - that is not expected');
       return;
     }
 

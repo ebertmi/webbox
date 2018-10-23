@@ -28,6 +28,10 @@
   padding-right: 0;
 }
 
+.spectacle-content code-embedcell {
+  text-align: left;
+}
+
 /* Firefox */
 
 _:-moz-tree-row(hover), .spectacle-deck {

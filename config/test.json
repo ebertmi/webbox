@@ -1,0 +1,9 @@
+{
+  "database": {
+    "host": "localhost",
+    "port": "28015",
+    "db": "webbox_test",
+    "user": "admin",
+    "password": "webbox_db_token"
+  }
+}

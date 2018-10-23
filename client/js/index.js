@@ -1,5 +1,5 @@
 require('../scss/index.scss');
 
 // polyfills
-import 'babel-polyfill';
-import 'exports-loader?fetch!whatwg-fetch/fetch';
+import '@babel/polyfill';
+import 'whatwg-fetch';

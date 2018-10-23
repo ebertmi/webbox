@@ -1,37 +1,46 @@
 .panel-area {
   //flex: 1 1 auto;
-  flex-grow: 1;
-  flex-shrink: 1;
-  flex-basis: auto;
+  //flex-grow: 1;
+  //flex-shrink: 1;
+  //flex-basis: auto;
 
   background: url('/public/img/sourcebox-bg.svg') no-repeat center center/contain;
-  display: flex;
-  flex-flow: row;
-  overflow: hidden;
+  //display: flex;
+  //flex-flow: row;
+  overflow: hidden!important;
   border-top: #ddd solid 1px;
   > * {
-    flex-grow: 1;
-    flex-shrink: 1;
-    flex-basis: 0px;
+    overflow: hidden!important;
+    //flex-grow: 1;
+    //flex-shrink: 1;
+    //flex-basis: 0px;
 
     //flex: 1 1 0;
-    box-sizing: border-box;
+    //box-sizing: border-box;
 
     // breaks when there are invisible elements (e.g. inactive terminals)
     //&:not(:first-child) {
     //  border-left: 0.2rem solid $card-cap-bg;
     //}
   }
+  & .terminal-wrapper {
+    height: inherit;
+  }
 }
+
 
 .options-panel {
   background-color: white;
   overflow: auto;
   padding: 1rem;
+  height: inherit;
 }
 
 .turtle-panel,
 .math-panel {
+  width: 100%;
+  width: inherit;
+  height: 100%;
   min-height: 100%;
   overflow: auto;
   padding: 1rem;
@@ -44,16 +53,10 @@
   overflow: auto;
   padding: 1rem;
   background-color: white;
+  height: inherit;
 
   & hr {
     width: 100%;
-  }
-
-  & .ace_editor {
-    flex-grow: 1;
-    flex-shrink: 1;
-    flex-basis: 0px;
-    overflow: auto;
   }
 
   & .total-score {
@@ -69,11 +72,15 @@
     font-weight: bold;
     font-size: 90%;
   }
+
+  & .progress {
+    width: 100%;
+  }
 }
 
 .scroll-decoration {
   position: absolute;
-  top: 34px;
+  top: 0px;
   left: 0;
   height: 6px;
   box-shadow: inset 0 6px 6px -6px #ddd;

@@ -12,7 +12,7 @@ export default class MatplotlibPanel extends React.Component {
   onComponentWillUnmount() {
     if (this.imageRef) {
       let last;
-      while (last = this.imageRef.lastChild) {
+      while ((last = this.imageRef.lastChild) != null) {
         this.imageRef.removeChild(last);
       }
     }

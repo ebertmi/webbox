@@ -69,7 +69,7 @@ export function sourceFromCell(cell) {
 
 /**
  * Transform the state to a JavaScript object for persisting this on the database
- * 
+ *
  * @param {Immutable.Map} state - immutable state to transform
  * @returns {Object} transformed mutable javascript object
  */
@@ -106,7 +106,7 @@ export function stateToJS(state) {
  *  -> All cells are added to a Immutable.Map using the cell.id as a key
  *  -> For storing the order of cells we use a Immutable.List "cellOrder"" - containing a mapping of index:key
  *  -> "isAuthor" manages the overall switching between edit and view mode
- * 
+ *
  * @param {object} document - document as javascript object
  * @returns {undefined}
  */

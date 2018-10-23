@@ -62,7 +62,7 @@ export default class ProcessPanel extends React.Component {
     return (
       <Terminal
         fontFamily={`${font}, monospace`}
-        fontSize={`${fontSize}pt`}
+        fontSize={`${fontSize}`}
         onBell={this.onBell}
         onResize={this.onResize}
         onTitle={this.onTitle}

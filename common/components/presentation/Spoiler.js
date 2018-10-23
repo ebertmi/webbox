@@ -1,7 +1,9 @@
-import React from "react";
+import React from 'react';
 import PropTypes from 'prop-types';
-import { getStyles } from "spectacle/lib/utils/base";
-import Radium from "radium";
+import { getStyles } from 'spectacle/lib/utils/base';
+import styled from 'react-emotion';
+
+const StyledSpoiler = styled('details', props => props.styles);
 
 export class Spoiler extends React.Component {
   constructor(props) {
@@ -9,10 +11,17 @@ export class Spoiler extends React.Component {
   }
 
   render() {
-    return (<details style={[this.context.styles.components.orderedList, getStyles.call(this), this.props.style]}>
+    const styles = [
+      this.context.styles.components.orderedList,
+      getStyles.call(this),
+      this.context.typeface || {},
+      this.props.style
+    ];
+
+    return (<StyledSpoiler styles={styles}>
       <summary>{this.props.summary}</summary>
       {this.props.children}
-    </details>);
+    </StyledSpoiler>);
   }
 }
 
@@ -25,4 +34,4 @@ Spoiler.contextTypes = {
   styles: PropTypes.object
 };
 
-export default Radium(Spoiler);
+export default Spoiler;

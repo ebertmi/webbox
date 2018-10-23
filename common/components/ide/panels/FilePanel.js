@@ -3,9 +3,6 @@ import React from 'react';
 import Editor from '../../Editor';
 import optionManager from '../../../models/options';
 
-const FIXED_OPTIONS = {
-  showPrintMargin: false
-};
 
 export default class FilePanel extends React.Component {
   constructor(props) {
@@ -13,12 +10,12 @@ export default class FilePanel extends React.Component {
     this.onChangeOption = this.onChangeOption.bind(this);
 
     this.state = {
-      options: optionManager.getOptions()
+      options: optionManager.getEditorOptions()
     };
   }
 
   componentDidMount() {
-    this.editor.focus();
+    //this.editor.focus();
     optionManager.on('change', this.onChangeOption);
   }
 
@@ -28,23 +25,19 @@ export default class FilePanel extends React.Component {
 
   onChangeOption() {
     this.setState({
-      options: optionManager.getOptions()
+      options: optionManager.getEditorOptions()
     });
   }
 
   render() {
     let file = this.props.item;
-    let {font, fontSize, ace: aceOptions} = this.state.options;
     // TODO read only files
 
     return (
       <Editor
-        fontFamily={`${font}, monospace`}
-        fontSize={`${fontSize}pt`}
-        {...aceOptions}
-        {...FIXED_OPTIONS}
-        session={file}
-        ref={editor => {this.editor = editor;}}
+        options={this.state.options}
+        file={file}
+        ref={editor => { this.editor = editor; }}
       />
     );
   }

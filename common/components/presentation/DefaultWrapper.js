@@ -1,14 +1,23 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { getStyles } from "spectacle/lib/utils/base";
-import Radium from "radium";
+import { getStyles } from 'spectacle/lib/utils/base';
+import styled from 'react-emotion';
+
+const StyledDefaultWrapper = styled.div(props => props.styles);
 
 class DefaultWrapper extends Component {
   render() {
+    const styles = [
+      this.context.styles.components.markdown,
+      getStyles.call(this),
+      this.context.typeface || {},
+      this.props.style
+    ];
+
     return (
-      <div className={this.props.className} style={[this.context.styles.components.markdown, getStyles.call(this), this.props.style]}>
+      <StyledDefaultWrapper className={this.props.className} styles={styles}>
         {this.props.children}
-      </div>
+      </StyledDefaultWrapper>
     );
   }
 }
@@ -23,4 +32,4 @@ DefaultWrapper.contextTypes = {
   styles: PropTypes.object
 };
 
-export default Radium(DefaultWrapper);
+export default DefaultWrapper;

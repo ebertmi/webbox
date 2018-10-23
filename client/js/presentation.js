@@ -3,15 +3,15 @@
  */
 require('../scss/index.scss');
 
-import 'babel-polyfill';
-import 'exports-loader?fetch!whatwg-fetch/fetch';
-
+import '@babel/polyfill';
+import 'whatwg-fetch';
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 
 // own modules
 import notebookStore from '../../common/store/notebookStore';
+import { loadMonaco, BASE_MONACO_REQUIRE_CONFIG } from '../../common/util/monacoUtils';
 
 import PresentationApp from '../../common/containers/notebook/PresentationApp';
 import { documentToState } from '../../common/util/nbUtil';
@@ -40,11 +40,22 @@ const store = notebookStore(storeInit);
 
 const rootElement = document.getElementById('root');
 
-// render application with router and to the rootElement and
-// set the initialState
-render(
-  <Provider store={store}>
-    <PresentationApp />
-  </Provider>,
-  rootElement
-);
+// Now load Monaco and bootstrap that thing
+loadMonaco(window, BASE_MONACO_REQUIRE_CONFIG).then(monaco => {
+  window.monaco = monaco;
+
+  // render application with router and to the rootElement and
+  // set the initialState
+  render(
+    <Provider store={store}>
+      <PresentationApp />
+    </Provider>,
+    rootElement
+  );
+}).catch(err => {
+  console.error(err);
+  render(
+    <div className="alert alert-danger">Failed to load Editor dependencies</div>,
+    document.getElementById('ide-container')
+  );
+});

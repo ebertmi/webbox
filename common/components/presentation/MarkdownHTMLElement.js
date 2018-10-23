@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 /**
  * Pure Render Component for inserting inner HTML

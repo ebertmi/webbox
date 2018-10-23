@@ -3,6 +3,7 @@
 
 import { EventEmitter } from 'events';
 import defaultsDeep from 'lodash/defaultsDeep';
+import clone from 'lodash/clone';
 
 const LOCAL_STORAGE_KEY = 'sourcebox.options';
 
@@ -12,16 +13,21 @@ const DEFAULT_OPTIONS = {
   terminal: {
     audibleBell: true
   },
-  ace: {
-    theme: 'ace/theme/xcode',
-    showInvisibles: false,
-    highlightActiveLine: true,
-    highlightSelectedWord: true,
-    displayIndentGuides: false,
-    showGutter: true,
-    wrap: false,
-    enableBasicAutocompletion: true,
-    enableLiveAutocompletion: false
+  editor: {
+    automaticLayout: false,
+    cursorStyle: 'line',
+    minimap: {
+      enabled: false
+    },
+    readOnly: false,
+    renderWhitespace: false,
+    renderIndentGuides: false,
+    renderLineHighlight: 'line',
+    roundedSelection: false,
+    scrollBeyondLastLine: false,
+    selectionHighlight: true,
+    selectOnLineNumbers: true,
+    theme: 'vs-dark'
   }
 };
 
@@ -45,7 +51,7 @@ class OptionManager extends EventEmitter {
     this.options = defaultsDeep({}, DEFAULT_OPTIONS);
 
     try {
-      let savedOptions = JSON.parse(localStorage[LOCAL_STORAGE_KEY]);
+      const savedOptions = JSON.parse(localStorage[LOCAL_STORAGE_KEY]);
       this.options = defaultsDeep(savedOptions, this.options);
     } catch (error) {
       // ignore
@@ -70,6 +76,15 @@ class OptionManager extends EventEmitter {
 
   getOptions() {
     return this.options;
+  }
+
+  getEditorOptions() {
+    const options = clone(this.options.editor);
+
+    options.fontSize = this.options.fontSize;
+    options.fontFamily = this.options.font;
+
+    return options;
   }
 
   emitChange() {

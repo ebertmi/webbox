@@ -7,7 +7,8 @@ import Vision from 'vision';
 import Jade from 'jade';
 import Crumb from 'crumb';
 import Blipp from 'blipp';
-import HapiIO from 'hapi-io';
+import HapiIO from './lib/io';
+
 import HapiRateLimit from 'hapi-rate-limit';
 import CatboxMemory from 'catbox-memory';
 //import CatboxRedis from 'catbox-redis'; // see comment below
@@ -25,6 +26,8 @@ process.on('unhandledRejection', (reason, p) => {
   // application specific logging, throwing an error, or other logic here
 });
 
+let isProvisioned = false;
+
 // The default context is available for every response (template)
 const defaultContext = {
   webboxVersion: Package.version,
@@ -32,7 +35,8 @@ const defaultContext = {
   isDev: config.isDev,
   KEENIO_PROJECTID: JSON.stringify(config.keenio.projectId),
   KEENIO_WRITEKEY: JSON.stringify(config.keenio.writeKey),
-  showHelp: config.app.showHelpInFooter
+  showHelp: config.app.showHelpInFooter,
+  baseTitle: config.app.baseTitle
 };
 
 // ToDo import depending on the environment
@@ -55,86 +59,139 @@ if (config.isDev) {
   cache = { engine: CatboxMemory };
 }
 
-const server = new Hapi.Server({
+/*const server = new Hapi.Server({
   cache: cache
-});
+});*/
 
-server.connection({
+const server = new Hapi.Server({
   host: config.app.hostname,
   port: config.app.port,
   routes: {
     files: {
       relativeTo: Path.join(__dirname, '')
     }
+  },
+  cache: cache
+});
+
+const provision = async (shouldStart) => {
+  if (isProvisioned === true) {
+    console.warn('Already provisioned, called twiced!');
+    return;
   }
-});
 
-server.register({
-  register: HapiRateLimit,
-  options: config.ratelimit.cacheOptions
-});
+  await server.register({
+    plugin: HapiRateLimit,
+    options: config.ratelimit.cacheOptions
+  });
 
-
-// Add PM2 shutdown integration for graceful reloads and shutdowns
-server.register({
-  register: HapiPM2,
-  options: {
-    timeout: 4000
-  }
-});
-
-// add the good process monitor/logging plugin
-server.register({
-  register: Good,
-  options: config.good
-}, (err) => {
-  if (err) {
-    console.error(err);
-  } else {
-    server.start (() => {
-      console.info('Server started at ' + server.info.uri);
-    });
-  }
-});
-
-// register crumb for csrf
-server.register({
-  register: Crumb,
-  options: {
-    cookieOptions: {
-      isSecure: config.crumb.isSecure // ToDo: Change this when dealing with SSL/HTTPS
+  // Add PM2 shutdown integration for graceful reloads and shutdowns
+  await server.register({
+    plugin: HapiPM2,
+    options: {
+      timeout: 4000
     }
-  }
-}, (err) => {
-  if (err) {
-    throw err;
-  }
-});
+  });
+
+  // add the good process monitor/logging plugin
+  await server.register({
+    plugin: Good,
+    options: config.good,
+  });
+
+  // register crumb for csrf
+  await server.register({
+    plugin: Crumb,
+    options: {
+      cookieOptions: {
+        isSecure: config.crumb.isSecure // ToDo: Change this when dealing with SSL/HTTPS
+      }
+    }
+  });
+
+  await server.register(Vision);
+
+  server.views({
+    engines: {
+      jade: Jade
+    },
+    path: Path.join(__dirname, '/lib/views/'),
+    compileOptions: {
+      cache: true,
+      pretty: true,
+      debug: false,
+      compileDebug: false
+    },
+    context: defaultContext
+  });
+
+  // add WebSocket-Plugin
+  server.register({
+    plugin: HapiIO,
+    options: {
+    }
+  });
 
 
-// add vision template engine support
-server.register(Vision, (err) => {
-  if (err) {
-    console.log('Failed to load vision.');
-  } else {
-    server.views({
-      engines: {
-        jade: Jade
-      },
-      path: Path.join(__dirname, '/lib/views/'),
-      compileOptions: {
-        cache: true,
-        pretty: true,
-        debug: false,
-        compileDebug: false
-      },
-      context: defaultContext
+  // Do the routing and auth stuff here
+  // add authentification with cookie and basic username/password
+  await server.register([Inert, require('./lib/auth/base.js'), require('hapi-auth-jwt2')]);
+
+  // Now register the jwt stuff too
+  server.auth.strategy('jwt', 'jwt', {
+    key: config.websocket.secret,
+    validate: (decoded) => {
+      console.info(decoded);
+      //callback(null, true);
+      return { valid: true };
+    }
+  });
+
+  /**
+   * Set default strategy for every route
+   * Use route config to disable authentication
+   * with `auth: false`
+   * Additionally, each route is scoped only for admins,
+   * which can be also overriden.
+   */
+  server.auth.default({
+    strategy: 'session',
+    scope: ['admin']
+  });
+
+  // Finally hook up the routes
+  // register routes
+  server.route(require('./lib/routes'));
+
+
+  // blibb for server routes -> only for dev
+  if (config.isDev) {
+    await server.register({
+      plugin: Blipp, options: {
+        showStart: config.blibb.showStart,
+        showAuth: config.blibb.showAuth
+      }
     });
   }
-});
+
+  /**
+   *  register named-routes-plugin
+   *
+   * This allows use to use "path.routename" in views as
+   * all named views are passed in the context.
+   */
+  await server.register(require('hapi-named-routes'));
+
+  if (shouldStart === true) {
+    await server.start();
+    console.info(`Server started at ${server.info.uri}`);
+  }
+
+  isProvisioned = true;
+};
 
 // register better error pages
-server.ext('onPreResponse', function onPreResponse(request, reply) {
+server.ext('onPreResponse', (request, h) => {
   let user;
 
   if (request.pre.user === undefined) {
@@ -147,7 +204,7 @@ server.ext('onPreResponse', function onPreResponse(request, reply) {
 
   // ToDo: change this to hide information in production mode
   if (!request.response.isBoom) {
-    return reply.continue();
+    return h.continue;
   }
 
   if (request.response.output.statusCode >= 500) {
@@ -169,7 +226,7 @@ server.ext('onPreResponse', function onPreResponse(request, reply) {
   let errorMessage = isString(request.response) ? request.repsonse : 'Server Error 500';
   let errorStack = request.response.stack != undefined ? request.response.stack : 'No stack available';
 
-  console.log('Error in request: %s', errorMessage, errorStack);
+  //console.log('Error in request: %s', errorMessage, errorStack);
 
   let err;
   let errName;
@@ -189,16 +246,15 @@ server.ext('onPreResponse', function onPreResponse(request, reply) {
     err = 'Sie besitzen nicht die benötigten Rechte, um auf diese Seite zuzugreifen.';
   }
 
-  return reply.view('errors/default', {
+  return h.view('errors/default', {
     statusCode: statusCode,
     errName: errName,
     errorMessage: err,
     user: user
-  })
-  .code(statusCode);
+  }).code(statusCode);
 });
 
-server.on('request-error', function (event) {
+server.events.on({ name: 'request', channels: 'error' }, (request, event, tags) => {
   try {
     const error = event.response.source || {};
     error._error = event.response. _error.toString();
@@ -216,70 +272,7 @@ server.on('request-error', function (event) {
   }
 });
 
-// add WebSocket-Plugin
-server.register({
-  register: HapiIO,
-  options: {
-  }
-});
-
-
-// Do the routing and auth stuff here
-// add authentification with cookie and basic username/password
-server.register([Inert, require('./lib/auth/base.js'), require('hapi-auth-jwt2')], (err) => {
-  if (err) {
-    console.log(err);
-    return;
-  }
-
-  // Now register the jwt stuff too
-  server.auth.strategy('jwt', 'jwt', {
-    key: config.websocket.secret,
-    validateFunc: (decoded, request, callback) => {
-      console.info(decoded);
-      callback(null, true);
-    }
-  });
-
-  /**
-   * Set default strategy for every route
-   * Use route config to disable authentication
-   * with `auth: false`
-   * Additionally, each route is scoped only for admins,
-   * which can be also overriden.
-   */
-  server.auth.default({
-    strategy: 'session',
-    scope: ['admin']
-  });
-
-  // Finally hook up the routes
-  // register routes
-  server.route(require('./lib/routes'));
-});
-
-// blibb for server routes -> only for dev
-if (config.isDev) {
-  server.register({
-    register: Blipp, options: {
-      showStart: config.blibb.showStart,
-      showAuth: config.blibb.showAuth
-    }
-  }, function (err) {
-    if (err) {
-      console.log(err);
-    }
-  });
-}
-
-/**
- *  register named-routes-plugin
- *
- * This allows use to use "path.routename" in views as
- * all named views are passed in the context.
- */
-server.register(require('hapi-named-routes'), (err) => {
-  if (err) {
-    console.log('inert', err);
-  }
-});
+module.exports = {
+  server,
+  provision
+};

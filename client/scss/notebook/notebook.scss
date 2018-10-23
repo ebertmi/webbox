@@ -6,7 +6,7 @@
 @import "../includes/_messagelist.scss";
 @import "../includes/_display.scss";
 
-@import "~xterm/src/xterm.css";
+@import "~xterm/dist/xterm.css";
 @import "../includes/_terminal";
 @import "includes/_loader";
 
@@ -107,6 +107,7 @@ h1.notebook-title {
 
 .codeembed-cell.present-mode {
   font-size: 18px; /* set new base size for relative units */
+  text-align: left;
 }
 
 .code-cell.present-mode {

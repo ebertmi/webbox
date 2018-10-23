@@ -9,7 +9,8 @@
 
 const webpack = require('webpack');
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+//const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -19,6 +20,7 @@ const VERSION = require('./package.json').version;
 console.info('Building with package version:', VERSION);
 
 module.exports = {
+  mode: 'production',
   target: 'web',
   context: path.join(__dirname, 'client'),
   entry: {
@@ -30,7 +32,7 @@ module.exports = {
   },
   output: {
     filename: '[name].bundle.' + VERSION + '.js',
-    chunkFilename: '[id].bundle.' + VERSION + '.js',
+    chunkFilename: '[name].bundle.' + VERSION + '.js',
     path: path.join(__dirname, '/public/js'),
     publicPath: '/public/js/'
   },
@@ -39,7 +41,6 @@ module.exports = {
     modules: ['client', 'node_modules']
   },
   externals: {
-    ace: 'ace',
     'highlight.js': 'hljs',
     'markdown-it': 'markdownit',
     'katex': 'katex'
@@ -60,30 +61,41 @@ module.exports = {
         ],
         loader: 'babel-loader',
         query: {
-          presets: [['es2015', { modules: false }], 'react', 'stage-2', 'stage-3'],
-          plugins: ['transform-runtime', 'syntax-dynamic-import']
+          presets: [['@babel/preset-env', { modules: false }], '@babel/preset-react'],
+          plugins: [
+            'emotion',
+            '@babel/plugin-transform-runtime',
+            '@babel/plugin-proposal-object-rest-spread',
+            // Stage 2
+            ['@babel/plugin-proposal-decorators', { 'legacy': true }],
+            '@babel/plugin-proposal-export-namespace-from',
+            '@babel/plugin-proposal-throw-expressions',
+            // Stage 3
+            '@babel/plugin-syntax-dynamic-import',
+            '@babel/plugin-syntax-import-meta',
+            ['@babel/plugin-proposal-class-properties', { 'loose': false }],
+            '@babel/plugin-proposal-json-strings'
+          ]
         }
       },
       {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            {
-              loader: 'css-loader',
-              options: { importLoaders: 1 }
-            },
-            {
-              loader: 'postcss-loader',
-              options: {
-                config: {
-                  path: path.resolve(__dirname, 'postcss.config.js'),
-                },
-              }
-            },
-            'sass-loader'
-          ]
-        })
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: { importLoaders: 1 }
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              config: {
+                path: path.resolve(__dirname, 'postcss.config.js'),
+              },
+            }
+          },
+          'sass-loader'
+        ]
       },
       {
         // Do not transform vendor's CSS with CSS-modules
@@ -126,14 +138,8 @@ module.exports = {
         request: '../../locale'
       });
     }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'commons',
-      chunks: ['dashboard', 'embed', 'notebook', 'presentation'],
-      minChunks: 2
-    }),
-    new ExtractTextPlugin({
-      filename: '../css/all.bundle.' + VERSION + '.css',
-      allChunks: true,
+    new MiniCssExtractPlugin({
+      filename: '../css/[name].bundle.' + VERSION + '.css',
     }),
     new CopyWebpackPlugin([
       {
@@ -144,6 +150,27 @@ module.exports = {
     ]),
     //new BundleAnalyzerPlugin()
   ],
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        styles: {
+          name: 'styles',
+          test: /\.css$/,
+          chunks: 'all',
+          enforce: true
+        },
+        vendors: {
+          test: (module, chunks) => module.depth > 0,
+          name: 'commons',
+          chunks: 'initial',
+          minChunks: 1,
+          minSize: 0,
+          priority: 10,
+          enforce: true
+        }
+      }
+    }
+  },
   node: {
     Buffer: true,
     fs: 'empty' // needed for xterm.js

@@ -10,7 +10,7 @@ import Debug from 'debug';
 import katex from 'katex';
 import mkitm from 'markdown-it-math';
 import isString from 'lodash/isString';
-import { S, Code, BlockQuote, Quote, Heading, Image, Link, Text, ListItem, List, Table, TableHeader, TableBody, TableRow, TableHeaderItem, TableItem } from "spectacle";
+import { S, Code, BlockQuote, Quote, Heading, Image, Link, Text, ListItem, List, Table, TableHeader, TableBody, TableRow, TableHeaderItem, TableItem } from 'spectacle';
 import Decorate from 'markdown-it-decorate';
 import MarkdownContainer from '../../util/markdown-it-container';
 
@@ -80,7 +80,7 @@ function makeChildren(children, props, options) {
       let isEmptyElement = EMPTY_HTML_ELEMENTS[elementTag] === true;
 
       // Skip forbidden tags
-      if (isString(elementTag) &&  options.escapeTags[elementTag.toLowerCase()] === true) {
+      if (isString(elementTag) && options.escapeTags[elementTag.toLowerCase()] === true) {
         continue;
       }
 
@@ -203,15 +203,15 @@ export const mdOptions = {
 
       case 'em':
         content = makeChildren(children, props, options.htmlOptions);
-        return <S type='italic' {...props}>{content}</S>;
+        return <S type="italic" {...props}>{content}</S>;
 
       case 'del':
         content = makeChildren(children, props, options.htmlOptions);
-        return <S type='strikethrough' {...props}>{content}</S>;
+        return <S type="strikethrough" {...props}>{content}</S>;
 
       case 'strong':
         content = makeChildren(children, props, options.htmlOptions);
-        return <S type='bold' {...props}>{content}</S>;
+        return <S type="bold" {...props}>{content}</S>;
 
       case 'blockquote':
         content = makeChildren(children, props, options.htmlOptions);
@@ -314,11 +314,11 @@ export const mdOptions = {
         'spoiler',
         {
           validate: function(params) {
-            console.log('spoiler validate function', params);
+            //console.log('spoiler validate function', params);
             return params.trim().match(/^spoiler\s+(.*)$/);
           },
           render: function (tokens, idx) {
-            console.log('spoiler render function');
+            //console.log('spoiler render function');
             var m = tokens[idx].info.trim().match(/^spoiler\s+(.*)$/);
 
             if (tokens[idx].nesting === 1) {
@@ -348,6 +348,10 @@ export const mdOptions = {
 /**
  * Transforms markdown text to React Nodes. Highlights code with highlight.js, uses KaTeX for math rendering.
  * Allows to use inline html inside paragraphs and list items.
+ *
+ * @param {object} props to use
+ *
+ * @returns {MDReactComponent} markdown as a tree of markdown components
  */
 export function toMarkdownComponent(props) {
   return <MDReactComponent text={props.source} {...mdOptions} {...props} />;

@@ -1,16 +1,47 @@
 import React from 'react';
 
-import Term from 'xterm';
+import { Terminal as Term } from 'xterm';
+import * as fit from 'xterm/lib/addons/fit/fit';
 
 import capitalize from 'lodash/capitalize';
 import debounce from 'lodash/debounce';
+import isFunction from 'lodash/isFunction';
 import Debug from 'debug';
+
+import TerminalManager from '../../models/terminalManager';
+
 const debug = Debug('webbox:Terminal');
 
 const events = [
   'data', 'end', 'finish',
   'title', 'bell', 'destroy'
 ];
+
+// Load fit addon
+Term.applyAddon(fit);
+
+
+export function once(type, listener) {
+  if (!isFunction(listener)) {
+    throw TypeError('listener must be a function');
+  }
+
+  var fired = false;
+
+  function g() {
+    this.removeListener(type, g);
+
+    if (!fired) {
+      fired = true;
+      listener.apply(this, arguments);
+    }
+  }
+
+  g.listener = listener;
+  this.on(type, g);
+
+  return this;
+}
 
 export function pipeXterm(src, dest) {
   let ondata;
@@ -25,18 +56,18 @@ export function pipeXterm(src, dest) {
     dest.removeListener('close', unbind);
   }
 
-  src.on('data', ondata = function(data) {
+  src.on('data', ondata = function ondata(data) {
     dest.write(data);
   });
 
-  src.on('error', onerror = function(err) {
+  src.on('error', onerror = function onerror( err) {
     unbind();
     if (!this.listeners('error').length) {
       throw err;
     }
   });
 
-  src.on('end', onend = function() {
+  src.on('end', onend = function onend() {
     dest.end();
     unbind();
   });
@@ -62,19 +93,38 @@ export default class Terminal extends React.Component {
       this.props.process.on('streamsChanged', this.onStreamChange);
     }
 
-    this.terminal = new Term({
-      /*useStyle: false,*/
-      screenKeys: true,
-      cursorBlink: true
-    });
+    let reuse = false;
 
-    this.terminal.open(this.container, true);
+    if (this.props.process && TerminalManager.has(this.props.process.id)) {
+      this.terminal = TerminalManager.get(this.props.process.id);
+
+      reuse = true;
+    } else {
+      this.terminal = new Term({
+        screenKeys: true,
+        cursorBlink: true
+      });
+
+      // add once method as in xterm.js 3.x is was optimized away -.-
+      this.terminal.once = once.bind(this.terminal);
+
+      // add standard EventEmitter.removeListener
+      this.terminal.removeListener = this.terminal.off;
+
+      TerminalManager.set(this.props.process.id, this.terminal);
+    }
+
+    this.terminal.open(this.container);
+    this.terminal.focus();
+
+    this.terminal.setOption('fontFamily', this.props.fontFamily);
+    this.terminal.setOption('fontSize', this.props.fontSize);
 
     window.addEventListener('resize', this.onResize);
 
     events.forEach(event => {
       this.terminal.on(event, (...args) => {
-        let handler = this.props['on' + capitalize(event)];
+        const handler = this.props['on' + capitalize(event)];
 
         if (handler) {
           handler(...args);
@@ -83,18 +133,30 @@ export default class Terminal extends React.Component {
     });
 
     this.onResize();
+    this.terminal.refresh(0, this.terminal.rows - 1);
+    this.terminal.focus();
 
-    this.onStreamChange();
+    // Do not attach the streams again, after mounting again
+    if (reuse === true) {
+      return;
+    }
+
+    this.onStreamChange(reuse);
   }
 
   componentDidUpdate(prevProps) {
     if (!this.props.hidden) {
       this.onResize();
+      //this.terminal.refresh(0, this.terminal.rows - 1);
       if (prevProps.hidden) {
         this.terminal.element.focus();
         this.terminal.focus();
       }
     }
+
+    // apply changed props
+    this.terminal.setOption('fontFamily', this.props.fontFamily);
+    this.terminal.setOption('fontSize', this.props.fontSize);
   }
 
   componentWillUnmount() {
@@ -103,15 +165,15 @@ export default class Terminal extends React.Component {
     }
 
     window.removeEventListener('resize', this.onResize);
-    this.terminal.destroy();
   }
 
-  onStreamChange() {
-    debug('Streams Changed');
+  onStreamChange(reuse) {
     const process = this.props.process;
 
     // Reset the terminal and delete old lines!
-    this.terminal.clear();
+    if (reuse === false) {
+      this.terminal.clear();
+    }
 
     if (process.stdin) {
       pipeXterm(this.terminal, process.stdin);
@@ -140,68 +202,18 @@ export default class Terminal extends React.Component {
       return;
     }
 
-    const { clientWidth: parentWidth, clientHeight: parentHeight } = this.container;
-    const { clientWidth, clientHeight, offsetWidth, offsetHeight, scrollWidth, scrollHeight } = this.terminal.element;
-
-    const x = (parentWidth - (offsetWidth - clientWidth)) / scrollWidth;
-    const y = (parentHeight - (offsetHeight - clientHeight)) / scrollHeight;
-
-    let cols = x * this.terminal.cols | 0;
-    let rows = y * this.terminal.rows | 0;
-
-    const geometry = this.proposeGeometry();
-    cols = geometry.cols;
-    rows = geometry.rows;
-
-    if (this.terminal.cols !== cols || this.terminal.rows !== rows) {
-      this.terminal.resize(cols, rows);
-      if (this.props.onResize) {
-        this.props.onResize(cols, rows);
-      }
-    }
-  }
-
-  /**
-   * Some calculation for resizing the terminal. Fixes the height props introduced in version prior to 0.2.4
-   * @returns {Object} - rows and cols object
-   */
-  proposeGeometry () {
-    const parentElementStyle = window.getComputedStyle(this.terminal.element.parentElement);
-    const parentElementHeight = parseInt(parentElementStyle.getPropertyValue('height'));
-    const parentElementWidth = Math.max(0, parseInt(parentElementStyle.getPropertyValue('width')) - 17);
-    const elementStyle = window.getComputedStyle(this.terminal.element);
-    const elementPaddingVer = parseInt(elementStyle.getPropertyValue('padding-top')) + parseInt(elementStyle.getPropertyValue('padding-bottom'));
-    const elementPaddingHor = parseInt(elementStyle.getPropertyValue('padding-right')) + parseInt(elementStyle.getPropertyValue('padding-left'));
-    const availableHeight = parentElementHeight - elementPaddingVer;
-    const availableWidth = parentElementWidth - elementPaddingHor;
-    const subjectRow = this.terminal.rowContainer.firstElementChild;
-    const contentBuffer = subjectRow.innerHTML;
-    let characterHeight;
-    let rows;
-    let characterWidth;
-    let cols;
-    let geometry;
-
-    subjectRow.style.display = 'inline';
-    subjectRow.innerHTML = 'W'; // Common character for measuring width, although on monospace
-    characterWidth = subjectRow.getBoundingClientRect().width;
-    subjectRow.style.display = ''; // Revert style before calculating height, since they differ.
-    characterHeight = parseInt(subjectRow.offsetHeight);
-    subjectRow.innerHTML = contentBuffer;
-
-    rows = parseInt(availableHeight / characterHeight);
-    cols = parseInt(availableWidth / characterWidth);
-
-    geometry = {cols: cols, rows: rows};
-    return geometry;
+    this.terminal.fit();
   }
 
   render() {
-    let style = {
+    const style = {
       fontFamily: this.props.fontFamily,
       fontSize: this.props.fontSize
     };
 
-    return <div className="terminal-wrapper" hidden={this.props.hidden}><div style={style} className="terminal-container" hidden={this.props.hidden} ref={div => this.container = div}/></div>;
+    return (
+      <div className="terminal-wrapper" hidden={this.props.hidden}>
+        <div style={style} className="terminal-container" hidden={this.props.hidden} ref={div => this.container = div}/>
+      </div>);
   }
 }

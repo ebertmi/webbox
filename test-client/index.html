@@ -1,22 +1,97 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <title>Mocha Tests</title>
   <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
 </head>
+
 <body>
   <div id="mocha"></div>
   <script src="../node_modules/chai/chai.js"></script>
   <script src="../node_modules/mocha/mocha.js"></script>
-  <script src="https://cdn.jsdelivr.net/ace/1.2.3/min/ace.js"></script>
-  <script src="https://cdn.jsdelivr.net/ace/1.2.3/min/ext-themelist.js"></script>
-  <script src="https://cdn.jsdelivr.net/ace/1.2.3/min/ext-modelist.js"></script>
   <script src="https://cdn.jsdelivr.net/d3js/3.5.17/d3.min.js"></script>
-  <script>mocha.setup('bdd')</script>
+  <script>
+    mocha.setup('bdd')
+  </script>
   <script src="./test.build.js"></script>
   <script>
-    mocha.run();
+    const BASE_MONACO_REQUIRE_CONFIG = {
+      url: '../public/js/vs/loader.js',
+      paths: {
+        'vs': '../public/js/vs'
+      }
+    };
+
+    function loadMonaco(context = window, requireConfig) {
+
+      return new Promise((resolve, reject) => {
+        // monaco has been already loaded and we can return immediatelly
+        if (context.monaco !== undefined) {
+          resolve(monaco);
+          return;
+        }
+
+        const loaderUrl = requireConfig.url || '/vs/loader.js';
+
+        // Callback that tries to load monaco lib, after loader.js has been loaded
+        const onGotAmdLoader = () => {
+          if (context.__REACT_MONACO_EDITOR_LOADER_ISPENDING__) {
+            // Do not use webpack
+            if (requireConfig.paths && requireConfig.paths.vs) {
+              context.require.config(requireConfig);
+            }
+          }
+
+          // Load monaco
+          context.require(['vs/editor/editor.main'], () => {
+            resolve(context.monaco);
+          });
+
+          // Call the delayed callbacks when AMD loader has been loaded
+          if (context.__REACT_MONACO_EDITOR_LOADER_ISPENDING__) {
+            context.__REACT_MONACO_EDITOR_LOADER_ISPENDING__ = false;
+            const loaderCallbacks = context.__REACT_MONACO_EDITOR_LOADER_CALLBACKS__;
+            if (loaderCallbacks && loaderCallbacks.length) {
+              let currentCallback = loaderCallbacks.shift();
+              while (currentCallback) {
+                currentCallback.fn.call(currentCallback.context);
+                currentCallback = loaderCallbacks.shift();
+              }
+            }
+          }
+        };
+
+        // Load AMD loader if necessary
+        if (context.__REACT_MONACO_EDITOR_LOADER_ISPENDING__) {
+          // We need to avoid loading multiple loader.js when there are multiple editors loading
+          // concurrently, delay to call callbacks except the first one
+          // eslint-disable-next-line max-len
+          context.__REACT_MONACO_EDITOR_LOADER_CALLBACKS__ = context.__REACT_MONACO_EDITOR_LOADER_CALLBACKS__ || [];
+          context.__REACT_MONACO_EDITOR_LOADER_CALLBACKS__.push({
+            context: this,
+            fn: onGotAmdLoader
+          });
+        } else if (typeof context.require === 'undefined') {
+          const loaderScript = context.document.createElement('script');
+          loaderScript.type = 'text/javascript';
+          loaderScript.src = loaderUrl;
+          loaderScript.addEventListener('load', onGotAmdLoader);
+          context.document.body.appendChild(loaderScript);
+          context.__REACT_MONACO_EDITOR_LOADER_ISPENDING__ = true;
+        } else {
+          onGotAmdLoader();
+        }
+      });
+    }
+
+
+    loadMonaco(window, BASE_MONACO_REQUIRE_CONFIG).then(monaco => {
+      window.monaco = monaco;
+      mocha.run();
+    });
   </script>
 </body>
+
 </html>

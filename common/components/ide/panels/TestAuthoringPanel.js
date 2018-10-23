@@ -4,10 +4,6 @@ import Editor from '../../Editor';
 import optionManager from '../../../models/options';
 import { Button } from '../../bootstrap';
 
-const FIXED_OPTIONS = {
-  showPrintMargin: false
-};
-
 export default class TestAuthoringPanel extends React.Component {
   constructor(props) {
     super(props);
@@ -17,13 +13,8 @@ export default class TestAuthoringPanel extends React.Component {
 
     // Initial state
     this.state = {
-      options: optionManager.getOptions()
+      options: optionManager.getEditorOptions()
     };
-  }
-
-  onChange() {
-    this.setState({
-    });
   }
 
   componentDidMount() {
@@ -39,9 +30,13 @@ export default class TestAuthoringPanel extends React.Component {
     optionManager.removeListener('change', this.onChangeOption);
   }
 
+  onChange() {
+
+  }
+
   onChangeOption() {
     this.setState({
-      options: optionManager.getOptions()
+      options: optionManager.getEditorOptions()
     });
   }
 
@@ -57,8 +52,6 @@ export default class TestAuthoringPanel extends React.Component {
       file = this.props.item.createTestCode();
     }
 
-    let {font, fontSize, ace: aceOptions} = this.state.options;
-
     return (
       <div className="tests-panel" onSubmit={e => e.preventDefault()}>
         <h3>Tests</h3>
@@ -68,11 +61,8 @@ export default class TestAuthoringPanel extends React.Component {
         </div>
         <hr />
         <Editor
-          fontFamily={`${font}, monospace`}
-          fontSize={`${fontSize}pt`}
-          {...aceOptions}
-          {...FIXED_OPTIONS}
-          session={file}
+          options={this.state.options}
+          file={file}
           ref={editor => {this.editor = editor;}}
         />
       </div>

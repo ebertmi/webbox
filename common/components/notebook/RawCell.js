@@ -1,12 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { EditSession, UndoManager } from 'ace';
+//import { EditSession, UndoManager } from 'ace';
 import classnames from 'classnames';
 
 import BaseCell from './BaseCell';
 import CellMetadata from './CellMetadata';
 import Editor from '../Editor';
 import { EditButtonGroup } from './EditButtonGroup';
+import optionManager from '../../models/options';
+import { createModel, setMode  } from '../../util/monacoUtils';
 
 import { updateCell } from '../../actions/NotebookActions';
 
@@ -18,6 +20,18 @@ export default class RawCell extends BaseCell {
     super(props);
 
     this.onUpdateCell = this.onUpdateCell.bind(this);
+
+    this.state = {
+      options: optionManager.getOptions()
+    };
+  }
+
+  componentDidMount() {
+    optionManager.on('change', this.onChangeOption);
+  }
+
+  componentWillUnmount() {
+    optionManager.removeListener('change', this.onChangeOption);
   }
 
   /**
@@ -28,12 +42,16 @@ export default class RawCell extends BaseCell {
       e.preventDefault();
     }
 
-    if (this.session) {
-      const content = this.session.getValue();
+    if (this.model) {
+      const content = this.model.getValue();
       this.props.dispatch(updateCell(this.props.cell.get('id'), content));
-    } else {
-      console.warn('RawCell.onSaveCellSource called with invalid session', this.session);
     }
+  }
+
+  onChangeOption() {
+    this.setState({
+      options: optionManager.getOptions()
+    });
   }
 
   /**
@@ -55,14 +73,14 @@ export default class RawCell extends BaseCell {
       source = '';
     }
 
-    const mode = this.props.cell.getIn(['metadata', 'mode'], 'ace/mode/html');
+    // Get default language from notebook if mode is not available
+    const mode = this.props.cell.getIn(['metadata', 'mode'], 'html');
 
-    if (this.session) {
-      this.session.setValue(source);
-      this.session.setMode(mode);
+    if (this.model) {
+      this.model.setValue(source);
+      setMode(this.model, mode);
     } else {
-      this.session = new EditSession(source, mode);
-      this.session.setUndoManager(new UndoManager);
+      this.model = createModel('temp', source, mode);
     }
 
     return (
@@ -71,7 +89,13 @@ export default class RawCell extends BaseCell {
           Es werden folgende Formate unterstützt: <code>text/plain</code>, <code>text/html</code>, <code>image/(jpeg|png|gif)</code>.
         </p>
         <strong>Raw</strong>
-        <Editor fontSize="13px" minHeight={minHeight} maxLines={100} session={this.session} ref={editor => this.editor = editor} />
+        <Editor
+          fontSize="1.3rem"
+          minHeight={minHeight}
+          options={this.state.options}
+          file={{model: this.model}}
+          ref={editor => this.editor = editor} 
+        />
       </div>
     );
   }

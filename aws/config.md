@@ -1,7 +1,7 @@
 ## Configure trycoding.io on AWS
 
-
 ### Trycoding.io Webserver
+
 Create Volume and EC2 instance.
 
 **FAQ**

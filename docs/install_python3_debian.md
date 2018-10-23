@@ -1,5 +1,12 @@
+---
+id: python3_install
+title: Installing Python 3 dependencies
+---
+
 # How to install Python3 and some basic libs on debian
+
 ## Python3
+
 You can get Python3 from the dist packages:
 `apt-get install python3` and running scripts with `python3 script.py`
 
@@ -7,9 +14,11 @@ Though, *pip* is not installed by default, so you have to do:
 `apt-get install python3-pip`  and running pip with `pip3 command args`
 
 ## Numpy
+
 NumPy is easy to install with pip `pip3 install numpy`. All dependencies should be automatically installed  by the numpy install script.
 
 ## Matplotlib
+
 Mpl requires some more work. You can either use the distro version (older) or install it with pip.
 Pip installation requires a couple of dependencies:
 `apt-get install libpng-dev pkg-config libfreetype6-dev`

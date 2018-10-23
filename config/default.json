@@ -7,7 +7,10 @@
         },
         "locale": "de",
         "contact": "michael.ebert@hs-coburg.de",
-        "showHelpInFooter": false
+        "showHelpInFooter": false,
+        "baseTitle": "trycoding.io",
+        "baseLink": "www.trycoding.io",
+        "baseEmailSender": "trycoding.io"
     },
     "security": true,
     "views": {
@@ -51,7 +54,6 @@
         "host": "localhost",
         "port": "28015",
         "db": "webbox",
-        /*"authKey": "webbox_db_token", old way, disabled for now*/
         "user": "admin",
         "password": "webbox_db_token"
     },

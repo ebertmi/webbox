@@ -1,4 +1,4 @@
-import React from  'react';
+import React from 'react';
 
 import Icon from '../../Icon';
 import Tab from './Tab';
@@ -21,7 +21,7 @@ export default class FileTab extends React.Component {
   }
 
   componentDidMount() {
-    let item = this.props.item;
+    const item = this.props.item;
 
     item.on('changeName', this.onChangeName);
     item.on('changeAnnotation', this.onChangeAnnotation);
@@ -35,7 +35,7 @@ export default class FileTab extends React.Component {
   }
 
   componentWillUnmount() {
-    let item = this.props.item;
+    const item = this.props.item;
 
     item.removeListener('changeName', this.onChangeName);
     item.removeListener('changeAnnotation', this.onChangeAnnotation);
@@ -56,13 +56,13 @@ export default class FileTab extends React.Component {
   }
 
   onChangeAnnotation() {
-    let annotations = this.props.item.getAnnotations();
+    const annotations = this.props.item.annotations;
 
-    const types = [null, 'info', 'warning', 'error'];
+    const types = [null, 'Info', 'Warning', 'Error'];
     let worst = 0;
 
     annotations.forEach(annotation => {
-      let index = types.indexOf(annotation.type, 1);
+      const index = types.indexOf(annotation.type, 1);
       worst = Math.max(worst, index);
     });
 
@@ -80,24 +80,16 @@ export default class FileTab extends React.Component {
 
   /**
    * Receives name changes from the InputBox
+   * @param {string} value - new name
+   *
+   * @returns {void}
    */
   onRename(value) {
     this.props.item.setName(value);
   }
 
-  /**
-   * Start file renaming
-   */
-  handleRename(e) {
-    if (e  && e.preventDefault) {
-      e.preventDefault();
-    }
-
-    this.props.item.setNameEdtiable.call(this.props.item, true);
-  }
-
   onEnterRename(keyCode, charCode, key) {
-    const isEnter = keyCode === 13 || charCode === 13 || key === "Enter";
+    const isEnter = keyCode === 13 || charCode === 13 || key === 'Enter';
     if (isEnter) {
       this.props.item.setNameEdtiable(false);
     }
@@ -107,15 +99,32 @@ export default class FileTab extends React.Component {
     this.props.item.setNameEdtiable(false);
   }
 
+  /**
+   * Start file renaming
+   * @param {Event} e - rename event
+   * @returns {void}
+   */
+  handleRename(e) {
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
+
+    this.props.item.setNameEdtiable.call(this.props.item, true);
+  }
+
   renderAnnotations() {
     let {annotationLevel, annotationCount} = this.state;
 
     if (annotationCount) {
-      annotationLevel = annotationLevel.replace('error', 'danger');
+      if (annotationLevel == null) {
+        annotationLevel = 'danger';
+      }
+
+      annotationLevel = annotationLevel.replace('Error', 'danger');
 
       let icon = 'exclamation-triangle';
 
-      if (annotationLevel === 'info') {
+      if (annotationLevel === 'Info') {
         icon = 'info-circle';
       }
 
@@ -127,6 +136,8 @@ export default class FileTab extends React.Component {
         />
       );
     }
+
+    return null;
   }
 
   renderNameOrInput() {

@@ -7,7 +7,8 @@ export const ImageItem = {
   placeHolder: 'Bild-URL',
   replaceWith: '',
   openBlockWith: '',
-  closeBlockWith: ''
+  closeBlockWith: '',
+  type: 'image'
 };
 
 export const ItalicsItem = {
@@ -17,7 +18,9 @@ export const ItalicsItem = {
   placeHolder: '',
   replaceWith: '',
   openBlockWith: '',
-  closeBlockWith: ''
+  closeBlockWith: '',
+  canUndo: true,
+  type: 'italic'
 };
 
 export const BoldItem = {
@@ -27,7 +30,9 @@ export const BoldItem = {
   placeHolder: '',
   replaceWith: '',
   openBlockWith: '',
-  closeBlockWith: ''
+  closeBlockWith: '',
+  canUndo: true,
+  type: 'bold'
 };
 
 export const UlItem = {
@@ -37,7 +42,9 @@ export const UlItem = {
   placeHolder: '',
   replaceWith: '',
   openBlockWith: '',
-  closeBlockWith: ''
+  closeBlockWith: '',
+  canUndo: true,
+  type: 'ul'
 };
 
 export const OlItem = {
@@ -48,7 +55,9 @@ export const OlItem = {
   placeHolder: '',
   replaceWith: '',
   openBlockWith: '',
-  closeBlockWith: ''
+  closeBlockWith: '',
+  canUndo: false
+  type: 'ol'
 };
 
 export const LinkItem = {
@@ -58,7 +67,9 @@ export const LinkItem = {
   placeHolder: 'Linktext',
   replaceWith: '',
   openBlockWith: '',
-  closeBlockWith: ''
+  closeBlockWith: '',
+  canUndo: true,
+  type: 'link'
 };
 
 export const BlockquoteItem = {
@@ -68,7 +79,9 @@ export const BlockquoteItem = {
   placeHolder: ' Zitat',
   replaceWith: '',
   openBlockWith: '',
-  closeBlockWith: ''
+  closeBlockWith: '',
+  canUndo: true,
+  type: 'blockquote'
 };
 
 export const InlineCodeItem = {
@@ -78,7 +91,9 @@ export const InlineCodeItem = {
   placeHolder: 'Code',
   replaceWith: '',
   openBlockWith: '',
-  closeBlockWith: ''
+  closeBlockWith: '',
+  canUndo: true,
+  type: 'inlinecode'
 };
 
 export const CodeBlockItem = {
@@ -88,25 +103,29 @@ export const CodeBlockItem = {
   placeHolder: 'Codeblock',
   replaceWith: '',
   openBlockWith: '\n```Sprache\n',
-  closeBlockWith: '\n```\n'
+  closeBlockWith: '\n```\n',
+  canUndo: false,
+  type: 'codeblock'
 };
 
 export const ExtendedFormat = '<!-- {} -->';
 
 /**
- * Inserts the item in the Ace Editor Session.
+ * Inserts the item in the monaco editor model.
  *
  * @export
  * @param {Object} item - item to insert
- * @param {EditSession} session - session to use
+ * @param {Monaco.IModel} model - model to use
+ * @param {Monaco.IStandaloneEditor} editor - editor instance to use
  * @returns {void}
  */
-export function insert(item, session) {
+export function insert(item, model, editor) {
   let str;
   let lineNumber = 1;
   const clonedItem = cloneDeep(item); // Clone Item to prevent object manipulation
+  const range = editor.getSelection();
+  let selection = model.getValueInRange(range);
 
-  let selection = session.doc.getTextRange(session.selection.getRange());
   const openBlockWith = clonedItem.openBlockWith;
   const closeBlockWith = clonedItem.closeBlockWith;
 
@@ -133,7 +152,7 @@ export function insert(item, session) {
   str.openBlockWith = openBlockWith;
   str.closeBlockWith = closeBlockWith;
 
-  doInsert(str, session);
+  doInsert(str, model, editor);
 }
 
 /**
@@ -141,57 +160,60 @@ export function insert(item, session) {
  *
  * @export
  * @param {String} str - string to insert
- * @param {EditSession} session - session to use
+ * @param {Monaco.IModel} model - session to use
+ * @param {Monaco.IStandaloneEditor} editor - session to use
  * @returns {void}
  */
-export function appendAtEndOfLine(str, session) {
-  const cursor = session.selection.getCursor();
-  const currline = cursor.row;
-  const wholelinetext = session.getLine(currline);
+export function appendAtEndOfLine(str, model, editor) {
+  const range = editor.getSelection();
+  const currline = range.positionLineNumber;
+  const wholelinetext = model.getLineContent(currline);
   const lineLength = wholelinetext != null ? wholelinetext.length : 0;
 
-  cursor.column += lineLength;
-  session.insert(cursor, str);
-  const position = session.selection.getCursor();
+  const endCol = lineLength + 1;
+  const editOps = [{
+    forceMoveMarkers: true,
+    identifier: 'insertMarkdown',
+    range: {
+      startLineNumber: currline,
+      startColumn: endCol,
+      endLineNumber: currline,
+      endColumn: endCol
+    },
+    text: str
+  }];
 
-  // Apply new position
-  session.selection.moveCursorToPosition(position);
+  model.pushEditOperations(range, editOps);
 }
 
 /**
  * Inserts the item in the edit session.
  *
  * @param {Object} strItem - string to insert
- * @param {EditSession} session - session to use
+ * @param {Monaco.IModel} model - model to use
+ * @param {Monaco.IStandaloneEditor} editor - editor instance
  * @returns {void}
  */
-function doInsert(strItem, session) {
-  const selection = session.doc.getTextRange(session.selection.getRange());
+function doInsert(strItem, model, editor) {
+  const range = editor.getSelection();
 
-  if (selection) {
-    session.replace(session.selection.getRange(), strItem.block);
-  } else {
-    session.insert(session.selection.getCursor(), strItem.block);
+  const editOps = [{
+    forceMoveMarkers: false,
+    identifier: 'insertMarkdown',
+    range: range,
+    text: strItem.block
+  }];
 
-    const position = session.selection.getCursor();
-    const backOffset = strItem.closeWith.length;
-
-    // Alter position
-    position.column -= backOffset;
-
-    // Apply new position
-    session.selection.moveCursorToPosition(position);
-  }
+  model.pushEditOperations(range, editOps);
 }
 
+// ToDo: automatically remove markup if we trigger it again, e.g. **bold** back to bold
 function buildBlock(str, item, lineNumber) {
   const multiline = item.multiline;
   let block;
   const openWith = `${item.prependLineNumbers ? lineNumber : ''}${item.openWith}`;
 
-  if (item.replaceWith !== '') {
-    block = openWith + item.replaceWith + item.closeWith;
-  } else if (str === '' && item.placeHolder !== '') {
+  if ((str === '' || item.type === ImageItem.type) && item.placeHolder !== '') {
     block = openWith + item.placeHolder + item.closeWith;
   } else {
     let lines = [str];
@@ -201,14 +223,25 @@ function buildBlock(str, item, lineNumber) {
       lines = str.split(/\r?\n/);
     }
 
+    // iterate over all lines
     for (let l = 0; l < lines.length; l++) {
       const line = lines[l];
       const trailingSpaces = line.match(/ *$/);
 
-      if (trailingSpaces) {
-        blocks.push(openWith + line.replace(/ *$/g, '') + item.closeWith + trailingSpaces);
+      // Determine if we can undo the action if line has already same format
+      if (item.canUndo && line.startsWith(openWith) && line.endsWith(item.closeWith)) {
+        if (trailingSpaces) {
+          blocks.push(line.slice(openWith.length, line.length-item.closeWith.length) + trailingSpaces);
+        } else {
+          blocks.push(line.slice(openWith.length, line.length-item.closeWith.length));
+        }
       } else {
-        blocks.push(openWith + line + item.closeWith);
+        // Normal formatting routine
+        if (trailingSpaces) {
+          blocks.push(openWith + line.replace(/ *$/g, '') + item.closeWith + trailingSpaces);
+        } else {
+          blocks.push(openWith + line + item.closeWith);
+        }
       }
     }
 
@@ -218,7 +251,6 @@ function buildBlock(str, item, lineNumber) {
   return {
     block: block,
     openWith: item.openWith,
-    replaceWith: item.replaceWith,
     placeHolder: item.placeHolder,
     closeWith: item.closeWith
   };

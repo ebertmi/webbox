@@ -3,7 +3,7 @@ html(lang="de")
 
   meta(charset="utf-8")
   script(src="https://use.fontawesome.com/3797abfac7.js")
-  title trycoding.io - Hochschule Coburg
+  title #{baseTitle}
 
   // Fav-Icons
   link(rel="apple-touch-icon" sizes="57x57" href="/public/fav-icon/apple-icon-57x57.png")
@@ -25,79 +25,7 @@ html(lang="de")
   meta(name="theme-color" content="#ffffff")
 
   if isProd
-    link(rel="stylesheet", href="/public/css/all.bundle.#{webboxVersion}.css")
-
-  // Track only on production
-  if isProd
-    script.
-      // keen analytics, simple analytics without exposing user data to google :)
-      !function(name,path,ctx){
-        var latest,prev=name!=='Keen'&&window.Keen?window.Keen:false;ctx[name]=ctx[name]||{ready:function(fn){var h=document.getElementsByTagName('head')[0],s=document.createElement('script'),w=window,loaded;s.onload=s.onerror=s.onreadystatechange=function(){if((s.readyState&&!(/^c|loade/.test(s.readyState)))||loaded){return}s.onload=s.onreadystatechange=null;loaded=1;latest=w.Keen;if(prev){w.Keen=prev}else{try{delete w.Keen}catch(e){w.Keen=void 0}}ctx[name]=latest;ctx[name].ready(fn)};s.async=1;s.src=path;h.parentNode.insertBefore(s,h)}}
-      }('KeenAsync','https://d26b395fwzu5fz.cloudfront.net/keen-tracking-1.0.3.min.js',this);
-
-      KeenAsync.ready(function(){
-        // Configure a client instance
-        var client = new KeenAsync({
-          projectId: !{KEENIO_PROJECTID},
-          writeKey: !{KEENIO_WRITEKEY}
-        });
-
-        var sessionCookie = KeenAsync.utils.cookie('keen-analytics-id');
-        if (!sessionCookie.get('user_id')) {
-            sessionCookie.set('user_id', KeenAsync.helpers.getUniqueId());
-        }
-
-        client.extendEvents({
-            page: {
-                href: document.location.href,
-                title: document.title
-            },
-            referrer: document.referrer,
-            user: {
-                id: window.USER_DATA != null && window.USER_DATA.isAnonymous === false ? window.USER_DATA.username : '',
-            }
-        });
-
-        client.extendEvents(function(){
-            return {
-                page: {
-                  title: document.title,
-                  url: document.location.href
-                  // info: {} (add-on)
-                },
-                referrer: {
-                  url: document.referrer
-                  // info: {} (add-on)
-                },
-                tech: {
-                  // info: {} (add-on)
-                  // browser: KeenAsync.helpers.getBrowserProfile(),
-                  ip: '${keen.ip}',
-                  ua: '${keen.user_agent}'
-                },
-                visitor: {
-                  id: sessionCookie.get('user_id')
-                },
-                keen: {
-                  timestamp: new Date().toISOString(),
-                  addons: [
-                    {
-                      name: 'keen:ua_parser',
-                      input: {
-                        ua_string: 'tech.ua'
-                      },
-                      output: 'tech.info'
-                    }
-                  ]
-              },
-            }
-        });
-
-        // Record an event
-        client.recordEvent('pageview');
-
-        window.KEEN_CLIENT = client;
-      });
+    link(rel="stylesheet", href="/public/css/commons.bundle.#{webboxVersion}.css")
 
   body.ide
     #ide-container
@@ -109,9 +37,9 @@ html(lang="de")
       window.__USER_DATA__ = !{USER_DATA};
       window.__crumb__ = "!{crumb}";
 
-    script(src="https://cdn.jsdelivr.net/ace/1.2.4/min/ace.js")
-    script(src="https://cdn.jsdelivr.net/ace/1.2.4/min/ext-themelist.js")
-    script(src="https://cdn.jsdelivr.net/ace/1.2.4/min/ext-modelist.js")
+    //script(src="https://cdn.jsdelivr.net/ace/1.2.4/min/ace.js")
+    //script(src="https://cdn.jsdelivr.net/ace/1.2.4/min/ext-themelist.js")
+    //script(src="https://cdn.jsdelivr.net/ace/1.2.4/min/ext-modelist.js")
     //script(src="https://cdn.jsdelivr.net/d3js/3.5.17/d3.min.js")
     script(src="/public/skulpt/skulpt.min.js")
     script(src="/public/skulpt/skulpt-stdlib.js")

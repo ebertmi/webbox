@@ -62,7 +62,7 @@ body.ide,
     -ms-user-select: none;
     user-select: none;
   }
-  @import "~xterm/src/xterm.css";
+  @import "~xterm/dist/xterm.css";
   @import "../includes/_terminal";
   @import "_tabbar";
   @import "_tablist";

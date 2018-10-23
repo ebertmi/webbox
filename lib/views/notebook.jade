@@ -1,11 +1,11 @@
 extends ./layout.jade
 
 block title
-  title trycoding.io - Hochschule Coburg
+  title #{baseTitle}
 
 block styles
   if isProd
-    link(rel="stylesheet", href="/public/css/all.bundle.#{webboxVersion}.css")
+    link(rel="stylesheet", href="/public/css/commons.bundle.#{webboxVersion}.css")
 
   link(href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700", rel="stylesheet", type="text/css")
   link(rel="stylesheet", href="//cdn.jsdelivr.net/highlight.js/9.6.0/styles/github.min.css")
@@ -33,9 +33,6 @@ block scripts
     window.__SOURCEBOX__ = !{sourcebox};
     window.__crumb__ = "!{crumb}";
 
-  script(src="https://cdn.jsdelivr.net/ace/1.2.4/min/ace.js")
-  script(src="https://cdn.jsdelivr.net/ace/1.2.4/min/ext-themelist.js")
-  script(src="https://cdn.jsdelivr.net/ace/1.2.4/min/ext-modelist.js")
   script(src="//cdn.jsdelivr.net/highlight.js/9.6.0/highlight.min.js")
   script(src="https://cdn.jsdelivr.net/katex/0.6.0/katex.min.js")
   script(src="https://cdn.jsdelivr.net/markdown-it/8.0.0/markdown-it.min.js")

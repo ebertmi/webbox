@@ -15,5 +15,28 @@ config.isTest = process.env.NODE_ENV === 'test';
 // add good process monitor config
 config.good = goodOptions;
 
+// now override some configuration parameter if available as env params
+const DATABASE_KEYS = [{
+  envKey: 'DATABASE_HOST',
+  configKey: 'host'
+},{
+  envKey: 'DATABASE_PORT',
+  configKey: 'port'
+},{
+  envKey: 'DATABASE_DB',
+  configKey: 'db'
+},{
+  envKey: 'DATABASE_USER',
+  configKey: 'user'
+},{
+  envKey: 'DATABASE_PASSWORD',
+  configKey: 'password'
+}];
+
+DATABASE_KEYS.forEach(k => {
+  if (process.env[k.envKey] != null) {
+    config.database[k.configKey] = process.env[k.envKey] ;
+  }
+});
 
 module.exports = config;

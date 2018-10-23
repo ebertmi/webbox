@@ -39,7 +39,7 @@ function processPromise(process, cleanExit) {
       if (code === 0 || !cleanExit) {
         resolve();
       } else {
-        let error = new Error('Command failed: ' + process.spawnfile);
+        const error = new Error(`Command failed: ${  process.spawnfile}`);
         error.code = code;
         error.signal = signal;
 
@@ -71,6 +71,8 @@ export default class Runner extends EventEmitter {
 
     this.project = project;
     this.sourcebox = project.sourcebox;
+    //this.sourcebox = project.sourcebox;
+    this.id = this.project.getEmbedId();
 
     this.createStdio();
   }
@@ -98,10 +100,10 @@ export default class Runner extends EventEmitter {
     this.config = this.project.config;
 
     // Now get the tests file and add it to our files array;
-    let testFile = this.project.getTestCode();
+    const testFile = this.project.getTestCode();
     this.files.push(testFile);
 
-    let emitChange = () => {
+    const emitChange = () => {
       process.nextTick(() => {
         this.project.emitChange();
       });
@@ -139,6 +141,8 @@ export default class Runner extends EventEmitter {
    *  1. Write all files on the disk
    *  2. Try to compile (depending of the language)
    *  3. Try to execute (if other steps are successfull or are skipped)
+   *
+   * @returns {void}
    */
   run() {
     if (this.isRunning()) {
@@ -152,11 +156,11 @@ export default class Runner extends EventEmitter {
     this.path = this.project.name || '.';
     this.config = this.project.config;
 
-    let command = this._commandArray(this.project.config.exec);
-    let runEvent = new EventLog(EventLog.NAME_RUN, { execCommand: command });
+    const command = this._commandArray(this.project.config.exec);
+    const runEvent = new EventLog(EventLog.NAME_RUN, { execCommand: command });
     this.project.sendEvent(runEvent);
 
-    let emitChange = () => {
+    const emitChange = () => {
       process.nextTick(() => {
         this.project.emitChange();
       });
@@ -189,6 +193,8 @@ export default class Runner extends EventEmitter {
 
   /**
    * Stops the current process
+   *
+   * @returns {void}
    */
   stop() {
     if (this.isRunning()) {
@@ -200,10 +206,12 @@ export default class Runner extends EventEmitter {
 
   /**
    * Creates all directory that are required for writing the files
+   *
+   * @returns {Promise} - chainable promise
    */
   _ensureDirs() {
-    let paths = this.files.map(file => {
-      let path = pathModule.join(this.path, file.getName());
+    const paths = this.files.map(file => {
+      const path = pathModule.join(this.path, file.getName());
       return pathModule.dirname(path);
     }).filter(path => path !== '.');
 
@@ -218,16 +226,21 @@ export default class Runner extends EventEmitter {
 
   /**
    * Writes all files on the disk of the sourcebox
+   *
+   * @returns {Promise} - chainable promise
    */
   _writeFiles() {
     return Promise.map(this.files, file => {
-      let path = pathModule.join(this.path, file.getName());
+      const path = pathModule.join(this.path, file.getName());
       return this.sourcebox.writeFile(path, file.getValue());
     });
   }
 
   /**
    * Tries to compile the sourcecode, if configured (see languages.js)
+   *
+   * @returns {Promise} - chainable promise
+   * @throws {Error} - when failing to compile or sub steps are failing
    */
   _compile() {
     if (!this.config.compile) {
@@ -236,17 +249,17 @@ export default class Runner extends EventEmitter {
 
     this._status('Übersetze Quellcode');
 
-    let command = this._commandArray(this.config.compile);
+    const command = this._commandArray(this.config.compile);
 
     this._status(command.join(' '), false);
 
-    let compiler = this.sourcebox.exec(command.shift(), command, {
+    const compiler = this.sourcebox.exec(command.shift(), command, {
       cwd: this.path,
       term: false,
       env: this.config.env
     });
 
-    let transform = new TerminalTransform();
+    const transform = new TerminalTransform();
 
     // ToDo: Pipe stderr to special buffer, so that we can analyze the errors
     compiler.stderr.pipe(transform, {end: false});
@@ -259,14 +272,14 @@ export default class Runner extends EventEmitter {
     transform.pipe(this.stdout, {end: false});
 
     if (isFunction(this.config.parser)) {
-      let parser = this.config.parser();
+      const parser = this.config.parser();
 
       compiler.stderr.pipe(split()).pipe(parser);
 
-      let annotationMap = {};
+      const annotationMap = {};
 
       parser.on('data', data => {
-        let {file, ...annotation} = data;
+        const {file, ...annotation} = data;
 
         if (annotation.row != null) {
           annotation.row--;
@@ -276,13 +289,13 @@ export default class Runner extends EventEmitter {
           annotation.column--;
         }
 
-        let array = annotationMap[file] = annotationMap[file] || [];
+        const array = annotationMap[file] = annotationMap[file] || [];
         array.push(annotation);
       });
 
       parser.on('end', () => {
         this.files.forEach((file) => {
-          let annotations = annotationMap[file.getName()];
+          const annotations = annotationMap[file.getName()];
           file.setAnnotations(annotations || []);
         });
       });
@@ -297,6 +310,8 @@ export default class Runner extends EventEmitter {
 
   /**
    * Executes the process with the provides config params (see languages.js)
+   *
+   * @returns {Promise} execution promise
    */
   _exec() {
     if (!this.config.exec) {
@@ -305,7 +320,7 @@ export default class Runner extends EventEmitter {
 
     //let annotationMap = {};
 
-    let command = this._commandArray(this.config.exec);
+    const command = this._commandArray(this.config.exec);
 
     this._status(command.join(' '), false); // output run call
 
@@ -321,7 +336,7 @@ export default class Runner extends EventEmitter {
       this.project.showMessage('danger', 'Verbindung zum Server fehlgeschlagen.');
 
       // Log the failure, maybe something weird has happend
-      let failureEvent = new EventLog(EventLog.NAME_FAILURE, { message: error.message } );
+      const failureEvent = new EventLog(EventLog.NAME_FAILURE, { message: error.message } );
       this.project.sendEvent(failureEvent);
     });
 
@@ -338,7 +353,7 @@ export default class Runner extends EventEmitter {
 
     // check for matplotlib stream
     if (this.process.stdio[3]) {
-      var mplTransform = new MatplotLibTransfrom(this.project);
+      const mplTransform = new MatplotLibTransfrom(this.project);
       this.process.stdio[3].pipe(mplTransform, {end: false});
     }
 
@@ -365,17 +380,17 @@ export default class Runner extends EventEmitter {
 
   /**
    * Tests the project (see languages.js)
+   *
+   * @returns {Promise} test promise
    */
   _test() {
     if (!this.config.test) {
       throw new Error('No test command');
     }
 
-    let annotationMap = {};
+    const command = this._commandArray(this.config.test);
 
-    let command = this._commandArray(this.config.test);
-
-    this._status("Überprüfe das Programm", false); // output run call
+    this._status('Überprüfe das Programm', false); // output run call
 
     this.process = this.sourcebox.exec(command.shift(), command, {
       term: true,
@@ -389,7 +404,7 @@ export default class Runner extends EventEmitter {
       this.project.showMessage('danger', 'Verbindung zum Server fehlgeschlagen.');
 
       // Log the failure, maybe something weird has happend
-      let failureEvent = new EventLog(EventLog.NAME_FAILURE, { message: error.message } );
+      const failureEvent = new EventLog(EventLog.NAME_FAILURE, { message: error.message } );
       this.project.sendEvent(failureEvent);
     });
 
@@ -404,30 +419,15 @@ export default class Runner extends EventEmitter {
     this.stdin.pipe(this.process.stdin);
     this.process.stdout.pipe(this.stdout, {end: false});
 
-    // ToDo: put this into languages.js as a hook
-    // check for matplotlib stream
-    //if (this.process.stdio[3]) {
-    //  var mplTransform = new MatplotLibTransfrom(this.project);
-    //  this.process.stdio[3].pipe(mplTransform, {end: false});
-    //}
-
-    // turtle streams
-    /*if (this.process.stdio[4]) {
-      new Turtle({
-        turtle: this.process.stdio[4],
-        stdout: this.stdout
-      }, this.project);
-    }*/
-
     // after Streams hook
     if (this.process.stdio[5]) {
 
       this.process.stdio[5].pipe(new JsonTransform(result => {
-        let testResult = new TestResult(result);
+        const testResult = new TestResult(result);
 
         // Try to send the results to the Server
 
-        let remoteAction = new RemoteAction(RemoteActions.TestResult, this.project.getUserData(), {
+        const remoteAction = new RemoteAction(RemoteActions.TestResult, this.project.getUserData(), {
           embedId: this.project.getEmbedId(),
           score: testResult.getScore(),
           scorePercentage: testResult.getScorePercentage(),
@@ -436,7 +436,7 @@ export default class Runner extends EventEmitter {
         this.project.sendAction(remoteAction);
 
         // Additonally, store the test result on the server with its data
-        let testEvent = new EventLog(EventLog.NAME_TEST, { data: result });
+        const testEvent = new EventLog(EventLog.NAME_TEST, { data: result });
         this.project.sendEvent(testEvent);
 
         this.project.tabManager.closeTabByType('testresult'); // Close all other test result windows
@@ -456,14 +456,27 @@ export default class Runner extends EventEmitter {
 
   /**
    * Outputs our status messages on the terminal with special formatting
+   * @param {string} msg - message
+   * @param {boolean} dashes - surroundes message with four dashes
+   *
+   * @returns {void}
    */
   _status(msg, dashes=true) {
-    let dash = dashes ? ' ---- ' : '';
+    const dash = dashes ? ' ---- ' : '';
     this.stdout.write(`\x1b[34m${dash}${msg}${dash}\x1b[m\r\n`);
   }
 
+  /**
+   * Creates a command array for the given command. Automatically replaces the
+   * main file name (depending on the language configuration) and the other files
+   * names.
+   *
+   * @param {String|Array} command - one or more commands
+   * @returns {Array} - array of commands
+   * @memberof Runner
+   */
   _commandArray(command) {
-    let fileNames = this.files.map(file => file.getName());
+    const fileNames = this.files.map(file => file.getName());
 
     // Try to get the main file if configured, else use first file
     let mainFile = this.project.getMainFile();
@@ -487,40 +500,45 @@ export default class Runner extends EventEmitter {
     } else if (Array.isArray(command)) {
       return command.slice();
     }
+
+    throw new Error('Parameter \'command\' can only be of type string or array of strings');
   }
 
   processExecErrors() {
-    let annotationMap = {};
+    const annotationMap = {};
     // Check for any error that might occur
-    let files = this.project.getFiles();
+    const files = this.project.getFiles();
     if (this.config.errorParser && this.config.errorParser.hasError()) {
-      let errObj = this.config.errorParser.getAsObject();
+      const errObj = this.config.errorParser.getAsObject();
 
       // Try to get file content
-      let tabIndex = this.project.getIndexForFilename(errObj.file.replace('./', ''));
+      const tabIndex = this.project.getIndexForFilename(errObj.file.replace('./', ''));
 
-      let fileContent = tabIndex > -1 ? this.project.tabManager.getTabs()[tabIndex].item.getValue() : '';
+      const fileContent = tabIndex > -1 ? this.project.tabManager.getTabs()[tabIndex].item.getValue() : '';
 
-      let errorEvent = new EventLog(EventLog.NAME_ERROR, Object.assign({}, errObj, { fileContent: fileContent }));
+      const errorEvent = new EventLog(EventLog.NAME_ERROR, Object.assign({}, errObj, { fileContent: fileContent }));
       this.project.sendEvent(errorEvent);
 
-      let normalizedFileName = errObj.file.replace('./', '');
+      const normalizedFileName = errObj.file.replace('./', '');
+
       if (annotationMap[normalizedFileName] == null) {
         annotationMap[normalizedFileName] = [];
       }
+
       annotationMap[normalizedFileName].push({
         row: errObj.line - 1,
-        column: errObj.column != null ? errObj.column  : 0,
+        column: errObj.column != null ? errObj.column : 0,
         text: errObj.message,
-        type: 'error'
+        type: 'error',
+        raw: errObj.raw
       });
     }
 
     files.forEach((file) => {
-      let annotations = annotationMap[file.getName()];
+      const annotations = annotationMap[file.getName()];
       if (annotations != null) {
         file.setAnnotations(annotations);
-        file._emit('changeAnnotation');
+        file.emit('changeAnnotation');
       } else {
         file.clearAnnotations();
       }
@@ -528,8 +546,8 @@ export default class Runner extends EventEmitter {
   }
 
   reloadFiles() {
-    let files = this.project.getFiles();
-    let projectBasePath = this.project.name || '.';
+    const files = this.project.getFiles();
+    const projectBasePath = this.project.name || '.';
 
     //console.info(files);
 
@@ -544,12 +562,12 @@ export default class Runner extends EventEmitter {
     //  console.info('ls:', res);
     //});
 
-    return Promise.map(files, function (file) {
-      var path = pathModule.join(projectBasePath, file.getName());
+    return Promise.map(files, (file) => {
+      const path = pathModule.join(projectBasePath, file.getName());
       return this.sourcebox.readFile(path)
         .bind(this)
-        .then(function (contents) {
-          let fileIndex = files.findIndex(f => f.getName() == file.getName());
+        .then(contents => {
+          const fileIndex = files.findIndex(f => f.getName() == file.getName());
 
           // Only update, when we have real changes
           // I guess we will never have 10k lines of code to compare here, hashing does also required
@@ -560,20 +578,35 @@ export default class Runner extends EventEmitter {
             // ToDo: new file
           }
         });
-    }.bind(this));
+    });
   }
 
   /**
    * Returns true if the process is currently running
+   *
+   * @returns {boolean} true if the process is still running
    */
   isRunning() {
     return this.promiseChain && this.promiseChain.isPending();
   }
 
+  /**
+   * Tries to stop the currently running process / runner
+   * @returns {void}
+   * @memberof Runner
+   */
   kill() {
     this.stop();
   }
 
+  /**
+   * Resizes the attached tty of the proccess
+   *
+   * @param {any} cols - columns
+   * @param {any} rows - rows
+   * @memberof Runner
+   * @returns {void}
+   */
   resize(cols, rows) {
     if (this.process) {
       this.process.resize(cols, rows);

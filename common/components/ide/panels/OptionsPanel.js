@@ -1,16 +1,21 @@
 import React from 'react';
-import Ace from 'ace';
 import set from 'lodash/set';
 
 import {Button, Input} from '../../bootstrap';
 import optionManager from '../../../models/options';
 
-const themeList = Ace.require('ace/ext/themelist');
+const themeList = {themes: ['vs', 'vs-dark', 'hc-black']};
 
 export default class OptionsPanel extends React.Component {
   constructor(props) {
     super(props);
     this.onChangeOption = this.onChangeOption.bind(this);
+    this.onReset = this.onReset.bind(this);
+    this.onChange = this.onChange.bind(this);
+
+    this.state = {
+      options: optionManager.getOptions()
+    };
   }
 
   componentDidMount() {
@@ -28,10 +33,10 @@ export default class OptionsPanel extends React.Component {
     });
   }
 
-  onChange(path=[], e) {
+  onChange(e) {
     e.stopPropagation();
 
-    let target = e.target;
+    const target = e.target;
     let value;
 
     switch (target.type) {
@@ -45,7 +50,8 @@ export default class OptionsPanel extends React.Component {
         value = target.value;
     }
 
-    let options = set({}, path.concat(target.name), value);
+    const path = target.name.split('.');
+    const options = set({}, path, value);
     optionManager.setOptions(options);
   }
 
@@ -53,61 +59,81 @@ export default class OptionsPanel extends React.Component {
     e.preventDefault();
     e.stopPropagation();
 
-    // maybe ask for confirmation
-
+    // ToDo: maybe ask for confirmation
     optionManager.reset();
   }
 
-  renderAceOptions() {
-    let options = this.state.options.ace;
+  renderEditorOptions() {
+    const options = this.state.options.editor;
 
-    let themes = themeList.themes.reduce((themes, theme) => {
-      let group = theme.isDark ? themes.dark : themes.light;
-      group.push(<option key={theme.name} value={theme.theme}>{theme.caption}</option>);
-      return themes;
-    }, { light: [], dark: [] });
+    const themes = themeList.themes.map((theme) => {
+      return <option key={theme} value={theme}>{theme}</option>;
+    });
+
+    const wrapOptions = [
+      <option key="wordWrap-on" value="on">An</option>,
+      <option key="wordWrap-off" value="off">Aus</option>
+    ];
+
+    const whitespaceOptions = [
+      <option key="wordWrap-none" value="none">Keine</option>,
+      <option key="wordWrap-boundary" value="boundary">Zeilenanfang und -ende</option>,
+      <option key="wordWrap-all" value="all">Alle</option>
+    ];
+
+    const lineHighlightOptions = [
+      <option key="wordWrap-none" value="none">Keine</option>,
+      <option key="wordWrap-gutter" value="gutter">In der linken Leiste (Gutter)</option>,
+      <option key="wordWrap-line" value="line">Zeile</option>,
+      <option key="wordWrap-all" value="all">Leiste + Zeile</option>
+    ];
 
     return (
-      <div onChange={this.onChange.bind(this, ['ace'])}>
+      <div onChange={this.onChange}>
         <legend>Editor</legend>
-        <Input type="select" label="Farbschema" name="theme" defaultValue={options.theme}>
-          <optgroup label="Hell">{themes.light}</optgroup>
-          <optgroup label="Dunkel">{themes.dark}</optgroup>
+        <Input type="select" label="Farbschema" name="editor.theme" defaultValue={options.theme}>
+          {themes}
         </Input>
-        <Input label="Aktive Zeile hervorheben" type="checkbox" name="highlightActiveLine" defaultChecked={options.highlightActiveLine}/>
-        <Input label="Ausgewähltes Wort hervorheben" type="checkbox" name="highlightSelectedWord" defaultChecked={options.highlightSelectedWord}/>
-        <Input label="Unsichtbare Zeichen anzeigen" type="checkbox" name="showInvisibles" defaultChecked={options.showInvisibles}/>
-        <Input label="Einrückung anzeigen" type="checkbox" name="displayIndentGuides" defaultChecked={options.displayIndentGuides}/>
-        <Input label="Zeilen umbrechen" type="checkbox" name="wrap" defaultChecked={options.wrap}/>
-        <Input label="Autovervollständigung" type="checkbox" name="enableBasicAutocompletion" defaultChecked={options.enableBasicAutocompletion}/>
-        <Input label="Beim Tippen vervollständigen" type="checkbox" name="enableLiveAutocompletion" defaultChecked={options.enableLiveAutocompletion}/>
+        <Input type="select" label="Aktive Zeile hervorheben" name="editor.renderLineHighlight" defaultValue={options.renderLineHighlight}>
+          {lineHighlightOptions}
+        </Input>
+        <Input label="Ausgewähltes Wort hervorheben" type="checkbox" name="editor.selectionHighlight" defaultChecked={options.selectionHighlight}/>
+        <Input type="select" label="Unsichtbare Zeichen anzeigen" name="editor.renderWhitespace" defaultValue={options.renderWhitespace}>
+          {whitespaceOptions}
+        </Input>
+        <Input label="Einrückung anzeigen" type="checkbox" name="editor.renderIndentGuides" defaultChecked={options.renderIndentGuides}/>
+        <Input type="select" label="Zeilen umbrechen" name="editor.wordWrap" defaultValue={options.wordWrap}>
+          {wrapOptions}
+        </Input>
+        <Input label="Autovervollständigung bei Klammern" type="checkbox" name="editor.autoClosingBrackets" defaultChecked={options.autoClosingBrackets}/>
+        <Input label="Minimap anzeigen" type="checkbox" name="editor.minimap.enabled" defaultChecked={options.minimap.enabled}/>
       </div>
     );
   }
 
   renderTerminalOptions() {
-    let options = this.state.options.terminal;
+    const options = this.state.options.terminal;
 
     return (
-      <div onChange={this.onChange.bind(this, ['terminal'])}>
+      <div onChange={this.onChange}>
         <legend>Terminal</legend>
-        <Input label="Akustisches Signal" type="checkbox" name="audibleBell" defaultChecked={options.audibleBell}/>
+        <Input label="Akustisches Signal" type="checkbox" name="terminal.audibleBell" defaultChecked={options.audibleBell}/>
       </div>
     );
   }
 
   render() {
-    let options = this.state.options;
+    const options = this.state.options;
 
     return (
-      <form className="options-panel" onChange={this.onChange.bind(this, [])} onSubmit={e => e.preventDefault()}>
+      <form className="options-panel" onChange={this.onChange} onSubmit={e => e.preventDefault()}>
         <legend>Allgemeine Einstellungen</legend>
-        <Input label="Schriftart" type="text" name='font' defaultValue={options.font}/>
-        <Input label="Schriftgröße" type="number" min="1" max="50" step="1" name='fontSize' defaultValue={options.fontSize}/>
-        {this.renderAceOptions()}
+        <Input label="Schriftart" type="text" name="font" defaultValue={options.font}/>
+        <Input label="Schriftgröße" type="number" min="1" max="50" step="1" name="fontSize" defaultValue={options.fontSize}/>
+        {this.renderEditorOptions()}
         {this.renderTerminalOptions()}
         <hr/>
-        <Button bsStyle="danger" className="form-group" onClick={this.onReset.bind(this)}>Alle Einstellungen zurücksetzen</Button>
+        <Button bsStyle="danger" className="form-group" onClick={this.onReset}>Alle Einstellungen zurücksetzen</Button>
       </form>
     );
   }
