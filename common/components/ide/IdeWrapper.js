@@ -104,7 +104,7 @@ export default class IdeWrapper extends React.Component {
     });
 
     if (this.state.IdeComponent === null) {
-      import('./Ide').then(Ide => {
+      import(/* webpackChunkName: "ide" */ './Ide').then(Ide => {
         this.setState({ IdeComponent: Ide.default });
       }).catch(err => {
         debug('Failed to load Ide component', err);

@@ -26,6 +26,6 @@ export function saveTextAsFile(embedName, file) {
 
   const fileData = [];
   fileData.push(file.getValue());
-  const fileObj = new Blob(fileData, {type: "text/plain;charset=utf-8"});
+  const fileObj = new Blob(fileData, {type: 'text/plain;charset=utf-8'});
   FileSaver.saveAs(fileObj, `${embedName}.${file.getName()}`);
 }

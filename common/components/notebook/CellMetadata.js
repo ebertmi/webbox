@@ -134,6 +134,7 @@ export default class CellMetadata extends React.PureComponent {
 
   renderEditing() {
     let slideType = this.props.metadata.getIn(['slideshow', 'slide_type']);
+    let slideBgColor = this.props.metadata.getIn(['slideshow', 'bgColor'], 'primary');
     let metadata = this.props.metadata.remove('slideshow');
     let classes = 'cell-header ' + this.props.className;
 
@@ -152,6 +153,12 @@ export default class CellMetadata extends React.PureComponent {
             <p className="text-muted" style={{fontSize: '0.75rem', lineHeight: 1}}><em>Folie</em> erzeugt eine neue Folie; <em>Standard</em> wird auf der aktuellen Folie platziert; <em>Fragment</em> wird auf <kbd>→</kbd> eingeblendet; <em>Nicht anzeigen</em> wird nicht auf der Folie angezeigt.</p>
           </div>
         </div>
+        {/*<div className="form-group row">
+          <label className="col-sm-2 form-control-label">Background Color</label>
+          <div className="col-sm-8">
+            <input className="form-control form-control-sm" name="slideshow.bgColor" value={slideBgColor} onChange={this.onMetadataChange} />
+          </div>
+    </div>*/}
         <strong>Weitere Metadaten</strong>
         {metadata.entrySeq().map(entry => {
           return (

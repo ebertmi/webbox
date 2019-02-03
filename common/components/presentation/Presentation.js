@@ -127,10 +127,11 @@ export default class Presentation extends React.Component {
    */
   renderSlides() {
     let i;
-    let bgColor;
+    //let bgColor;
     let cell;
     let children = [];
-    let slides = [];
+    const slides = [];
+    //let slideCell;
     let renderResult;
     const cells = this.props.notebook.get('cells');
     const cellOrder = this.props.notebook.get('cellOrder');
@@ -150,7 +151,8 @@ export default class Presentation extends React.Component {
       }
 
       slideType = cell.getIn(['metadata', 'slideshow', 'slide_type'], 'slide');
-      bgColor = cell.getIn(['metadata', 'slideshow', 'bgColor'], null);
+
+      //console.info('bgColor:', bgColor, slideCounter, slideType);
       // start new slide
       if (isInSlide === false && slideType === 'slide') {
         children.push(this.renderCell(cell, i, this.props.notebook)); //Render current cell and add to children
@@ -158,7 +160,8 @@ export default class Presentation extends React.Component {
       } else if (isInSlide === true && slideType === 'slide') {
         // End current slide and start new one
         slideCounter += 1;
-        slides.push(<Slide bgColor={bgColor} transition={[]} maxHeight={maxHeight} maxWidth={maxWidth} key={`slide-${slideCounter}`} children>{children}</Slide>);
+        //let bgColor = slideCell.getIn(['metadata', 'slideshow', 'bgColor'], 'primary');
+        slides.push(<Slide /*bgColor={bgColor}*/ transition={[]} maxHeight={maxHeight} maxWidth={maxWidth} key={`slide-${slideCounter}`}>{children}</Slide>);
         children = []; // reset children
         children.push(this.renderCell(cell, i, this.props.notebook)); // add first new child
       } else {
@@ -179,7 +182,8 @@ export default class Presentation extends React.Component {
     // Final Slide
     if (isInSlide === true) {
       slideCounter += 1;
-      slides.push(<Slide bgColor={bgColor} transition={[]} maxHeight={maxHeight} maxWidth={maxWidth} key={`slide-${slideCounter}`} children={children}></Slide>);
+      //let bgColor = slideCell.getIn(['metadata', 'slideshow', 'bgColor'], 'primary');
+      slides.push(<Slide /*bgColor={bgColor}*/ transition={[]} maxHeight={maxHeight} maxWidth={maxWidth} key={`slide-${slideCounter}`}>{children}</Slide>);
     }
 
     return slides;

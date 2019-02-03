@@ -125,11 +125,6 @@ module.exports = {
   },
   plugins: [
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    /*new webpack.optimize.CommonsChunkPlugin({
-      name: 'commons',
-      chunks: ['dashboard', 'embed', 'notebook', 'presentation'],
-      minChunks: 2
-    }),*/
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('development')
