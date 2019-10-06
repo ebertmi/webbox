@@ -38,13 +38,10 @@ Depending on the system and if you are the root user you might need to use `sudo
 
 **Hint:**
 
-<<<<<<< Updated upstream
 * Also try to update `npm` itself with `sudo npm install npm` and maybe you need to link the node binary `sudo ln -s /usr/bin/nodejs /usr/bin/node`.
 * You might need to disable apparmor in order to get lxc working on Ubuntu (see https://help.ubuntu.com/community/AppArmor & https://forum.proxmox.com/threads/nfs-file-system-mount-problem-apparmor.31706/)
-=======
 **Only for private repos:**
 For using the `sourcebox-sandbox` repository your public key must be added to the ssh config (`~/.ssh/config`).
->>>>>>> Stashed changes
 
 ## Experiences
 
@@ -63,11 +60,8 @@ Try to rerun `sudo node-gype rebuild` in the sourcebox-lxc directory (the one wi
 
 ## Install Script
 
-<<<<<<< Updated upstream
 > There is a difference between the number of subuids and subgids between debian jessie and stretch or higher. In jessie we can get at least 65536 whereas in stretch or higher we only get less which causes any `apt install` command to fail.
 
-=======
->>>>>>> Stashed changes
 ```bash
 #!/bin/sh -e
 set -e
