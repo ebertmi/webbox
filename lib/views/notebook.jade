@@ -9,7 +9,7 @@ block styles
 
   link(href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700", rel="stylesheet", type="text/css")
   link(rel="stylesheet", href="//cdn.jsdelivr.net/highlight.js/9.6.0/styles/github.min.css")
-  link(rel="stylesheet", href="https://cdn.jsdelivr.net/katex/0.6.0/katex.min.css")
+  link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css")
   script(src="https://use.fontawesome.com/2739b0b490.js")
 
 block content
@@ -34,8 +34,8 @@ block scripts
     window.__crumb__ = "!{crumb}";
 
   script(src="//cdn.jsdelivr.net/highlight.js/9.6.0/highlight.min.js")
-  script(src="https://cdn.jsdelivr.net/katex/0.6.0/katex.min.js")
-  script(src="https://cdn.jsdelivr.net/markdown-it/8.0.0/markdown-it.min.js")
+  script(src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js")
+  script(src="https://cdn.jsdelivr.net/npm/markdown-it@10.0.0/dist/markdown-it.min.js")
   script(src="https://cdn.jsdelivr.net/d3js/3.5.17/d3.min.js", defer)
   if isProd
     script(src="/public/js/commons.bundle.#{webboxVersion}.js")
