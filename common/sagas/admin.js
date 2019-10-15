@@ -360,7 +360,7 @@ function*fetchSendMail (action) {
 
 export default function*adminSaga () {
   // avoid multiple fetching of the same data
-  yield [
+  yield all([
     fork(takeLatest, adminTypes.GET_USER_REQUEST, fetchUser),
     fork(takeLatest, adminTypes.SAVE_USER_REQUEST, saveUser),
     fork(takeLatest, adminTypes.GET_USERS_REQUEST, fetchUsers),
@@ -380,5 +380,5 @@ export default function*adminSaga () {
     fork(takeLatest, adminTypes.DELETE_AUTHATTEMPTS_REQUEST, fetchDeleteAllAuthAttempts),
     fork(takeLatest, adminTypes.GET_RECYCLEBIN_REQUEST, fetchRecyclebinEntries),
     fork(takeLatest, adminTypes.SEND_MAIL_REQUEST, fetchSendMail)
-  ];
+  ]);
 }

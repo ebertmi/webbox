@@ -1,7 +1,6 @@
 // Library Imports
 import React from 'react';
 import PropTypes from 'prop-types';
-import LazyLoad from 'react-lazyload';
 
 import { MessageListModel, MessageWithAction } from '../../models/messages';
 import { MessageList } from '../messagelist/messageList';
@@ -54,8 +53,7 @@ export default class Presentation extends React.Component {
     };
   }
 
-
-  componentWillMount() {
+  componentDidMount() {
     // Try to update the title
     if (this.props.notebook) {
       replaceIdWithSlug(this.props.notebook.get('id'), this.props.notebook.get('slug'));
@@ -68,6 +66,12 @@ export default class Presentation extends React.Component {
 
   /**
    * Renders a cell depending on its "cell_type". Any unknown types will be rendered as empty text (no content!).
+   *
+   * @param {Object} cell - cell to render
+   * @param {Number} index - current index of cell in the document
+   * @param {Object} notebook - notebook object
+   * @returns {React.Component} - returns react component representing cell
+   * @memberof Presentation
    */
   renderCell(cell, index, notebook) {
     const id = cell.get('id');
@@ -99,8 +103,6 @@ export default class Presentation extends React.Component {
         executionLanguage = cell.getIn(['metadata', 'executionLanguage'], notebookLanguageInformation.executionLanguage);
 
         embedType = cell.getIn(['metadata', 'embedType'], notebook.get('embedType'));
-        //runId = cell.getIn(['metadata', 'runid']);
-        //return <Highlight showRunButton={true} embedType={embedType} runId={runId} code={source} executionLanguage={executionLanguage} notebookLanguage={lang}></Highlight>;
         return <CodeCellView key={id} className="present-mode" viewComponent={Highlight} code={source} cell={cell} executionLanguage={{executionLanguage: executionLanguage}} notebookLanguage={lang} embedType={embedType}/>;
         /*return (
           <Window title={lang}>
@@ -108,7 +110,6 @@ export default class Presentation extends React.Component {
           </Window>
         );*/
       case 'codeembed':
-        //return <Text>{source}</Text>;
         height = parseInt(cell.getIn(['metadata', 'height'], 350), 10);
         height = isNaN(height) ? 350 : height;
         return <CodeEmbedCell style={{textAlign: 'center'}} /*course={course}*/ className="present-mode" dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={index === activeBlock}/>;

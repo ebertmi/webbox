@@ -27,6 +27,7 @@ export default class AttributePanel extends React.Component {
     this.onSave = this.onSave.bind(this);
     this.onReset = this.onReset.bind(this);
     this.onDelete = this.onDelete.bind(this);
+    this.onReload = this.onReload.bind(this);
     this.handleCreatorChange = this.handleCreatorChange.bind(this);
   }
 
@@ -109,6 +110,12 @@ export default class AttributePanel extends React.Component {
     // ToDo: check if e-mail does exist
   }
 
+  onReload(e) {
+    e.preventDefault();
+
+    location.reload();
+  }
+
   handleCreatorChange (creator, creators) {
     const newState = clone(this.state.embed);
     newState.creators = creators;
@@ -187,7 +194,7 @@ export default class AttributePanel extends React.Component {
         <Button bsStyle="success" className="form-group" onClick={this.onSave}>Speichern</Button>
         <Button bsStyle="warn" className="form-group" onClick={this.onReset}>Zurücksetzen</Button>
         <div className="form-group">
-          <p className="text-muted">Die Änderungen werden erst nach erneutem Laden des Beispiels wirksam. Drücken Sie nach dem Speichern die F5-Taste oder das Refresh-Symbol ihres Browsers. Alternativ können Sie <a href="javascript:location.reload();">hier</a> zum erneutem Laden klicken.</p>
+          <p className="text-muted">Die Änderungen werden erst nach erneutem Laden des Beispiels wirksam. Drücken Sie nach dem Speichern die F5-Taste oder das Refresh-Symbol ihres Browsers. Alternativ können Sie <a onClick={this.onReload}>hier</a> zum erneutem Laden klicken.</p>
         </div>
         <hr />
         <Button bsStyle="danger" className="form-group" onClick={this.onDelete}>Löschen</Button>

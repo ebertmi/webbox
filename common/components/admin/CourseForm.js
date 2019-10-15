@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { CSSTransition, TransitionGroup } from 'react-transition-group'
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { Input } from '../bootstrap';
 import { Time } from '../Time';
 
@@ -9,7 +9,7 @@ const Fade = ({ children, ...props }) => (
     timeout={{
       enter: 300,
       exit: 500,
-     }}
+    }}
     classNames="fade"
   >
     {children}
@@ -29,6 +29,9 @@ export class CourseForm extends Component {
   /**
    * Handles all input changes and triggers a redux state change using the onChange handler
    * from the parent.
+   *
+   * @param {Event} event - event
+   * @returns {void}
    */
   handleChange (event) {
     let value;

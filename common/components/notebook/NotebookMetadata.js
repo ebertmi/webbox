@@ -40,7 +40,7 @@ class NotebookMetadata extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     API.autocomplete.courses().then(resp => {
       if (resp.error) {
         console.error('Error occured');

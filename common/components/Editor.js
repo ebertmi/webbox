@@ -23,8 +23,10 @@ export default class Editor extends React.Component {
     window.addEventListener('resize', this.onResize);
   }
 
-  componentWillReceiveProps(next) {
+  getSnapshotBeforeUpdate(next) {
     this.updateProps(next);
+
+    return null;
   }
 
   componentDidUpdate() {

@@ -99,7 +99,9 @@ export class NavDropdown extends React.Component {
 // forms & inputs
 
 export class Input extends React.Component {
-  componentWillMount() {
+  constructor(props) {
+    super(props);
+
     this.id = this.props.id || uniqueId('input-');
   }
 

@@ -33,9 +33,9 @@ class HorizontalScrollbar extends React.Component {
     };
   }
 
-  render(){
+  render() {
     if (this.state.width < 100) {
-      return(
+      return (
       <div
         className="react-scrollbar__scrollbar-horizontal"
         ref="container"
@@ -59,7 +59,7 @@ class HorizontalScrollbar extends React.Component {
   }
 
 
-  startDrag(e){
+  startDrag(e) {
 
     e.preventDefault();
     e.stopPropagation();
@@ -73,7 +73,7 @@ class HorizontalScrollbar extends React.Component {
     });
   }
 
-  onDrag(e){
+  onDrag(e) {
 
     if (this.state.dragging) {
 
@@ -102,7 +102,7 @@ class HorizontalScrollbar extends React.Component {
 
   }
 
-  stopDrag(e){
+  stopDrag(e) {
     if (this.state.dragging) {
       // Parent Should Change the Dragging State
       this.props.onStopDrag();
@@ -110,7 +110,7 @@ class HorizontalScrollbar extends React.Component {
     }
   }
 
-  jump(e){
+  jump(e) {
 
     let isContainer = e.target === this.refs.container;
 
@@ -138,12 +138,12 @@ class HorizontalScrollbar extends React.Component {
     }
   }
 
-  calculateSize(source){
+  calculateSize(source) {
     // Scrollbar Width
     this.setState({ width: source.wrapper.width / source.area.width * 100 });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if ( nextProps.wrapper.width !== this.props.wrapper.width ||
         nextProps.area.width !== this.props.area.width ) {
       this.calculateSize(nextProps);

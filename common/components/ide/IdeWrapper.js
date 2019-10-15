@@ -52,15 +52,11 @@ export default class IdeWrapper extends React.Component {
   }
 
   /**
-   * Will be executed before rendering component. State changes won't trigger a re-rendering.
+   * Will be executed after rendering component. State changes won't trigger a re-rendering.
    * IdeWrapper use it to get meta data of embed for showing it without loading the whole.
    *
    * @returns {void}
    */
-  componentWillMount() {
-    //this.getAndSetEmbedMetadata();
-  }
-
   componentDidMount() {
     this.getAndSetEmbedMetadata();
   }

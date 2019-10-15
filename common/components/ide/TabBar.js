@@ -55,7 +55,7 @@ export default class TabBar extends React.Component {
 
   componentDidMount() {
     // Add screenfull listener
-    if (screenfull.enabled) {
+    if (screenfull.isEnabled) {
       document.addEventListener(screenfull.raw.fullscreenchange, this.onScreenfullChange);
     }
 
@@ -68,7 +68,7 @@ export default class TabBar extends React.Component {
     this.props.project.removeListener('change', this.onChange);
     this.props.project.tabManager.removeListener('change', this.onChange);
 
-    if (screenfull.enabled) {
+    if (screenfull.isEnabled) {
       // Remove listener (cleanup)
       document.removeEventListener(screenfull.raw.fullscreenchange, this.onScreenfullChange);
     }
@@ -105,7 +105,7 @@ export default class TabBar extends React.Component {
    * Toggles between fullscreen and normal, if supported
    */
   onToggleFullscreen(e) {
-    if (screenfull.enabled) {
+    if (screenfull.isEnabled) {
       screenfull.toggle(e.currentTarget.closest('.ide'));
     }
   }
@@ -240,7 +240,7 @@ export default class TabBar extends React.Component {
             callback={this.onShareWithTeacher}
           />
 
-          <NavItem className="unselectable" onClick={this.onToggleFullscreen} title="Vollbildmodus" disabled={!screenfull.enabled}>
+          <NavItem className="unselectable" onClick={this.onToggleFullscreen} title="Vollbildmodus" disabled={!screenfull.isEnabled}>
             <Icon name={fullScreenIcon} title="Vollbildmodus"/>
           </NavItem>
           <Menu project={project}/>

@@ -39,6 +39,7 @@ export default class MarkdownCell extends BaseCell {
   constructor(props) {
     super(props);
 
+    this.onChangeOption = this.onChangeOption.bind(this);
     this.onRef = this.onRef.bind(this);
     this.toggleImageGallery= this.toggleImageGallery.bind(this);
 

@@ -21,6 +21,11 @@ function DefaultTagComponent(props) {
 }
 
 export default class TaggedInput extends React.Component {
+
+  static getDerivedStateFromProps (nextProps) {
+    return { tags: (nextProps.tags || []).slice(0) };
+  }
+
   constructor (props) {
     super(props);
 
@@ -45,12 +50,6 @@ export default class TaggedInput extends React.Component {
     if (this.props.autofocus && this.input != null) {
       this.input.focus();
     }
-  }
-
-  componentWillReceiveProps (nextProps) {
-    this.setState({
-      tags: (nextProps.tags || []).slice(0)
-    });
   }
 
   onInputRef (ref) {

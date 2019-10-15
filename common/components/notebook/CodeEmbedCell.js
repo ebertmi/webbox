@@ -234,7 +234,6 @@ export default class CodeEmbedCell extends BaseCell {
     const isVisible = this.isVisible();
 
     let source = this.getSourceFromCell();
-    //let frame = source !== '' ? <IFrame lazy={true} className="col-12" width={width} height={height} src={`/embed/${source}`} allowFullScreen={true} frameBorder="0" /> : <p>Keine ID angegeben.</p>;
 
     // Add check for empty source
     let wrapper = source !== '' ? <IdeWrapper className="col-12" height={height} codeID={source} /> : <p>Keine ID angegeben.</p>;

@@ -19,6 +19,7 @@ export default class RawCell extends BaseCell {
   constructor(props) {
     super(props);
 
+    this.onChangeOption = this.onChangeOption.bind(this);
     this.onUpdateCell = this.onUpdateCell.bind(this);
 
     this.state = {

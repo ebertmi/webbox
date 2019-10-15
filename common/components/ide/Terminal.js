@@ -20,13 +20,12 @@ const events = [
 // Load fit addon
 Term.applyAddon(fit);
 
-
 export function once(type, listener) {
+  var fired = false;
+
   if (!isFunction(listener)) {
     throw TypeError('listener must be a function');
   }
-
-  var fired = false;
 
   function g() {
     this.removeListener(type, g);

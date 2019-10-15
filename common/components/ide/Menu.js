@@ -35,6 +35,8 @@ export default class Menu extends React.Component {
     this.onCopyShareLink = this.onCopyShareLink.bind(this);
     this.focusShareLink = this.focusShareLink.bind(this);
 
+    this.ensureHiddenImportInput();
+
     this.state = {
       showShareLinkModal: false,
       shareLink: '',
@@ -42,12 +44,12 @@ export default class Menu extends React.Component {
     };
   }
 
-  componentWillMount() {
+  /*componentWillMount() {
     const input = document.createElement('input');
     input.type = 'file';
     input.multiple = true;
     this.input = input;
-  }
+  }*/
 
   componentDidMount() {
     this.input.addEventListener('change', this.onImport);
@@ -227,6 +229,18 @@ export default class Menu extends React.Component {
     if (this.refs.sharelinkinput) {
       this.refs.sharelinkinput.select();
     }
+  }
+
+  /**
+   * Creates an hidden input field that is used for importing data.
+   * @returns {void}
+   * @memberof Menu
+   */
+  ensureHiddenImportInput() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = true;
+    this.input = input;
   }
 
   renderStatisticsItem() {

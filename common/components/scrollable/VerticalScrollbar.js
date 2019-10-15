@@ -33,9 +33,9 @@ class VerticalScrollbar extends React.Component {
     };
   }
 
-  render(){
+  render() {
     if (this.state.height < 100) {
-      return(
+      return (
         <div
           className="react-scrollbar__scrollbar-vertical"
           ref="container"
@@ -59,7 +59,7 @@ class VerticalScrollbar extends React.Component {
   }
 
 
-  startDrag(e){
+  startDrag(e) {
 
     e.preventDefault();
     e.stopPropagation();
@@ -73,7 +73,7 @@ class VerticalScrollbar extends React.Component {
     });
   }
 
-  onDrag(e){
+  onDrag(e) {
 
     if (this.state.dragging) {
 
@@ -100,7 +100,7 @@ class VerticalScrollbar extends React.Component {
     }
   }
 
-  stopDrag(e){
+  stopDrag(e) {
     if (this.state.dragging) {
       // Parent Should Change the Dragging State
       this.props.onStopDrag();
@@ -108,7 +108,7 @@ class VerticalScrollbar extends React.Component {
     }
   }
 
-  jump(e){
+  jump(e) {
 
     let isContainer = e.target === this.refs.container;
 
@@ -134,12 +134,12 @@ class VerticalScrollbar extends React.Component {
     }
   }
 
-  calculateSize(source){
+  calculateSize(source) {
     // Scrollbar Height
     this.setState({ height: source.wrapper.height / source.area.height * 100 });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if ( nextProps.wrapper.height !== this.props.wrapper.height ||
         nextProps.area.height !== this.props.area.height ) {
       this.calculateSize(nextProps);
