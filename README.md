@@ -201,7 +201,31 @@ Run `sudo apt-get install python3 python3-pip` and then install the python drive
 
 Then you can use the python3 repl and changing the settings and creating databases...
 
-For example:
+### The updated python driver has changed its API. Use the following commands:
+
+```python
+from rethinkdb import RethinkDB
+
+r = RethinkDB()
+con = r.connect('localhost', 28015).repl()
+
+r.db_create('webbox').run(con)
+
+r.db('rethinkdb').table('users').get('admin').update({'password': 'YOUR_SUPER_STRONG_PASSWORD'}).run(con)
+r.db('rethinkdb').table('users').get('admin').run(con)
+
+```
+
+And after setting the password you need to connect with it the next time you start the repl
+
+```python
+from rethinkdb import RethinkDB
+
+r = RethinkDB()
+con = r.connect('localhost', 28015, user="admin", password="YOUR_SUPER_STRONG_PASSWORD").repl()
+```
+
+### For example for old python driver 2.3.x:
 
 ```python
 import rethinkdb as r

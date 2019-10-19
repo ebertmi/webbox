@@ -139,7 +139,7 @@ module.exports = {
       });
     }),
     new MiniCssExtractPlugin({
-      filename: '../css/[name].bundle.' + VERSION + '.css',
+      filename: `../css/[name].bundle.${ VERSION }.css`,
     }),
     new CopyWebpackPlugin([
       {
