@@ -145,6 +145,11 @@ export function addCodeCell(index) {
   return addCell(index, CellTypes.Code);
 }
 
+// Creates a new new cell with the correct cell type
+export function addNewCell(index) {
+  return addCell(index, CellTypes.NewCell);
+}
+
 export function moveCellUp(index) {
   return {
     type: Types.MOVE_CELL_UP,

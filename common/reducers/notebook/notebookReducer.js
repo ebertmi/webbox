@@ -265,6 +265,12 @@ function createNewCellByType(cellType) {
     case CellTypes.CodeEmbed:
       newCell.cell_type = CellTypes.CodeEmbed;
       break;
+    case CellTypes.NewCell:
+      // Add here logic to add new cell and possible additional data
+      // this routine is also a safe-guard to prevent errors from other
+      // components
+      newCell.cell_type = CellTypes.NewCell;
+      break;
     default:
       newCell.cell_type = CellTypes.Raw;
       newCell.metadata.format = 'text/html'; /* output as text as default */

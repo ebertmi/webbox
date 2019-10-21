@@ -6,6 +6,9 @@ import MarkdownCell from './MarkdownCell';
 import CodeEmbedCell from './CodeEmbedCell';
 import RawCell from './RawCell';
 import CodeCell from './CodeCell';
+
+import NewCell from './NewCell'; // add new cell type here
+
 import AddControls from './AddControls';
 import NotebookMetadata from './NotebookMetadata';
 
@@ -77,7 +80,7 @@ export default class Notebook extends React.Component {
 
   /**
    * Reset maintained focused if user leaves the IDE
-   * 
+   *
    * @param {React.SyntheticEvent} e - blur event
    * @memberof Notebook
    * @returns {undefined}
@@ -97,7 +100,7 @@ export default class Notebook extends React.Component {
   /**
    * Update the current maintained focus to determine if we need to handle CTRL+S on the notebook or
    * inside the IDE.
-   * 
+   *
    * @param {React.SyntheticEvent} e - e focus event 
    * @memberof Notebook
    * @returns {undefined}
@@ -154,7 +157,7 @@ export default class Notebook extends React.Component {
 
   /**
    * Toggles between view and edit mode
-   * 
+   *
    * @memberof Notebook
    * @returns {undefined}
    */
@@ -164,7 +167,7 @@ export default class Notebook extends React.Component {
 
   /**
    * Opens the document as a presentation in a new window
-   * 
+   *
    * @memberof Notebook
    * @returns {undefined}
    */
@@ -176,7 +179,7 @@ export default class Notebook extends React.Component {
 
   /**
    * Saves the current document (if possible)
-   * 
+   *
    * @memberof Notebook
    * @returns {undefined}
    */
@@ -202,9 +205,9 @@ export default class Notebook extends React.Component {
 
   /**
    * Deletes the document after being verified again by the user
-   * 
+   *
    * @memberof Notebook
-   * @returns {undefined}
+   * @returns {void}
    */
   onDelete() {
     const id = this.props.notebook.get('id');
@@ -237,9 +240,9 @@ export default class Notebook extends React.Component {
 
   /**
    * Handles drop events, e. g. imports a dropped jupyter notebook to the current document
-   * 
+   *
    * @param {any} e - the drop event
-   * @returns {undefined}
+   * @returns {void}
    * @memberof Notebook
    */
   onDrop(e) {
@@ -323,7 +326,7 @@ export default class Notebook extends React.Component {
   /**
    * Render each individual cell depeding on its type.
    * If the edit mode is active this will also add a controls between each cell
-   * 
+   *
    * @returns {Array} - array of rendered cells
    * @memberof Notebook
    */
@@ -372,7 +375,25 @@ export default class Notebook extends React.Component {
             editing={index === activeBlock}/>);
           break;
         case 'raw':
-          blocks.push(<RawCell dispatch={dispatch} key={id} cellIndex={index} id={id} cell={cell} isEditModeActive={isEditModeActive} editing={index === activeBlock}/>);
+          blocks.push(<RawCell
+            dispatch={dispatch}
+            key={id}
+            cellIndex={index}
+            id={id}
+            cell={cell}
+            isEditModeActive={isEditModeActive}
+            editing={index === activeBlock}/>);
+          break;
+        case 'newcell':
+          // Add here logic to render the new cell type
+          blocks.push(<NewCell
+            dispatch={dispatch}
+            key={id}
+            cellIndex={index}
+            id={id}
+            cell={cell}
+            isEditModeActive={isEditModeActive}
+            editing={index === activeBlock}/>);
           break;
         default:
         //return null;

@@ -5,5 +5,6 @@ export const CellTypes = {
   Markdown: 'markdown',
   Code: 'code',
   CodeEmbed: 'codeembed',
-  Raw: 'raw'
+  Raw: 'raw',
+  NewCell: 'newcell'
 };
